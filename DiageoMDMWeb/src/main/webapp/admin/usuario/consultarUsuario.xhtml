@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+
+        <ui:composition template="./../../WEB-INF/templates/diageoWebTemplate.xhtml">          
+            <ui:define name="content">
+                <h:form id="formDetalleUsuario">
+                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
+                        <p:dataTable id="dtUsuarios" value="#{consultarUsuarioBean.listaUsuariosSistema}" var="usu"
+                                     widgetVar="wvUsu" style="width: 90%" rendered="#{consultarUsuarioBean.verDetalle}"
+                                     paginatorAlwaysVisible="false" rows="15" 
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                            <p:column headerText="#{msg.usu_num_doc}" filterBy="#{usu.numDoc}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{usu.numDoc}"/>
+                            </p:column>                        
+                            <p:column headerText="#{msg.usu_nombres}" filterBy="#{usu.nombres}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{usu.nombres}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.usu_apellidos}" filterBy="#{usu.apellidos}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{usu.apellidos}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.mail}" filterBy="#{usu.correo}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{usu.correo}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.usu_perfil}" filterMatchMode="exact" filterBy="#{usu.idPerfil.nombre}">
+                                <f:facet name="filter">
+                                    <p:selectOneMenu onchange="PF('wvUsu').filter()" >
+                                        <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}" noSelectionOption="true"/>
+                                        <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemValue="#{per.nombre}" itemLabel="#{per.nombre}"/>
+                                    </p:selectOneMenu>
+                                </f:facet>
+                                <h:outputLabel value="#{usu.idPerfil.nombre}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.usu_activo}" style="text-align: center">
+                                <p:graphicImage value="/resources/images/iconos/equis.png" width="20px" rendered="#{usu.estado eq '0'}"/>
+                                <p:graphicImage value="/resources/images/iconos/chulo.png" width="20px" rendered="#{usu.estado eq '1'}"/>
+                            </p:column>
+                            <p:column>
+                                <p:commandLink value="#{msg.btn_detalle}" actionListener="#{consultarUsuarioBean.verDetalleUsuario(usu)}" style="color: blue" process="@this" update="@form"/>
+                            </p:column>
+                        </p:dataTable>
+
+                        <h:panelGroup id="pgVerDetalle">
+                            <h:panelGrid columns="4" style="width: 70%" rendered="#{!consultarUsuarioBean.verDetalle}">
+                                <h:outputLabel value="#{msg.usu_nombres}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itNombres" label="#{msg.usu_nombres}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.nombres}" required="true"/>
+                                    <p:message for="itNombres"/>
+                                </h:panelGroup>
+                                <h:outputLabel value="#{msg.usu_apellidos}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itApellidos" label="#{msg.usu_apellidos}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.apellidos}" required="true"/>
+                                    <p:message for="itApellidos"/>
+                                </h:panelGroup>
+                                <h:outputLabel value="#{msg.usu_tipo_doc}"/>                        
+                                <p:selectOneMenu style="width: 73%" label="#{msg.usu_tipo_doc}" value="#{consultarUsuarioBean.tipoDocumento}" converter="tipoDocConverter">
+                                    <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tiDoc" itemLabel="#{tiDoc.nombre}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.usu_num_doc}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itNumDoc" label="#{msg.usu_num_doc}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.numDoc}" required="true"/>
+                                    <p:message for="itNumDoc"/>
+                                </h:panelGroup>
+                                <h:outputLabel value="#{msg.usu_correo}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itCorreo" label="#{msg.usu_correo}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.correo}" required="true"/>
+                                    <p:message for="itCorreo"/>
+                                </h:panelGroup>
+                                <h:outputLabel value="#{msg.usu_perfil}"/>                        
+                                <p:selectOneMenu style="width: 73%" label="#{msg.usu_perfil}" value="#{consultarUsuarioBean.perfil}" converter="perfilConverter">
+                                    <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemLabel="#{per.nombre}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.usu_activo}"/>           
+                                <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{consultarUsuarioBean.usuarioActivo}"/>
+                                <br/>
+                                <h:panelGrid columns="2">
+                                    <p:commandButton value="#{msg.btn_send}" process="@this pgVerDetalle" update="pgVerDetalle" actionListener="#{consultarUsuarioBean.guardarCambiosUsuario()}"
+                                                     styleClass="button" style="width: 10%;left: 35%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"/> 
+                                    <p:commandButton value="#{msg.btn_regresar}" immediate="true" actionListener="#{consultarUsuarioBean.regresar()}" update="@form"
+                                                     styleClass="button" style="width: 10%;left: 55%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"/> 
+                                </h:panelGrid>
+                                <br/><br/>   
+                                <p:messages id="mCamPas" closable="true" showDetail="true" showSummary="false" globalOnly="true"
+                                            style="width: 25%;left: 35%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"/>                                
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </div>
+                </h:form>
+            </ui:define>         
+        </ui:composition>
+
+    </h:body>
+</html>

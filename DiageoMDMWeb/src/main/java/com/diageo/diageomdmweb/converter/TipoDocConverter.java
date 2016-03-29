@@ -1,0 +1,45 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package com.diageo.diageomdmweb.converter;
+
+import com.diageo.admincontrollerweb.beans.TipoDocumentoBeanLocal;
+import com.diageo.admincontrollerweb.entities.TipoDoc;
+import javax.ejb.EJB;
+import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
+import javax.faces.convert.Converter;
+import javax.faces.convert.FacesConverter;
+
+/**
+ *
+ * @author yovanoty126
+ */
+@FacesConverter(value = "tipoDocConverter")
+public class TipoDocConverter implements Converter {
+
+    @EJB
+    private TipoDocumentoBeanLocal transacciones;
+
+    @Override
+    public Object getAsObject(FacesContext context, UIComponent component, String value) {
+        if (value == null) {
+            return null;
+        }
+        Integer id = Integer.parseInt(value);
+        TipoDoc tidpoDoc = (TipoDoc) transacciones.consultarId(id);
+        return tidpoDoc;
+    }
+
+    @Override
+    public String getAsString(FacesContext context, UIComponent component, Object value) {
+        if (value == null) {
+            return "";
+        }
+        TipoDoc tipoDocumento = (TipoDoc) value;
+        return tipoDocumento.getIdtipoDoc() + "";
+    }
+
+}

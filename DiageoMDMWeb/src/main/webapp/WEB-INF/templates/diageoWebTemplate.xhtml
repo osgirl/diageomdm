@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />        
+        <h:outputStylesheet library="css" name="template.css"/>
+        <title>#{msg.diageo}</title>
+    </h:head>
+    <h:body>
+        <f:view locale="#{loginBean.localeApp.language}">
+            <div class="banner">
+                <p:graphicImage value="/resources/images/logo/logoDiageoBlanco.png" style="top: 20px;position: absolute;left: 3%"/>    
+                <h:panelGrid columns="3" width="100%" style="top: 70%;position: absolute">                    
+                    <h:outputLabel value="#{msg.ingreso_exitoso} #{loginBean.formatoFechaIngreso(loginBean.usuario.ultimoIngresoExitoso)}" style="color: white;padding: 15%;position: relative;font-size: 12px;"/>
+                    <h:outputLabel value="#{msg.ingreso_fallido} #{loginBean.formatoFechaIngreso(loginBean.usuario.ingresoFallido)}" style="color: white;padding: 15%;position: relative;font-size: 12px;"/>
+                    <h:outputLabel value="#{msg.welcome} #{loginBean.usuario.nombres} #{loginBean.usuario.apellidos}" style="color: white;position: relative;font-size: 15px;left: 40%"/>
+                </h:panelGrid>
+            </div>
+            <div class="menu_template">    
+                <ui:include src="menu.xhtml"/>
+            </div>        
+            <div class="barra_lateral_izquierda" style="background: #D9D9D9">
+
+            </div>
+            <div class="barra_lateral_derecha" style="background: #D9D9D9">
+
+            </div>
+            <div class="body_content">      
+                <ui:insert name="content"></ui:insert>
+            </div>
+            <ui:include src="cambiarIdioma.xhtml"/>                        
+        </f:view>
+    </h:body>
+
+</html>

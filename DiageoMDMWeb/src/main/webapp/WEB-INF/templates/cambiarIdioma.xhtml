@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">   
+    <h:body>
+        <h:form id="formCambiarIdioma">
+            <p:dialog id="dlgCamIdioma" header="#{msg.cam_idi}" widgetVar="dlgCambiarIdioma" modal="true" height="130px" width="450px"
+                      closeOnEscape="true" draggable="false" resizable="false" style="padding:10px;align-content: center">
+                <h:panelGroup>
+                    <p:selectOneMenu value="#{loginBean.idioma}" style="width: 90%">
+                        <f:selectItem itemValue="es" itemLabel="Español"/>
+                        <f:selectItem itemValue="en" itemLabel="English"/>
+                    </p:selectOneMenu>
+                    <br/><br/>
+                    <div style="width: 100%;text-align: center">
+                        <p:commandButton id="cbLogin" value="#{msg.btn_send}" 
+                                         process="@parent" actionListener="#{loginBean.changeLanguage()}" ajax="false"
+                                         style="color: white;width: 50%;background: -webkit-linear-gradient(#0088cc, #149bdf);"/>
+                    </div>
+                    <br/>
+                    <p:messages id="mLogin" closable="true" showDetail="true" showSummary="false" />
+                </h:panelGroup>
+            </p:dialog>
+        </h:form>
+    </h:body>
+</html>

@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+
+        <ui:composition template="./../../WEB-INF/templates/diageoWebTemplate.xhtml">
+
+            <ui:define name="content">
+                <h:form id="formCanal">
+                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
+                        <h:panelGroup id="pgChaDetalle" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                            <h:panelGrid columns="2" style="width: 100%">
+                                <h:outputLabel value="#{msg.sub_can_nombre}" style="width: 30%"/>
+                                <p:inputText id="itNombre" value="#{subChannelCrear.nombreSubChannel}" required="true" label="#{msg.sub_can_nombre}" style="width: 70%"/>                             
+                                <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
+                                <p:selectOneMenu value="#{subChannelCrear.channel}" converter="channelConverter">
+                                    <f:selectItems value="#{subChannelCrear.listaChannel}" var="cha" itemLabel="#{cha.nombre}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.estado}"/>
+                                <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{subChannelCrear.estado}"/>
+                            </h:panelGrid> 
+                            <br/>
+                            <br/>
+                            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" 
+                                             actionListener="#{subChannelCrear.guardarSubCanal()}"
+                                             styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
+                            <br/>
+                            <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />
+                        </h:panelGroup>
+                    </div>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

@@ -1,0 +1,59 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : 03-mar-2016, 19:46:30
+    Author     : yovanoty126
+*/
+
+.ui-widget, .ui-widget .ui-widget {
+    font-size: 90%;
+} 
+
+.fondo_imagen{
+   position: relative;
+   width: 100%;
+   height: 100%;
+   text-align: center;
+   z-index: -1;   
+}
+
+.capa_login{
+    position: fixed;
+    width: 400px;
+    max-width: 500px;
+    height: auto;
+    text-align: center;
+    /*background: #D9D9D9;*/
+    /*background: -webkit-linear-gradient(rgb(226, 233, 236), #C1C1C1);*/
+    background: black;
+    margin: 0 auto;     
+    border-radius: 25px;
+    left: 50%;
+    top:50%;
+    transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%,-50%);
+    border-style: inset;
+    border-width: thick;
+}
+
+.login_button{ 
+    color: white;
+    width: 50%;
+    background: -webkit-linear-gradient(#0088cc, #149bdf);
+}
+
+ui-messages-error, .ui-message-error{
+    margin: 3px 20px;
+    width: 200px;
+}
+
+.ui-messages-info-icon, .ui-messages-warn-icon, .ui-messages-error-icon, .ui-messages-fatal-icon{
+    display: none !important;
+}
+
+.ui-dialog-title{
+    font-size: 14px !important;
+}

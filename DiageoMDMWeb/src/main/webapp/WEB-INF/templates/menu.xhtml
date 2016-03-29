@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:body>
+        <h:form>
+            <p:menubar>                      
+                <p:submenu label="#{msg.m_outlet}" rendered="#{loginBean.renderizarMenu('OUT')}">  
+                    <p:menuitem value="#{msg.m_outlet_crear}" rendered="#{loginBean.renderizarMenu('C_OUT')}" />
+                    <p:menuitem value="#{msg.m_outlet_consultar}" rendered="#{loginBean.renderizarMenu('S_OUT')}" action="/outlet/consultarOutlet?faces-redirect=true"/>
+                    <p:menuitem value="#{msg.m_outlet_carga}" rendered="#{loginBean.renderizarMenu('LOAD_OUT')}" />
+                </p:submenu>   
+
+                <p:submenu label="#{msg.m_administrador}" rendered="#{loginBean.renderizarMenu('MAGANER')}">
+                    <p:submenu label="#{msg.m_usuario}" rendered="#{loginBean.renderizarMenu('USU')}">
+                        <p:menuitem value="#{msg.m_usuario_crear}" action="/admin/usuario/crearUsuario?faces-redirect=true" rendered="#{loginBean.renderizarMenu('C_USU')}"/>
+                        <p:menuitem rendered="#{loginBean.renderizarMenu('S_USU')}" action="/admin/usuario/consultarUsuario?faces-redirect=true">
+                            <h:outputLabel value="#{msg.m_usuario_consultar}"/>
+                        </p:menuitem>
+                    </p:submenu>
+                    <p:submenu label="#{msg.m_canal}" rendered="#{loginBean.renderizarMenu('CHAN')}">
+                        <p:menuitem value="#{msg.m_canal_crear}" rendered="#{loginBean.renderizarMenu('C_CHAN')}" action="/admin/canal/crearCanal?faces-redirect=true"/>
+                        <p:menuitem value="#{msg.m_canal_consultar}"  rendered="#{loginBean.renderizarMenu('S_CHAN')}" action="/admin/canal/consultarCanal?faces-redirect=true"/>
+                    </p:submenu>
+                    <p:submenu label="#{msg.m_segmento}" rendered="#{loginBean.renderizarMenu('SEG')}">
+                        <p:menuitem value="#{msg.m_segmento_crear}" rendered="#{loginBean.renderizarMenu('C_SEG')}" action="/admin/segmento/crearSegmento?faces-redirect=true"/>
+                        <p:menuitem value="#{msg.m_segmento_consultar}" rendered="#{loginBean.renderizarMenu('S_SEG')}" action="/admin/segmento/consultarSegmento?faces-redirect=true"/>
+                    </p:submenu>
+                    <p:submenu label="#{msg.m_canal_sub}" rendered="#{loginBean.renderizarMenu('SUB_CHAN')}">
+                        <p:menuitem value="#{msg.m_canal_sub_crear}" rendered="#{loginBean.renderizarMenu('C_SUB_CHAN')}" action="/admin/subcanal/crearSubCanal?faces-redirect=true"/>
+                        <p:menuitem value="#{msg.m_canal_sub_consultar}" rendered="#{loginBean.renderizarMenu('S_SUB_CHAN')}" action="/admin/subcanal/consultarSubCanal?faces-redirect=true"/>
+                    </p:submenu>
+                    <p:submenu label="#{msg.m_segmento_sub}" rendered="#{loginBean.renderizarMenu('SUB_SEG')}">
+                        <p:menuitem value="#{msg.m_segmento_sub_crear}" rendered="#{loginBean.renderizarMenu('C_SUB_SEG')}" action="/admin/subsegmento/crearSubSegmento?faces-redirect=true"/>
+                        <p:menuitem value="#{msg.m_segmento_sub_consultar}" rendered="#{loginBean.renderizarMenu('S_SUB_SEG')}" action="/admin/subsegmento/consultarSubSegmento?faces-redirect=true"/>
+                    </p:submenu>
+                    <p:submenu label="#{msg.m_battleground}" rendered="#{loginBean.renderizarMenu('BATT')}">
+                        <p:menuitem value="#{msg.m_battleground_crear}" rendered="#{loginBean.renderizarMenu('C_BATT')}"/>
+                        <p:menuitem value="#{msg.m_battleground_consultar}" rendered="#{loginBean.renderizarMenu('S_BATT')}"/>
+                    </p:submenu>
+                </p:submenu>                   
+
+                <p:submenu label="#{msg.m_perfil}">                        
+                    <p:menuitem value="#{msg.m_mis_datos}" action="/perfil/datos/datosUsuario?faces-redirect=true" ajax="false"/>
+                    <p:menuitem value="#{msg.m_cambiar_contrase}" action="/perfil/cambiarContrasenia/cambiarContrasenia?faces-redirect=true" ajax="false"/>
+                    <p:menuitem value="#{msg.m_idioma}" onclick="PF('dlgCambiarIdioma').show();" />
+                </p:submenu>
+
+                <f:facet name="options">
+                    <p:commandButton value="#{msg.btn_logout}" icon="ui-icon-extlink" action="#{loginBean.logout()}" ajax="false" 
+                                     style="color: white;background: -webkit-linear-gradient(#0088cc, #149bdf);"/>
+                </f:facet>
+            </p:menubar> 
+        </h:form>     
+    </h:body>
+</html>

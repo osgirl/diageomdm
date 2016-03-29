@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:body>
+
+        <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
+
+            <ui:define name="content">
+                <h:form id="formCanal">
+                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
+                        <p:dataTable id="dtChannel" value="#{consultarChannelBean.listaChannels}" var="cha" paginatorAlwaysVisible="false" rows="15"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     rendered="#{consultarChannelBean.verDetalle}"
+                                     style="width: 60%;left: 50%;-webkit-transform: translate(-50%);position: absolute;">
+                            <p:column headerText="#{msg.can_nombre}">
+                                <h:outputLabel value="#{cha.nombre}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.estado}" style="text-align: center">                                       
+                                <p:graphicImage value="/resources/images/iconos/equis.png" width="20px" rendered="#{cha.estado eq '0'}"/>
+                                <p:graphicImage value="/resources/images/iconos/chulo.png" width="20px" rendered="#{cha.estado eq '1'}"/>
+                            </p:column>
+                            <p:column>
+                                <p:commandLink value="#{msg.btn_detalle}" actionListener="#{consultarChannelBean.detalleChannel(cha)}" 
+                                               style="color: blue" process="@this" update="@form"/>
+                            </p:column>
+                        </p:dataTable>
+
+
+                        <h:panelGroup id="pgChannel" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">                            
+                            <h:panelGroup id="pgChaDetalle" rendered="#{!consultarChannelBean.verDetalle}" style="width: 100%">
+                                <h:panelGrid columns="2" style="width: 100%">
+                                    <h:outputLabel value="#{msg.can_nombre}" style="width: 30%"/>
+                                    <p:inputText id="itNombre" value="#{consultarChannelBean.nombreChannel}" required="true" label="#{msg.can_nombre}" style="width: 70%"/>
+                                    <h:outputLabel value="#{msg.estado}"/>
+                                    <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{consultarChannelBean.estado}"/>
+                                </h:panelGrid>
+                                <br/><br/>
+                                <p:commandButton value="#{msg.btn_send}" process="@this pgChannel" update="pgChannel" 
+                                                 actionListener="#{consultarChannelBean.modificarChannel()}"
+                                                 styleClass="button" style="width: 30%;"/>
+                                <p:commandButton value="#{msg.btn_regresar}" immediate="true" actionListener="#{consultarChannelBean.regresar()}" update="@form"
+                                                 styleClass="button" style="width: 30%;left: 10%"/> 
+                                <p:messages closable="true" showDetail="true" showSummary="false" globalOnly="false"/>
+                            </h:panelGroup>                            
+                        </h:panelGroup>
+
+                    </div>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

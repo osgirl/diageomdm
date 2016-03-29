@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+
+        <ui:composition template="./../../WEB-INF/templates/diageoWebTemplate.xhtml">
+
+            <ui:define name="content">
+                <h:form id="form">
+                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
+                        <h:panelGroup id="pgChaDetalle" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                            <h:panelGrid columns="2" style="width: 100%">
+                                <h:outputLabel value="#{msg.seg_nombre}" style="width: 30%"/>
+                                <p:inputText id="itNombre" value="#{segmentoCrearBean.nombre}" required="true" label="#{msg.can_nombre}" style="width: 70%"/>
+                                <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
+                                <p:selectOneMenu value="#{segmentoCrearBean.canal}" converter="channelConverter" required="true" label="#{msg.can_canal}">
+                                    <f:selectItems value="#{segmentoCrearBean.listaCanales}" var="cha" itemLabel="#{cha.nombre}"/>
+                                    <p:ajax listener="#{segmentoCrearBean.listenerListaSubCanales()}" process="@this" update="somSubCanal"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.sub_subcanal}" style="width: 30%"/>
+                                <p:selectOneMenu id="somSubCanal" value="#{segmentoCrearBean.subCanal}" converter="subChannelConverter" required="true" label="#{msg.sub_subcanal}">
+                                    <f:selectItems value="#{segmentoCrearBean.listaSubCanales}" var="subcha" itemLabel="#{subcha.nombre}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.estado}"/>
+                                <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{segmentoCrearBean.estado}"/>
+                            </h:panelGrid> 
+                            <br/>
+                            <br/>
+                            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" 
+                                             actionListener="#{segmentoCrearBean.guardarCambios()}"
+                                             styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
+                            <br/>
+                            <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />
+                        </h:panelGroup>
+                    </div>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

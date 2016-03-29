@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>TODO supply a title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet library="css" name="login.css"/>
+    </h:head>
+    <h:body>
+        <h:form>
+            <div class="fondo_imagen">
+                <p:graphicImage value="/resources/images/background/licores.jpg" width="90%" style="opacity: 0.4"/>
+            </div>            
+            <div class="capa_login">
+                <br/>
+                <p:graphicImage id="giDiageo" value="/resources/images/logo/logoDiageoBlanco.png" width="50%"/>
+                <br/>
+                <br/>
+                <h:outputLabel value="MDM" style="color: white;font-size: 20px"/>
+                <br/>
+                <br/>
+                <h:panelGrid columns="1" width="100%">
+                    <p:inputText id="itUser" label="#{msg.mail}" required="true" style="width: 90%" value="#{loginBean.user}" />
+                    <p:watermark for="itUser" value="#{msg.mail}"/>
+                    <p:password id="pass" label="#{msg.password}" required="true" style="width: 90%" value="#{loginBean.password}"/>
+                    <p:watermark for="pass" value="#{msg.password}"/>
+
+                    <h:panelGrid columns="2" style="padding-left: 5%">
+                        <p:selectBooleanCheckbox value="#{loginBean.recordarme}" />
+                        <h:outputLabel value="#{msg.rememberme}" style="color: white"/>
+                    </h:panelGrid>
+
+                    <br/>
+                    <p:commandLink value="#{msg.forgot_pass}" type="button" onclick="PF('dlgRecuperar').show();" style="color: white"/>
+                    <br/>
+                    <p:commandButton id="cbLogin" value="#{msg.btn_login}" styleClass="login_button"
+                                     process="@parent" update="mLogin" action="#{loginBean.login()}"/>
+                    <br/>
+                    <p:messages id="mLogin" closable="true" showDetail="true" showSummary="false" />
+                </h:panelGrid>
+            </div>
+            <div style="top:90%;width: 50%;position: fixed;left: 50%;text-align: center;transform: translate(-50%,-50%);-webkit-transform: translate(-50%,-50%);">
+                <p:separator />
+                <br/>
+                <h:panelGroup>
+                    <h:panelGrid columns="2" style="left: 40%;position: fixed;text-align: center" width="20%">
+                        <h:commandLink value="Español" style="color: black" immediate="true" actionListener="#{diageoApplicationBean.changeLanguage('es')}"/>
+                        <h:commandLink value="English" style="color: black" immediate="true" actionListener="#{diageoApplicationBean.changeLanguage('en')}"/>
+                    </h:panelGrid>
+                </h:panelGroup>
+            </div>            
+        </h:form>
+        <h:form>
+            <p:dialog header="#{msg.recover_pass}" widgetVar="dlgRecuperar" modal="true" height="130px" width="450px"
+                      closeOnEscape="true" draggable="false" resizable="false" style="padding:10px;align-content: center ">
+                <h:panelGroup>
+                    <p:inputText id="itRecuperarMail" label="#{msg.mail}" required="true" style="width: 90%"/>
+                    <p:watermark for="itRecuperarMail" value="#{msg.mail}"/>
+                    <br/><br/>
+                    <div style="width: 100%;text-align: center">
+                        <p:commandButton id="cbLogin" value="#{msg.btn_send}" 
+                                         process="@parent" update="mLogin"
+                                         style="color: white;width: 50%;background: -webkit-linear-gradient(#0088cc, #149bdf);"/>
+                    </div>
+                    <br/>
+                    <p:messages id="mLogin" closable="true" showDetail="true" showSummary="false" />
+                </h:panelGroup>
+            </p:dialog>
+        </h:form>
+    </h:body>
+</html>
