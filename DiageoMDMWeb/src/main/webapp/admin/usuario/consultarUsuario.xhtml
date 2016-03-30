@@ -10,6 +10,11 @@
 
         <ui:composition template="./../../WEB-INF/templates/diageoWebTemplate.xhtml">          
             <ui:define name="content">
+                <style>
+                    .ui-selectonemenu{
+                        width:70% !important;
+                    }
+                </style>
                 <h:form id="formDetalleUsuario">
                     <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
                         <p:dataTable id="dtUsuarios" value="#{consultarUsuarioBean.listaUsuariosSistema}" var="usu"
@@ -19,10 +24,10 @@
                             <p:column headerText="#{msg.usu_num_doc}" filterBy="#{usu.numDoc}" filterMatchMode="startsWith">
                                 <h:outputLabel value="#{usu.numDoc}"/>
                             </p:column>                        
-                            <p:column headerText="#{msg.usu_nombres}" filterBy="#{usu.nombres}" filterMatchMode="startsWith">
+                            <p:column headerText="#{msg.usu_nombres}" filterBy="#{usu.nombres}" filterMatchMode="startsWith" sortBy="#{usu.nombres}">
                                 <h:outputLabel value="#{usu.nombres}"/>
                             </p:column>
-                            <p:column headerText="#{msg.usu_apellidos}" filterBy="#{usu.apellidos}" filterMatchMode="startsWith">
+                            <p:column headerText="#{msg.usu_apellidos}" filterBy="#{usu.apellidos}" filterMatchMode="startsWith" sortBy="#{usu.apellidos}">
                                 <h:outputLabel value="#{usu.apellidos}"/>
                             </p:column>
                             <p:column headerText="#{msg.mail}" filterBy="#{usu.correo}" filterMatchMode="startsWith">

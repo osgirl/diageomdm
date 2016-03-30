@@ -67,3 +67,7 @@ and open the template in the editor.
 .ui-widget, .ui-widget .ui-widget {
     font-size: 90%;
 }
+
+.ui-column-filter{
+    width: 97% !important;
+}
