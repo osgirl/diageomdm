@@ -61,9 +61,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     public void init() {
         establecerCookiesCamposLogin();
         setLocaleApp(new Locale(ESPANOL));
-    }
-
-   
+    } 
 
     public String login() {
         administrarCookies();
