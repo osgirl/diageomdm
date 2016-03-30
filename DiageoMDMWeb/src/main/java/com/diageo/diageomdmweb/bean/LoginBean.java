@@ -59,19 +59,11 @@ public class LoginBean extends DiageoRootBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        Cookie[] array = request.getCookies();
-        if (array != null) {
-            for (Cookie cookie : array) {
-                if (cookie.getName().equals(COOKIE_MAIL)) {
-                    setUser(cookie.getValue());
-                } else if (cookie.getName().equals(COOKIE_REMEMBER)) {
-                    setRecordarme(Boolean.parseBoolean(cookie.getValue()));
-                }
-            }
-        }
+        establecerCookiesCamposLogin();
         setLocaleApp(new Locale(ESPANOL));
     }
+
+   
 
     public String login() {
         administrarCookies();
@@ -108,7 +100,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
         }
         return false;
     }
-    
+
     public void changeLanguage() {
         setLocaleApp(new Locale(getIdioma()));
         FacesContext.getCurrentInstance().getViewRoot().setLocale(getLocaleApp());
@@ -120,11 +112,26 @@ public class LoginBean extends DiageoRootBean implements Serializable {
             request.getSession().invalidate();
         }
         eliminarObjetos();
+        establecerCookiesCamposLogin();
         return "/login?faces-redirect=true";
+    }
+    
+     private void establecerCookiesCamposLogin() {
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        Cookie[] array = request.getCookies();
+        if (array != null) {
+            for (Cookie cookie : array) {
+                if (cookie.getName().equals(COOKIE_MAIL)) {
+                    setUser(cookie.getValue());
+                } else if (cookie.getName().equals(COOKIE_REMEMBER)) {
+                    setRecordarme(Boolean.parseBoolean(cookie.getValue()));
+                }
+            }
+        }
     }
 
     @PreDestroy
-    public void destroy() {     
+    public void destroy() {
         eliminarObjetos();
     }
 
