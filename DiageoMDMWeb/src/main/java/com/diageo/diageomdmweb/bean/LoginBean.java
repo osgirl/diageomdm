@@ -119,10 +119,13 @@ public class LoginBean extends DiageoRootBean implements Serializable {
         Cookie[] array = request.getCookies();
         if (array != null) {
             for (Cookie cookie : array) {
-                if (cookie.getName().equals(COOKIE_MAIL)) {
-                    setUser(cookie.getValue());
-                } else if (cookie.getName().equals(COOKIE_REMEMBER)) {
-                    setRecordarme(Boolean.parseBoolean(cookie.getValue()));
+                switch (cookie.getName()) {
+                    case COOKIE_MAIL:
+                        setUser(cookie.getValue());
+                        break;
+                    case COOKIE_REMEMBER:
+                        setRecordarme(Boolean.parseBoolean(cookie.getValue()));
+                        break;
                 }
             }
         }
