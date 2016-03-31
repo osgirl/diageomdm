@@ -33,14 +33,16 @@ public enum ModulosEnum {
     S_SUB_SEG("buscar subsegmento"),
     BATT("battleground"),
     C_BATT("crear battleground"),
-    S_BATT("buscar battleground");
+    S_BATT("buscar battleground"),
+    MIS_DATOS("mis datos"),
+    CAM_CONTRA("cambiar contraseña");
 
     private final String descripcion;
 
-    private ModulosEnum(String descripcion) {
+    private ModulosEnum(String descripcion) {        
         this.descripcion = descripcion;
     }
-
+       
     public String getDescripcion() {
         return this.descripcion;
     }
