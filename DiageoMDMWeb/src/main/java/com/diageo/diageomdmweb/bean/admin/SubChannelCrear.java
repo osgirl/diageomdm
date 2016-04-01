@@ -36,7 +36,7 @@ public class SubChannelCrear extends DiageoRootBean implements Serializable {
     @EJB
     private ChannelBeanLocal channelBeanLocal;
     private List<Channel> listaChannel;
-    @Size(max = 45, message = "{size.invalido}")
+    @Size(max = 100, message = "{size.invalido}")
     private String nombreSubChannel;
     private boolean estado;
     private Channel channel;

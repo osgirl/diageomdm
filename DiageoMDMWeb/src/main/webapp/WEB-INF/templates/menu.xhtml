@@ -13,47 +13,45 @@ and open the template in the editor.
         <h:form>
             <p:menubar>                      
                 <p:submenu label="#{msg.m_outlet}" rendered="#{loginBean.renderizarMenu('OUT')}">  
-                    <p:menuitem value="#{msg.m_outlet_crear}" rendered="#{loginBean.renderizarMenu('C_OUT')}" />
-                    <p:menuitem value="#{msg.m_outlet_consultar}" rendered="#{loginBean.renderizarMenu('S_OUT')}" action="/outlet/consultarOutlet?faces-redirect=true"/>
-                    <p:menuitem value="#{msg.m_outlet_carga}" rendered="#{loginBean.renderizarMenu('LOAD_OUT')}" />
+                    <p:menuitem value="#{msg.m_outlet_crear}" rendered="#{loginBean.renderizarMenu('C_OUT')}" action="#{menuBean.navegar('C_OUT')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_outlet_consultar}" rendered="#{loginBean.renderizarMenu('S_OUT')}" action="#{menuBean.navegar('S_OUT')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_outlet_carga}" rendered="#{loginBean.renderizarMenu('LOAD_OUT')}" action="#{menuBean.navegar('LOAD_OUT')}" ajax="false"/>
                 </p:submenu>   
 
                 <p:submenu label="#{msg.m_administrador}" rendered="#{loginBean.renderizarMenu('MAGANER')}">
                     <p:submenu label="#{msg.m_usuario}" rendered="#{loginBean.renderizarMenu('USU')}">
-                        <p:menuitem value="#{msg.m_usuario_crear}" action="/admin/usuario/crearUsuario?faces-redirect=true" rendered="#{loginBean.renderizarMenu('C_USU')}"/>
-                        <p:menuitem rendered="#{loginBean.renderizarMenu('S_USU')}" action="/admin/usuario/consultarUsuario?faces-redirect=true">
-                            <h:outputLabel value="#{msg.m_usuario_consultar}"/>
-                        </p:menuitem>
+                        <p:menuitem value="#{msg.m_usuario_crear}" rendered="#{loginBean.renderizarMenu('C_USU')}" action="#{menuBean.navegar('C_USU')}" ajax="false"/>
+                        <p:menuitem value="#{msg.m_usuario_consultar}" rendered="#{loginBean.renderizarMenu('S_USU')}" action="#{menuBean.navegar('S_USU')}" ajax="false"/>
                     </p:submenu>
                     <p:submenu label="#{msg.m_canal}" rendered="#{loginBean.renderizarMenu('CHAN')}">
-                        <p:menuitem value="#{msg.m_canal_crear}" rendered="#{loginBean.renderizarMenu('C_CHAN')}" action="/admin/canal/crearCanal?faces-redirect=true"/>
-                        <p:menuitem value="#{msg.m_canal_consultar}"  rendered="#{loginBean.renderizarMenu('S_CHAN')}" action="/admin/canal/consultarCanal?faces-redirect=true"/>
-                    </p:submenu>
-                    <p:submenu label="#{msg.m_segmento}" rendered="#{loginBean.renderizarMenu('SEG')}">
-                        <p:menuitem value="#{msg.m_segmento_crear}" rendered="#{loginBean.renderizarMenu('C_SEG')}" action="/admin/segmento/crearSegmento?faces-redirect=true"/>
-                        <p:menuitem value="#{msg.m_segmento_consultar}" rendered="#{loginBean.renderizarMenu('S_SEG')}" action="/admin/segmento/consultarSegmento?faces-redirect=true"/>
+                        <p:menuitem value="#{msg.m_canal_crear}" rendered="#{loginBean.renderizarMenu('C_CHAN')}" action="#{menuBean.navegar('C_CHAN')}" ajax="false"/>
+                        <p:menuitem value="#{msg.m_canal_consultar}"  rendered="#{loginBean.renderizarMenu('S_CHAN')}" action="#{menuBean.navegar('S_CHAN')}" ajax="false"/>
                     </p:submenu>
                     <p:submenu label="#{msg.m_canal_sub}" rendered="#{loginBean.renderizarMenu('SUB_CHAN')}">
-                        <p:menuitem value="#{msg.m_canal_sub_crear}" rendered="#{loginBean.renderizarMenu('C_SUB_CHAN')}" action="/admin/subcanal/crearSubCanal?faces-redirect=true"/>
-                        <p:menuitem value="#{msg.m_canal_sub_consultar}" rendered="#{loginBean.renderizarMenu('S_SUB_CHAN')}" action="/admin/subcanal/consultarSubCanal?faces-redirect=true"/>
+                        <p:menuitem value="#{msg.m_canal_sub_crear}" rendered="#{loginBean.renderizarMenu('C_SUB_CHAN')}" action="#{menuBean.navegar('C_SUB_CHAN')}" ajax="false"/>
+                        <p:menuitem value="#{msg.m_canal_sub_consultar}" rendered="#{loginBean.renderizarMenu('S_SUB_CHAN')}" action="#{menuBean.navegar('S_SUB_CHAN')}" ajax="false"/>
+                    </p:submenu>
+                    <p:submenu label="#{msg.m_segmento}" rendered="#{loginBean.renderizarMenu('SEG')}">
+                        <p:menuitem value="#{msg.m_segmento_crear}" rendered="#{loginBean.renderizarMenu('C_SEG')}" action="#{menuBean.navegar('C_SEG')}" ajax="false"/>
+                        <p:menuitem value="#{msg.m_segmento_consultar}" rendered="#{loginBean.renderizarMenu('S_SEG')}" action="#{menuBean.navegar('S_SEG')}" ajax="false"/>
                     </p:submenu>
                     <p:submenu label="#{msg.m_segmento_sub}" rendered="#{loginBean.renderizarMenu('SUB_SEG')}">
-                        <p:menuitem value="#{msg.m_segmento_sub_crear}" rendered="#{loginBean.renderizarMenu('C_SUB_SEG')}" action="/admin/subsegmento/crearSubSegmento?faces-redirect=true"/>
-                        <p:menuitem value="#{msg.m_segmento_sub_consultar}" rendered="#{loginBean.renderizarMenu('S_SUB_SEG')}" action="/admin/subsegmento/consultarSubSegmento?faces-redirect=true"/>
+                        <p:menuitem value="#{msg.m_segmento_sub_crear}" rendered="#{loginBean.renderizarMenu('C_SUB_SEG')}" action="#{menuBean.navegar('C_SUB_SEG')}" ajax="false"/>
+                        <p:menuitem value="#{msg.m_segmento_sub_consultar}" rendered="#{loginBean.renderizarMenu('S_SUB_SEG')}" action="#{menuBean.navegar('S_SUB_SEG')}" ajax="false"/>
                     </p:submenu>
                     <p:submenu label="#{msg.m_battleground}" rendered="#{loginBean.renderizarMenu('BATT')}">
-                        <p:menuitem value="#{msg.m_battleground_crear}" rendered="#{loginBean.renderizarMenu('C_BATT')}"/>
-                        <p:menuitem value="#{msg.m_battleground_consultar}" rendered="#{loginBean.renderizarMenu('S_BATT')}"/>
+                        <p:menuitem value="#{msg.m_battleground_crear}" rendered="#{loginBean.renderizarMenu('C_BATT')}" action="#{menuBean.navegar('C_BATT')}" ajax="false"/>
+                        <p:menuitem value="#{msg.m_battleground_consultar}" rendered="#{loginBean.renderizarMenu('S_BATT')}" action="#{menuBean.navegar('S_BATT')}" ajax="false"/>
                     </p:submenu>
                 </p:submenu>                   
 
                 <p:submenu label="#{msg.m_perfil}">                        
-                    <p:menuitem value="#{msg.m_mis_datos}" action="/perfil/datos/datosUsuario?faces-redirect=true" ajax="false"/>
-                    <p:menuitem value="#{msg.m_cambiar_contrase}" action="/perfil/cambiarContrasenia/cambiarContrasenia?faces-redirect=true" ajax="false"/>
-                    <p:menuitem value="#{msg.m_idioma}" onclick="PF('dlgCambiarIdioma').show();" />
+                    <p:menuitem value="#{msg.m_mis_datos}" action="#{menuBean.navegar('MIS_DATOS')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_cambiar_contrase}" action="#{menuBean.navegar('CAM_CONTRA')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_idioma}" onclick="PF('dlgCambiarIdioma').show();"/>
                 </p:submenu>
 
-                <f:facet name="options">
+                <f:facet name="options">                    
                     <p:commandButton value="#{msg.btn_logout}" icon="ui-icon-extlink" action="#{loginBean.logout()}" ajax="false" 
                                      style="color: white;background: -webkit-linear-gradient(#0088cc, #149bdf);"/>
                 </f:facet>

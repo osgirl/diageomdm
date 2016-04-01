@@ -37,6 +37,7 @@ public class MisDatosBean extends DiageoRootBean implements Serializable {
     private String apellidos;
     private String correo;
     private String numDocumento;
+    private String perfil;
     private Integer tipoDoc;
 
     /**
@@ -52,6 +53,7 @@ public class MisDatosBean extends DiageoRootBean implements Serializable {
         setCorreo(getLoginBean().getUsuario().getCorreo());
         setNumDocumento(getLoginBean().getUsuario().getNumDoc());
         setTipoDoc(getLoginBean().getUsuario().getTipoDoc());
+        setPerfil(getLoginBean().getUsuario().getIdPerfil().getNombre());
     }
 
     public String getTipoDocumento() {
@@ -154,6 +156,20 @@ public class MisDatosBean extends DiageoRootBean implements Serializable {
      */
     public void setTipoDoc(Integer tipoDoc) {
         this.tipoDoc = tipoDoc;
+    }
+
+    /**
+     * @return the perfil
+     */
+    public String getPerfil() {
+        return perfil;
+    }
+
+    /**
+     * @param perfil the perfil to set
+     */
+    public void setPerfil(String perfil) {
+        this.perfil = perfil;
     }
 
 }

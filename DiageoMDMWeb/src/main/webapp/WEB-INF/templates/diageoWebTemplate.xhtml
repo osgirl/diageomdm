@@ -21,16 +21,16 @@
                     <h:outputLabel value="#{msg.welcome} #{loginBean.usuario.nombres} #{loginBean.usuario.apellidos}" style="color: white;position: relative;font-size: 15px;left: 40%"/>
                 </h:panelGrid>
             </div>
-            <div class="menu_template">    
+            <div class="menu_template">   
+                <h:form id="formMigaPan">        
+                    <p:breadCrumb model="#{loginBean.migaPan}"/>
+                </h:form>
                 <ui:include src="menu.xhtml"/>
             </div>        
-            <div class="barra_lateral_izquierda" style="background: #D9D9D9">
+            <div class="barra_lateral_izquierda" style="background: #D9D9D9"/>
+            <div class="barra_lateral_derecha" style="background: #D9D9D9"/>
 
-            </div>
-            <div class="barra_lateral_derecha" style="background: #D9D9D9">
-
-            </div>
-            <div class="body_content">      
+            <div class="body_content">
                 <ui:insert name="content"></ui:insert>
             </div>
             <ui:include src="cambiarIdioma.xhtml"/>                        

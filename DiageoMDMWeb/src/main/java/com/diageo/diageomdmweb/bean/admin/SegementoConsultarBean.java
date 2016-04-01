@@ -43,7 +43,7 @@ public class SegementoConsultarBean extends DiageoRootBean implements Serializab
     private List<Segmento> listaSegmento;
     private List<Channel> listaCanales;
     private List<SubChannel> listaSubCanales;
-    @Size(max = 45, message = "{size.invalido}")
+    @Size(max = 100, message = "{size.invalido}")
     private String nombre;
     private Segmento segmentoSeleccionado;
     private Channel canal;

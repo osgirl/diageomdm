@@ -30,7 +30,7 @@ public class CrearChannel extends DiageoRootBean implements Serializable {
     private static final Logger LOG = Logger.getLogger(CrearChannel.class.getName());
     @EJB
     private ChannelBeanLocal channelBeanLocal;
-    @Size(max = 45, message = "{size.invalido}")
+    @Size(max = 100, message = "{size.invalido}")
     private String nombreChannel;
     private boolean estado;
 

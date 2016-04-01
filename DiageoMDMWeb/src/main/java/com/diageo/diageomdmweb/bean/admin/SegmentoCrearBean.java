@@ -42,7 +42,7 @@ public class SegmentoCrearBean extends DiageoRootBean implements Serializable {
     private SubChannelBeanLocal subChannelBeanLocal;
     private List<Channel> listaCanales;
     private List<SubChannel> listaSubCanales;
-    @Size(max = 45, message = "{size.invalido}")
+    @Size(max = 100, message = "{size.invalido}")
     private String nombre;
     private Channel canal;
     private SubChannel subCanal;

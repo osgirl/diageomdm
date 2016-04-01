@@ -8,8 +8,11 @@ package com.diageo.diageomdmweb.bean;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.ListResourceBundle;
 import java.util.Locale;
+import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
+import java.util.Set;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIViewRoot;
@@ -47,8 +50,28 @@ public abstract class DiageoRootBean {
 
     public static String capturarValor(String key) {
         FacesContext context = FacesContext.getCurrentInstance();
-        ResourceBundle bundle = ResourceBundle.getBundle("com.diageo.diageomdmweb.label.Labels", getLocale(context));
+        ResourceBundle bundle = ResourceBundle.getBundle("com.diageo.diageomdmweb.label.Labels", getLocale(context));       
         return bundle.getString(key);
+    }
+    
+    /**
+     * Metodo encargado de cambiar el idioma de las etiquetas de la aplicacion
+     * con el valor se captura la llave, y esta se utiliza para traducir la etiqueta
+     * al idioma seleccionado
+     * @param valor el texto traducido
+     * @return llave
+     */
+    public static String capturarLlave(String valor){
+        FacesContext context = FacesContext.getCurrentInstance();
+        ResourceBundle bundle = ResourceBundle.getBundle("com.diageo.diageomdmweb.label.Labels", getLocale(context));
+        Set<String> setLlave= bundle.keySet();
+        for (String llave : setLlave) {
+            String s=bundle.getString(llave);
+            if(s.equals(valor)){
+                return llave;
+            }
+        }
+        return "";
     }
 
     public static Locale getLocale(FacesContext context) {

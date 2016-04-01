@@ -34,7 +34,7 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
     private ChannelBeanLocal channelBeanLocal;
     private List<Channel> listaChannels;
     private Channel channelSeleccionado;
-    @Size(max = 45, message = "{size.invalido}")
+    @Size(max = 100, message = "{size.invalido}")
     private String nombreChannel;
     private boolean verDetalle;
     private boolean estado;

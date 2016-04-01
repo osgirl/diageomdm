@@ -9,6 +9,8 @@ import com.diageo.admincontrollerweb.beans.PerfilBeanLocal;
 import com.diageo.admincontrollerweb.beans.TipoDocumentoBeanLocal;
 import com.diageo.admincontrollerweb.entities.Perfil;
 import com.diageo.admincontrollerweb.entities.TipoDoc;
+import com.diageo.diageonegocio.beans.DepartamentoBeanLocal;
+import com.diageo.diageonegocio.entidades.Departamento;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -23,7 +25,7 @@ import javax.inject.Named;
 @ApplicationScoped
 @Named
 public class DiageoApplicationBean extends DiageoRootBean implements Serializable {
-    
+
     /**
      * Ejb TipoDocumentoBeanLocal
      */
@@ -35,13 +37,22 @@ public class DiageoApplicationBean extends DiageoRootBean implements Serializabl
     @EJB
     private PerfilBeanLocal perfilBean;
     /**
+     * Ejb departamentoBeanLocal
+     */
+    @EJB
+    private DepartamentoBeanLocal departamentoBeanLocal;
+    /**
      * Lista con todos los tipos de documento
      */
     private List<TipoDoc> listaTipoDocumento;
     /**
      * Lista con todos los perfiles del sistema
      */
-    private List<Perfil> listaPerfiles;    
+    private List<Perfil> listaPerfiles;
+    /**
+     * Lista departamentos
+     */
+    private List<Departamento> listaDepartamento;
 
     /**
      * Creates a new instance of DiageoApplicationBean
@@ -52,8 +63,9 @@ public class DiageoApplicationBean extends DiageoRootBean implements Serializabl
     @PostConstruct
     public void init() {
         setListaTipoDocumento((List<TipoDoc>) tipoDocBean.capturarListaDocumento());
-        setListaPerfiles((List<Perfil>) perfilBean.capturarTodosPerfiles());
-    }    
+        setListaPerfiles((List<Perfil>) perfilBean.capturarTodosPerfiles());     
+        setListaDepartamento(departamentoBeanLocal.consultarTodoDepartamento());
+    }
 
     /**
      * @return the listaTipoDocumento
@@ -81,6 +93,20 @@ public class DiageoApplicationBean extends DiageoRootBean implements Serializabl
      */
     public void setListaPerfiles(List<Perfil> listaPerfiles) {
         this.listaPerfiles = listaPerfiles;
+    }
+
+    /**
+     * @return the listaDepartamento
+     */
+    public List<Departamento> getListaDepartamento() {
+        return listaDepartamento;
+    }
+
+    /**
+     * @param listaDepartamento the listaDepartamento to set
+     */
+    public void setListaDepartamento(List<Departamento> listaDepartamento) {
+        this.listaDepartamento = listaDepartamento;
     }
 
 }

@@ -40,7 +40,7 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
     private List<Channel> listaChannel;
     private SubChannel subChannelSeleccionado;
     private Channel channel;
-    @Size(max = 45, message = "{size.invalido}")
+    @Size(max = 100, message = "{size.invalido}")
     private String nombreSubChannel;
     private boolean verDetalle;
     private boolean estado;

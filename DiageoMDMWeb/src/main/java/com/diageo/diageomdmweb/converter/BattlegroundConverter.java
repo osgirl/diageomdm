@@ -5,8 +5,8 @@
  */
 package com.diageo.diageomdmweb.converter;
 
-import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
-import com.diageo.diageonegocio.entidades.SubSegmento;
+import com.diageo.diageonegocio.beans.BattleGroundBeanLocal;
+import com.diageo.diageonegocio.entidades.Battleground;
 import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,23 +20,23 @@ import javax.faces.convert.FacesConverter;
  *
  * @author yovanoty126
  */
-@FacesConverter(value = "subSegmentoConverter")
-public class SubSegmentoConverter implements Converter {
+@FacesConverter(value = "battlegroundConverter")
+public class BattlegroundConverter implements Converter {
 
     @EJB
-    private SubSegmentoBeanLocal subSegmentoBeanLocal;
+    private BattleGroundBeanLocal battleGroundBeanLocal;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
+        if (value == null || value.isEmpty()) {
+            return null;
+        }
+        Integer id = Integer.parseInt(value);
         try {
-            if (value == null || value.isEmpty()) {
-                return null;
-            }
-            Integer id = Integer.parseInt(value);
-            SubSegmento seg = subSegmentoBeanLocal.consultarId(id);
-            return seg;
+            Battleground b = battleGroundBeanLocal.consultarId(id);
+            return b;
         } catch (DiageoNegocioException ex) {
-            Logger.getLogger(SubSegmentoConverter.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(BattlegroundConverter.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -46,9 +46,9 @@ public class SubSegmentoConverter implements Converter {
         if (value == null) {
             return "";
         }
-        if (value instanceof SubSegmento) {
-            SubSegmento seg = (SubSegmento) value;
-            return seg.getIdsubSegmento() + "";
+        if (value instanceof Battleground) {
+            Battleground b = (Battleground) value;
+            return b.getIdbattleground() + "";
         }
         return "";
     }

@@ -14,6 +14,7 @@ import com.diageo.admincontrollerweb.enums.UsuarioIngresoEnum;
 import com.diageo.diageomdmweb.constantes.PatternConstantes;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import javax.annotation.PostConstruct;
@@ -27,6 +28,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.constraints.Pattern;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.primefaces.model.menu.BaseMenuModel;
+import org.primefaces.model.menu.DefaultMenuItem;
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.DefaultSubMenu;
+import org.primefaces.model.menu.MenuElement;
+import org.primefaces.model.menu.MenuModel;
 
 /**
  *
@@ -48,6 +55,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     private String password;
     private Usuario usuario;
     private boolean recordarme;
+    private MenuModel migaPan;
     /**
      * Idioma seleccionado
      */
@@ -61,7 +69,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     public void init() {
         establecerCookiesCamposLogin();
         setLocaleApp(new Locale(ESPANOL));
-    } 
+    }
 
     public String login() {
         administrarCookies();
@@ -74,11 +82,14 @@ public class LoginBean extends DiageoRootBean implements Serializable {
                 session.setAttribute(USUARIO, getUsuario());
                 setPassword(null);
                 if (getUsuario().getPrimerIngreso().equals(UsuarioIngresoEnum.PRIMER_INGRESO.getEstado())) {
+                    armarMigaPan(capturarValor("m_perfil"), capturarValor("m_cambiar_contrase"));
                     return "/perfil/cambiarContrasenia/cambiarContrasenia?faces-redirect=true";
                 }
-                if (getUsuario().getIdPerfil().getIdperfil().equals(PerfilEnum.ADMINISTRADOR.getId())) {
+                if (getUsuario().getIdPerfil().getIdperfil().equals(PerfilEnum.ADMINISTRATOR.getId())) {
+                    armarMigaPan(capturarValor("m_administrador"), capturarValor("m_usuario"), capturarValor("m_usuario_consultar"));
                     return "/admin/usuario/consultarUsuario?faces-redirect=true";
                 } else {
+                    armarMigaPan(capturarValor("m_outlet"), capturarValor("m_outlet_consultar"));
                     return "/outlet/consultarOutlet?faces-redirect=true";
                 }
             }
@@ -101,7 +112,18 @@ public class LoginBean extends DiageoRootBean implements Serializable {
 
     public void changeLanguage() {
         setLocaleApp(new Locale(getIdioma()));
+        List<MenuElement> elements = getMigaPan().getElements();
+        List<String> listaLlaves = new ArrayList<>();
+        for (MenuElement element : elements) {
+            DefaultMenuItem dmi = (DefaultMenuItem) element;
+            listaLlaves.add(capturarLlave(dmi.getValue().toString()));
+        }
         FacesContext.getCurrentInstance().getViewRoot().setLocale(getLocaleApp());
+        setMigaPan(new BaseMenuModel());
+        for (int i = 0; i < elements.size(); i++) {
+            DefaultMenuItem dmi = new DefaultMenuItem(capturarValor(listaLlaves.get(i)));
+            getMigaPan().addElement(dmi);
+        }
     }
 
     public String logout() {
@@ -113,8 +135,8 @@ public class LoginBean extends DiageoRootBean implements Serializable {
         establecerCookiesCamposLogin();
         return "/login?faces-redirect=true";
     }
-    
-     private void establecerCookiesCamposLogin() {
+
+    private void establecerCookiesCamposLogin() {
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         Cookie[] array = request.getCookies();
         if (array != null) {
@@ -134,6 +156,18 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     @PreDestroy
     public void destroy() {
         eliminarObjetos();
+    }
+
+    public void armarMigaPan(String... parametros) {
+        setMigaPan(new DefaultMenuModel());
+        if (parametros != null) {
+            DefaultMenuItem item = new DefaultMenuItem(parametros[0]);
+            getMigaPan().addElement(item);
+            for (String parametro : parametros) {
+                DefaultMenuItem item2 = new DefaultMenuItem(parametro);
+                getMigaPan().addElement(item2);
+            }
+        }
     }
 
     private void eliminarObjetos() {
@@ -266,6 +300,20 @@ public class LoginBean extends DiageoRootBean implements Serializable {
      */
     public void setLocaleApp(Locale localeApp) {
         this.localeApp = localeApp;
+    }
+
+    /**
+     * @return the migaPan
+     */
+    public MenuModel getMigaPan() {
+        return migaPan;
+    }
+
+    /**
+     * @param migaPan the migaPan to set
+     */
+    public void setMigaPan(MenuModel migaPan) {
+        this.migaPan = migaPan;
     }
 
 }

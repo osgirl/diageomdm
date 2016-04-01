@@ -149,9 +149,9 @@ public class AdminFilter implements Filter {
                     }
                 }
                 if (!bandera) {
-                    if (usu.getIdPerfil().getIdperfil().equals(PerfilEnum.ADMINISTRADOR.getId())) {
+                    if (usu.getIdPerfil().getIdperfil().equals(PerfilEnum.ADMINISTRATOR.getId())) {
                         res.sendRedirect(req.getContextPath() + "/faces/admin/usuario/consultarUsuario.xhtml");
-                    } else if (usu.getIdPerfil().getIdperfil().equals(PerfilEnum.COORDINADOR.getId())) {
+                    } else if (usu.getIdPerfil().getIdperfil().equals(PerfilEnum.DATA_STEWARD.getId())) {
                         res.sendRedirect(req.getContextPath() + "/faces/outlet/consultarOutlet.xhtml");
                     }
                     return;

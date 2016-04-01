@@ -27,7 +27,7 @@ and open the template in the editor.
 }
 
 .body_content{
-    top: 19%;
+    top: 24%;
     position: absolute;
     padding: 15px;
     padding-top: 30px;
@@ -70,4 +70,8 @@ and open the template in the editor.
 
 .ui-column-filter{
     width: 97% !important;
+}
+
+.ui-fieldset, .ui-fieldset .ui-fieldset-legend {    
+    width: 13%;
 }
