@@ -11,7 +11,7 @@ package com.diageo.admincontrollerweb.enums;
  */
 public enum TipoDocumentoEnum {
 
-    CC(1), NIT(2);
+    CC(1), NIT(2), CE(3), PASAPORTE(4);
 
     private final int id;
 

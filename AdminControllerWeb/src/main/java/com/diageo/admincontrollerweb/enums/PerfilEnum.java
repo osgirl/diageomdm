@@ -10,7 +10,8 @@ package com.diageo.admincontrollerweb.enums;
  * @author yovanoty126
  */
 public enum PerfilEnum {
-    ADMINISTRADOR(1, "admin"), COORDINADOR(2, "coordinador");
+    ADMINISTRATOR(1, "admin"), DATA_STEWARD(2, "data steward"),
+    TMC_KAM(3,"tmc/kam"),COMMERCIAL_LEADER(4,"commercial leader"),CP_A(5,"CP&A");
 
     private final Integer id;
     private final String nombre;
