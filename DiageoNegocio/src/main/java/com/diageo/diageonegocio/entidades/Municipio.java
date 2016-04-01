@@ -29,9 +29,12 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = "Municipio.findAll", query = "SELECT m FROM Municipio m"),
     @NamedQuery(name = "Municipio.findByIdmunicipio", query = "SELECT m FROM Municipio m WHERE m.idmunicipio = :idmunicipio"),
-    @NamedQuery(name = "Municipio.findByNombremunicipio", query = "SELECT m FROM Municipio m WHERE m.nombremunicipio = :nombremunicipio")})
+    @NamedQuery(name = "Municipio.findByNombremunicipio", query = "SELECT m FROM Municipio m WHERE m.nombremunicipio = :nombremunicipio"),
+    @NamedQuery(name = Municipio.FIND_BY_DEPTO, query = "SELECT m FROM Municipio m WHERE m.iddepartamento.iddepartamento=?1")
+})
 public class Municipio implements Serializable {
 
+    public static final String FIND_BY_DEPTO = "Municipio.findByDepto";
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -110,5 +113,5 @@ public class Municipio implements Serializable {
     public String toString() {
         return "com.diageo.diageonegocio.entidades.Municipio[ idmunicipio=" + idmunicipio + " ]";
     }
-    
+
 }

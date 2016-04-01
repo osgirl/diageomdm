@@ -10,6 +10,8 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -39,8 +41,8 @@ public class Ubicacion implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @Basic(optional = false)
-    @NotNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Basic(optional = false)    
     @Column(name = "idUbicacion")
     private Integer idUbicacion;
     @Size(max = 45)
@@ -61,7 +63,7 @@ public class Ubicacion implements Serializable {
     @Column(name = "idestablecimiento")
     private Integer idestablecimiento;
     @OneToMany(mappedBy = "idubicacion")
-    private List<Establecimiento> establecimientoList;
+    private List<Outlet> establecimientoList;
     @JoinColumn(name = "idMunicipio", referencedColumnName = "idmunicipio")
     @ManyToOne
     private Municipio idMunicipio;
@@ -129,11 +131,11 @@ public class Ubicacion implements Serializable {
         this.idestablecimiento = idestablecimiento;
     }
 
-    public List<Establecimiento> getEstablecimientoList() {
+    public List<Outlet> getEstablecimientoList() {
         return establecimientoList;
     }
 
-    public void setEstablecimientoList(List<Establecimiento> establecimientoList) {
+    public void setEstablecimientoList(List<Outlet> establecimientoList) {
         this.establecimientoList = establecimientoList;
     }
 

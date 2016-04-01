@@ -41,7 +41,7 @@ public class Segmento implements Serializable {
     private Integer idsegmento;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 45)
+    @Size(min = 1, max = 100)
     @Column(name = "nombre")
     private String nombre;
     @Basic(optional = false)

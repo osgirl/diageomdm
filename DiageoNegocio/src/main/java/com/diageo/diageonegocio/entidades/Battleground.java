@@ -41,7 +41,7 @@ public class Battleground implements Serializable {
     private Integer idbattleground;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 45)
+    @Size(min = 1, max = 100)
     @Column(name = "nombre")
     private String nombre;
     @Basic(optional = false)
@@ -50,7 +50,7 @@ public class Battleground implements Serializable {
     @Column(name = "estado")
     private String estado;
     @OneToMany(mappedBy = "idbattledground")
-    private List<Establecimiento> establecimientoList;
+    private List<Outlet> establecimientoList;
 
     public Battleground() {
     }
@@ -89,11 +89,11 @@ public class Battleground implements Serializable {
         this.estado = estado;
     }
 
-    public List<Establecimiento> getEstablecimientoList() {
+    public List<Outlet> getEstablecimientoList() {
         return establecimientoList;
     }
 
-    public void setEstablecimientoList(List<Establecimiento> establecimientoList) {
+    public void setEstablecimientoList(List<Outlet> establecimientoList) {
         this.establecimientoList = establecimientoList;
     }
 

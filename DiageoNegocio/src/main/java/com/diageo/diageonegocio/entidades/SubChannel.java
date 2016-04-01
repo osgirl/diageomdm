@@ -42,7 +42,7 @@ public class SubChannel implements Serializable {
     private Integer idsubchannel;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 45)
+    @Size(min = 1, max = 100)
     @Column(name = "nombre")
     private String nombre;
     @Basic(optional = false)

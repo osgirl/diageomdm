@@ -8,6 +8,7 @@ package com.diageo.diageonegocio.entidades;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -27,52 +28,48 @@ import javax.validation.constraints.Size;
  * @author yovanoty126
  */
 @Entity
-@Table(name = "establecimiento")
+@Table(name = "outlet")
 @NamedQueries({
-    @NamedQuery(name = "Establecimiento.findAll", query = "SELECT e FROM Establecimiento e"),
-    @NamedQuery(name = "Establecimiento.findByIdestablecimiento", query = "SELECT e FROM Establecimiento e WHERE e.idestablecimiento = :idestablecimiento"),
-    @NamedQuery(name = "Establecimiento.findByIdmunicipio", query = "SELECT e FROM Establecimiento e WHERE e.idmunicipio = :idmunicipio"),
-    @NamedQuery(name = "Establecimiento.findByCorreoelectronico", query = "SELECT e FROM Establecimiento e WHERE e.correoelectronico = :correoelectronico"),
-    @NamedQuery(name = "Establecimiento.findByNit", query = "SELECT e FROM Establecimiento e WHERE e.nit = :nit"),
-    @NamedQuery(name = "Establecimiento.findByRazonsocial", query = "SELECT e FROM Establecimiento e WHERE e.razonsocial = :razonsocial"),
-    @NamedQuery(name = "Establecimiento.findByLineanegocio", query = "SELECT e FROM Establecimiento e WHERE e.lineanegocio = :lineanegocio"),
-    @NamedQuery(name = "Establecimiento.findByOutletname", query = "SELECT e FROM Establecimiento e WHERE e.outletname = :outletname"),
-    @NamedQuery(name = "Establecimiento.findByMercadoasociado", query = "SELECT e FROM Establecimiento e WHERE e.mercadoasociado = :mercadoasociado"),
-    @NamedQuery(name = "Establecimiento.findByCodigoEAN", query = "SELECT e FROM Establecimiento e WHERE e.codigoEAN = :codigoEAN"),
-    @NamedQuery(name = "Establecimiento.findByNumPDV", query = "SELECT e FROM Establecimiento e WHERE e.numPDV = :numPDV"),
-    @NamedQuery(name = "Establecimiento.findByTipoPersona", query = "SELECT e FROM Establecimiento e WHERE e.tipoPersona = :tipoPersona")})
-public class Establecimiento implements Serializable {
+    @NamedQuery(name = Outlet.FIND_ALL, query = "SELECT e FROM Outlet e")
+    })
+public class Outlet implements Serializable {
 
+    @JoinColumn(name = "id_potencial", referencedColumnName = "id_potencial")
+    @ManyToOne
+    private Potencial idPotencial;
+    @JoinColumn(name = "id_distribuidor", referencedColumnName = "id_distribuidor")
+    @ManyToOne
+    private Distribuidor idDistribuidor;
+
+    public static final String FIND_ALL="Outlet.findAll";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idestablecimiento")
-    private Integer idestablecimiento;
-    @Column(name = "idmunicipio")
-    private Integer idmunicipio;
-    @Size(max = 45)
+    private Integer idestablecimiento;   
+    @Size(max = 100)
     @Column(name = "correoelectronico")
     private String correoelectronico;
-    @Size(max = 45)
+    @Size(max = 100)
     @Column(name = "nit")
     private String nit;
-    @Size(max = 45)
+    @Size(max = 100)
     @Column(name = "razonsocial")
     private String razonsocial;
-    @Size(max = 45)
+    @Size(max = 100)
     @Column(name = "lineanegocio")
     private String lineanegocio;
-    @Size(max = 45)
+    @Size(max = 100)
     @Column(name = "outletname")
     private String outletname;
-    @Size(max = 45)
+    @Size(max = 100)
     @Column(name = "mercadoasociado")
     private String mercadoasociado;
-    @Size(max = 45)
+    @Size(max = 100)
     @Column(name = "codigoEAN")
     private String codigoEAN;
-    @Size(max = 45)
+    @Size(max = 100)
     @Column(name = "numPDV")
     private String numPDV;
     @Size(max = 1)
@@ -99,10 +96,10 @@ public class Establecimiento implements Serializable {
     @ManyToOne
     private Battleground idbattledground;
 
-    public Establecimiento() {
+    public Outlet() {
     }
 
-    public Establecimiento(Integer idestablecimiento) {
+    public Outlet(Integer idestablecimiento) {
         this.idestablecimiento = idestablecimiento;
     }
 
@@ -112,14 +109,6 @@ public class Establecimiento implements Serializable {
 
     public void setIdestablecimiento(Integer idestablecimiento) {
         this.idestablecimiento = idestablecimiento;
-    }
-
-    public Integer getIdmunicipio() {
-        return idmunicipio;
-    }
-
-    public void setIdmunicipio(Integer idmunicipio) {
-        this.idmunicipio = idmunicipio;
     }
 
     public String getCorreoelectronico() {
@@ -240,6 +229,22 @@ public class Establecimiento implements Serializable {
 
     public void setIdbattledground(Battleground idbattledground) {
         this.idbattledground = idbattledground;
+    }        
+
+    public Potencial getIdPotencial() {
+        return idPotencial;
+    }
+
+    public void setIdPotencial(Potencial idPotencial) {
+        this.idPotencial = idPotencial;
+    }
+
+    public Distribuidor getIdDistribuidor() {
+        return idDistribuidor;
+    }
+
+    public void setIdDistribuidor(Distribuidor idDistribuidor) {
+        this.idDistribuidor = idDistribuidor;
     }
 
     @Override
@@ -252,10 +257,10 @@ public class Establecimiento implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Establecimiento)) {
+        if (!(object instanceof Outlet)) {
             return false;
         }
-        Establecimiento other = (Establecimiento) object;
+        Outlet other = (Outlet) object;
         if ((this.idestablecimiento == null && other.idestablecimiento != null) || (this.idestablecimiento != null && !this.idestablecimiento.equals(other.idestablecimiento))) {
             return false;
         }
@@ -264,7 +269,7 @@ public class Establecimiento implements Serializable {
 
     @Override
     public String toString() {
-        return "com.diageo.diageonegocio.entidades.Establecimiento[ idestablecimiento=" + idestablecimiento + " ]";
+        return "com.diageo.diageonegocio.entidades.Outlet[ idestablecimiento=" + idestablecimiento + " ]";
     }
     
 }

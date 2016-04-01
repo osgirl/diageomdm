@@ -43,7 +43,7 @@ public class Telefonos implements Serializable {
     @Column(name = "numeroTel")
     private String numeroTel;
     @ManyToMany(mappedBy = "telefonosList")
-    private List<Establecimiento> establecimientoList;
+    private List<Outlet> establecimientoList;
     @JoinColumn(name = "tipoTelefono", referencedColumnName = "idtipo_telefono")
     @ManyToOne
     private TipoTelefono tipoTelefono;
@@ -71,11 +71,11 @@ public class Telefonos implements Serializable {
         this.numeroTel = numeroTel;
     }
 
-    public List<Establecimiento> getEstablecimientoList() {
+    public List<Outlet> getEstablecimientoList() {
         return establecimientoList;
     }
 
-    public void setEstablecimientoList(List<Establecimiento> establecimientoList) {
+    public void setEstablecimientoList(List<Outlet> establecimientoList) {
         this.establecimientoList = establecimientoList;
     }
 

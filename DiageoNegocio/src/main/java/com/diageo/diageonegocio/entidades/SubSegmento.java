@@ -43,7 +43,7 @@ public class SubSegmento implements Serializable {
     private Integer idsubSegmento;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 45)
+    @Size(min = 1, max = 100)
     @Column(name = "nomnbre")
     private String nomnbre;
     @Basic(optional = false)
@@ -52,7 +52,7 @@ public class SubSegmento implements Serializable {
     @Column(name = "estado")
     private String estado;
     @OneToMany(mappedBy = "idsubsegmento")
-    private List<Establecimiento> establecimientoList;
+    private List<Outlet> establecimientoList;
     @JoinColumn(name = "idsegmento", referencedColumnName = "idsegmento")
     @ManyToOne
     private Segmento idsegmento;
@@ -94,11 +94,11 @@ public class SubSegmento implements Serializable {
         this.estado = estado;
     }
 
-    public List<Establecimiento> getEstablecimientoList() {
+    public List<Outlet> getEstablecimientoList() {
         return establecimientoList;
     }
 
-    public void setEstablecimientoList(List<Establecimiento> establecimientoList) {
+    public void setEstablecimientoList(List<Outlet> establecimientoList) {
         this.establecimientoList = establecimientoList;
     }
 

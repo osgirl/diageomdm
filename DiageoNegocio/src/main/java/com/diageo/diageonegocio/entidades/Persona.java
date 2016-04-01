@@ -8,6 +8,7 @@ package com.diageo.diageonegocio.entidades;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -51,9 +52,9 @@ public class Persona implements Serializable {
     @Column(name = "apellidos")
     private String apellidos;
     @OneToMany(mappedBy = "subduenio")
-    private List<Establecimiento> establecimientoList;
+    private List<Outlet> establecimientoList;
     @OneToMany(mappedBy = "propietario")
-    private List<Establecimiento> establecimientoList1;
+    private List<Outlet> establecimientoList1;
     @JoinColumn(name = "tipodoc", referencedColumnName = "idtipo_documento")
     @ManyToOne
     private TipoDocumento tipodoc;
@@ -97,19 +98,19 @@ public class Persona implements Serializable {
         this.apellidos = apellidos;
     }
 
-    public List<Establecimiento> getEstablecimientoList() {
+    public List<Outlet> getEstablecimientoList() {
         return establecimientoList;
     }
 
-    public void setEstablecimientoList(List<Establecimiento> establecimientoList) {
+    public void setEstablecimientoList(List<Outlet> establecimientoList) {
         this.establecimientoList = establecimientoList;
     }
 
-    public List<Establecimiento> getEstablecimientoList1() {
+    public List<Outlet> getEstablecimientoList1() {
         return establecimientoList1;
     }
 
-    public void setEstablecimientoList1(List<Establecimiento> establecimientoList1) {
+    public void setEstablecimientoList1(List<Outlet> establecimientoList1) {
         this.establecimientoList1 = establecimientoList1;
     }
 
