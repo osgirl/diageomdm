@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <h:body>
 
@@ -18,11 +19,19 @@
                         .ui-datatable-table{
                             font-size: 90%;
                         }
+                        .tamanio_letra_labels{
+                            font-size: 15px;
+                        }
+                        @media screen and (max-width: 1500px) {
+                            .tamanio_letra_labels{
+                                font-size: 11px;
+                            }
+                        }
                     </style>
                     <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
                         <p:dataTable id="dtOutlet" value="#{outletConsultarBean.listaOutlets}" var="outdt" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     style="font-size:  90%">
+                                     style="font-size:  90%" rendered="#{outletConsultarBean.verDetalle}">
                             <p:column headerText="#{msg.out_razon_social}" filterBy="#{outdt.razonsocial}" filterMatchMode="startsWith">
                                 <h:outputLabel value="#{outdt.razonsocial}"/>
                             </p:column>
@@ -45,9 +54,160 @@
                                 <h:outputLabel value="#{outdt.idDistribuidor.nombre}"/>
                             </p:column>
                             <p:column>
-                                <p:commandLink value="#{msg.btn_detalle}" style="color: blue"/>
+                                <p:commandLink value="#{msg.btn_detalle}" style="color: blue" process="@all" update="@form"
+                                               actionListener="#{outletConsultarBean.detalle(outdt)}"/>
                             </p:column>
                         </p:dataTable>
+
+                        <h:panelGroup id="pgCOnsultarOut">
+                            <h:panelGroup id="pgCOnsultarOutHijo" rendered="#{!outletConsultarBean.verDetalle}">
+                                <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
+                                    <h:panelGrid columns="1" style="width: 95%">
+                                        <h:panelGrid columns="4" style="width: 100%">
+                                            <h:outputLabel value="#{msg.out_kiernan}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:inputText style="width: 90%"/>                                
+                                            <h:outputLabel value="#{msg.out_cod_cliente_distri}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:inputText style="width: 90%"/>         
+                                            <h:outputLabel value="#{msg.out_razon_social}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.razonSocial}"/>                                
+                                            <h:outputLabel value="#{msg.out_tipo_outlet}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:selectOneMenu style="width: 90%" value="#{outletConsultarBean.tipoOutlet}">
+                                                <f:selectItem itemValue="N" itemLabel="#{msg.out_tipo_natural}"/>
+                                                <f:selectItem itemValue="J" itemLabel="#{msg.out_tipo_juri}"/>
+                                            </p:selectOneMenu>
+
+                                            <h:outputLabel value="#{msg.out_nombre}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" />
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.nombreOutlet}"/>  
+                                            <h:outputLabel value="#{msg.out_nit}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" />
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.nit}"/>  
+
+                                            <h:outputLabel value="#{msg.out_nombre_propietario}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" />
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.nombresPropietarios}"/>  
+                                            <h:outputLabel value="#{msg.out_apellidos_propietario}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" />
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.apellidosPropietario}"/> 
+
+                                            <h:outputLabel value="#{msg.usu_num_doc}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" />
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.numeroDocumento}"/> 
+                                            <h:outputLabel value="#{msg.usu_tipo_doc}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" />
+                                            <p:selectOneMenu style="width: 90%" value="#{outletConsultarBean.tipoDocumento}" converter="tipoDocConverter">
+                                                <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tipoDoc" itemLabel="#{tipoDoc.nombre}"/>
+                                            </p:selectOneMenu>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                                <p:fieldset legend="#{msg.out_clasificacion}" style="width: 95%">
+                                    <h:panelGrid columns="1" style="width: 95%">
+                                        <h:panelGrid columns="4" style="width: 100%">
+                                            <h:outputLabel value="#{msg.can_canal}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:selectOneMenu id="somCanal" style="width: 90%" value="#{outletConsultarBean.canalSeleccionado}" converter="channelConverter">
+                                                <f:selectItems value="#{outletConsultarBean.listaCanales}" var="can" itemLabel="#{can.nombre}"/>
+                                                <p:ajax process="@this somSubCanal somSegmento" update="somSubCanal somSegmento somSubSegmento" listener="#{outletConsultarBean.cargarListas()}"/>
+                                            </p:selectOneMenu>
+                                            <h:outputLabel value="#{msg.sub_subcanal}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:selectOneMenu id="somSubCanal" style="width: 90%" value="#{outletConsultarBean.subCanalSeleccionado}" converter="subChannelConverter">
+                                                <f:selectItems value="#{outletConsultarBean.canalSeleccionado.subChannelList}" var="subcan" itemLabel="#{subcan.nombre}"/>
+                                                <p:ajax process="@this somSegmento" update="somSegmento somSubSegmento"/>
+                                            </p:selectOneMenu>
+
+                                            <h:outputLabel value="#{msg.seg_segmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:selectOneMenu id="somSegmento" style="width: 90%" value="#{outletConsultarBean.segmentoSeleccionado}" converter="segmentoConverter">
+                                                <f:selectItems value="#{outletConsultarBean.subCanalSeleccionado.segmentoList}" var="seg" itemLabel="#{seg.nombre}"/>
+                                                <p:ajax process="@this" update="somSubSegmento"/>
+                                            </p:selectOneMenu>
+                                            <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:selectOneMenu id="somSubSegmento" style="width: 90%" value="#{outletConsultarBean.subSegmentoSeleccionado}" converter="subSegmentoConverter">
+                                                <f:selectItems value="#{outletConsultarBean.segmentoSeleccionado.subSegmentoList}" var="subseg" itemLabel="#{subseg.nomnbre}"/>
+                                            </p:selectOneMenu>
+
+                                            <h:outputLabel value="#{msg.out_potencial}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:selectOneMenu id="somPotencial" style="width: 90%" value="#{outletConsultarBean.potencialSeleccionado}" converter="potencialConverter">
+                                                <f:selectItems value="#{outletConsultarBean.listaPotencial}" var="pot" itemLabel="#{pot.nombre}"/>
+                                            </p:selectOneMenu>
+
+                                            <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:selectOneMenu id="somDistri" style="width: 90%" value="#{outletConsultarBean.distribuidorSeleccionado}" converter="distribuidorConverter">
+                                                <f:selectItems value="#{outletConsultarBean.listaDistribuidor}" var="dis" itemLabel="#{dis.nombre}"/>
+                                            </p:selectOneMenu>
+
+                                            <h:outputLabel value="#{msg.out_distri_depto}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:selectOneMenu id="somDeptoDistri" style="width: 90%" value="#{outletConsultarBean.departamentoDistribuidor}" converter="departamentoConverter">
+                                                <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptodis" itemLabel="#{deptodis.nombredepto}"/>
+                                                <p:ajax process="@this" update="somMpioDistri"/>
+                                            </p:selectOneMenu>
+
+                                            <h:outputLabel value="#{msg.out_distri_mpio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:selectOneMenu id="somMpioDistri" style="width: 90%" value="#{outletConsultarBean.municipioDistribuidor}" converter="municipioConverter">
+                                                <f:selectItems value="#{outletConsultarBean.departamentoDistribuidor.municipioList}" var="mpiodis" itemLabel="#{mpiodis.nombremunicipio}"/>
+                                            </p:selectOneMenu>
+
+                                            <h:outputLabel value="#{msg.m_battleground}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:selectOneMenu id="somBattle" style="width: 90%" value="#{outletConsultarBean.battlegroundSeleccionado}" converter="battlegroundConverter">
+                                                <f:selectItems value="#{outletConsultarBean.listaBattleground}" var="battle" itemLabel="#{battle.nombre}"/>
+                                            </p:selectOneMenu>
+                                        </h:panelGrid>
+                                    </h:panelGrid>
+                                </p:fieldset>
+                                <p:fieldset legend="#{msg.out_ubicacion}" style="width: 95%">
+                                    <h:panelGrid columns="1" style="width: 95%">
+                                        <h:panelGrid columns="4" style="width: 100%">
+                                            <h:outputLabel value="#{msg.out_out_depto}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:selectOneMenu id="somDeptoOut" style="width: 90%" value="#{outletConsultarBean.departamentoOutlet}" converter="departamentoConverter">
+                                                <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptoout" itemLabel="#{deptoout.nombredepto}"/>
+                                                <p:ajax process="@this" update="somMpioOut"/>
+                                            </p:selectOneMenu>
+
+                                            <h:outputLabel value="#{msg.out_out_mpio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:selectOneMenu id="somMpioOut" style="width: 90%" value="#{outletConsultarBean.municipioOutlet}" converter="municipioConverter">
+                                                <f:selectItems value="#{outletConsultarBean.departamentoOutlet.municipioList}" var="mpioout" itemLabel="#{mpioout.nombremunicipio}"/>
+                                            </p:selectOneMenu>
+
+                                            <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.direccion}"/>  
+
+                                            <h:outputLabel value="#{msg.out_barrio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.barrio}"/>  
+                                        </h:panelGrid>                                
+                                    </h:panelGrid>
+                                </p:fieldset>
+                                <p:fieldset legend="#{msg.out_datos_contacto}" style="width: 95%">
+                                    <h:panelGrid columns="1" style="width: 95%">
+                                        <h:panelGrid columns="4" style="width: 100%">
+                                            <h:outputLabel value="#{msg.mail}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.correoElectronico}"/>
+
+                                            <h:outputLabel value="#{msg.out_celular}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.celular}"/>
+
+                                            <h:outputLabel value="#{msg.out_tel_uno}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.telefonoUno}"/>
+
+                                            <h:outputLabel value="#{msg.out_tel_dos}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.telefonoDos}"/>
+                                        </h:panelGrid>                                
+                                    </h:panelGrid>
+                                </p:fieldset>
+                                <p:fieldset legend="#{msg.out_otros_datos}" style="width: 95%">
+                                    <h:panelGrid columns="1" style="width: 95%">
+                                        <h:panelGrid columns="4" style="width: 100%">
+                                            <h:outputLabel value="#{msg.out_linea_negocio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:selectOneMenu style="width: 90%" value="#{outletConsultarBean.lineaNegocio}">                                    
+                                                <f:selectItem itemValue="CODT" itemLabel="CODT"/>
+                                                <f:selectItem itemValue="COAC" itemLabel="COAC"/>
+                                            </p:selectOneMenu>
+
+                                            <h:outputLabel value="#{msg.out_codigo_ean}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.codigoEan}"/>
+
+                                            <h:outputLabel value="#{msg.out_punto_venta}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.puntoVenta}"/>
+                                        </h:panelGrid>                                
+                                    </h:panelGrid>
+                                </p:fieldset>
+                                <br/><br/>
+                                <p:commandButton value="#{msg.btn_regresar}" process="@all" update="@form" actionListener="#{outletConsultarBean.regresar()}"
+                                                 styleClass="button" style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 20%"/>
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </div>
                 </h:form>
             </ui:define>

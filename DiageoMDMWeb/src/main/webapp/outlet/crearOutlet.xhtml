@@ -26,6 +26,10 @@
                     <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
                         <h:panelGrid columns="1" style="width: 95%">
                             <h:panelGrid columns="4" style="width: 100%">
+                                <h:outputLabel value="#{msg.out_kiernan}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:inputText style="width: 90%"/>                                
+                                <h:outputLabel value="#{msg.out_cod_cliente_distri}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:inputText style="width: 90%"/>                                
                                 <h:outputLabel value="#{msg.out_razon_social}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                 <p:inputText style="width: 90%" value="#{outletCrearBean.razonSocial}"/>                                
                                 <h:outputLabel value="#{msg.out_tipo_outlet}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
