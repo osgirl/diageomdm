@@ -22,7 +22,7 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class UsuarioBean extends TransaccionesWeb<Usuario> implements UsuarioBeanLocal {
+public class UsuarioBean extends WebTransaction<Usuario> implements UsuarioBeanLocal {
 
     private static final Logger LOG = Logger.getLogger(UsuarioBean.class.getName());
 

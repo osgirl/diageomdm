@@ -14,7 +14,7 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class TipoDocumentoBean extends TransaccionesWeb<TipoDoc> implements TipoDocumentoBeanLocal {
+public class TipoDocumentoBean extends WebTransaction<TipoDoc> implements TipoDocumentoBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")

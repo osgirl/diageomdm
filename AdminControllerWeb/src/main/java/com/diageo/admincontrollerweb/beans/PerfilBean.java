@@ -14,7 +14,7 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class PerfilBean extends TransaccionesWeb<Perfil> implements PerfilBeanLocal {
+public class PerfilBean extends WebTransaction<Perfil> implements PerfilBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")

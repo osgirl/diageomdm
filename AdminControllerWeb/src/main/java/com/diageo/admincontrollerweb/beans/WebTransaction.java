@@ -6,7 +6,6 @@
 package com.diageo.admincontrollerweb.beans;
 
 import java.util.List;
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -18,7 +17,7 @@ import javax.persistence.criteria.CriteriaQuery;
  * @author yovanoty126
  * @param <T>
  */
-public class TransaccionesWeb<T> {
+public class WebTransaction<T> {
 
     @PersistenceContext(unitName = "DiageoWebPU")
     private EntityManager em;
