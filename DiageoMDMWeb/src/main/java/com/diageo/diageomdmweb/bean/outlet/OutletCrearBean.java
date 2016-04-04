@@ -10,7 +10,7 @@ import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import com.diageo.diageonegocio.beans.BattleGroundBeanLocal;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
-import com.diageo.diageonegocio.beans.DistribuidorBeanLocal;
+import com.diageo.diageonegocio.beans.DistributorBeanLocal;
 import com.diageo.diageonegocio.beans.OutletBeanLocal;
 import com.diageo.diageonegocio.beans.PotencialBeanLocal;
 import com.diageo.diageonegocio.entidades.Battleground;
@@ -56,7 +56,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     @EJB
     private PotencialBeanLocal potencialBeanLocal;
     @EJB
-    private DistribuidorBeanLocal distribuidorBeanLocal;
+    private DistributorBeanLocal distribuidorBeanLocal;
     @EJB
     private BattleGroundBeanLocal battleGroundBeanLocal;
     @Inject
@@ -108,7 +108,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         cargarListas();
         setListaPotencial(potencialBeanLocal.constultarTodosPotenciales());
         setPotencialSeleccionado(getListaPotencial().get(0));
-        setListaDistribuidor(distribuidorBeanLocal.constularTodosDistribuidores());
+        setListaDistribuidor(distribuidorBeanLocal.searchAllDistributor());
         setDistribuidorSeleccionado(getListaDistribuidor().get(0));
         setDepartamentoDistribuidor(getDiageoApplicationBean().getListaDepartamento().get(0));
         setDepartamentoOutlet(getDiageoApplicationBean().getListaDepartamento().get(0));
@@ -470,11 +470,11 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         this.potencialBeanLocal = potencialBeanLocal;
     }
 
-    public DistribuidorBeanLocal getDistribuidorBeanLocal() {
+    public DistributorBeanLocal getDistribuidorBeanLocal() {
         return distribuidorBeanLocal;
     }
 
-    public void setDistribuidorBeanLocal(DistribuidorBeanLocal distribuidorBeanLocal) {
+    public void setDistribuidorBeanLocal(DistributorBeanLocal distribuidorBeanLocal) {
         this.distribuidorBeanLocal = distribuidorBeanLocal;
     }
 

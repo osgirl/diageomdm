@@ -64,8 +64,9 @@ and open the template in the editor.
     background: -webkit-linear-gradient(#0088cc, #149bdf);
 }
 
-.ui-widget, .ui-widget .ui-widget {
-    font-size: 90%;
+.ui-widget, .ui-widget-content{
+    font-size: 87%;
+    font-family: arial;
 }
 
 .ui-column-filter{

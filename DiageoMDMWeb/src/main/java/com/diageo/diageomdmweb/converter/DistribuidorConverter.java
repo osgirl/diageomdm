@@ -5,7 +5,7 @@
  */
 package com.diageo.diageomdmweb.converter;
 
-import com.diageo.diageonegocio.beans.DistribuidorBeanLocal;
+import com.diageo.diageonegocio.beans.DistributorBeanLocal;
 import com.diageo.diageonegocio.entidades.Distribuidor;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
@@ -21,7 +21,7 @@ import javax.faces.convert.FacesConverter;
 public class DistribuidorConverter implements Converter {
 
     @EJB
-    private DistribuidorBeanLocal distribuidorBeanLocal;
+    private DistributorBeanLocal distribuidorBeanLocal;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -29,7 +29,7 @@ public class DistribuidorConverter implements Converter {
             return null;
         }
         Integer id = Integer.parseInt(value);
-        Distribuidor distri = distribuidorBeanLocal.consultarId(id);
+        Distribuidor distri = distribuidorBeanLocal.searchId(id);
         return distri;
     }
 

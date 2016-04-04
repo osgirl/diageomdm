@@ -43,6 +43,10 @@ and open the template in the editor.
                         <p:menuitem value="#{msg.m_battleground_crear}" rendered="#{loginBean.renderizarMenu('C_BATT')}" action="#{menuBean.navegar('C_BATT')}" ajax="false"/>
                         <p:menuitem value="#{msg.m_battleground_consultar}" rendered="#{loginBean.renderizarMenu('S_BATT')}" action="#{menuBean.navegar('S_BATT')}" ajax="false"/>
                     </p:submenu>
+                    <p:submenu label="#{msg.m_distribuidor}" rendered="#{loginBean.renderizarMenu('DISTRI')}">
+                        <p:menuitem value="#{msg.m_distri_crear}" rendered="#{loginBean.renderizarMenu('C_DISTRI')}" action="#{menuBean.navegar('C_DISTRI')}" ajax="false"/>
+                        <p:menuitem value="#{msg.m_distri_consultar}" rendered="#{loginBean.renderizarMenu('S_DISTRI')}" action="#{menuBean.navegar('S_DISTRI')}" ajax="false"/>
+                    </p:submenu>
                 </p:submenu>                   
 
                 <p:submenu label="#{msg.m_perfil}">                        
