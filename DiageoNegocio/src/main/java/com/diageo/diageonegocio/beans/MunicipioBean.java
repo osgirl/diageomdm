@@ -15,18 +15,18 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class MunicipioBean extends TransaccionesNegocio<Municipio> implements MunicipioBeanLocal {
+public class MunicipioBean extends BusinessTransaction<Municipio> implements MunicipioBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
     public Municipio consultarId(Integer id) {
-        return (Municipio) super.consultarPorId(Municipio.class, id);
+        return (Municipio) super.searchById(Municipio.class, id);
     }
 
     @Override
     public List<Municipio> consultarPorDepartamentoId(Integer id) {
-        List<Municipio> lista = super.consultarPorNamedQuery(Municipio.class, Municipio.FIND_BY_DEPTO, id);
+        List<Municipio> lista = super.searchByNamedQuery(Municipio.class, Municipio.FIND_BY_DEPTO, id);
         if (lista == null) {
             return new ArrayList<>();
         }

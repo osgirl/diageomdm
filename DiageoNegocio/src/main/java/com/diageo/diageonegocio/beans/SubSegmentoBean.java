@@ -16,14 +16,14 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class SubSegmentoBean extends TransaccionesNegocio<SubSegmento>implements SubSegmentoBeanLocal {
+public class SubSegmentoBean extends BusinessTransaction<SubSegmento>implements SubSegmentoBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
     public SubSegmento crearSubSegmento(SubSegmento subSegmento) throws DiageoNegocioException{
         try {
-            subSegmento = super.crear(subSegmento);
+            subSegmento = super.create(subSegmento);
             return subSegmento;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());
@@ -33,7 +33,7 @@ public class SubSegmentoBean extends TransaccionesNegocio<SubSegmento>implements
     @Override
     public SubSegmento modificarSubSegmento(SubSegmento subSegmento) throws DiageoNegocioException{
         try {
-            subSegmento = (SubSegmento) super.modificar(subSegmento);
+            subSegmento = (SubSegmento) super.update(subSegmento);
             return subSegmento;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());
@@ -42,7 +42,7 @@ public class SubSegmentoBean extends TransaccionesNegocio<SubSegmento>implements
     
     @Override
     public List<SubSegmento> consultarTodosSubSegmentos(){
-        List<SubSegmento> lista = super.consultarTodo(SubSegmento.class);
+        List<SubSegmento> lista = super.searchAll(SubSegmento.class);
         if (lista == null) {
             return new ArrayList<>();
         }
@@ -52,7 +52,7 @@ public class SubSegmentoBean extends TransaccionesNegocio<SubSegmento>implements
     @Override
     public SubSegmento consultarId(Integer id) throws DiageoNegocioException{
         try {
-            SubSegmento subSegmento = (SubSegmento) super.consultarPorId(SubSegmento.class, id);
+            SubSegmento subSegmento = (SubSegmento) super.searchById(SubSegmento.class, id);
             return subSegmento;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());

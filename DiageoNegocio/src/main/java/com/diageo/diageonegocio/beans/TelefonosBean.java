@@ -14,14 +14,14 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class TelefonosBean extends TransaccionesNegocio<Telefonos> implements TelefonosBeanLocal {
+public class TelefonosBean extends BusinessTransaction<Telefonos> implements TelefonosBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
     public List<Telefonos> crearTelefonos(List<Telefonos> tel) {
         for (Telefonos telefonos : tel) {
-            telefonos=super.crear(telefonos);            
+            telefonos=super.create(telefonos);            
         }
         return tel;
     }

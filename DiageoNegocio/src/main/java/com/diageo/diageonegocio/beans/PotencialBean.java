@@ -15,13 +15,13 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class PotencialBean extends TransaccionesNegocio<Potencial> implements PotencialBeanLocal {
+public class PotencialBean extends BusinessTransaction<Potencial> implements PotencialBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
     public List<Potencial> constultarTodosPotenciales() {
-        List<Potencial> lista = super.consultarTodo(Potencial.class);
+        List<Potencial> lista = super.searchAll(Potencial.class);
         if (lista == null) {
             return new ArrayList<>();
         }
@@ -30,6 +30,6 @@ public class PotencialBean extends TransaccionesNegocio<Potencial> implements Po
 
     @Override
     public Potencial consultarId(Integer id) {
-        return (Potencial) super.consultarPorId(Potencial.class, id);
+        return (Potencial) super.searchById(Potencial.class, id);
     }
 }

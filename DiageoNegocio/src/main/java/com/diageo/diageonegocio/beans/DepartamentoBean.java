@@ -15,13 +15,13 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class DepartamentoBean extends TransaccionesNegocio<Departamento> implements DepartamentoBeanLocal {
+public class DepartamentoBean extends BusinessTransaction<Departamento> implements DepartamentoBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
     public List<Departamento> consultarTodoDepartamento() {
-        List<Departamento> lista = super.consultarTodo(Departamento.class);
+        List<Departamento> lista = super.searchAll(Departamento.class);
         if (lista == null) {
             return new ArrayList<>();
         }
@@ -30,6 +30,6 @@ public class DepartamentoBean extends TransaccionesNegocio<Departamento> impleme
 
     @Override
     public Departamento consultarId(Integer id) {
-        return (Departamento) super.consultarPorId(Departamento.class, id);
+        return (Departamento) super.searchById(Departamento.class, id);
     }
 }

@@ -18,7 +18,7 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class OutletBean extends TransaccionesNegocio<Outlet> implements OutletBeanLocal {
+public class OutletBean extends BusinessTransaction<Outlet> implements OutletBeanLocal {
     
     @EJB
     private PersonaBeanLocal personaBeanLocal;
@@ -35,7 +35,7 @@ public class OutletBean extends TransaccionesNegocio<Outlet> implements OutletBe
             out.setPropietario(personaBeanLocal.crearPersona(out.getPropietario()));
             out.setIdubicacion(ubicacionBeanLocal.crearUbicacion(out.getIdubicacion()));
             out.setTelefonosList(telefonosBeanLocal.crearTelefonos(out.getTelefonosList()));
-            out = super.crear(out);
+            out = super.create(out);
             return out;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());
@@ -45,7 +45,7 @@ public class OutletBean extends TransaccionesNegocio<Outlet> implements OutletBe
     @Override
     public Outlet modificarOutlet(Outlet outlet) throws DiageoNegocioException {
         try {
-            outlet = (Outlet) super.modificar(outlet);
+            outlet = (Outlet) super.update(outlet);
             return outlet;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());
@@ -54,7 +54,7 @@ public class OutletBean extends TransaccionesNegocio<Outlet> implements OutletBe
 
     @Override
     public List<Outlet> consultarTodosOutlets() {
-        List<Outlet> lista = super.consultarTodo(Outlet.class);
+        List<Outlet> lista = super.searchAll(Outlet.class);
         if (lista == null) {
             return new ArrayList<>();
         }
@@ -64,7 +64,7 @@ public class OutletBean extends TransaccionesNegocio<Outlet> implements OutletBe
     @Override
     public Outlet consultarId(Integer id) throws DiageoNegocioException {
         try {
-            Outlet outlet = (Outlet) super.consultarPorId(Outlet.class, id);
+            Outlet outlet = (Outlet) super.searchById(Outlet.class, id);
             return outlet;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());

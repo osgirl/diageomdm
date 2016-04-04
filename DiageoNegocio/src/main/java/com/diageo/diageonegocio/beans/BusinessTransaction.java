@@ -18,7 +18,7 @@ import javax.persistence.criteria.CriteriaQuery;
  * @author yovanoty126
  * @param <T>
  */
-public class TransaccionesNegocio<T> {
+public class BusinessTransaction<T> {
 
     @PersistenceContext(unitName = "DiageoNegocioUP")
     private EntityManager em;
@@ -27,39 +27,39 @@ public class TransaccionesNegocio<T> {
         return this.em;
     }
 
-    public Object consultarPorId(Class t, Object id) {
+    public Object searchById(Class t, Object id) {
         Object o = getEntityManager().find(t, id);
         return o;
     }
     
-    public Object modificar(Object obj){
+    public Object update(Object obj){
         obj=getEntityManager().merge(obj);
         getEntityManager().flush();
         return obj;
     }
 
-    public T crear(T entidad) {
-        getEntityManager().persist(entidad);
+    public T create(T entity) {
+        getEntityManager().persist(entity);
         getEntityManager().flush();
-        return entidad;
+        return entity;
     }
 
-    public void eliminar(Object entidad) {
-        getEntityManager().remove(entidad);
+    public void delete(Object entity) {
+        getEntityManager().remove(entity);
     }
 
-    public List<T> consultarPorNamedQuery(Class tipo, String namedQuery, Object... parametros) {
-        Query query = getEntityManager().createNamedQuery(namedQuery, tipo);
-        for (int i = 0; i < parametros.length; i++) {
-            query.setParameter(i + 1, parametros[i]);
+    public List<T> searchByNamedQuery(Class type, String namedQuery, Object... parameters) {
+        Query query = getEntityManager().createNamedQuery(namedQuery, type);
+        for (int i = 0; i < parameters.length; i++) {
+            query.setParameter(i + 1, parameters[i]);
         }
         return query.getResultList();
     }
 
-    public List<T> consultarTodo(Class tipo) {
+    public List<T> searchAll(Class type) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<T> criteria = cb.createQuery(tipo);
-        criteria.from(tipo);
+        CriteriaQuery<T> criteria = cb.createQuery(type);
+        criteria.from(type);
         Query query = getEntityManager().createQuery(criteria);
         return query.getResultList();
     }

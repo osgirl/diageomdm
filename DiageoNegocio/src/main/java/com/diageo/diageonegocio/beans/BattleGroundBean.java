@@ -16,14 +16,14 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class BattleGroundBean extends TransaccionesNegocio<Battleground> implements BattleGroundBeanLocal {
+public class BattleGroundBean extends BusinessTransaction<Battleground> implements BattleGroundBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
     public Battleground creaerBattlegroun(Battleground b) throws DiageoNegocioException {
         try {
-            b = super.crear(b);
+            b = super.create(b);
             return b;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());
@@ -33,7 +33,7 @@ public class BattleGroundBean extends TransaccionesNegocio<Battleground> impleme
     @Override
     public Battleground ModificarBattlegroun(Battleground b) throws DiageoNegocioException {
         try {
-            b = (Battleground) super.modificar(b);
+            b = (Battleground) super.update(b);
             return b;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());
@@ -42,7 +42,7 @@ public class BattleGroundBean extends TransaccionesNegocio<Battleground> impleme
 
     @Override
     public List<Battleground> consultarTodosBattlegroun() {
-        List<Battleground> lista = super.consultarTodo(Battleground.class);
+        List<Battleground> lista = super.searchAll(Battleground.class);
         if (lista == null) {
             return new ArrayList<>();
         }
@@ -52,7 +52,7 @@ public class BattleGroundBean extends TransaccionesNegocio<Battleground> impleme
     @Override
     public Battleground consultarId(Integer id) throws DiageoNegocioException {
         try {
-            Battleground b = (Battleground) super.consultarPorId(Battleground.class, id);
+            Battleground b = (Battleground) super.searchById(Battleground.class, id);
             return b;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());

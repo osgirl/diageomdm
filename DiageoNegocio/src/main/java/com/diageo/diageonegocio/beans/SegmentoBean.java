@@ -16,14 +16,14 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class SegmentoBean extends TransaccionesNegocio<Segmento> implements SegmentoBeanLocal {
+public class SegmentoBean extends BusinessTransaction<Segmento> implements SegmentoBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
     public Segmento crearSegmento(Segmento segmento) throws DiageoNegocioException {
         try {
-            segmento = super.crear(segmento);
+            segmento = super.create(segmento);
             return segmento;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());
@@ -33,7 +33,7 @@ public class SegmentoBean extends TransaccionesNegocio<Segmento> implements Segm
     @Override
     public Segmento modificarSegmento(Segmento segmento) throws DiageoNegocioException {
         try {
-            segmento = (Segmento) super.modificar(segmento);
+            segmento = (Segmento) super.update(segmento);
             return segmento;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());
@@ -42,7 +42,7 @@ public class SegmentoBean extends TransaccionesNegocio<Segmento> implements Segm
 
     @Override
     public List<Segmento> consultarTodosSegmentos() {
-        List<Segmento> lista = super.consultarTodo(Segmento.class);
+        List<Segmento> lista = super.searchAll(Segmento.class);
         if (lista == null) {
             return new ArrayList<>();
         }
@@ -51,13 +51,13 @@ public class SegmentoBean extends TransaccionesNegocio<Segmento> implements Segm
 
     @Override
     public List<Segmento> consultarPorSubChannel(Integer id) {
-        return super.consultarPorNamedQuery(Segmento.class, Segmento.FIND_BY_SUBCHANNEL, id);
+        return super.searchByNamedQuery(Segmento.class, Segmento.FIND_BY_SUBCHANNEL, id);
     }
 
     @Override
     public Segmento consultarId(Integer id) throws DiageoNegocioException {
         try {
-            Segmento seg = (Segmento) super.consultarPorId(Segmento.class, id);
+            Segmento seg = (Segmento) super.searchById(Segmento.class, id);
             return seg;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());

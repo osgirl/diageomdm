@@ -14,13 +14,13 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class UbicacionBean extends TransaccionesNegocio<Ubicacion> implements UbicacionBeanLocal {
+public class UbicacionBean extends BusinessTransaction<Ubicacion> implements UbicacionBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     public Ubicacion crearUbicacion(Ubicacion u) throws DiageoNegocioException {
         try {
-            u = super.crear(u);
+            u = super.create(u);
             return u;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());

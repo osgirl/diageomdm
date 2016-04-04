@@ -16,14 +16,14 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class SubChannelBean extends TransaccionesNegocio<SubChannel> implements SubChannelBeanLocal {
+public class SubChannelBean extends BusinessTransaction<SubChannel> implements SubChannelBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
     public SubChannel crearSubChannel(SubChannel subChannel) throws DiageoNegocioException {
         try {
-            subChannel = super.crear(subChannel);
+            subChannel = super.create(subChannel);
             return subChannel;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());
@@ -33,7 +33,7 @@ public class SubChannelBean extends TransaccionesNegocio<SubChannel> implements 
     @Override
     public SubChannel modificarSubChannel(SubChannel subChannel) throws DiageoNegocioException {
         try {
-            subChannel = (SubChannel) super.modificar(subChannel);
+            subChannel = (SubChannel) super.update(subChannel);
             return subChannel;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());
@@ -42,7 +42,7 @@ public class SubChannelBean extends TransaccionesNegocio<SubChannel> implements 
 
     @Override
     public List<SubChannel> consultarTodosSubChannel() {
-        List<SubChannel> lista = super.consultarTodo(SubChannel.class);
+        List<SubChannel> lista = super.searchAll(SubChannel.class);
         if (lista == null) {
             return new ArrayList<>();
         }
@@ -51,13 +51,13 @@ public class SubChannelBean extends TransaccionesNegocio<SubChannel> implements 
 
     @Override
     public List<SubChannel> consultarSubChannelPorChannel(Integer id) {
-        return super.consultarPorNamedQuery(SubChannel.class, SubChannel.FIND_BY_CHANNEL, id);
+        return super.searchByNamedQuery(SubChannel.class, SubChannel.FIND_BY_CHANNEL, id);
     }
 
     @Override
     public SubChannel consultarId(Integer id) throws DiageoNegocioException {
         try {
-            SubChannel cha = (SubChannel) super.consultarPorId(SubChannel.class, id);
+            SubChannel cha = (SubChannel) super.searchById(SubChannel.class, id);
             return cha;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());

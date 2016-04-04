@@ -16,14 +16,14 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class ChannelBean extends TransaccionesNegocio<Channel> implements ChannelBeanLocal {
+public class ChannelBean extends BusinessTransaction<Channel> implements ChannelBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
     public Channel crearChannel(Channel channel) throws DiageoNegocioException {
         try {
-            channel = super.crear(channel);
+            channel = super.create(channel);
             return channel;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());
@@ -33,7 +33,7 @@ public class ChannelBean extends TransaccionesNegocio<Channel> implements Channe
     @Override
     public Channel modificarChannel(Channel channel) throws DiageoNegocioException {
         try {
-            channel = (Channel) super.modificar(channel);
+            channel = (Channel) super.update(channel);
             return channel;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());
@@ -42,7 +42,7 @@ public class ChannelBean extends TransaccionesNegocio<Channel> implements Channe
 
     @Override
     public List<Channel> consultarTodosChannel() {
-        List<Channel> lista = super.consultarTodo(Channel.class);
+        List<Channel> lista = super.searchAll(Channel.class);
         if (lista == null) {
             return new ArrayList<>();
         }
@@ -52,7 +52,7 @@ public class ChannelBean extends TransaccionesNegocio<Channel> implements Channe
     @Override
     public Channel consultarId(Integer id) throws DiageoNegocioException {
         try {
-            Channel cha = (Channel) super.consultarPorId(Channel.class, id);
+            Channel cha = (Channel) super.searchById(Channel.class, id);
             return cha;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());

@@ -14,14 +14,14 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class PersonaBean extends TransaccionesNegocio<Persona> implements PersonaBeanLocal {
+public class PersonaBean extends BusinessTransaction<Persona> implements PersonaBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
     public Persona crearPersona(Persona per) throws DiageoNegocioException{
          try {
-            per = super.crear(per);
+            per = super.create(per);
             return per;
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());

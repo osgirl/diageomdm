@@ -14,10 +14,10 @@ import javax.ejb.Local;
  * @author yovanoty126
  */
 @Local
-public interface DistribuidorBeanLocal {
+public interface DistributorBeanLocal {
 
-    public Distribuidor consultarId(Integer id);
+    public Distribuidor searchId(Integer id);
 
-    public List<Distribuidor> constularTodosDistribuidores();
+    public List<Distribuidor> searchAllDistributor();
     
 }
