@@ -35,7 +35,10 @@ public enum ModulosEnum {
     C_BATT("crear battleground"),
     S_BATT("buscar battleground"),
     MIS_DATOS("mis datos"),
-    CAM_CONTRA("cambiar contraseña");
+    CAM_CONTRA("cambiar contraseña"),
+    DISTRI("Distribuidor"),
+    C_DISTRI("Crear Distribuidor"),
+    S_DISTRI("Consultar Distribuidor");
 
     private final String descripcion;
 
