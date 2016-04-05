@@ -15,11 +15,12 @@
                         <h:panelGroup id="pgDistri" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
                             <h:panelGrid columns="2" style="width: 100%">
                                 <h:outputLabel value="#{msg.m_distri_nombre}" style="width: 30%"/>
-                                <p:inputText id="itNombre" required="true" label="#{msg.m_distri_nombre}" style="width: 70%"/>
+                                <p:inputText id="itNombre" required="true" value="#{distributorCreate.name}"
+                                             label="#{msg.m_distri_nombre}" style="width: 70%"/>
                             </h:panelGrid>
                             <br/>
                             <br/>
-                            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form"
+                            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{distributorCreate.create()}"
                                              styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
                             <br/>
                             <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />

@@ -12,10 +12,36 @@
             <ui:define name="content">
                 <h:form id="formDistri">
                     <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
-                         <p:dataTable id="dtDistri"  var="dis" paginatorAlwaysVisible="false" rows="15"
+                        <p:dataTable id="dtDistri" value="#{distributorSearch.listDistributor}" var="dis" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"                                     
+                                     rendered="#{distributorSearch.seeDetail}"
                                      style="width: 60%;left: 50%;-webkit-transform: translate(-50%);position: absolute;">
-                         </p:dataTable>                             
+                            <p:column headerText="#{msg.m_distri_nombre}" filterBy="#{dis.nombre}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{dis.nombre}"/>
+                            </p:column>
+                            <p:column>
+                                <p:commandLink value="#{msg.btn_detalle}" actionListener="#{distributorSearch.detail(dis)}"
+                                               style="color: blue" process="@this" update="@form"/>
+                            </p:column>
+                        </p:dataTable>                             
+
+                        <h:panelGroup id="pgDistri" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                            <h:panelGroup id="pgDistriDetail" rendered="#{!distributorSearch.seeDetail}" style="width: 100%">
+                                <h:panelGrid columns="2" style="width: 100%">
+                                    <h:outputLabel value="#{msg.m_distri_nombre}" style="width: 30%"/>
+                                    <p:inputText id="itNombre" required="true" label="#{msg.m_distri_nombre}" style="width: 70%" value="#{distributorSearch.name}"/>
+                                </h:panelGrid>
+                                <br/>
+                                <br/>
+                                <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{distributorSearch.update()}"
+                                                 styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
+                                <p:commandButton value="#{msg.btn_regresar}" process="@all" update="@form" immediate="true"
+                                                 actionListener="#{distributorSearch.back()}"
+                                                 styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
+                                <br/>
+                                <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />
+                            </h:panelGroup>
+                        </h:panelGroup>
                     </div>
                 </h:form>
             </ui:define>
