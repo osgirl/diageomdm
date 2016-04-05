@@ -20,6 +20,7 @@ public class DistributorBean extends BusinessTransaction<Distribuidor> implement
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
+    @Override
     public Distribuidor createDistributor(Distribuidor distri) throws DiageoNegocioException {
         try {
             distri = super.create(distri);
@@ -29,6 +30,7 @@ public class DistributorBean extends BusinessTransaction<Distribuidor> implement
         }
     }
 
+    @Override
     public Distribuidor updateDistributor(Distribuidor distri) throws DiageoNegocioException {
         try {
             distri = (Distribuidor) super.update(distri);
