@@ -9,18 +9,18 @@ package com.diageo.admincontrollerweb.enums;
  *
  * @author yovanoty126
  */
-public enum TipoDocumentoEnum {
+public enum DocumentTypeEnum {
 
-    CC(1), NIT(2), CE(3), PASAPORTE(4);
+    CC(1), NIT(2), CE(3), PASSPORT(4);
 
     private final int id;
 
-    private TipoDocumentoEnum(int id) {
+    private DocumentTypeEnum(int id) {
         this.id = id;
     }
 
-    public static TipoDocumentoEnum valueOf(int id) {
-        for (TipoDocumentoEnum object : TipoDocumentoEnum.values()) {
+    public static DocumentTypeEnum valueOf(int id) {
+        for (DocumentTypeEnum object : DocumentTypeEnum.values()) {
             if (object.getId() == id) {
                 return object;
             }

@@ -9,18 +9,18 @@ package com.diageo.admincontrollerweb.enums;
  *
  * @author yovanoty126
  */
-public enum EstadoUsuarioEnum {
+public enum UserEntryEnum {
 
-    ACTIVO("1"), INACTIVO("0");
+    FIRST_ENTRY("1"), NOT_FIRST_ENTRY("0");
 
-    private final String estado;
+    private final String state;
 
-    private EstadoUsuarioEnum(String estado) {
-        this.estado = estado;
+    private UserEntryEnum(String state) {
+        this.state = state;
     }
 
-    public String getEstado() {
-        return this.estado;
+    public String getState() {
+        return this.state;
     }
 
 }

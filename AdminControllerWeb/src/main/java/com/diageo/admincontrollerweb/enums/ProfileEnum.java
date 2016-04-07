@@ -9,20 +9,20 @@ package com.diageo.admincontrollerweb.enums;
  *
  * @author yovanoty126
  */
-public enum PerfilEnum {
+public enum ProfileEnum {
     ADMINISTRATOR(1, "admin"), DATA_STEWARD(2, "data steward"),
     TMC_KAM(3,"tmc/kam"),COMMERCIAL_LEADER(4,"commercial leader"),CP_A(5,"CP&A");
 
     private final Integer id;
-    private final String nombre;
+    private final String name;
 
-    private PerfilEnum(Integer id, String nombre) {
+    private ProfileEnum(Integer id, String name) {
         this.id = id;
-        this.nombre = nombre;
+        this.name = name;
     }
 
-    public static PerfilEnum valueOf(Integer id) {
-        for (PerfilEnum p : PerfilEnum.values()) {
+    public static ProfileEnum valueOf(Integer id) {
+        for (ProfileEnum p : ProfileEnum.values()) {
             if (p.getId().equals(id)) {
                 return p;
             }
@@ -34,8 +34,8 @@ public enum PerfilEnum {
         return id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public String getName() {
+        return name;
     }
 
 }
