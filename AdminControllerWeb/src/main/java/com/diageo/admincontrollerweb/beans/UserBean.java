@@ -5,16 +5,13 @@
  */
 package com.diageo.admincontrollerweb.beans;
 
-import com.diageo.admincontrollerweb.entities.Modulo;
-import com.diageo.admincontrollerweb.entities.Perfil;
 import com.diageo.admincontrollerweb.entities.Usuario;
-import com.diageo.admincontrollerweb.enums.EstadoUsuarioEnum;
+import com.diageo.admincontrollerweb.enums.UserStateEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 /**
@@ -22,12 +19,12 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class UsuarioBean extends WebTransaction<Usuario> implements UsuarioBeanLocal {
+public class UserBean extends WebTransaction<Usuario> implements UsuarioBeanLocal {
 
-    private static final Logger LOG = Logger.getLogger(UsuarioBean.class.getName());
+    private static final Logger LOG = Logger.getLogger(UserBean.class.getName());
 
     @Override
-    public Usuario guardarUsuario(Usuario user) throws ControllerWebException {
+    public Usuario updateUser(Usuario user) throws ControllerWebException {
         try {
             user = (Usuario) modificar(user);
         } catch (Exception e) {
@@ -74,18 +71,18 @@ public class UsuarioBean extends WebTransaction<Usuario> implements UsuarioBeanL
                 return null;
             }
             Usuario usu = userLogin.get(0);
-            if (usu.getEstado().equals(EstadoUsuarioEnum.ACTIVO.getEstado())) {
+            if (usu.getEstado().equals(UserStateEnum.ACTIVE.getState())) {
                 if (!pass.equals(usu.getContraseina())) {
                     try {
                         usu.setIngresoFallido(Calendar.getInstance().getTime());
                         usu.setIntentosFallidos((usu.getIntentosFallidos() + 1));
                         if (usu.getIntentosFallidos() >= usu.getIdPerfil().getIntentos()) {
-                            usu.setEstado(EstadoUsuarioEnum.INACTIVO.getEstado());
+                            usu.setEstado(UserStateEnum.INACTIVE.getState());
                             usu.setIntentosFallidos(0);
-                            guardarUsuario(usu);
+                            updateUser(usu);
                             return usu;
                         }
-                        guardarUsuario(usu);
+                        updateUser(usu);
                         return null;
                     } catch (ControllerWebException ex) {
                         LOG.log(Level.SEVERE, ex.getMessage());
@@ -94,7 +91,7 @@ public class UsuarioBean extends WebTransaction<Usuario> implements UsuarioBeanL
                 usu.setUltimoIngresoExitoso(usu.getIngresoExitoso());
                 usu.setIngresoExitoso(Calendar.getInstance().getTime());
                 usu.setIntentosFallidos(0);
-                guardarUsuario(usu);
+                updateUser(usu);
                 return usu;
             }
             return usu;

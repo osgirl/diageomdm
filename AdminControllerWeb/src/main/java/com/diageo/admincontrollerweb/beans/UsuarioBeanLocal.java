@@ -17,7 +17,7 @@ import javax.ejb.Local;
 @Local
 public interface UsuarioBeanLocal {
 
-    public Usuario guardarUsuario(Usuario user) throws ControllerWebException;
+    public Usuario updateUser(Usuario user) throws ControllerWebException;
 
     public List<Usuario> consultarTodo() throws ControllerWebException;
 
