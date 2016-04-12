@@ -9,7 +9,7 @@ import com.diageo.admincontrollerweb.beans.UsuarioBeanLocal;
 import com.diageo.admincontrollerweb.entities.Perfil;
 import com.diageo.admincontrollerweb.entities.TipoDoc;
 import com.diageo.admincontrollerweb.entities.Usuario;
-import com.diageo.admincontrollerweb.enums.EstadoUsuarioEnum;
+import com.diageo.admincontrollerweb.enums.UserStateEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import java.io.Serializable;
@@ -67,16 +67,16 @@ public class ConsultarUsuarioBean extends DiageoRootBean implements Serializable
         setUsuarioSeleccionado(usu);
         setPerfil(usu.getIdPerfil());
         setTipoDocumento(new TipoDoc(usu.getTipoDoc()));
-        setUsuarioActivo(usu.getEstado().equals(EstadoUsuarioEnum.ACTIVO.getEstado()));
+        setUsuarioActivo(usu.getEstado().equals(UserStateEnum.ACTIVE.getState()));
     }
 
     public void guardarCambiosUsuario() {
         try {
             getUsuarioSeleccionado().setIdPerfil(getPerfil());
             getUsuarioSeleccionado().setTipoDoc(getTipoDocumento().getIdtipoDoc());
-            getUsuarioSeleccionado().setEstado(isUsuarioActivo() ? EstadoUsuarioEnum.ACTIVO.getEstado() : EstadoUsuarioEnum.INACTIVO.getEstado());
+            getUsuarioSeleccionado().setEstado(isUsuarioActivo() ? UserStateEnum.ACTIVE.getState() : UserStateEnum.INACTIVE.getState());
             getUsuarioSeleccionado().setFechaModificaicon(super.getFechaActual());
-            usuarioLocal.guardarUsuario(getUsuarioSeleccionado());
+            usuarioLocal.updateUser(getUsuarioSeleccionado());
             showInfoMessage(capturarValor("usu_mis_datos"));
         } catch (ControllerWebException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());

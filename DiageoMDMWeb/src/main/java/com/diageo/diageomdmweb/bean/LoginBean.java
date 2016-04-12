@@ -8,9 +8,9 @@ package com.diageo.diageomdmweb.bean;
 import com.diageo.admincontrollerweb.beans.UsuarioBeanLocal;
 import com.diageo.admincontrollerweb.entities.Modulo;
 import com.diageo.admincontrollerweb.entities.Usuario;
-import com.diageo.admincontrollerweb.enums.EstadoUsuarioEnum;
-import com.diageo.admincontrollerweb.enums.PerfilEnum;
-import com.diageo.admincontrollerweb.enums.UsuarioIngresoEnum;
+import com.diageo.admincontrollerweb.enums.UserStateEnum;
+import com.diageo.admincontrollerweb.enums.ProfileEnum;
+import com.diageo.admincontrollerweb.enums.UserEntryEnum;
 import com.diageo.diageomdmweb.constantes.PatternConstantes;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
@@ -76,16 +76,16 @@ public class LoginBean extends DiageoRootBean implements Serializable {
         String pass = DigestUtils.md5Hex(getPassword());
         setUsuario(getUsuarioLocal().validarUsuarioContrasena(getUser(), pass));
         if (getUsuario() != null) {
-            if (getUsuario().getEstado().equals(EstadoUsuarioEnum.ACTIVO.getEstado())) {
+            if (getUsuario().getEstado().equals(UserStateEnum.ACTIVE.getState())) {
                 HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
                 setListModulos(getUsuario().getModuloList());
                 session.setAttribute(USUARIO, getUsuario());
                 setPassword(null);
-                if (getUsuario().getPrimerIngreso().equals(UsuarioIngresoEnum.PRIMER_INGRESO.getEstado())) {
+                if (getUsuario().getPrimerIngreso().equals(UserEntryEnum.FIRST_ENTRY.getState())) {
                     armarMigaPan(capturarValor("m_perfil"), capturarValor("m_cambiar_contrase"));
                     return "/perfil/cambiarContrasenia/cambiarContrasenia?faces-redirect=true";
                 }
-                if (getUsuario().getIdPerfil().getIdperfil().equals(PerfilEnum.ADMINISTRATOR.getId())) {
+                if (getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.ADMINISTRATOR.getId())) {
                     armarMigaPan(capturarValor("m_administrador"), capturarValor("m_usuario"), capturarValor("m_usuario_consultar"));
                     return "/admin/usuario/consultarUsuario?faces-redirect=true";
                 } else {
@@ -124,6 +124,10 @@ public class LoginBean extends DiageoRootBean implements Serializable {
             DefaultMenuItem dmi = new DefaultMenuItem(capturarValor(listaLlaves.get(i)));
             getMigaPan().addElement(dmi);
         }
+    }
+
+    public void changeLanguage(String idioma) {
+        FacesContext.getCurrentInstance().getViewRoot().setLocale(new Locale(idioma));
     }
 
     public String logout() {

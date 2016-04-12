@@ -7,7 +7,7 @@ package com.diageo.diageomdmweb.bean.perfil;
 
 import com.diageo.admincontrollerweb.beans.UsuarioBeanLocal;
 import com.diageo.admincontrollerweb.entities.Usuario;
-import com.diageo.admincontrollerweb.enums.TipoDocumentoEnum;
+import com.diageo.admincontrollerweb.enums.DocumentTypeEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import com.diageo.diageomdmweb.bean.LoginBean;
@@ -57,7 +57,7 @@ public class MisDatosBean extends DiageoRootBean implements Serializable {
     }
 
     public String getTipoDocumento() {
-        return TipoDocumentoEnum.valueOf(getTipoDoc()).name();
+        return DocumentTypeEnum.valueOf(getTipoDoc()).name();
     }
 
     public void modificarDatos() {
@@ -65,7 +65,7 @@ public class MisDatosBean extends DiageoRootBean implements Serializable {
             Usuario usuario = getLoginBean().getUsuario();
             usuario.setNombres(getNombres());
             usuario.setApellidos(getApellidos());
-            usuario=usuarioBeanLocal.guardarUsuario(usuario);
+            usuario=usuarioBeanLocal.updateUser(usuario);
             getLoginBean().setUsuario(usuario);
             super.showInfoMessage(capturarValor("usu_mis_datos"));
         } catch (ControllerWebException ex) {

@@ -13,8 +13,8 @@ import com.diageo.admincontrollerweb.entities.Modulo;
 import com.diageo.admincontrollerweb.entities.Perfil;
 import com.diageo.admincontrollerweb.entities.TipoDoc;
 import com.diageo.admincontrollerweb.entities.Usuario;
-import com.diageo.admincontrollerweb.enums.EstadoUsuarioEnum;
-import com.diageo.admincontrollerweb.enums.UsuarioIngresoEnum;
+import com.diageo.admincontrollerweb.enums.UserStateEnum;
+import com.diageo.admincontrollerweb.enums.UserEntryEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import com.diageo.diageomdmweb.constantes.PatternConstantes;
@@ -112,11 +112,11 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
                 usu.setContraseina(DigestUtils.md5Hex(getTipoDocumento().getNombre().toLowerCase() + getNumDoc()));
                 usu.setNumDoc(getNumDoc());
                 usu.setFechaCreacion(getFechaActual());
-                usu.setEstado(isActivo() ? EstadoUsuarioEnum.ACTIVO.getEstado() : EstadoUsuarioEnum.INACTIVO.getEstado());
+                usu.setEstado(isActivo() ? UserStateEnum.ACTIVE.getState() : UserStateEnum.INACTIVE.getState());
                 usu.setTipoDoc(getTipoDocumento().getIdtipoDoc());
                 usu.setIdPerfil(getPerfil());
                 usu.setIntentosFallidos(0);
-                usu.setPrimerIngreso(UsuarioIngresoEnum.PRIMER_INGRESO.getEstado());
+                usu.setPrimerIngreso(UserEntryEnum.FIRST_ENTRY.getState());
                 usu.setModuloList(perfil.getModuloList());
                 usuarioBean.crearUsuario(usu);
                 for (Modulo mod : getPerfil().getModuloList()) {

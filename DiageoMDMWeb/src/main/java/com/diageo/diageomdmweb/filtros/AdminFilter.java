@@ -7,8 +7,8 @@ package com.diageo.diageomdmweb.filtros;
 
 import com.diageo.admincontrollerweb.entities.Modulo;
 import com.diageo.admincontrollerweb.entities.Usuario;
-import com.diageo.admincontrollerweb.enums.PerfilEnum;
-import com.diageo.admincontrollerweb.enums.UsuarioIngresoEnum;
+import com.diageo.admincontrollerweb.enums.ProfileEnum;
+import com.diageo.admincontrollerweb.enums.UserEntryEnum;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -127,7 +127,7 @@ public class AdminFilter implements Filter {
             if (usu == null) {
                 res.sendRedirect(req.getContextPath() + "/faces/login.xhtml");
                 return;
-            } else if (usu.getPrimerIngreso().equals(UsuarioIngresoEnum.PRIMER_INGRESO.getEstado())) {
+            } else if (usu.getPrimerIngreso().equals(UserEntryEnum.FIRST_ENTRY.getState())) {
                 String contexto = req.getRequestURI();
                 contexto = contexto.substring(contexto.lastIndexOf("/"), contexto.length());
                 if (!contexto.contains("cambiarContrasenia.xhtml")) {
@@ -149,9 +149,9 @@ public class AdminFilter implements Filter {
                     }
                 }
                 if (!bandera) {
-                    if (usu.getIdPerfil().getIdperfil().equals(PerfilEnum.ADMINISTRATOR.getId())) {
+                    if (usu.getIdPerfil().getIdperfil().equals(ProfileEnum.ADMINISTRATOR.getId())) {
                         res.sendRedirect(req.getContextPath() + "/faces/admin/usuario/consultarUsuario.xhtml");
-                    } else if (usu.getIdPerfil().getIdperfil().equals(PerfilEnum.DATA_STEWARD.getId())) {
+                    } else if (usu.getIdPerfil().getIdperfil().equals(ProfileEnum.DATA_STEWARD.getId())) {
                         res.sendRedirect(req.getContextPath() + "/faces/outlet/consultarOutlet.xhtml");
                     }
                     return;

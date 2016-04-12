@@ -6,7 +6,7 @@
 package com.diageo.diageomdmweb.bean.perfil;
 
 import com.diageo.admincontrollerweb.beans.UsuarioBeanLocal;
-import com.diageo.admincontrollerweb.enums.UsuarioIngresoEnum;
+import com.diageo.admincontrollerweb.enums.UserEntryEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import com.diageo.diageomdmweb.bean.LoginBean;
@@ -49,10 +49,10 @@ public class CambiarContraseniaBean extends DiageoRootBean implements Serializab
             showWarningMessage(capturarValor("cam_pass_actual_nueva_no_iguales"));
         } else {
             try {
-                getLoginBean().getUsuario().setPrimerIngreso(UsuarioIngresoEnum.NO_PRIMER_INGRESO.getEstado());
+                getLoginBean().getUsuario().setPrimerIngreso(UserEntryEnum.NOT_FIRST_ENTRY.getState());
                 String pass = DigestUtils.md5Hex(getContrseniaNueva());
                 getLoginBean().getUsuario().setContraseina(pass);
-                usuarioBean.guardarUsuario(getLoginBean().getUsuario());
+                usuarioBean.updateUser(getLoginBean().getUsuario());
                 showInfoMessage(capturarValor("cam_pass_cambio_exitoso"));
             } catch (ControllerWebException ex) {
                 LOG.log(Level.SEVERE, ex.getMessage());

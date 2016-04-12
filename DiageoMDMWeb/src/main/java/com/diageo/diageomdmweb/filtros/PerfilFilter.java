@@ -6,7 +6,7 @@
 package com.diageo.diageomdmweb.filtros;
 
 import com.diageo.admincontrollerweb.entities.Usuario;
-import com.diageo.admincontrollerweb.enums.UsuarioIngresoEnum;
+import com.diageo.admincontrollerweb.enums.UserEntryEnum;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -121,7 +121,7 @@ public class PerfilFilter implements Filter {
             if (usu == null) {
                 res.sendRedirect(req.getContextPath() + "/faces/login.xhtml");
                 return;
-            } else if (usu.getPrimerIngreso().equals(UsuarioIngresoEnum.PRIMER_INGRESO.getEstado())) {
+            } else if (usu.getPrimerIngreso().equals(UserEntryEnum.FIRST_ENTRY.getState())) {
                 String contexto = req.getRequestURI();
                 contexto = contexto.substring(contexto.lastIndexOf("/"), contexto.length());
                 if (!contexto.contains("cambiarContrasenia.xhtml")) {

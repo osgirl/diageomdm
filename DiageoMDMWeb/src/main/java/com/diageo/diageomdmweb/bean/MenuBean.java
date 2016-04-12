@@ -5,7 +5,7 @@
  */
 package com.diageo.diageomdmweb.bean;
 
-import com.diageo.admincontrollerweb.enums.ModulosEnum;
+import com.diageo.admincontrollerweb.enums.ModuleEnum;
 import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
@@ -28,7 +28,7 @@ public class MenuBean extends DiageoRootBean {
     }
 
     public String navegar(String llave) {
-        ModulosEnum moduloEnum = ModulosEnum.valueOf(llave);
+        ModuleEnum moduloEnum = ModuleEnum.valueOf(llave);
         switch (moduloEnum) {
             case C_OUT:
                 getLoginBean().armarMigaPan(capturarValor("m_outlet"), capturarValor("m_outlet_crear"));
