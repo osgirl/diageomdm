@@ -26,28 +26,29 @@ public class WebTransaction<T> {
         return this.em;
     }
 
-    public Object consultarPorId(Class t, Object id) {
+    public Object findById(Class t, Object id) {
         Object o = getEntityManager().find(t, id);
         return o;
     }
     
-    public Object modificar(Object obj){
+    public Object update(Object obj){
         obj=getEntityManager().merge(obj);
         getEntityManager().flush();
         return obj;
     }
 
-    public T crear(T entidad) {
+    public T create(T entidad) {
         getEntityManager().persist(entidad);
         getEntityManager().flush();
         return entidad;
     }
 
-    public void eliminar(Object entidad) {
+    public void delete(T entidad) {
+        entidad=getEntityManager().merge(entidad);
         getEntityManager().remove(entidad);
     }
 
-    public List<T> consultarPorNamedQuery(Class tipo, String namedQuery, Object... parametros) {
+    public List<T> findByNamedQuery(Class tipo, String namedQuery, Object... parametros) {
         Query query = getEntityManager().createNamedQuery(namedQuery, tipo);
         for (int i = 0; i < parametros.length; i++) {
             query.setParameter(i + 1, parametros[i]);
@@ -55,7 +56,7 @@ public class WebTransaction<T> {
         return query.getResultList();
     }
 
-    public List<T> consultarTodo(Class tipo) {
+    public List<T> findAll(Class tipo) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<T> criteria = cb.createQuery(tipo);
         criteria.from(tipo);

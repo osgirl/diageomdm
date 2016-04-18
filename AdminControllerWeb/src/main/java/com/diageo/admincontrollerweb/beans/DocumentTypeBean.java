@@ -5,7 +5,7 @@
  */
 package com.diageo.admincontrollerweb.beans;
 
-import com.diageo.admincontrollerweb.entities.Perfil;
+import com.diageo.admincontrollerweb.entities.TipoDoc;
 import java.util.List;
 import javax.ejb.Stateless;
 
@@ -14,18 +14,18 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class PerfilBean extends WebTransaction<Perfil> implements PerfilBeanLocal {
+public class DocumentTypeBean extends WebTransaction<TipoDoc> implements DocumentTypeBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public List<Perfil> capturarTodosPerfiles() {
-        return consultarTodo(Perfil.class);
+    public List<TipoDoc> findAll() {
+        return findAll(TipoDoc.class);
     }
 
     @Override
-    public Perfil consultarId(Integer id) {
-        return (Perfil) consultarPorId(Perfil.class, id);
+    public TipoDoc findById(Integer id) {
+        return (TipoDoc) findById(TipoDoc.class, id);
     }
- 
+
 }

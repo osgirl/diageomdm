@@ -5,8 +5,7 @@
  */
 package com.diageo.admincontrollerweb.beans;
 
-import com.diageo.admincontrollerweb.entities.TipoDoc;
-import java.util.List;
+import com.diageo.admincontrollerweb.entities.PermissionSegment;
 import javax.ejb.Local;
 
 /**
@@ -14,10 +13,8 @@ import javax.ejb.Local;
  * @author yovanoty126
  */
 @Local
-public interface TipoDocumentoBeanLocal {
+public interface PermissionSegmentBeanLocal {
 
-    public List<TipoDoc> capturarListaDocumento();
-
-    public TipoDoc consultarId(Integer id);
+    public void createPermissionSegment(PermissionSegment entity,Integer idUser);
     
 }

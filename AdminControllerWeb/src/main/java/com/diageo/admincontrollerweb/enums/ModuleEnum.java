@@ -38,7 +38,10 @@ public enum ModuleEnum {
     CAM_CONTRA("change password"),
     DISTRI("Distributor"),
     C_DISTRI("create distributor"),
-    S_DISTRI("search distributor");
+    S_DISTRI("search distributor"),
+    DISTRI_LOCATION("location distributor"),
+    S_DISTRI_LOCATION("search location distributor"),
+    C_DISTRI_LOCATION("search location distributor");
 
     private final String description;
 

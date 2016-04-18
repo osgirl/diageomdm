@@ -5,7 +5,8 @@
  */
 package com.diageo.admincontrollerweb.beans;
 
-import com.diageo.admincontrollerweb.entities.Modulo;
+import com.diageo.admincontrollerweb.entities.Perfil;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -13,8 +14,10 @@ import javax.ejb.Local;
  * @author yovanoty126
  */
 @Local
-public interface ModuloBeanLocal {
+public interface ProfileBeanLocal {
 
-    public void crearUsuarioModulo(Modulo mod);
+    public List<Perfil> findAll();
+
+    public Perfil findById(Integer id);
     
 }

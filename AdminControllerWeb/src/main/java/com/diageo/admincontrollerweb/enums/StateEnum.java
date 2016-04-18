@@ -9,13 +9,13 @@ package com.diageo.admincontrollerweb.enums;
  *
  * @author yovanoty126
  */
-public enum UserStateEnum {
+public enum StateEnum {
 
     ACTIVE("1"), INACTIVE("0");
 
     private final String state;
 
-    private UserStateEnum(String state) {
+    private StateEnum(String state) {
         this.state = state;
     }
 

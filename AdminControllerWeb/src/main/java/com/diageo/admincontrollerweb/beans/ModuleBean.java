@@ -13,13 +13,13 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class ModuloBean extends WebTransaction<Modulo>implements ModuloBeanLocal {
+public class ModuleBean extends WebTransaction<Modulo>implements ModuleBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public void crearUsuarioModulo(Modulo mod){
-        super.modificar(mod);        
+    public void createUserModule(Modulo mod){
+        super.update(mod);        
     }
     
 }

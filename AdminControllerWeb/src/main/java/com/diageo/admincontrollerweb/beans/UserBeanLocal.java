@@ -15,16 +15,16 @@ import javax.ejb.Local;
  * @author yovanoty126
  */
 @Local
-public interface UsuarioBeanLocal {
+public interface UserBeanLocal {
 
     public Usuario updateUser(Usuario user) throws ControllerWebException;
 
-    public List<Usuario> consultarTodo() throws ControllerWebException;
+    public List<Usuario> findAll() throws ControllerWebException;
 
-    public Usuario validarUsuarioContrasena(String user, String pass);
+    public Usuario validateUserPassword(String user, String pass);
 
-    public Usuario consultarCorreo(String correo) throws ControllerWebException;
+    public Usuario findEmail(String email) throws ControllerWebException;
 
-    public Usuario crearUsuario(Usuario user) throws ControllerWebException;
+    public Usuario createUser(Usuario user) throws ControllerWebException;
     
 }

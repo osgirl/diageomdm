@@ -6,6 +6,7 @@
 package com.diageo.admincontrollerweb.entities;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import javax.persistence.Basic;
@@ -21,6 +22,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -47,9 +49,12 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = Usuario.FIND_MAIL_PASS, query = "SELECT u FROM Usuario u WHERE u.contraseina = ?1 AND u.correo = ?2")})
 public class Usuario implements Serializable {
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario")
+    private Collection<PassContainer> passContainerCollection;
+
     public static final String FIND_MAIL_PASS = "Usuario.findByMailPass";
     public static final String FIND_CORREO = "Usuario.findByCorreo";
-    
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,7 +87,7 @@ public class Usuario implements Serializable {
     private String numDoc;
     @Column(name = "tipoDoc")
     private Integer tipoDoc;
-    @Column(name = "primerIngreso")    
+    @Column(name = "primerIngreso")
     private String primerIngreso;
     @Column(name = "ingresoExitoso")
     @Temporal(TemporalType.TIMESTAMP)
@@ -102,6 +107,8 @@ public class Usuario implements Serializable {
     private Perfil idPerfil;
     @OneToMany(mappedBy = "idUsuario")
     private List<LinkTemporal> linkTemporalList;
+    @OneToOne(mappedBy = "idUser", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private PermissionSegment permissionSegment;
 
     public Usuario() {
     }
@@ -254,6 +261,14 @@ public class Usuario implements Serializable {
         this.ultimoIngresoExitoso = ultimoIngresoExitoso;
     }
 
+    public PermissionSegment getPermissionSegment() {
+        return permissionSegment;
+    }
+
+    public void setPermissionSegment(PermissionSegment permissionSegment) {
+        this.permissionSegment = permissionSegment;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -277,6 +292,14 @@ public class Usuario implements Serializable {
     @Override
     public String toString() {
         return "com.diageo.admincontrollerweb.entities.Usuario[ idusuario=" + idusuario + " ]";
+    }
+
+    public Collection<PassContainer> getPassContainerCollection() {
+        return passContainerCollection;
+    }
+
+    public void setPassContainerCollection(Collection<PassContainer> passContainerCollection) {
+        this.passContainerCollection = passContainerCollection;
     }
 
 }
