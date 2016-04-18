@@ -15,7 +15,7 @@
                     <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
                         <p:dataTable id="dtChannel" value="#{subSegmentoConsultarBean.listaSubSegmentos}" var="seg" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     rendered="#{subSegmentoConsultarBean.verDetalle}"
+                                     rendered="#{subSegmentoConsultarBean.verDetalle}" paginator="true"
                                      style="width: 60%;left: 50%;-webkit-transform: translate(-50%);position: absolute;">
                             <p:column headerText="#{msg.sub_seg_nombre}">
                                 <h:outputLabel value="#{seg.nomnbre}"/>

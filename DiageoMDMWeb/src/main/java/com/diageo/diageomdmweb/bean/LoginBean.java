@@ -5,13 +5,12 @@
  */
 package com.diageo.diageomdmweb.bean;
 
-import com.diageo.admincontrollerweb.beans.UsuarioBeanLocal;
 import com.diageo.admincontrollerweb.entities.Modulo;
 import com.diageo.admincontrollerweb.entities.Usuario;
-import com.diageo.admincontrollerweb.enums.UserStateEnum;
+import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.admincontrollerweb.enums.UserEntryEnum;
-import com.diageo.diageomdmweb.constantes.PatternConstantes;
+import com.diageo.diageomdmweb.constant.PatternConstant;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,6 +33,7 @@ import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuElement;
 import org.primefaces.model.menu.MenuModel;
+import com.diageo.admincontrollerweb.beans.UserBeanLocal;
 
 /**
  *
@@ -48,8 +48,8 @@ public class LoginBean extends DiageoRootBean implements Serializable {
      */
     private static final String ESPANOL = "es";
     @EJB
-    private UsuarioBeanLocal usuarioLocal;
-    @Pattern(regexp = PatternConstantes.EMAIL_VALIDADOR, message = "{correo.pattern}")
+    private UserBeanLocal usuarioLocal;
+    @Pattern(regexp = PatternConstant.EMAIL_VALIDADOR, message = "{correo.pattern}")
     private List<Modulo> listModulos;
     private String user;
     private String password;
@@ -74,9 +74,9 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     public String login() {
         administrarCookies();
         String pass = DigestUtils.md5Hex(getPassword());
-        setUsuario(getUsuarioLocal().validarUsuarioContrasena(getUser(), pass));
+        setUsuario(getUsuarioLocal().validateUserPassword(getUser(), pass));
         if (getUsuario() != null) {
-            if (getUsuario().getEstado().equals(UserStateEnum.ACTIVE.getState())) {
+            if (getUsuario().getEstado().equals(StateEnum.ACTIVE.getState())) {
                 HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
                 setListModulos(getUsuario().getModuloList());
                 session.setAttribute(USUARIO, getUsuario());
@@ -203,14 +203,14 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     /**
      * @return the usuarioLocal
      */
-    public UsuarioBeanLocal getUsuarioLocal() {
+    public UserBeanLocal getUsuarioLocal() {
         return usuarioLocal;
     }
 
     /**
      * @param usuarioLocal the usuarioLocal to set
      */
-    public void setUsuarioLocal(UsuarioBeanLocal usuarioLocal) {
+    public void setUsuarioLocal(UserBeanLocal usuarioLocal) {
         this.usuarioLocal = usuarioLocal;
     }
 

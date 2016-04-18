@@ -5,22 +5,16 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
-import com.diageo.admincontrollerweb.beans.ModuloBeanLocal;
-import com.diageo.admincontrollerweb.beans.PerfilBeanLocal;
-import com.diageo.admincontrollerweb.beans.TipoDocumentoBeanLocal;
-import com.diageo.admincontrollerweb.beans.UsuarioBeanLocal;
 import com.diageo.admincontrollerweb.entities.Modulo;
 import com.diageo.admincontrollerweb.entities.Perfil;
 import com.diageo.admincontrollerweb.entities.TipoDoc;
 import com.diageo.admincontrollerweb.entities.Usuario;
-import com.diageo.admincontrollerweb.enums.UserStateEnum;
+import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.UserEntryEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
-import com.diageo.diageomdmweb.constantes.PatternConstantes;
+import com.diageo.diageomdmweb.constant.PatternConstant;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -29,6 +23,14 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.validation.constraints.Pattern;
 import org.apache.commons.codec.digest.DigestUtils;
+import com.diageo.admincontrollerweb.beans.UserBeanLocal;
+import com.diageo.admincontrollerweb.beans.ModuleBeanLocal;
+import com.diageo.admincontrollerweb.entities.PermissionSegment;
+import com.diageo.admincontrollerweb.enums.ProfileEnum;
+import com.diageo.diageonegocio.beans.DistributorBeanLocal;
+import com.diageo.diageonegocio.entidades.Distribuidor;
+import java.util.List;
+import org.primefaces.context.RequestContext;
 
 /**
  * Bean encargado de la gestion de creación de usuario
@@ -44,15 +46,20 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      */
     private static final Logger LOG = Logger.getLogger(GestionarUsuarioCreacion.class.getName());
     /**
-     * Ejb UsuarioBeanLocal
+     * Ejb UserBeanLocal
      */
     @EJB
-    private UsuarioBeanLocal usuarioBean;
+    private UserBeanLocal usuarioBean;
     /**
-     * Ejb ModuloBeanLocal
+     * Ejb ModuleBeanLocal
      */
     @EJB
-    private ModuloBeanLocal moduloBean;
+    private ModuleBeanLocal moduloBean;
+    /**
+     * Ejb distributor
+     */
+    @EJB
+    private DistributorBeanLocal distributorBeanLocal;
     /**
      * Nombres
      */
@@ -64,7 +71,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     /**
      * Correo electrónico
      */
-    @Pattern(regexp = PatternConstantes.EMAIL_VALIDADOR, message = "{correo.pattern}")
+    @Pattern(regexp = PatternConstant.EMAIL_VALIDADOR, message = "{correo.pattern}")
     private String correo;
     /**
      * Numero de documento
@@ -83,6 +90,50 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      * ingresar al sistema
      */
     private boolean activo;
+    /**
+     * Detail edition
+     */
+    private boolean detailEdition;
+    /**
+     * Check distributor
+     */
+    private boolean distributorCheck;
+    /**
+     * Check chain
+     */
+    private boolean chainCheck;
+    /**
+     * Check channel
+     */
+    private boolean channelCheck;
+    /**
+     * Check chain
+     */
+    private boolean subChannelCheck;
+    /**
+     * Check segment
+     */
+    private boolean segmentCheck;
+    /**
+     * Check subsegment
+     */
+    private boolean subSegmentCheck;
+    /**
+     * Check potential
+     */
+    private boolean potentialCheck;
+    /**
+     * Chain Permissions
+     */
+    private PermissionSegment permissionSegment;
+    /**
+     * List distributor
+     */
+    private List<Distribuidor> listDistributor;
+    /**
+     * Distributor selected
+     */
+    private Distribuidor distributorSelected;
 
     /**
      * Creates a new instance of GestionarUsuarioCreacion
@@ -97,6 +148,8 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     public void init() {
         setPerfil(new Perfil());
         setTipoDocumento(new TipoDoc());
+        permissionSegment = new PermissionSegment();
+        setListDistributor(distributorBeanLocal.searchADistributorPadre("0"));
     }
 
     /**
@@ -106,22 +159,23 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         if (!validarExisteciaCorreo()) {
             try {
                 Usuario usu = new Usuario();
-                usu.setNombres(getNombres());
-                usu.setApellidos(getApellidos());
-                usu.setCorreo(getCorreo());
+                usu.setNombres(getNombres().toUpperCase());
+                usu.setApellidos(getApellidos().toUpperCase());
+                usu.setCorreo(getCorreo().toUpperCase());
                 usu.setContraseina(DigestUtils.md5Hex(getTipoDocumento().getNombre().toLowerCase() + getNumDoc()));
-                usu.setNumDoc(getNumDoc());
+                usu.setNumDoc(getNumDoc().toUpperCase());
                 usu.setFechaCreacion(getFechaActual());
-                usu.setEstado(isActivo() ? UserStateEnum.ACTIVE.getState() : UserStateEnum.INACTIVE.getState());
+                usu.setEstado(isActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
                 usu.setTipoDoc(getTipoDocumento().getIdtipoDoc());
                 usu.setIdPerfil(getPerfil());
                 usu.setIntentosFallidos(0);
                 usu.setPrimerIngreso(UserEntryEnum.FIRST_ENTRY.getState());
                 usu.setModuloList(perfil.getModuloList());
-                usuarioBean.crearUsuario(usu);
+                usu.setPermissionSegment(permissionSegment);
+                usuarioBean.createUser(usu);
                 for (Modulo mod : getPerfil().getModuloList()) {
                     mod.getUsuarioList().add(usu);
-                    moduloBean.crearUsuarioModulo(mod);
+                    moduloBean.createUserModule(mod);
                 }
                 showInfoMessage(capturarValor("usu_creado_exito"));
             } catch (ControllerWebException ex) {
@@ -129,6 +183,48 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
                 LOG.log(Level.SEVERE, ex.getMessage());
             }
         }
+    }
+
+    public void listenerDetailEdition() {
+        detailEdition = !((getPerfil().getIdperfil().equals(ProfileEnum.ADMINISTRATOR.getId())) || (getPerfil().getIdperfil().equals(ProfileEnum.DATA_STEWARD.getId())));
+    }
+
+    public void selectAllChain() {
+        setChannelCheck(Boolean.TRUE);
+        setSubChannelCheck(Boolean.TRUE);
+        setSegmentCheck(Boolean.TRUE);
+        setSubSegmentCheck(Boolean.TRUE);
+        setPotentialCheck(Boolean.TRUE);
+    }
+
+    public void unSelectAllChain() {
+        setChannelCheck(Boolean.FALSE);
+        setSubChannelCheck(Boolean.FALSE);
+        setSegmentCheck(Boolean.FALSE);
+        setSubSegmentCheck(Boolean.FALSE);
+        setPotentialCheck(Boolean.FALSE);
+    }
+
+    public void aceptChangesChain() {
+        permissionSegment = addPermissionUser();
+        RequestContext.getCurrentInstance().execute("PF('wvChain').hide();");
+    }
+
+    public void cancelChangesChain() {
+        unSelectAllChain();
+        permissionSegment = addPermissionUser();
+        RequestContext.getCurrentInstance().execute("PF('wvChain').hide();");
+    }
+
+    private PermissionSegment addPermissionUser() {
+        PermissionSegment ps = new PermissionSegment();
+        ps.setChannel(isChannelCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        System.out.println(isChannelCheck());
+        ps.setSubChannel(isSubChannelCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        ps.setSegmento(isSegmentCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        ps.setSubSegmento(isSubSegmentCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        ps.setPotencial(isPotentialCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        return ps;
     }
 
     /**
@@ -139,7 +235,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      */
     private boolean validarExisteciaCorreo() {
         try {
-            usuarioBean.consultarCorreo(correo);
+            usuarioBean.findEmail(correo);
             showWarningMessage(capturarValor("usu_correo_existe"));
             return true;
         } catch (ControllerWebException ex) {
@@ -244,6 +340,146 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      */
     public void setPerfil(Perfil perfil) {
         this.perfil = perfil;
+    }
+
+    /**
+     * @return the detailEdition
+     */
+    public boolean isDetailEdition() {
+        return detailEdition;
+    }
+
+    /**
+     * @param detailEdition the detailEdition to set
+     */
+    public void setDetailEdition(boolean detailEdition) {
+        this.detailEdition = detailEdition;
+    }
+
+    /**
+     * @return the distributorCheck
+     */
+    public boolean isDistributorCheck() {
+        return distributorCheck;
+    }
+
+    /**
+     * @param distributorCheck the distributorCheck to set
+     */
+    public void setDistributorCheck(boolean distributorCheck) {
+        this.distributorCheck = distributorCheck;
+    }
+
+    /**
+     * @return the chainCheck
+     */
+    public boolean isChainCheck() {
+        return chainCheck;
+    }
+
+    /**
+     * @param chainCheck the chainCheck to set
+     */
+    public void setChainCheck(boolean chainCheck) {
+        this.chainCheck = chainCheck;
+    }
+
+    /**
+     * @return the channelCheck
+     */
+    public boolean isChannelCheck() {
+        return channelCheck;
+    }
+
+    /**
+     * @param channelCheck the channelCheck to set
+     */
+    public void setChannelCheck(boolean channelCheck) {
+        this.channelCheck = channelCheck;
+    }
+
+    /**
+     * @return the subChannelCheck
+     */
+    public boolean isSubChannelCheck() {
+        return subChannelCheck;
+    }
+
+    /**
+     * @param subChannelCheck the subChannelCheck to set
+     */
+    public void setSubChannelCheck(boolean subChannelCheck) {
+        this.subChannelCheck = subChannelCheck;
+    }
+
+    /**
+     * @return the segmentCheck
+     */
+    public boolean isSegmentCheck() {
+        return segmentCheck;
+    }
+
+    /**
+     * @param segmentCheck the segmentCheck to set
+     */
+    public void setSegmentCheck(boolean segmentCheck) {
+        this.segmentCheck = segmentCheck;
+    }
+
+    /**
+     * @return the subSegmentCheck
+     */
+    public boolean isSubSegmentCheck() {
+        return subSegmentCheck;
+    }
+
+    /**
+     * @param subSegmentCheck the subSegmentCheck to set
+     */
+    public void setSubSegmentCheck(boolean subSegmentCheck) {
+        this.subSegmentCheck = subSegmentCheck;
+    }
+
+    /**
+     * @return the potentialCheck
+     */
+    public boolean isPotentialCheck() {
+        return potentialCheck;
+    }
+
+    /**
+     * @param potentialCheck the potentialCheck to set
+     */
+    public void setPotentialCheck(boolean potentialCheck) {
+        this.potentialCheck = potentialCheck;
+    }
+
+    /**
+     * @return the listDistributor
+     */
+    public List<Distribuidor> getListDistributor() {
+        return listDistributor;
+    }
+
+    /**
+     * @param listDistributor the listDistributor to set
+     */
+    public void setListDistributor(List<Distribuidor> listDistributor) {
+        this.listDistributor = listDistributor;
+    }
+
+    /**
+     * @return the distributorSelected
+     */
+    public Distribuidor getDistributorSelected() {
+        return distributorSelected;
+    }
+
+    /**
+     * @param distributorSelected the distributorSelected to set
+     */
+    public void setDistributorSelected(Distribuidor distributorSelected) {
+        this.distributorSelected = distributorSelected;
     }
 
 }

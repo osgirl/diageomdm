@@ -5,13 +5,13 @@
  */
 package com.diageo.diageomdmweb.converter;
 
-import com.diageo.admincontrollerweb.beans.PerfilBeanLocal;
 import com.diageo.admincontrollerweb.entities.Perfil;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import com.diageo.admincontrollerweb.beans.ProfileBeanLocal;
 
 /**
  *
@@ -21,7 +21,7 @@ import javax.faces.convert.FacesConverter;
 public class PerfilConverter implements Converter {
 
     @EJB
-    private PerfilBeanLocal transaccion;
+    private ProfileBeanLocal transaccion;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -29,7 +29,7 @@ public class PerfilConverter implements Converter {
             return null;
         }
         Integer id = Integer.parseInt(value);
-        Perfil p = (Perfil) transaccion.consultarId(id);
+        Perfil p = (Perfil) transaccion.findById(id);
         return p;
     }
 

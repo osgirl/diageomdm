@@ -5,13 +5,13 @@
  */
 package com.diageo.diageomdmweb.converter;
 
-import com.diageo.admincontrollerweb.beans.TipoDocumentoBeanLocal;
 import com.diageo.admincontrollerweb.entities.TipoDoc;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.Converter;
 import javax.faces.convert.FacesConverter;
+import com.diageo.admincontrollerweb.beans.DocumentTypeBeanLocal;
 
 /**
  *
@@ -21,7 +21,7 @@ import javax.faces.convert.FacesConverter;
 public class TipoDocConverter implements Converter {
 
     @EJB
-    private TipoDocumentoBeanLocal transacciones;
+    private DocumentTypeBeanLocal transacciones;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -29,7 +29,7 @@ public class TipoDocConverter implements Converter {
             return null;
         }
         Integer id = Integer.parseInt(value);
-        TipoDoc tidpoDoc = (TipoDoc) transacciones.consultarId(id);
+        TipoDoc tidpoDoc = (TipoDoc) transacciones.findById(id);
         return tidpoDoc;
     }
 

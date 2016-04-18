@@ -18,12 +18,17 @@
                             <p:password id="passActual" style="width: 25%" value="#{cambiarContraseniaBean.contrasenaActual}" required="true" label="#{msg.cam_pass_actual}"/>
                             <p:watermark for="passActual" value="#{msg.cam_pass_actual}"/>
                             <br/>
-                            <p:password id="pwd1" match="pwd2" label="#{msg.cam_pass_nueva_contra}" required="true" feedback="true" style="width: 25%"
-                                        value="#{cambiarContraseniaBean.contrseniaNueva}"/>
+                            <h:panelGroup style="width: 100%">
+                                <p:password id="pwd1" match="pwd2" label="#{msg.cam_pass_nueva_contra}" required="true" feedback="true" style="width: 23%"
+                                            value="#{cambiarContraseniaBean.contrseniaNueva}" 
+                                            goodLabel="#{msg.cam_pass_good}" weakLabel="#{msg.cam_pass_weak}" strongLabel="#{msg.cam_pass_strong}" promptLabel="#{msg.cam_pass_promt}"/>
+                                <p:commandButton icon="fa fa-warning" style="width: 2%" type="button" onclick="PF('wvHelp').show();"/>
+                            </h:panelGroup>
                             <p:watermark for="pwd1" value="#{msg.cam_pass_nueva_contra}"/>
                             <br/>
                             <p:password id="pwd2" label="#{msg.cam_pass_repetir_contra}" required="true" feedback="true" style="width: 25%" 
-                                        value="#{cambiarContraseniaBean.contrseniaNueva}"/>
+                                        value="#{cambiarContraseniaBean.contrseniaNueva}" 
+                                        goodLabel="#{msg.cam_pass_good}" weakLabel="#{msg.cam_pass_weak}" strongLabel="#{msg.cam_pass_strong}" promptLabel="#{msg.cam_pass_promt}"/>
                             <p:watermark for="pwd2" value="#{msg.cam_pass_repetir_contra}"/>
                             <br/>
                             <p:commandButton value="#{msg.btn_send}" process="@all" update="formCambiarContra:mCamPas" actionListener="#{cambiarContraseniaBean.cambiarContrasenia()}"
@@ -31,14 +36,19 @@
                             <br/>   
                             <p:messages id="mCamPas" closable="true" showDetail="true" showSummary="false"
                                         style="width: 25%;left: 50%;-webkit-transform: translate(-50%);text-align: center;position: absolute;"/>
-
                         </h:panelGrid>
                     </div>
-
                 </h:form>
             </ui:define>
-
         </ui:composition>
-
+        <h:form id="formCamPassModal">
+            <p:dialog id="dHelp" widgetVar="wvHelp" width="20%" header="#{msg.cam_pass_header_pass_rules}" closeOnEscape="true" modal="true">
+                <p:panelGrid columns="1">
+                    <h:outputLabel value="- #{msg.cam_pass_pass_rules}"/>
+                    <h:outputLabel value="- #{msg.cam_pass_pass_rules_1}"/>
+                    <h:outputLabel value="- #{msg.cam_pass_pass_rules_2}"/>
+                </p:panelGrid>
+            </p:dialog>
+        </h:form>
     </h:body>
 </html>

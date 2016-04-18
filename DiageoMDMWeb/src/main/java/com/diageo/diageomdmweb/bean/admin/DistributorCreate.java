@@ -24,6 +24,7 @@ public class DistributorCreate extends DistributorSearch {
     }
 
     public void create() {
+        getSelectedDistributor().setIsPadre("1");
         super.update();
         setName("");
         setSelectedDistributor(new Distribuidor());

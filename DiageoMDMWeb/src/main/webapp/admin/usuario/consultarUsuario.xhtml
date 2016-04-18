@@ -19,10 +19,10 @@
                     <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
                         <p:dataTable id="dtUsuarios" value="#{consultarUsuarioBean.listaUsuariosSistema}" var="usu"
                                      widgetVar="wvUsu" style="width: 90%" rendered="#{consultarUsuarioBean.verDetalle}"
-                                     paginatorAlwaysVisible="false" rows="15" 
+                                     paginatorAlwaysVisible="false" rows="15"  paginator="true"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
                             <p:column headerText="#{msg.usu_num_doc}" filterBy="#{usu.numDoc}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{usu.numDoc}"/>
+                                <h:outputLabel value="#{usu.numDoc.toUpperCase()}"/>
                             </p:column>                        
                             <p:column headerText="#{msg.usu_nombres}" filterBy="#{usu.nombres}" filterMatchMode="startsWith" sortBy="#{usu.nombres}">
                                 <h:outputLabel value="#{usu.nombres}"/>
@@ -40,7 +40,7 @@
                                         <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemValue="#{per.nombre}" itemLabel="#{per.nombre}"/>
                                     </p:selectOneMenu>
                                 </f:facet>
-                                <h:outputLabel value="#{usu.idPerfil.nombre}"/>
+                                <h:outputLabel value="#{usu.idPerfil.nombre.toUpperCase()}"/>
                             </p:column>
                             <p:column headerText="#{msg.usu_activo}" style="text-align: center">
                                 <p:graphicImage value="/resources/images/iconos/equis.png" width="20px" rendered="#{usu.estado eq '0'}"/>

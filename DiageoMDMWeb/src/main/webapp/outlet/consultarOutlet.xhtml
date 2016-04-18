@@ -31,7 +31,7 @@
                     <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
                         <p:dataTable id="dtOutlet" value="#{outletConsultarBean.listaOutlets}" var="outdt" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     style="font-size:  90%" rendered="#{outletConsultarBean.verDetalle}">
+                                     style="font-size:  90%" rendered="#{outletConsultarBean.verDetalle}" paginator="true"> 
                             <p:column headerText="#{msg.out_razon_social}" filterBy="#{outdt.razonsocial}" filterMatchMode="startsWith">
                                 <h:outputLabel value="#{outdt.razonsocial}"/>
                             </p:column>

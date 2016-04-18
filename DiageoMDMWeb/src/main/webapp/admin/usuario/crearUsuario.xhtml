@@ -11,11 +11,10 @@
             ui-messages-error, .ui-message-error{
                 width: 70%;
             }
-        </style>
+        </style>        
         <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
-
             <ui:define name="content">
-                <h:form id="formCrearUsuario">
+                <h:form id="formCrearUsuario" style="z-index: 10">                    
                     <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
                         <h:panelGroup style="width:70%">
                             <h:panelGrid columns="4" style="width: 70%">
@@ -46,22 +45,78 @@
                                 <h:outputLabel value="#{msg.usu_perfil}"/>                        
                                 <p:selectOneMenu style="width: 73%" label="#{msg.usu_perfil}" value="#{gestionarUsuarioCreacion.perfil}" converter="perfilConverter">
                                     <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemLabel="#{per.nombre}"/>
+                                    <p:ajax update="formCrearUsuario:pgEditDetail" process="@this" listener="#{gestionarUsuarioCreacion.listenerDetailEdition()}"/>
                                 </p:selectOneMenu>
                                 <h:outputLabel value="#{msg.usu_activo}"/>           
                                 <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{gestionarUsuarioCreacion.activo}"/>
                             </h:panelGrid>
-                            <br/>
-                            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{gestionarUsuarioCreacion.crearUsuario()}"
-                                             styleClass="button" style="width: 10%;left: 35%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"/> 
+                            <h:panelGroup id="pgEditDetail">
+                                <h:panelGroup rendered="#{gestionarUsuarioCreacion.detailEdition}">
+                                    <p:separator/>
+                                    <h:panelGrid columns="3" width="30%">
+                                        <h:outputLabel value="#{msg.usu_chain}"/>
+                                        <p:selectBooleanCheckbox label="#{msg.usu_chain}" value="#{gestionarUsuarioCreacion.chainCheck}">
+                                            <p:ajax update="clChain" process="@this"/>
+                                        </p:selectBooleanCheckbox>
+                                        <p:commandLink id="clChain" value="#{msg.usu_edit_level}" style="color: blue" onclick="PF('wvChain').show();" disabled="#{!gestionarUsuarioCreacion.chainCheck}"/>
+                                        <h:outputLabel value="#{msg.out_distribuidor}"/>
+                                        <p:selectBooleanCheckbox label="#{msg.out_distribuidor}" value="#{gestionarUsuarioCreacion.distributorCheck}">
+                                            <p:ajax update="clDistributor" process="@this"/>
+                                        </p:selectBooleanCheckbox>
+                                        <p:commandLink id="clDistributor" value="#{msg.usu_edit_level}" style="color: blue" disabled="#{!gestionarUsuarioCreacion.distributorCheck}"/>
+                                        <h:outputLabel value="#{msg.out_distribuidor}"/>
+                                        <p:selectOneMenu value="#{gestionarUsuarioCreacion.distributorSelected}" converter="distribuidorConverter">
+                                            <f:selectItems value="#{gestionarUsuarioCreacion.listDistributor}" var="distri" itemLabel="#{distri.nombre}"/>
+                                        </p:selectOneMenu>
+                                    </h:panelGrid>
+                                </h:panelGroup>
+                            </h:panelGroup>
+                            <br/>                        
+                            <p:commandButton id="cbSend" value="#{msg.btn_send}" process="@parent :formCreateUserModal:sbchChannel" update="@form" actionListener="#{gestionarUsuarioCreacion.crearUsuario()}"
+                                             styleClass="button" style="width: 10%;left: 35%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"                                        
+                                             /> 
                             <br/><br/>   
-                            <p:messages id="mCamPas" closable="true" showDetail="true" showSummary="false" globalOnly="true"
+                            <p:messages id="mCamPas" closable="true" showDetail="true" showSummary="false" globalOnly="true" 
                                         style="width: 25%;left: 35%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"/>
                         </h:panelGroup>
                     </div>
                 </h:form>
-            </ui:define>
-
+            </ui:define>            
         </ui:composition>
-
+        <h:form id="formCreateUserModal">                
+            <p:dialog id="dChain" modal="true" width="40%" header="#{msg.usu_edit_detail}" widgetVar="wvChain" resizable="false">
+                <h:outputStylesheet library="css" name="template.css"/>
+                <h:panelGroup id="pgSegment">
+                    <h:outputLabel value="#{msg.out_seg_functional}"/>
+                    <br/><br/>
+                    <p:panelGrid columns="2" style="width: 90%">
+                        <h:outputLabel value="#{msg.can_canal}"/>
+                        <p:selectBooleanCheckbox id="sbchChannel" value="#{gestionarUsuarioCreacion.channelCheck}"/>
+                        <h:outputLabel value="#{msg.sub_subcanal}"/>
+                        <p:selectBooleanCheckbox value="#{gestionarUsuarioCreacion.subChannelCheck}"/>
+                        <h:outputLabel value="#{msg.seg_segmento}"/>
+                        <p:selectBooleanCheckbox value="#{gestionarUsuarioCreacion.segmentCheck}"/>
+                        <h:outputLabel value="#{msg.sub_seg_subsegmento}"/>
+                        <p:selectBooleanCheckbox value="#{gestionarUsuarioCreacion.subSegmentCheck}"/>
+                    </p:panelGrid>
+                    <br/>
+                    <p:separator/>
+                    <br/>
+                    <h:outputLabel value="#{msg.out_seg_potential}"/>
+                    <br/><br/>
+                    <p:panelGrid columns="2" style="width: 90%">
+                        <h:outputLabel value="#{msg.out_potencial}"/>
+                        <p:selectBooleanCheckbox value="#{gestionarUsuarioCreacion.potentialCheck}"/>
+                    </p:panelGrid>
+                    <br/>
+                    <h:panelGrid columns="4">
+                        <p:commandButton value="#{msg.btn_select_all}" process="@all" update="pgSegment" actionListener="#{gestionarUsuarioCreacion.selectAllChain()}" styleClass="button" style="width: 100%"/>
+                        <p:commandButton value="#{msg.btn_unselect_all}" process="@all" update="pgSegment" actionListener="#{gestionarUsuarioCreacion.unSelectAllChain()}" styleClass="button" style="width: 100%"/>
+                        <p:commandButton value="#{msg.btn_acept}" process="@all" update="@form" actionListener="#{gestionarUsuarioCreacion.aceptChangesChain()}" styleClass="button" style="width: 100%"/>
+                        <p:commandButton value="#{msg.btn_cancel}" process="@all" update="@form" actionListener="#{gestionarUsuarioCreacion.cancelChangesChain()}" styleClass="button" style="width: 100%"/>
+                    </h:panelGrid>
+                </h:panelGroup>
+            </p:dialog>
+        </h:form>
     </h:body>
 </html>

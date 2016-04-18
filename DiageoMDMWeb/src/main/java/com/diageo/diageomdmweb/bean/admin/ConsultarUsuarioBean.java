@@ -5,11 +5,10 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
-import com.diageo.admincontrollerweb.beans.UsuarioBeanLocal;
 import com.diageo.admincontrollerweb.entities.Perfil;
 import com.diageo.admincontrollerweb.entities.TipoDoc;
 import com.diageo.admincontrollerweb.entities.Usuario;
-import com.diageo.admincontrollerweb.enums.UserStateEnum;
+import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import java.io.Serializable;
@@ -20,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import com.diageo.admincontrollerweb.beans.UserBeanLocal;
 
 /**
  *
@@ -31,7 +31,7 @@ public class ConsultarUsuarioBean extends DiageoRootBean implements Serializable
 
     private static final Logger LOG = Logger.getLogger(ConsultarUsuarioBean.class.getName());
     @EJB
-    private UsuarioBeanLocal usuarioLocal;
+    private UserBeanLocal usuarioLocal;
     private List<Usuario> listaUsuariosSistema;
     private boolean verDetalle;
     private Usuario usuarioSeleccionado;
@@ -55,7 +55,7 @@ public class ConsultarUsuarioBean extends DiageoRootBean implements Serializable
 
     public void consultarUsuariosSistema() {
         try {
-            setListaUsuariosSistema(usuarioLocal.consultarTodo());
+            setListaUsuariosSistema(usuarioLocal.findAll());
         } catch (ControllerWebException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
         }
@@ -67,15 +67,19 @@ public class ConsultarUsuarioBean extends DiageoRootBean implements Serializable
         setUsuarioSeleccionado(usu);
         setPerfil(usu.getIdPerfil());
         setTipoDocumento(new TipoDoc(usu.getTipoDoc()));
-        setUsuarioActivo(usu.getEstado().equals(UserStateEnum.ACTIVE.getState()));
+        setUsuarioActivo(usu.getEstado().equals(StateEnum.ACTIVE.getState()));
     }
 
     public void guardarCambiosUsuario() {
         try {
             getUsuarioSeleccionado().setIdPerfil(getPerfil());
             getUsuarioSeleccionado().setTipoDoc(getTipoDocumento().getIdtipoDoc());
-            getUsuarioSeleccionado().setEstado(isUsuarioActivo() ? UserStateEnum.ACTIVE.getState() : UserStateEnum.INACTIVE.getState());
+            getUsuarioSeleccionado().setEstado(isUsuarioActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
             getUsuarioSeleccionado().setFechaModificaicon(super.getFechaActual());
+            getUsuarioSeleccionado().setNombres(getUsuarioSeleccionado().getNombres().toUpperCase());
+            getUsuarioSeleccionado().setApellidos(getUsuarioSeleccionado().getApellidos().toUpperCase());
+            getUsuarioSeleccionado().setCorreo(getUsuarioSeleccionado().getCorreo().toUpperCase());
+            getUsuarioSeleccionado().setNumDoc(getUsuarioSeleccionado().getNumDoc());
             usuarioLocal.updateUser(getUsuarioSeleccionado());
             showInfoMessage(capturarValor("usu_mis_datos"));
         } catch (ControllerWebException ex) {

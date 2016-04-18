@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/templates/diageoWebTemplate.xhtml">
+
+            <ui:define name="content">
+
+                <h:form id="formDistri">
+                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
+                        <h:panelGroup id="pgDistri" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                            <h:panelGrid columns="1" style="width: 100%">
+                                <h:panelGrid columns="2" style="width: 100%">
+                                    <h:outputLabel value="#{msg.m_distri_nombre}"/>
+                                    <p:selectOneMenu id="somDistri" value="#{distributorLocationCreateBean.selectedDistributor}" converter="distribuidorConverter" style="width: 100%">
+                                        <f:selectItems value="#{distributorLocationCreateBean.listDistributor}" var="distri" itemLabel="#{distri.nombre}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGrid>
+                                <br/>
+                                <p:selectOneRadio id="sorLocation" value="#{distributorLocationCreateBean.typeLocation}" style="width: 100%" required="true" label="#{msg.out_ubicacion}">                                    
+                                    <f:selectItem itemLabel="#{msg.loc_depto}" itemValue="D"/>
+                                    <f:selectItem itemLabel="#{msg.loc_mpio}" itemValue="C" />
+                                    <p:ajax update="formDistri:pgLocation"/>
+                                </p:selectOneRadio>
+                            </h:panelGrid>
+                            <br/>
+                            <h:panelGroup id="pgLocation" style="width: 1000%">
+                                <h:panelGrid columns="2" rendered="#{distributorLocationCreateBean.typeLocation eq 'D' or distributorLocationCreateBean.typeLocation eq 'C'}"
+                                             style="width: 100%">
+                                    <h:panelGroup>
+                                        <h:panelGrid columns="2">
+                                            <h:outputLabel value="#{msg.loc_depto}"/>
+                                            <p:selectOneMenu id="somDeptoDistri" style="width: 90%" value="#{distributorLocationCreateBean.depto}" converter="departamentoConverter">
+                                                <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptodis" itemLabel="#{deptodis.nombredepto}"/>
+                                                <p:ajax process="@this" update="formDistri:pgLocation"/>
+                                            </p:selectOneMenu>
+                                        </h:panelGrid>
+                                    </h:panelGroup>
+
+                                    <h:panelGroup id="pgCity">
+                                        <h:panelGrid columns="2">
+                                            <h:outputLabel value="#{msg.loc_mpio}" rendered="#{distributorLocationCreateBean.typeLocation eq 'C'}"/>
+                                            <p:selectOneMenu id="somMpioDistri" style="width: 90%" value="#{distributorLocationCreateBean.city}" converter="municipioConverter"
+                                                             rendered="#{distributorLocationCreateBean.typeLocation eq 'C'}">
+                                                <f:selectItems value="#{distributorLocationCreateBean.depto.municipioList}" var="mpiodis" itemLabel="#{mpiodis.nombremunicipio}"/>
+                                            </p:selectOneMenu>
+                                        </h:panelGrid>
+                                    </h:panelGroup>
+                                </h:panelGrid>
+                            </h:panelGroup>
+                            <br/>
+                            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{distributorLocationCreateBean.createLocatorDistributor()}"
+                                             styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
+                            <br/>
+                            <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />
+                        </h:panelGroup>
+                    </div>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

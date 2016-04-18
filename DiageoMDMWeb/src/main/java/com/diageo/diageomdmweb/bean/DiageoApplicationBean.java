@@ -5,8 +5,6 @@
  */
 package com.diageo.diageomdmweb.bean;
 
-import com.diageo.admincontrollerweb.beans.PerfilBeanLocal;
-import com.diageo.admincontrollerweb.beans.TipoDocumentoBeanLocal;
 import com.diageo.admincontrollerweb.entities.Perfil;
 import com.diageo.admincontrollerweb.entities.TipoDoc;
 import com.diageo.diageonegocio.beans.DepartamentoBeanLocal;
@@ -17,6 +15,8 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
+import com.diageo.admincontrollerweb.beans.DocumentTypeBeanLocal;
+import com.diageo.admincontrollerweb.beans.ProfileBeanLocal;
 
 /**
  *
@@ -27,15 +27,15 @@ import javax.inject.Named;
 public class DiageoApplicationBean extends DiageoRootBean implements Serializable {
 
     /**
-     * Ejb TipoDocumentoBeanLocal
+     * Ejb DocumentTypeBeanLocal
      */
     @EJB
-    private TipoDocumentoBeanLocal tipoDocBean;
+    private DocumentTypeBeanLocal tipoDocBean;
     /**
-     * Ejb PerfilBeanLocal
+     * Ejb ProfileBeanLocal
      */
     @EJB
-    private PerfilBeanLocal perfilBean;
+    private ProfileBeanLocal perfilBean;
     /**
      * Ejb departamentoBeanLocal
      */
@@ -62,8 +62,8 @@ public class DiageoApplicationBean extends DiageoRootBean implements Serializabl
 
     @PostConstruct
     public void init() {
-        setListaTipoDocumento((List<TipoDoc>) tipoDocBean.capturarListaDocumento());
-        setListaPerfiles((List<Perfil>) perfilBean.capturarTodosPerfiles());     
+        setListaTipoDocumento((List<TipoDoc>) tipoDocBean.findAll());
+        setListaPerfiles((List<Perfil>) perfilBean.findAll());     
         setListaDepartamento(departamentoBeanLocal.consultarTodoDepartamento());
     }
 

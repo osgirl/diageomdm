@@ -59,9 +59,9 @@ and open the template in the editor.
 }
 
 .button{ 
-    color: white;
+    color: white !important;
     width: 50%;
-    background: -webkit-linear-gradient(#0088cc, #149bdf);
+    background: -webkit-linear-gradient(#0088cc, #149bdf) !important;
 }
 
 .ui-widget, .ui-widget-content{

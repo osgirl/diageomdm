@@ -5,7 +5,6 @@
  */
 package com.diageo.diageomdmweb.bean.perfil;
 
-import com.diageo.admincontrollerweb.beans.UsuarioBeanLocal;
 import com.diageo.admincontrollerweb.entities.Usuario;
 import com.diageo.admincontrollerweb.enums.DocumentTypeEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
@@ -19,6 +18,7 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+import com.diageo.admincontrollerweb.beans.UserBeanLocal;
 
 /**
  *
@@ -32,7 +32,7 @@ public class MisDatosBean extends DiageoRootBean implements Serializable {
     @Inject
     private LoginBean loginBean;
     @EJB
-    private UsuarioBeanLocal usuarioBeanLocal;
+    private UserBeanLocal usuarioBeanLocal;
     private String nombres;
     private String apellidos;
     private String correo;
