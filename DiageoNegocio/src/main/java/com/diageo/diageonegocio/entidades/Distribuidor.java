@@ -59,6 +59,8 @@ public class Distribuidor implements Serializable {
     private Departamento idDepartamento;
     @Column(name = "PadreIdDistribuidor")
     private Integer padreIdDistribuidor;
+    @Column(name = "distributor")
+    private Integer distributor;
 
     public Distribuidor() {
     }
@@ -129,6 +131,14 @@ public class Distribuidor implements Serializable {
 
     public void setPadreIdDistribuidor(Integer padreIdDistribuidor) {
         this.padreIdDistribuidor = padreIdDistribuidor;
+    }
+
+    public Integer getDistributor() {
+        return distributor;
+    }
+
+    public void setDistributor(Integer distributor) {
+        this.distributor = distributor;
     }
 
     @Override
