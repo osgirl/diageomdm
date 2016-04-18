@@ -17,7 +17,7 @@ import javax.ejb.Local;
 @Local
 public interface BattleGroundBeanLocal {
 
-    public Battleground creaerBattlegroun(Battleground b) throws DiageoNegocioException;
+    public Battleground createBattleground(Battleground b) throws DiageoNegocioException;
 
     public Battleground ModificarBattlegroun(Battleground b) throws DiageoNegocioException;
 

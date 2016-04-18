@@ -21,7 +21,7 @@ public class BattleGroundBean extends BusinessTransaction<Battleground> implemen
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Battleground creaerBattlegroun(Battleground b) throws DiageoNegocioException {
+    public Battleground createBattleground(Battleground b) throws DiageoNegocioException {
         try {
             b = super.create(b);
             return b;

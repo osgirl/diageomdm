@@ -54,4 +54,13 @@ public class DistributorBean extends BusinessTransaction<Distribuidor> implement
         return lista;
     }
 
+    @Override
+    public List<Distribuidor> searchADistributorPadre(String isPadre) {
+        List<Distribuidor> list = super.searchByNamedQuery(Distribuidor.class, Distribuidor.FIND_BY_IS_PADRE, isPadre);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
+
 }

@@ -34,6 +34,9 @@ import javax.validation.constraints.Size;
 })
 public class Municipio implements Serializable {
 
+    @OneToMany(mappedBy = "idMunicipio")
+    private List<Distribuidor> distribuidorList;
+
     public static final String FIND_BY_DEPTO = "Municipio.findByDepto";
     private static final long serialVersionUID = 1L;
     @Id
@@ -112,6 +115,14 @@ public class Municipio implements Serializable {
     @Override
     public String toString() {
         return "com.diageo.diageonegocio.entidades.Municipio[ idmunicipio=" + idmunicipio + " ]";
+    }
+
+    public List<Distribuidor> getDistribuidorList() {
+        return distribuidorList;
+    }
+
+    public void setDistribuidorList(List<Distribuidor> distribuidorList) {
+        this.distribuidorList = distribuidorList;
     }
 
 }

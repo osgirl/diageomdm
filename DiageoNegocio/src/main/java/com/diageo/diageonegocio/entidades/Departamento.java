@@ -32,6 +32,9 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Departamento.findByNombredepto", query = "SELECT d FROM Departamento d WHERE d.nombredepto = :nombredepto")})
 public class Departamento implements Serializable {
 
+    @OneToMany(mappedBy = "idDepartamento")
+    private List<Distribuidor> distribuidorList;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -109,6 +112,14 @@ public class Departamento implements Serializable {
     @Override
     public String toString() {
         return "com.diageo.diageonegocio.entidades.Departamento[ iddepartamento=" + iddepartamento + " ]";
+    }
+
+    public List<Distribuidor> getDistribuidorList() {
+        return distribuidorList;
+    }
+
+    public void setDistribuidorList(List<Distribuidor> distribuidorList) {
+        this.distribuidorList = distribuidorList;
     }
     
 }
