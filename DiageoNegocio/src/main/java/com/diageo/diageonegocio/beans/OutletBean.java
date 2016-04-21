@@ -19,7 +19,7 @@ import javax.ejb.Stateless;
  */
 @Stateless
 public class OutletBean extends BusinessTransaction<Outlet> implements OutletBeanLocal {
-    
+
     @EJB
     private PersonaBeanLocal personaBeanLocal;
     @EJB
@@ -69,6 +69,15 @@ public class OutletBean extends BusinessTransaction<Outlet> implements OutletBea
         } catch (Exception e) {
             throw new DiageoNegocioException(e, e.getMessage());
         }
+    }
+
+    @Override
+    public List<Outlet> findByDistributor(Integer idDistri) {
+        List<Outlet> list = super.searchByNamedQuery(Outlet.class, Outlet.FIND_BY_DISTRI, idDistri);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
     }
 
 }

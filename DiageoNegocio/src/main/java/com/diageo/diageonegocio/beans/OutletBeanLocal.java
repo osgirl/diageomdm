@@ -24,5 +24,7 @@ public interface OutletBeanLocal {
     public List<Outlet> consultarTodosOutlets();
 
     public Outlet consultarId(Integer id) throws DiageoNegocioException;
+
+    public List<Outlet> findByDistributor(Integer idDistri);
     
 }

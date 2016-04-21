@@ -20,7 +20,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 /**
@@ -30,24 +32,18 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "outlet")
 @NamedQueries({
-    @NamedQuery(name = Outlet.FIND_ALL, query = "SELECT e FROM Outlet e")
-    })
+    @NamedQuery(name = Outlet.FIND_ALL, query = "SELECT e FROM Outlet e"),
+    @NamedQuery(name = Outlet.FIND_BY_DISTRI, query = "SELECT e FROM Outlet e WHERE e.idDistribuidor.idDistribuidor=?1"),})
 public class Outlet implements Serializable {
 
-    @JoinColumn(name = "id_potencial", referencedColumnName = "id_potencial")
-    @ManyToOne
-    private Potencial idPotencial;
-    @JoinColumn(name = "id_distribuidor", referencedColumnName = "id_distribuidor")
-    @ManyToOne
-    private Distribuidor idDistribuidor;
-
-    public static final String FIND_ALL="Outlet.findAll";
+    public static final String FIND_ALL = "Outlet.findAll";
+    public static final String FIND_BY_DISTRI = "Outlet.findByDistributor";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
     @Column(name = "idestablecimiento")
-    private Integer idestablecimiento;   
+    private Integer idestablecimiento;
     @Size(max = 100)
     @Column(name = "correoelectronico")
     private String correoelectronico;
@@ -95,6 +91,20 @@ public class Outlet implements Serializable {
     @JoinColumn(name = "idbattledground", referencedColumnName = "idbattleground")
     @ManyToOne
     private Battleground idbattledground;
+    @JoinColumn(name = "id_potencial", referencedColumnName = "id_potencial")
+    @ManyToOne
+    private Potencial idPotencial;
+    @JoinColumn(name = "id_distribuidor", referencedColumnName = "id_distribuidor")
+    @ManyToOne
+    private Distribuidor idDistribuidor;
+    @JoinColumn(name = "IdStateOutlet", referencedColumnName = "idSateOutlet")
+    @ManyToOne
+    private Sateoutlet idStateOutlet;
+    @Column(name = "MessageReject")
+    private String messageReject;
+
+    @Transient
+    private boolean disabledButtonEdit;
 
     public Outlet() {
     }
@@ -229,7 +239,7 @@ public class Outlet implements Serializable {
 
     public void setIdbattledground(Battleground idbattledground) {
         this.idbattledground = idbattledground;
-    }        
+    }
 
     public Potencial getIdPotencial() {
         return idPotencial;
@@ -245,6 +255,30 @@ public class Outlet implements Serializable {
 
     public void setIdDistribuidor(Distribuidor idDistribuidor) {
         this.idDistribuidor = idDistribuidor;
+    }
+
+    public boolean isDisabledButtonEdit() {
+        return disabledButtonEdit;
+    }
+
+    public void setDisabledButtonEdit(boolean disabledButtonEdit) {
+        this.disabledButtonEdit = disabledButtonEdit;
+    }
+
+    public Sateoutlet getIdStateOutlet() {
+        return idStateOutlet;
+    }
+
+    public void setIdStateOutlet(Sateoutlet idStateOutlet) {
+        this.idStateOutlet = idStateOutlet;
+    }
+
+    public String getMessageReject() {
+        return messageReject;
+    }
+
+    public void setMessageReject(String messageReject) {
+        this.messageReject = messageReject;
     }
 
     @Override
@@ -271,5 +305,5 @@ public class Outlet implements Serializable {
     public String toString() {
         return "com.diageo.diageonegocio.entidades.Outlet[ idestablecimiento=" + idestablecimiento + " ]";
     }
-    
+
 }

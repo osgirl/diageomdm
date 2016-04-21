@@ -8,6 +8,7 @@ package com.diageo.diageonegocio.entidades;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -31,10 +32,12 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Distribuidor.findAll", query = "SELECT d FROM Distribuidor d"),
     @NamedQuery(name = "Distribuidor.findByIdDistribuidor", query = "SELECT d FROM Distribuidor d WHERE d.idDistribuidor = ?1"),
     @NamedQuery(name = Distribuidor.FIND_BY_IS_PADRE, query = "SELECT d FROM Distribuidor d WHERE d.isPadre = ?1"),
+    @NamedQuery(name = Distribuidor.FIND_BY_PADRE, query = "SELECT d FROM Distribuidor d WHERE d.padreIdDistribuidor.idDistribuidor = ?1"),
     @NamedQuery(name = "Distribuidor.findByNombre", query = "SELECT d FROM Distribuidor d WHERE d.nombre = ?1")})
 public class Distribuidor implements Serializable {
 
     public static final String FIND_BY_IS_PADRE = "Distribuidor.findByIsPadre";
+    public static final String FIND_BY_PADRE = "Distribuidor.findByPadre";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,10 +60,13 @@ public class Distribuidor implements Serializable {
     @JoinColumn(name = "idDepartamento", referencedColumnName = "iddepartamento")
     @ManyToOne
     private Departamento idDepartamento;
-    @Column(name = "PadreIdDistribuidor")
-    private Integer padreIdDistribuidor;
-    @Column(name = "distributor")
-    private Integer distributor;
+    @OneToMany(mappedBy = "padreIdDistribuidor")
+    private List<Distribuidor> distribuidorList;
+    @JoinColumn(name = "PadreIdDistribuidor", referencedColumnName = "id_distribuidor")
+    @ManyToOne
+    private Distribuidor padreIdDistribuidor;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "distribuidor")
+    private List<Permissionsegment> permissionsegmentList;
 
     public Distribuidor() {
     }
@@ -125,20 +131,28 @@ public class Distribuidor implements Serializable {
         this.isDepto = isDepto;
     }
 
-    public Integer getPadreIdDistribuidor() {
+    public List<Distribuidor> getDistribuidorList() {
+        return distribuidorList;
+    }
+
+    public void setDistribuidorList(List<Distribuidor> distribuidorList) {
+        this.distribuidorList = distribuidorList;
+    }
+
+    public Distribuidor getPadreIdDistribuidor() {
         return padreIdDistribuidor;
     }
 
-    public void setPadreIdDistribuidor(Integer padreIdDistribuidor) {
+    public void setPadreIdDistribuidor(Distribuidor padreIdDistribuidor) {
         this.padreIdDistribuidor = padreIdDistribuidor;
     }
 
-    public Integer getDistributor() {
-        return distributor;
+    public List<Permissionsegment> getPermissionsegmentList() {
+        return permissionsegmentList;
     }
 
-    public void setDistributor(Integer distributor) {
-        this.distributor = distributor;
+    public void setPermissionsegmentList(List<Permissionsegment> permissionsegmentList) {
+        this.permissionsegmentList = permissionsegmentList;
     }
 
     @Override

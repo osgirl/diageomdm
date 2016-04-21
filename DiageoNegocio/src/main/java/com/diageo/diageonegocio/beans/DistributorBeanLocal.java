@@ -26,5 +26,7 @@ public interface DistributorBeanLocal {
     public Distribuidor updateDistributor(Distribuidor distri) throws DiageoNegocioException;
 
     public List<Distribuidor> searchADistributorPadre(String isPadre);
+
+    public List<Distribuidor> searchDistributorByPadre(Integer padre);
     
 }
