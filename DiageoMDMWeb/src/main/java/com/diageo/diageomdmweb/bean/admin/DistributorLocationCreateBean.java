@@ -49,7 +49,7 @@ public class DistributorLocationCreateBean extends DistributorCreate {
 
     public void createLocatorDistributor() {
         Distribuidor distri = new Distribuidor();
-        distri.setPadreIdDistribuidor(getSelectedDistributor().getIdDistribuidor());
+        distri.setPadreIdDistribuidor(getSelectedDistributor());
         distri.setIsPadre("0");
         switch (getTypeLocation()) {
             case DEPTO:                

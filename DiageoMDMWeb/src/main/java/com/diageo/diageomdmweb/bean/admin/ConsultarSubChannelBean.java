@@ -7,7 +7,7 @@ package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
-import com.diageo.diageonegocio.EstadosDiageo;
+import com.diageo.diageonegocio.enums.EstadosDiageo;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
 import com.diageo.diageonegocio.entidades.Channel;

@@ -25,11 +25,29 @@ import javax.validation.constraints.Pattern;
 import org.apache.commons.codec.digest.DigestUtils;
 import com.diageo.admincontrollerweb.beans.UserBeanLocal;
 import com.diageo.admincontrollerweb.beans.ModuleBeanLocal;
-import com.diageo.admincontrollerweb.entities.PermissionSegment;
 import com.diageo.admincontrollerweb.enums.ProfileEnum;
+import com.diageo.diageomdmweb.bean.LoginBean;
+import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.DistributorBeanLocal;
+import com.diageo.diageonegocio.beans.PotencialBeanLocal;
+import com.diageo.diageonegocio.beans.SegmentoBeanLocal;
+import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
+import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
+import com.diageo.diageonegocio.entidades.Channel;
+import com.diageo.diageonegocio.entidades.Departamento;
 import com.diageo.diageonegocio.entidades.Distribuidor;
+import com.diageo.diageonegocio.entidades.Municipio;
+import com.diageo.diageonegocio.entidades.Permissionsegment;
+import com.diageo.diageonegocio.entidades.PermissionsegmentPK;
+import com.diageo.diageonegocio.entidades.Potencial;
+import com.diageo.diageonegocio.entidades.Segmento;
+import com.diageo.diageonegocio.entidades.SubChannel;
+import com.diageo.diageonegocio.entidades.SubSegmento;
+import com.diageo.diageonegocio.enums.FatherDistributorEnum;
+import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import java.util.ArrayList;
 import java.util.List;
+import javax.inject.Inject;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -60,6 +78,19 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      */
     @EJB
     private DistributorBeanLocal distributorBeanLocal;
+    @EJB
+    private PotencialBeanLocal potencialBeanLocal;
+    @EJB
+    private ChannelBeanLocal channelBeanLocal;
+    @EJB
+    private SubChannelBeanLocal subChannelBeanLocal;
+    @EJB
+    private SegmentoBeanLocal segmentoBeanLocal;
+    @EJB
+    private SubSegmentoBeanLocal subSegmentoBeanLocal;
+
+    @Inject
+    private LoginBean loginBean;
     /**
      * Nombres
      */
@@ -123,17 +154,23 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      */
     private boolean potentialCheck;
     /**
-     * Chain Permissions
-     */
-    private PermissionSegment permissionSegment;
-    /**
      * List distributor
      */
     private List<Distribuidor> listDistributor;
+    private List<Distribuidor> listDistributorSon;
+    private List<Permissionsegment> listDistributorAddToUser;
+    private List<Potencial> listPotential;
+    private List<Channel> listChannel;
     /**
      * Distributor selected
      */
     private Distribuidor distributorSelected;
+    private Potencial potentialSelected;
+    private Channel channelSelected;
+    private SubChannel subChannelSelected;
+    private Segmento segmentSelected;
+    private SubSegmento subSegmentSelected;
+    private Permissionsegment permissionsegmentSelected;
 
     /**
      * Creates a new instance of GestionarUsuarioCreacion
@@ -148,8 +185,21 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     public void init() {
         setPerfil(new Perfil());
         setTipoDocumento(new TipoDoc());
-        permissionSegment = new PermissionSegment();
-        setListDistributor(distributorBeanLocal.searchADistributorPadre("0"));
+        setListDistributor(distributorBeanLocal.searchADistributorPadre(FatherDistributorEnum.FATHER.getIsPadre()));
+        setListDistributorSon(distributorBeanLocal.searchDistributorByPadre(getListDistributor().get(0).getIdDistribuidor()));
+        setListDistributorAddToUser(new ArrayList<Permissionsegment>());
+        //segmentation
+        setListPotential(potencialBeanLocal.constultarTodosPotenciales());
+        setListChannel(channelBeanLocal.consultarTodosChannel());
+        initList();
+    }
+
+    private void initList() {
+        setPotentialSelected(getListPotential().get(0));
+        setChannelSelected(getListChannel().get(0));
+        setSubChannelSelected(getChannelSelected().getSubChannelList().get(0));
+        setSegmentSelected(getSubChannelSelected().getSegmentoList().get(0));
+        setSubSegmentSelected(getSegmentSelected().getSubSegmentoList().get(0));
     }
 
     /**
@@ -171,8 +221,8 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
                 usu.setIntentosFallidos(0);
                 usu.setPrimerIngreso(UserEntryEnum.FIRST_ENTRY.getState());
                 usu.setModuloList(perfil.getModuloList());
-                usu.setPermissionSegment(permissionSegment);
-                usuarioBean.createUser(usu);
+                usu.setDistributor(getDistributorSelected().getIdDistribuidor());
+                usuarioBean.createUser(usu,getListDistributorAddToUser());
                 for (Modulo mod : getPerfil().getModuloList()) {
                     mod.getUsuarioList().add(usu);
                     moduloBean.createUserModule(mod);
@@ -187,6 +237,69 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
 
     public void listenerDetailEdition() {
         detailEdition = !((getPerfil().getIdperfil().equals(ProfileEnum.ADMINISTRATOR.getId())) || (getPerfil().getIdperfil().equals(ProfileEnum.DATA_STEWARD.getId())));
+    }
+
+    public void listenerFindDistributorSonByFather() {
+        setListDistributorSon(distributorBeanLocal.searchDistributorByPadre(distributorSelected.getIdDistribuidor()));
+    }
+
+    public void addDistributorToUser(Distribuidor distriSon) {
+        for (Permissionsegment d : getListDistributorAddToUser()) {
+            if (d.getDistribuidor().getIdDistribuidor().equals(distriSon.getIdDistribuidor())) {
+                showWarningMessage(capturarValor("usu_mjs_distri_exists"));
+                return;
+            }
+        }
+        Distribuidor di = new Distribuidor();
+        di.setIdDepartamento(distriSon.getIdDepartamento() == null ? new Departamento() : distriSon.getIdDepartamento());
+        di.setIdDistribuidor(distriSon.getIdDistribuidor());
+        di.setIdMunicipio(distriSon.getIdMunicipio() == null ? new Municipio() : distriSon.getIdMunicipio());
+        di.setIsDepto(distriSon.getIsDepto());
+        di.setIsPadre(distriSon.getIsPadre());
+        di.setNombre(distriSon.getNombre());
+        di.setPadreIdDistribuidor(distriSon.getPadreIdDistribuidor());
+        Permissionsegment ps = new Permissionsegment();
+        PermissionsegmentPK permissionsegmentPK = new PermissionsegmentPK();
+        permissionsegmentPK.setIdDistributor(di.getIdDistribuidor());
+        ps.setDistribuidor(di);
+        ps.setPermissionsegmentPK(permissionsegmentPK);
+        getListDistributorAddToUser().add(ps);
+    }
+
+    public void removeDistributorToUser(Permissionsegment distriSon) {
+        getListDistributorAddToUser().remove(distriSon);
+    }
+
+    public void seeDetailDistributorAddedUser(Permissionsegment permission) {
+        setPermissionsegmentSelected(permission);
+        getPermissionsegmentSelected().setDistribuidor(permission.getDistribuidor());
+        //Assign primary key        
+        getPermissionsegmentSelected().setPermissionsegmentPK(permission.getPermissionsegmentPK());
+        //BooleanCheck
+        setChannelCheck(permission.getChannelCheck() != null ? (permission.getChannelCheck().equals(StateEnum.ACTIVE.getState())) : false);
+        setSubChannelCheck(permission.getSubChannelCheck() != null ? (permission.getSubChannelCheck().equals(StateEnum.ACTIVE.getState())) : false);
+        setSegmentCheck(permission.getSegmentoCheck() != null ? (permission.getSegmentoCheck().equals(StateEnum.ACTIVE.getState())) : false);
+        setSubSegmentCheck(permission.getSubSegmentCheck() != null ? (permission.getSubSegmentCheck().equals(StateEnum.ACTIVE.getState())) : false);
+        setPotentialCheck(permission.getPotentialCheck() != null ? (permission.getPotentialCheck().equals(StateEnum.ACTIVE.getState())) : false);
+        //Objects segmentation
+        if (permission.getChannel() != null) {
+            try {
+                setChannelSelected(channelBeanLocal.consultarId(permission.getChannel()));
+                setSubChannelSelected(subChannelBeanLocal.consultarId(permission.getSubChannel()));
+                setSegmentSelected(segmentoBeanLocal.consultarId(permission.getSegmento()));
+                setSubSegmentSelected(subSegmentoBeanLocal.consultarId(permission.getSubSegmento()));
+                setPotentialSelected(potencialBeanLocal.consultarId(permission.getPotencial()));
+            } catch (DiageoNegocioException ex) {
+                Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, ex.getMessage());
+            }
+        } else {
+            setPotentialSelected(getListPotential().get(0));
+            setChannelSelected(getListChannel().get(0));
+            setSubChannelSelected(getChannelSelected().getSubChannelList().get(0));
+            setSegmentSelected(getSubChannelSelected().getSegmentoList().get(0));
+            setSubSegmentSelected(getSegmentSelected().getSubSegmentoList().get(0));
+        }
+        RequestContext.getCurrentInstance().execute("PF('wvChain').show();");
     }
 
     public void selectAllChain() {
@@ -206,25 +319,29 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     }
 
     public void aceptChangesChain() {
-        permissionSegment = addPermissionUser();
+        LOG.log(Level.INFO, ("isChainCheck()" + isChannelCheck()));
+        getPermissionsegmentSelected().setChannelCheck(isChannelCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        getPermissionsegmentSelected().setSubChannelCheck(isSubChannelCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        getPermissionsegmentSelected().setSegmentoCheck(isSegmentCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        getPermissionsegmentSelected().setSubSegmentCheck(isSubSegmentCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        getPermissionsegmentSelected().setPotentialCheck(isPotentialCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        getPermissionsegmentSelected().setChannel(getChannelSelected().getIdchannel());
+        getPermissionsegmentSelected().setSubChannel(getSubChannelSelected().getIdsubchannel());
+        getPermissionsegmentSelected().setSegmento(getSegmentSelected().getIdsegmento());
+        getPermissionsegmentSelected().setSubSegmento(getSubSegmentSelected().getIdsubSegmento());
+        getPermissionsegmentSelected().setPotencial(getPotentialSelected().getIdPotencial());
+        //cancelChangesChain();
         RequestContext.getCurrentInstance().execute("PF('wvChain').hide();");
     }
 
     public void cancelChangesChain() {
         unSelectAllChain();
-        permissionSegment = addPermissionUser();
+        setPotentialSelected(getListPotential().get(0));
+        setChannelSelected(getListChannel().get(0));
+        setSubChannelSelected(getChannelSelected().getSubChannelList().get(0));
+        setSegmentSelected(getSubChannelSelected().getSegmentoList().get(0));
+        setSubSegmentSelected(getSegmentSelected().getSubSegmentoList().get(0));
         RequestContext.getCurrentInstance().execute("PF('wvChain').hide();");
-    }
-
-    private PermissionSegment addPermissionUser() {
-        PermissionSegment ps = new PermissionSegment();
-        ps.setChannel(isChannelCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-        System.out.println(isChannelCheck());
-        ps.setSubChannel(isSubChannelCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-        ps.setSegmento(isSegmentCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-        ps.setSubSegmento(isSubSegmentCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-        ps.setPotencial(isPotentialCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-        return ps;
     }
 
     /**
@@ -480,6 +597,160 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      */
     public void setDistributorSelected(Distribuidor distributorSelected) {
         this.distributorSelected = distributorSelected;
+    }
+
+    /**
+     * @return the listDistributorSon
+     */
+    public List<Distribuidor> getListDistributorSon() {
+        return listDistributorSon;
+    }
+
+    /**
+     * @param listDistributorSon the listDistributorSon to set
+     */
+    public void setListDistributorSon(List<Distribuidor> listDistributorSon) {
+        this.listDistributorSon = listDistributorSon;
+    }
+
+    /**
+     * @return the listDistributorAddToUser
+     */
+    public List<Permissionsegment> getListDistributorAddToUser() {
+        return listDistributorAddToUser;
+    }
+
+    /**
+     * @param listDistributorAddToUser the listDistributorAddToUser to set
+     */
+    public void setListDistributorAddToUser(List<Permissionsegment> listDistributorAddToUser) {
+        this.listDistributorAddToUser = listDistributorAddToUser;
+    }
+
+    /**
+     * @return the listPotential
+     */
+    public List<Potencial> getListPotential() {
+        return listPotential;
+    }
+
+    /**
+     * @param listPotential the listPotential to set
+     */
+    public void setListPotential(List<Potencial> listPotential) {
+        this.listPotential = listPotential;
+    }
+
+    /**
+     * @return the potentialSelected
+     */
+    public Potencial getPotentialSelected() {
+        return potentialSelected;
+    }
+
+    /**
+     * @param potentialSelected the potentialSelected to set
+     */
+    public void setPotentialSelected(Potencial potentialSelected) {
+        this.potentialSelected = potentialSelected;
+    }
+
+    /**
+     * @return the listChannel
+     */
+    public List<Channel> getListChannel() {
+        return listChannel;
+    }
+
+    /**
+     * @param listChannel the listChannel to set
+     */
+    public void setListChannel(List<Channel> listChannel) {
+        this.listChannel = listChannel;
+    }
+
+    /**
+     * @return the channelSelected
+     */
+    public Channel getChannelSelected() {
+        return channelSelected;
+    }
+
+    /**
+     * @param channelSelected the channelSelected to set
+     */
+    public void setChannelSelected(Channel channelSelected) {
+        this.channelSelected = channelSelected;
+    }
+
+    /**
+     * @return the subChannelSelected
+     */
+    public SubChannel getSubChannelSelected() {
+        return subChannelSelected;
+    }
+
+    /**
+     * @param subChannelSelected the subChannelSelected to set
+     */
+    public void setSubChannelSelected(SubChannel subChannelSelected) {
+        this.subChannelSelected = subChannelSelected;
+    }
+
+    /**
+     * @return the segmentSelected
+     */
+    public Segmento getSegmentSelected() {
+        return segmentSelected;
+    }
+
+    /**
+     * @param segmentSelected the segmentSelected to set
+     */
+    public void setSegmentSelected(Segmento segmentSelected) {
+        this.segmentSelected = segmentSelected;
+    }
+
+    /**
+     * @return the subSegmentSelected
+     */
+    public SubSegmento getSubSegmentSelected() {
+        return subSegmentSelected;
+    }
+
+    /**
+     * @param subSegmentSelected the subSegmentSelected to set
+     */
+    public void setSubSegmentSelected(SubSegmento subSegmentSelected) {
+        this.subSegmentSelected = subSegmentSelected;
+    }
+
+    /**
+     * @return the permissionsegmentSelected
+     */
+    public Permissionsegment getPermissionsegmentSelected() {
+        return permissionsegmentSelected;
+    }
+
+    /**
+     * @param permissionsegmentSelected the permissionsegmentSelected to set
+     */
+    public void setPermissionsegmentSelected(Permissionsegment permissionsegmentSelected) {
+        this.permissionsegmentSelected = permissionsegmentSelected;
+    }
+
+    /**
+     * @return the loginBean
+     */
+    public LoginBean getLoginBean() {
+        return loginBean;
+    }
+
+    /**
+     * @param loginBean the loginBean to set
+     */
+    public void setLoginBean(LoginBean loginBean) {
+        this.loginBean = loginBean;
     }
 
 }

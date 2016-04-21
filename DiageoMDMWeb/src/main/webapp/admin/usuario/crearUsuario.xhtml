@@ -14,7 +14,7 @@
         </style>        
         <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
             <ui:define name="content">
-                <h:form id="formCrearUsuario" style="z-index: 10">                    
+                <h:form id="formCrearUsuario">                    
                     <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
                         <h:panelGroup style="width:70%">
                             <h:panelGrid columns="4" style="width: 70%">
@@ -53,26 +53,66 @@
                             <h:panelGroup id="pgEditDetail">
                                 <h:panelGroup rendered="#{gestionarUsuarioCreacion.detailEdition}">
                                     <p:separator/>
-                                    <h:panelGrid columns="3" width="30%">
-                                        <h:outputLabel value="#{msg.usu_chain}"/>
-                                        <p:selectBooleanCheckbox label="#{msg.usu_chain}" value="#{gestionarUsuarioCreacion.chainCheck}">
-                                            <p:ajax update="clChain" process="@this"/>
-                                        </p:selectBooleanCheckbox>
-                                        <p:commandLink id="clChain" value="#{msg.usu_edit_level}" style="color: blue" onclick="PF('wvChain').show();" disabled="#{!gestionarUsuarioCreacion.chainCheck}"/>
+                                    <h:panelGrid columns="2" width="30%">
                                         <h:outputLabel value="#{msg.out_distribuidor}"/>
                                         <p:selectBooleanCheckbox label="#{msg.out_distribuidor}" value="#{gestionarUsuarioCreacion.distributorCheck}">
-                                            <p:ajax update="clDistributor" process="@this"/>
+                                            <p:ajax process="@this" update="pgDistri"/>
+                                        </p:selectBooleanCheckbox>                                                                                
+
+                                        <h:outputLabel value="#{msg.usu_chain}"/>
+                                        <p:selectBooleanCheckbox label="#{msg.usu_chain}" value="#{gestionarUsuarioCreacion.chainCheck}">
+                                            <p:ajax process="@this"/>
                                         </p:selectBooleanCheckbox>
-                                        <p:commandLink id="clDistributor" value="#{msg.usu_edit_level}" style="color: blue" disabled="#{!gestionarUsuarioCreacion.distributorCheck}"/>
-                                        <h:outputLabel value="#{msg.out_distribuidor}"/>
-                                        <p:selectOneMenu value="#{gestionarUsuarioCreacion.distributorSelected}" converter="distribuidorConverter">
-                                            <f:selectItems value="#{gestionarUsuarioCreacion.listDistributor}" var="distri" itemLabel="#{distri.nombre}"/>
-                                        </p:selectOneMenu>
                                     </h:panelGrid>
+                                    <p:separator/>
+                                    <h:panelGroup id="pgDistri">
+                                        <h:panelGroup id="pgDistriRendered" rendered="#{gestionarUsuarioCreacion.distributorCheck}">
+                                            <h:panelGrid columns="3" width="90%">
+                                                <h:outputLabel value="#{msg.out_distribuidor}"/>
+                                                <p:selectOneMenu id="somDistriFather" value="#{gestionarUsuarioCreacion.distributorSelected}" converter="distribuidorConverter">
+                                                    <f:selectItems value="#{gestionarUsuarioCreacion.listDistributor}" var="distri" itemLabel="#{distri.nombre}"/>
+                                                </p:selectOneMenu>
+                                                <p:commandButton value="#{msg.btn_acept}" process="@this somDistriFather" actionListener="#{gestionarUsuarioCreacion.listenerFindDistributorSonByFather()}"
+                                                                 update="formCrearUsuario:tableDistributorSon"/>                                                
+                                            </h:panelGrid>
+                                            <br/><br/>
+                                            <p:dataTable id="tableDistributorSon" value="#{gestionarUsuarioCreacion.listDistributorSon}" var="tableDistriSon"
+                                                         paginatorAlwaysVisible="false" rows="10"  paginator="true"
+                                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                                                <p:column headerText="#{msg.out_distribuidor}">
+                                                    <h:outputLabel value="#{tableDistriSon.nombre}"/>
+                                                </p:column>
+                                                <p:column>
+                                                    <p:commandLink value="#{msg.btn_add}" actionListener="#{gestionarUsuarioCreacion.addDistributorToUser(tableDistriSon)}" 
+                                                                   style="color: blue" process="@this" update="formCrearUsuario:tableAllDistributorToEdit formCrearUsuario:mCamPas"/>
+                                                </p:column>
+                                            </p:dataTable>
+                                            <p:separator/>
+                                            <h:outputLabel value="#{msg.usu_add_to_user}"/>
+                                            <br/><br/>
+                                            <p:dataTable id="tableAllDistributorToEdit" value="#{gestionarUsuarioCreacion.listDistributorAddToUser}"
+                                                         var="tableDistriToSon"
+                                                         paginatorAlwaysVisible="false" rows="10"  paginator="true"
+                                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                                                <p:column headerText="#{msg.out_distribuidor}">
+                                                    <h:outputLabel value="#{tableDistriToSon.distribuidor.nombre}"/>
+                                                </p:column>
+                                                <p:column>
+                                                    <p:commandLink value="#{msg.btn_detalle}" style="color: blue" process="@this" update=":formCreateUserModal"
+                                                                   actionListener="#{gestionarUsuarioCreacion.seeDetailDistributorAddedUser(tableDistriToSon)}"/>
+                                                </p:column>
+                                                <p:column>
+                                                    <p:commandLink value="#{msg.btn_remove}" style="color: blue" update="formCrearUsuario:tableAllDistributorToEdit "
+                                                                   process="@this"
+                                                                   actionListener="#{gestionarUsuarioCreacion.removeDistributorToUser(tableDistriToSon)}"/>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </h:panelGroup>
+                                    </h:panelGroup>
                                 </h:panelGroup>
                             </h:panelGroup>
                             <br/>                        
-                            <p:commandButton id="cbSend" value="#{msg.btn_send}" process="@parent :formCreateUserModal:sbchChannel" update="@form" actionListener="#{gestionarUsuarioCreacion.crearUsuario()}"
+                            <p:commandButton id="cbSend" value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{gestionarUsuarioCreacion.crearUsuario()}"
                                              styleClass="button" style="width: 10%;left: 35%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"                                        
                                              /> 
                             <br/><br/>   
@@ -81,7 +121,7 @@
                         </h:panelGroup>
                     </div>
                 </h:form>
-            </ui:define>            
+            </ui:define> 
         </ui:composition>
         <h:form id="formCreateUserModal">                
             <p:dialog id="dChain" modal="true" width="40%" header="#{msg.usu_edit_detail}" widgetVar="wvChain" resizable="false">
@@ -89,30 +129,48 @@
                 <h:panelGroup id="pgSegment">
                     <h:outputLabel value="#{msg.out_seg_functional}"/>
                     <br/><br/>
-                    <p:panelGrid columns="2" style="width: 90%">
+                    <p:panelGrid columns="3" style="width: 90%">
                         <h:outputLabel value="#{msg.can_canal}"/>
-                        <p:selectBooleanCheckbox id="sbchChannel" value="#{gestionarUsuarioCreacion.channelCheck}"/>
+                        <p:selectBooleanCheckbox value="#{gestionarUsuarioCreacion.channelCheck}"/>                                                  
+                        <p:selectOneMenu style="width: 80%" value="#{gestionarUsuarioCreacion.channelSelected}" converter="channelConverter">
+                            <f:selectItems value="#{gestionarUsuarioCreacion.listChannel}" var="cha" itemLabel="#{cha.nombre}"/>
+                            <p:ajax update="@parent" process="@parent"/>
+                        </p:selectOneMenu>
                         <h:outputLabel value="#{msg.sub_subcanal}"/>
-                        <p:selectBooleanCheckbox value="#{gestionarUsuarioCreacion.subChannelCheck}"/>
+                        <p:selectBooleanCheckbox id="sbchSubcha" value="#{gestionarUsuarioCreacion.subChannelCheck}"/>
+                        <p:selectOneMenu style="width: 80%" value="#{gestionarUsuarioCreacion.subChannelSelected}" converter="subChannelConverter">
+                            <f:selectItems value="#{gestionarUsuarioCreacion.channelSelected.subChannelList}" var="subcha" itemLabel="#{subcha.nombre}"/>
+                            <p:ajax update="@parent" process="@parent"/>
+                        </p:selectOneMenu>
                         <h:outputLabel value="#{msg.seg_segmento}"/>
-                        <p:selectBooleanCheckbox value="#{gestionarUsuarioCreacion.segmentCheck}"/>
+                        <p:selectBooleanCheckbox id="sbchSeg" value="#{gestionarUsuarioCreacion.segmentCheck}"/>
+                        <p:selectOneMenu style="width: 80%" converter="segmentoConverter" value="#{gestionarUsuarioCreacion.segmentSelected}">
+                            <f:selectItems value="#{gestionarUsuarioCreacion.subChannelSelected.segmentoList}" var="seg" itemLabel="#{seg.nombre}"/>
+                            <p:ajax update="@parent" process="@parent"/>
+                        </p:selectOneMenu>
                         <h:outputLabel value="#{msg.sub_seg_subsegmento}"/>
-                        <p:selectBooleanCheckbox value="#{gestionarUsuarioCreacion.subSegmentCheck}"/>
+                        <p:selectBooleanCheckbox id="sbchSubseg" value="#{gestionarUsuarioCreacion.subSegmentCheck}"/>
+                        <p:selectOneMenu style="width: 80%" value="#{gestionarUsuarioCreacion.subSegmentSelected}" converter="subSegmentoConverter">
+                            <f:selectItems value="#{gestionarUsuarioCreacion.segmentSelected.subSegmentoList}" var="subseg" itemLabel="#{subseg.nomnbre}"/>
+                        </p:selectOneMenu>
                     </p:panelGrid>
                     <br/>
                     <p:separator/>
                     <br/>
                     <h:outputLabel value="#{msg.out_seg_potential}"/>
                     <br/><br/>
-                    <p:panelGrid columns="2" style="width: 90%">
+                    <p:panelGrid columns="3" style="width: 90%">
                         <h:outputLabel value="#{msg.out_potencial}"/>
                         <p:selectBooleanCheckbox value="#{gestionarUsuarioCreacion.potentialCheck}"/>
+                        <p:selectOneMenu style="width: 80%" value="#{gestionarUsuarioCreacion.potentialSelected}" converter="potencialConverter">
+                            <f:selectItems value="#{gestionarUsuarioCreacion.listPotential}" var="pot" itemLabel="#{pot.nombre}"/>
+                        </p:selectOneMenu>
                     </p:panelGrid>
                     <br/>
                     <h:panelGrid columns="4">
                         <p:commandButton value="#{msg.btn_select_all}" process="@all" update="pgSegment" actionListener="#{gestionarUsuarioCreacion.selectAllChain()}" styleClass="button" style="width: 100%"/>
                         <p:commandButton value="#{msg.btn_unselect_all}" process="@all" update="pgSegment" actionListener="#{gestionarUsuarioCreacion.unSelectAllChain()}" styleClass="button" style="width: 100%"/>
-                        <p:commandButton value="#{msg.btn_acept}" process="@all" update="@form" actionListener="#{gestionarUsuarioCreacion.aceptChangesChain()}" styleClass="button" style="width: 100%"/>
+                        <p:commandButton value="#{msg.btn_acept}" process="@all" update="@form" actionListener="#{gestionarUsuarioCreacion.aceptChangesChain()}" styleClass="button" style="width: 100%"/>                        
                         <p:commandButton value="#{msg.btn_cancel}" process="@all" update="@form" actionListener="#{gestionarUsuarioCreacion.cancelChangesChain()}" styleClass="button" style="width: 100%"/>
                     </h:panelGrid>
                 </h:panelGroup>

@@ -5,7 +5,7 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
-import com.diageo.diageonegocio.EstadosDiageo;
+import com.diageo.diageonegocio.enums.EstadosDiageo;
 import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
 import com.diageo.diageonegocio.entidades.Segmento;
 import com.diageo.diageonegocio.entidades.SubSegmento;

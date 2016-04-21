@@ -30,10 +30,14 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.primefaces.model.menu.BaseMenuModel;
 import org.primefaces.model.menu.DefaultMenuItem;
 import org.primefaces.model.menu.DefaultMenuModel;
-import org.primefaces.model.menu.DefaultSubMenu;
 import org.primefaces.model.menu.MenuElement;
 import org.primefaces.model.menu.MenuModel;
 import com.diageo.admincontrollerweb.beans.UserBeanLocal;
+import com.diageo.diageonegocio.beans.OutletBeanLocal;
+import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
+import com.diageo.diageonegocio.entidades.Outlet;
+import com.diageo.diageonegocio.entidades.Permissionsegment;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -49,6 +53,10 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     private static final String ESPANOL = "es";
     @EJB
     private UserBeanLocal usuarioLocal;
+    @EJB
+    private PermissionsegmentBeanLocal permissionsegmentBeanLocal;
+    @EJB
+    private OutletBeanLocal outletBeanLocal;
     @Pattern(regexp = PatternConstant.EMAIL_VALIDADOR, message = "{correo.pattern}")
     private List<Modulo> listModulos;
     private String user;
@@ -56,6 +64,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     private Usuario usuario;
     private boolean recordarme;
     private MenuModel migaPan;
+    private List<Permissionsegment> listPermissionSegment;
     /**
      * Idioma seleccionado
      */
@@ -81,6 +90,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
                 setListModulos(getUsuario().getModuloList());
                 session.setAttribute(USUARIO, getUsuario());
                 setPassword(null);
+                findPermissionSegment(getUsuario().getIdusuario());
                 if (getUsuario().getPrimerIngreso().equals(UserEntryEnum.FIRST_ENTRY.getState())) {
                     armarMigaPan(capturarValor("m_perfil"), capturarValor("m_cambiar_contrase"));
                     return "/perfil/cambiarContrasenia/cambiarContrasenia?faces-redirect=true";
@@ -89,6 +99,12 @@ public class LoginBean extends DiageoRootBean implements Serializable {
                     armarMigaPan(capturarValor("m_administrador"), capturarValor("m_usuario"), capturarValor("m_usuario_consultar"));
                     return "/admin/usuario/consultarUsuario?faces-redirect=true";
                 } else {
+                    if (getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.CP_A.getId())) {
+                        if (revisarOutletsPendientesRevision()) {
+                            System.out.println("entro aprobacionoo");
+                            RequestContext.getCurrentInstance().execute("PF('dlgPendiente').show();");                                                        
+                        }
+                    }
                     armarMigaPan(capturarValor("m_outlet"), capturarValor("m_outlet_consultar"));
                     return "/outlet/consultarOutlet?faces-redirect=true";
                 }
@@ -99,6 +115,21 @@ public class LoginBean extends DiageoRootBean implements Serializable {
         showErrorMessage(capturarValor("sis_user_pass"));
         return null;
 
+    }
+
+    private boolean revisarOutletsPendientesRevision() {
+        List<Permissionsegment> listPermi = getListPermissionSegment();
+        for (Permissionsegment permi : listPermi) {
+            List<Outlet> listTemp = outletBeanLocal.findByDistributor(permi.getDistribuidor().getIdDistribuidor());
+            for (Outlet out : listTemp) {
+                if (permi.getSubSegmento().equals(out.getIdsubsegmento().getIdsubSegmento())) {
+                    if (out.getIdStateOutlet().getIdSateOutlet().equals(2)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     public boolean renderizarMenu(String idModulo) {
@@ -155,6 +186,10 @@ public class LoginBean extends DiageoRootBean implements Serializable {
                 }
             }
         }
+    }
+
+    private void findPermissionSegment(Integer idUser) {
+        setListPermissionSegment(permissionsegmentBeanLocal.findByUser(idUser));
     }
 
     @PreDestroy
@@ -318,6 +353,20 @@ public class LoginBean extends DiageoRootBean implements Serializable {
      */
     public void setMigaPan(MenuModel migaPan) {
         this.migaPan = migaPan;
+    }
+
+    /**
+     * @return the listPermissionSegment
+     */
+    public List<Permissionsegment> getListPermissionSegment() {
+        return listPermissionSegment;
+    }
+
+    /**
+     * @param listPermissionSegment the listPermissionSegment to set
+     */
+    public void setListPermissionSegment(List<Permissionsegment> listPermissionSegment) {
+        this.listPermissionSegment = listPermissionSegment;
     }
 
 }

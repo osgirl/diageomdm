@@ -24,9 +24,9 @@ import javax.validation.constraints.Size;
  *
  * @author EDUARDO
  */
-@Named(value = "distributorSearch")
+@Named(value = "distributorLocationSearch")
 @ViewScoped
-public class DistributorSearch extends DiageoRootBean implements Serializable {
+public class DistributorLocationSearch extends DiageoRootBean implements Serializable {
 
     @EJB
     protected DistributorBeanLocal distributorBeanLocal;
@@ -39,12 +39,12 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
     /**
      * Creates a new instance of DistributorSearch
      */
-    public DistributorSearch() {
+    public DistributorLocationSearch() {
     }
 
     @PostConstruct
     public void init() {
-        setListDistributor(distributorBeanLocal.searchADistributorPadre(FatherDistributorEnum.FATHER.getIsPadre()));
+        setListDistributor(distributorBeanLocal.searchADistributorPadre(FatherDistributorEnum.NOT_FATHER.getIsPadre()));
         setSeeDetail(Boolean.TRUE);
         setSelectedDistributor(new Distribuidor());
     }
@@ -61,7 +61,7 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
             distributorBeanLocal.updateDistributor(getSelectedDistributor());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoNegocioException ex) {
-            Logger.getLogger(DistributorSearch.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DistributorLocationSearch.class.getName()).log(Level.SEVERE, null, ex);
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
     }
