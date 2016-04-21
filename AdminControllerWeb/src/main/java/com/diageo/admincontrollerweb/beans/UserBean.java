@@ -8,6 +8,9 @@ package com.diageo.admincontrollerweb.beans;
 import com.diageo.admincontrollerweb.entities.Usuario;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
+import com.diageo.diageonegocio.beans.PermissionsegmentBean;
+import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
+import com.diageo.diageonegocio.entidades.Permissionsegment;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
@@ -28,7 +31,7 @@ public class UserBean extends WebTransaction<Usuario> implements UserBeanLocal {
     @EJB
     private PassContainerBeanLocal passContainerBeanLocal;
     @EJB
-    private PermissionSegmentBeanLocal permissionSegmentBeanLocal;
+    private PermissionsegmentBeanLocal permissionsegmentBeanLocal;
 
     @Override
     public Usuario updateUser(Usuario user) throws ControllerWebException {
@@ -42,12 +45,14 @@ public class UserBean extends WebTransaction<Usuario> implements UserBeanLocal {
     }
 
     @Override
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public Usuario createUser(Usuario user) throws ControllerWebException {
+    public Usuario createUser(Usuario user, List<Permissionsegment> per) throws ControllerWebException {
         try {
             user = super.create(user);
             passContainerBeanLocal.createPassContainer(user.getIdusuario(), user.getContraseina());
-            permissionSegmentBeanLocal.createPermissionSegment(user.getPermissionSegment(),user.getIdusuario());
+            for (Permissionsegment perTemp : per) {
+                perTemp.getPermissionsegmentPK().setIdUsuario(user.getIdusuario());
+            }
+            permissionsegmentBeanLocal.createPermissionSegmentList(per);
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getMessage());
             throw new ControllerWebException(e.getMessage(), e);
