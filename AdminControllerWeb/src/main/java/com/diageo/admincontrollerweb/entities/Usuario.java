@@ -90,13 +90,13 @@ public class Usuario implements Serializable {
     @Column(name = "primerIngreso")
     private String primerIngreso;
     @Column(name = "ingresoExitoso")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date ingresoExitoso;
     @Column(name = "ingresoFallido")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date ingresoFallido;
     @Column(name = "ultimoIngresoExitoso")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date ultimoIngresoExitoso;
     @Column(name = "intentosFallidos")
     private Integer intentosFallidos;
@@ -107,8 +107,8 @@ public class Usuario implements Serializable {
     private Perfil idPerfil;
     @OneToMany(mappedBy = "idUsuario")
     private List<LinkTemporal> linkTemporalList;
-    @OneToOne(mappedBy = "idUser", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private PermissionSegment permissionSegment;
+    @Column(name = "distributor")
+    private Integer distributor;
 
     public Usuario() {
     }
@@ -261,14 +261,6 @@ public class Usuario implements Serializable {
         this.ultimoIngresoExitoso = ultimoIngresoExitoso;
     }
 
-    public PermissionSegment getPermissionSegment() {
-        return permissionSegment;
-    }
-
-    public void setPermissionSegment(PermissionSegment permissionSegment) {
-        this.permissionSegment = permissionSegment;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -300,6 +292,14 @@ public class Usuario implements Serializable {
 
     public void setPassContainerCollection(Collection<PassContainer> passContainerCollection) {
         this.passContainerCollection = passContainerCollection;
+    }
+
+    public Integer getDistributor() {
+        return distributor;
+    }
+
+    public void setDistributor(Integer distributor) {
+        this.distributor = distributor;
     }
 
 }
