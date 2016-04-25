@@ -41,7 +41,10 @@ public enum ModuleEnum {
     S_DISTRI("search distributor"),
     DISTRI_LOCATION("location distributor"),
     S_DISTRI_LOCATION("search location distributor"),
-    C_DISTRI_LOCATION("search location distributor");
+    C_DISTRI_LOCATION("search location distributor"),
+    POTENTIAL("potential"),
+    C_POTENTIAL("create potential"),
+    S_POTENTIAL("search potential");
 
     private final String description;
 
