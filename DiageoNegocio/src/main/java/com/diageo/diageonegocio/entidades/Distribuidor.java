@@ -47,19 +47,11 @@ public class Distribuidor implements Serializable {
     @Size(max = 50)
     @Column(name = "nombre")
     private String nombre;
-    @Column(name = "isDepto")
-    private String isDepto;
     @Size(max = 1)
     @Column(name = "isPadre")
     private String isPadre;
     @OneToMany(mappedBy = "idDistribuidor")
     private List<Outlet> outletList;
-    @JoinColumn(name = "idMunicipio", referencedColumnName = "idmunicipio")
-    @ManyToOne
-    private Municipio idMunicipio;
-    @JoinColumn(name = "idDepartamento", referencedColumnName = "iddepartamento")
-    @ManyToOne
-    private Departamento idDepartamento;
     @OneToMany(mappedBy = "padreIdDistribuidor")
     private List<Distribuidor> distribuidorList;
     @JoinColumn(name = "PadreIdDistribuidor", referencedColumnName = "id_distribuidor")
@@ -99,36 +91,12 @@ public class Distribuidor implements Serializable {
         this.isPadre = isPadre;
     }
 
-    public Municipio getIdMunicipio() {
-        return idMunicipio;
-    }
-
-    public void setIdMunicipio(Municipio idMunicipio) {
-        this.idMunicipio = idMunicipio;
-    }
-
-    public Departamento getIdDepartamento() {
-        return idDepartamento;
-    }
-
-    public void setIdDepartamento(Departamento idDepartamento) {
-        this.idDepartamento = idDepartamento;
-    }
-
     public List<Outlet> getOutletList() {
         return outletList;
     }
 
     public void setOutletList(List<Outlet> outletList) {
         this.outletList = outletList;
-    }
-
-    public String getIsDepto() {
-        return isDepto;
-    }
-
-    public void setIsDepto(String isDepto) {
-        this.isDepto = isDepto;
     }
 
     public List<Distribuidor> getDistribuidorList() {

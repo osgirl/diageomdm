@@ -8,6 +8,7 @@ package com.diageo.diageonegocio.entidades;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -34,6 +35,10 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "SubSegmento.findByNomnbre", query = "SELECT s FROM SubSegmento s WHERE s.nomnbre = :nomnbre"),
     @NamedQuery(name = "SubSegmento.findByEstado", query = "SELECT s FROM SubSegmento s WHERE s.estado = :estado")})
 public class SubSegmento implements Serializable {
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "idSubSegment")
+    private List<Potential> potentialList;
+  
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -133,6 +138,14 @@ public class SubSegmento implements Serializable {
     @Override
     public String toString() {
         return "com.diageo.diageonegocio.entidades.SubSegmento[ idsubSegmento=" + idsubSegmento + " ]";
+    }
+
+    public List<Potential> getPotentialList() {
+        return potentialList;
+    }
+
+    public void setPotentialList(List<Potential> potentialList) {
+        this.potentialList = potentialList;
     }
     
 }

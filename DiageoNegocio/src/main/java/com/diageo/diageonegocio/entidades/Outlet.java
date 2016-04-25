@@ -8,7 +8,6 @@ package com.diageo.diageonegocio.entidades;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -20,7 +19,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
@@ -34,7 +32,7 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = Outlet.FIND_ALL, query = "SELECT e FROM Outlet e"),
     @NamedQuery(name = Outlet.FIND_BY_DISTRI, query = "SELECT e FROM Outlet e WHERE e.idDistribuidor.idDistribuidor=?1"),})
-public class Outlet implements Serializable {
+public class Outlet implements Serializable {    
 
     public static final String FIND_ALL = "Outlet.findAll";
     public static final String FIND_BY_DISTRI = "Outlet.findByDistributor";
@@ -91,9 +89,6 @@ public class Outlet implements Serializable {
     @JoinColumn(name = "idbattledground", referencedColumnName = "idbattleground")
     @ManyToOne
     private Battleground idbattledground;
-    @JoinColumn(name = "id_potencial", referencedColumnName = "id_potencial")
-    @ManyToOne
-    private Potencial idPotencial;
     @JoinColumn(name = "id_distribuidor", referencedColumnName = "id_distribuidor")
     @ManyToOne
     private Distribuidor idDistribuidor;
@@ -102,9 +97,20 @@ public class Outlet implements Serializable {
     private Sateoutlet idStateOutlet;
     @Column(name = "MessageReject")
     private String messageReject;
+    @JoinColumn(name = "IdPotential", referencedColumnName = "IdPotential")
+    @ManyToOne
+    private Potential idPotential;
+    
+    @JoinColumn(name = "IdPotentialManual", referencedColumnName = "IdPotential")
+    @ManyToOne
+    private Potential idPotentialManual;
 
     @Transient
     private boolean disabledButtonEdit;
+    @Transient
+    private boolean approbationMassive;
+    @Transient
+    private boolean renderedApprobationMassive;
 
     public Outlet() {
     }
@@ -241,14 +247,6 @@ public class Outlet implements Serializable {
         this.idbattledground = idbattledground;
     }
 
-    public Potencial getIdPotencial() {
-        return idPotencial;
-    }
-
-    public void setIdPotencial(Potencial idPotencial) {
-        this.idPotencial = idPotencial;
-    }
-
     public Distribuidor getIdDistribuidor() {
         return idDistribuidor;
     }
@@ -304,6 +302,38 @@ public class Outlet implements Serializable {
     @Override
     public String toString() {
         return "com.diageo.diageonegocio.entidades.Outlet[ idestablecimiento=" + idestablecimiento + " ]";
+    }
+
+    public Potential getIdPotential() {
+        return idPotential;
+    }
+
+    public void setIdPotential(Potential idPotential) {
+        this.idPotential = idPotential;
+    }
+
+    public boolean isApprobationMassive() {
+        return approbationMassive;
+    }
+
+    public void setApprobationMassive(boolean approbationMassive) {
+        this.approbationMassive = approbationMassive;
+    }
+
+    public boolean isRenderedApprobationMassive() {
+        return renderedApprobationMassive;
+    }
+
+    public void setRenderedApprobationMassive(boolean renderedApprobationMassive) {
+        this.renderedApprobationMassive = renderedApprobationMassive;
+    }
+
+    public Potential getIdPotentialManual() {
+        return idPotentialManual;
+    }
+
+    public void setIdPotentialManual(Potential idPotentialManual) {
+        this.idPotentialManual = idPotentialManual;
     }
 
 }

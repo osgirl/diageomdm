@@ -30,10 +30,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Departamento.findAll", query = "SELECT d FROM Departamento d"),
     @NamedQuery(name = "Departamento.findByIddepartamento", query = "SELECT d FROM Departamento d WHERE d.iddepartamento = :iddepartamento"),
     @NamedQuery(name = "Departamento.findByNombredepto", query = "SELECT d FROM Departamento d WHERE d.nombredepto = :nombredepto")})
-public class Departamento implements Serializable {
-
-    @OneToMany(mappedBy = "idDepartamento")
-    private List<Distribuidor> distribuidorList;
+public class Departamento implements Serializable {   
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -112,14 +109,6 @@ public class Departamento implements Serializable {
     @Override
     public String toString() {
         return "com.diageo.diageonegocio.entidades.Departamento[ iddepartamento=" + iddepartamento + " ]";
-    }
-
-    public List<Distribuidor> getDistribuidorList() {
-        return distribuidorList;
-    }
-
-    public void setDistribuidorList(List<Distribuidor> distribuidorList) {
-        this.distribuidorList = distribuidorList;
     }
     
 }
