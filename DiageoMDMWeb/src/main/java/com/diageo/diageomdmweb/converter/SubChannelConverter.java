@@ -45,7 +45,7 @@ public class SubChannelConverter implements Converter {
     public String getAsString(FacesContext context, UIComponent component, Object value) {
         if (value == null) {
             return "";
-        }
+        }        
         if (value instanceof SubChannel) {
             SubChannel sc = (SubChannel) value;
             return sc.getIdsubchannel() + "";

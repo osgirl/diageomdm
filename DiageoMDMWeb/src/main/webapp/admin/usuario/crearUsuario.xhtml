@@ -134,24 +134,29 @@
                         <p:selectBooleanCheckbox value="#{gestionarUsuarioCreacion.channelCheck}"/>                                                  
                         <p:selectOneMenu style="width: 80%" value="#{gestionarUsuarioCreacion.channelSelected}" converter="channelConverter">
                             <f:selectItems value="#{gestionarUsuarioCreacion.listChannel}" var="cha" itemLabel="#{cha.nombre}"/>
-                            <p:ajax update="@parent" process="@parent"/>
+                            <p:ajax update="formCreateUserModal:pgSegment" process="@this" listener="#{gestionarUsuarioCreacion.listenerChannel()}"/>
                         </p:selectOneMenu>
                         <h:outputLabel value="#{msg.sub_subcanal}"/>
                         <p:selectBooleanCheckbox id="sbchSubcha" value="#{gestionarUsuarioCreacion.subChannelCheck}"/>
                         <p:selectOneMenu style="width: 80%" value="#{gestionarUsuarioCreacion.subChannelSelected}" converter="subChannelConverter">
-                            <f:selectItems value="#{gestionarUsuarioCreacion.channelSelected.subChannelList}" var="subcha" itemLabel="#{subcha.nombre}"/>
-                            <p:ajax update="@parent" process="@parent"/>
+                            <f:selectItems value="#{gestionarUsuarioCreacion.listSubChannel}" var="subcha" itemLabel="#{subcha.nombre}"/>
+                            <p:ajax update="formCreateUserModal:pgSegment" process="@this" listener="#{gestionarUsuarioCreacion.listenerSubChannel()}"/>
                         </p:selectOneMenu>
                         <h:outputLabel value="#{msg.seg_segmento}"/>
                         <p:selectBooleanCheckbox id="sbchSeg" value="#{gestionarUsuarioCreacion.segmentCheck}"/>
                         <p:selectOneMenu style="width: 80%" converter="segmentoConverter" value="#{gestionarUsuarioCreacion.segmentSelected}">
-                            <f:selectItems value="#{gestionarUsuarioCreacion.subChannelSelected.segmentoList}" var="seg" itemLabel="#{seg.nombre}"/>
-                            <p:ajax update="@parent" process="@parent"/>
+                            <f:selectItems value="#{gestionarUsuarioCreacion.listSegment}" var="seg" itemLabel="#{seg.nombre}"/>
+                            <p:ajax update="formCreateUserModal:pgSegment" process="@this" listener="#{gestionarUsuarioCreacion.listenerSegment()}"/>
                         </p:selectOneMenu>
                         <h:outputLabel value="#{msg.sub_seg_subsegmento}"/>
                         <p:selectBooleanCheckbox id="sbchSubseg" value="#{gestionarUsuarioCreacion.subSegmentCheck}"/>
                         <p:selectOneMenu style="width: 80%" value="#{gestionarUsuarioCreacion.subSegmentSelected}" converter="subSegmentoConverter">
-                            <f:selectItems value="#{gestionarUsuarioCreacion.segmentSelected.subSegmentoList}" var="subseg" itemLabel="#{subseg.nomnbre}"/>
+                            <f:selectItems value="#{gestionarUsuarioCreacion.listSubSegment}" var="subseg" itemLabel="#{subseg.nomnbre}"/>
+                            <p:ajax update="formCreateUserModal:pgSegment" process="@this" listener="#{gestionarUsuarioCreacion.listenerSubSegment()}"/>
+                        </p:selectOneMenu>
+                        <h:outputLabel value="#{msg.out_potencial}"/>
+                        <p:selectOneMenu id="somPotAuto" converter="potentialConverter" value="#{gestionarUsuarioCreacion.potentialAutomatic}" disabled="true">
+                            <f:selectItems value="#{gestionarUsuarioCreacion.listaPotentialAutomatic}" var="potauto" itemLabel="#{potauto.namePot}"/>
                         </p:selectOneMenu>
                     </p:panelGrid>
                     <br/>
@@ -161,9 +166,9 @@
                     <br/><br/>
                     <p:panelGrid columns="3" style="width: 90%">
                         <h:outputLabel value="#{msg.out_potencial}"/>
-                        <p:selectBooleanCheckbox value="#{gestionarUsuarioCreacion.potentialCheck}"/>
-                        <p:selectOneMenu style="width: 80%" value="#{gestionarUsuarioCreacion.potentialSelected}" converter="potencialConverter">
-                            <f:selectItems value="#{gestionarUsuarioCreacion.listPotential}" var="pot" itemLabel="#{pot.nombre}"/>
+                        <p:selectBooleanCheckbox value="#{gestionarUsuarioCreacion.potentialCheck}"/>   
+                        <p:selectOneMenu style="width: 80%" value="#{gestionarUsuarioCreacion.potentialManual}" converter="potentialConverter">
+                            <f:selectItems value="#{gestionarUsuarioCreacion.listPotential}" var="potman" itemLabel="#{potman.namePot}"/>
                         </p:selectOneMenu>
                     </p:panelGrid>
                     <br/>

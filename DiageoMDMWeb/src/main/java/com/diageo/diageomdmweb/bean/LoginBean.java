@@ -99,7 +99,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
                     armarMigaPan(capturarValor("m_administrador"), capturarValor("m_usuario"), capturarValor("m_usuario_consultar"));
                     return "/admin/usuario/consultarUsuario?faces-redirect=true";
                 } else {
-                    if (getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.CP_A.getId())) {
+                    if (getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
                         if (revisarOutletsPendientesRevision()) {
                             System.out.println("entro aprobacionoo");
                             RequestContext.getCurrentInstance().execute("PF('dlgPendiente').show();");                                                        

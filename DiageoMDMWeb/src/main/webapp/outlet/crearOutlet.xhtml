@@ -82,9 +82,7 @@
                                 </p:selectOneMenu>
 
                                 <h:outputLabel value="#{msg.out_potencial}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:selectOneMenu id="somPotencial" style="width: 90%" value="#{outletCrearBean.potencialSeleccionado}" converter="potencialConverter">
-                                    <f:selectItems value="#{outletCrearBean.listaPotencial}" var="pot" itemLabel="#{pot.nombre}"/>
-                                </p:selectOneMenu>
+                               
 
                                 <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                 <p:selectOneMenu id="somDistri" style="width: 90%" value="#{outletCrearBean.distribuidorSeleccionado}" converter="distribuidorConverter">

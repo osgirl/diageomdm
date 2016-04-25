@@ -5,8 +5,8 @@
  */
 package com.diageo.diageomdmweb.converter;
 
-import com.diageo.diageonegocio.beans.PotencialBeanLocal;
-import com.diageo.diageonegocio.entidades.Potencial;
+import com.diageo.diageonegocio.beans.PotentialBeanLocal;
+import com.diageo.diageonegocio.entidades.Potential;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -17,11 +17,11 @@ import javax.faces.convert.FacesConverter;
  *
  * @author yovanoty126
  */
-@FacesConverter(value = "potencialConverter")
-public class PotencialConverter implements Converter {
+@FacesConverter(value = "potentialConverter")
+public class PotentialConverter implements Converter {
 
     @EJB
-    private PotencialBeanLocal potencialBeanLocal;
+    private PotentialBeanLocal potentialBeanLocal;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -29,8 +29,8 @@ public class PotencialConverter implements Converter {
             return null;
         }
         Integer id = Integer.parseInt(value);
-        Potencial potencial = potencialBeanLocal.consultarId(id);
-        return potencial;
+        Potential pot = potentialBeanLocal.findById(id);
+        return pot;
     }
 
     @Override
@@ -38,11 +38,8 @@ public class PotencialConverter implements Converter {
         if (value == null) {
             return "";
         }
-        if (value instanceof Potencial) {
-            Potencial pot = (Potencial) value;
-            return pot.getIdPotencial() + "";
-        }
-        return "";
+        Potential pot = (Potential) value;
+        return pot.getIdPotential() + "";
     }
 
 }

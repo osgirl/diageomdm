@@ -29,7 +29,7 @@ import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.DistributorBeanLocal;
-import com.diageo.diageonegocio.beans.PotencialBeanLocal;
+import com.diageo.diageonegocio.beans.PotentialBeanLocal;
 import com.diageo.diageonegocio.beans.SegmentoBeanLocal;
 import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
 import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
@@ -39,7 +39,7 @@ import com.diageo.diageonegocio.entidades.Distribuidor;
 import com.diageo.diageonegocio.entidades.Municipio;
 import com.diageo.diageonegocio.entidades.Permissionsegment;
 import com.diageo.diageonegocio.entidades.PermissionsegmentPK;
-import com.diageo.diageonegocio.entidades.Potencial;
+import com.diageo.diageonegocio.entidades.Potential;
 import com.diageo.diageonegocio.entidades.Segmento;
 import com.diageo.diageonegocio.entidades.SubChannel;
 import com.diageo.diageonegocio.entidades.SubSegmento;
@@ -79,7 +79,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     @EJB
     private DistributorBeanLocal distributorBeanLocal;
     @EJB
-    private PotencialBeanLocal potencialBeanLocal;
+    private PotentialBeanLocal potentialBeanLocal;
     @EJB
     private ChannelBeanLocal channelBeanLocal;
     @EJB
@@ -159,18 +159,23 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     private List<Distribuidor> listDistributor;
     private List<Distribuidor> listDistributorSon;
     private List<Permissionsegment> listDistributorAddToUser;
-    private List<Potencial> listPotential;
     private List<Channel> listChannel;
+    private List<SubChannel> listSubChannel;
+    private List<Segmento> listSegment;
+    private List<SubSegmento> listSubSegment;
+    private List<Potential> listPotential;
+    private List<Potential> listaPotentialAutomatic;
     /**
      * Distributor selected
      */
     private Distribuidor distributorSelected;
-    private Potencial potentialSelected;
     private Channel channelSelected;
     private SubChannel subChannelSelected;
     private Segmento segmentSelected;
     private SubSegmento subSegmentSelected;
     private Permissionsegment permissionsegmentSelected;
+    private Potential potentialAutomatic;
+    private Potential potentialManual;
 
     /**
      * Creates a new instance of GestionarUsuarioCreacion
@@ -188,18 +193,21 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         setListDistributor(distributorBeanLocal.searchADistributorPadre(FatherDistributorEnum.FATHER.getIsPadre()));
         setListDistributorSon(distributorBeanLocal.searchDistributorByPadre(getListDistributor().get(0).getIdDistribuidor()));
         setListDistributorAddToUser(new ArrayList<Permissionsegment>());
+        setListPotential(potentialBeanLocal.findAll());
         //segmentation
-        setListPotential(potencialBeanLocal.constultarTodosPotenciales());
         setListChannel(channelBeanLocal.consultarTodosChannel());
         initList();
     }
 
     private void initList() {
-        setPotentialSelected(getListPotential().get(0));
         setChannelSelected(getListChannel().get(0));
         setSubChannelSelected(getChannelSelected().getSubChannelList().get(0));
         setSegmentSelected(getSubChannelSelected().getSegmentoList().get(0));
         setSubSegmentSelected(getSegmentSelected().getSubSegmentoList().get(0));
+        setListSubChannel(getChannelSelected().getSubChannelList());
+        setListSegment(getSubChannelSelected().getSegmentoList());
+        setListSubSegment(getSegmentSelected().getSubSegmentoList());
+        listenerSubSegment();
     }
 
     /**
@@ -222,7 +230,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
                 usu.setPrimerIngreso(UserEntryEnum.FIRST_ENTRY.getState());
                 usu.setModuloList(perfil.getModuloList());
                 usu.setDistributor(getDistributorSelected().getIdDistribuidor());
-                usuarioBean.createUser(usu,getListDistributorAddToUser());
+                usuarioBean.createUser(usu, getListDistributorAddToUser());
                 for (Modulo mod : getPerfil().getModuloList()) {
                     mod.getUsuarioList().add(usu);
                     moduloBean.createUserModule(mod);
@@ -251,10 +259,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
             }
         }
         Distribuidor di = new Distribuidor();
-        di.setIdDepartamento(distriSon.getIdDepartamento() == null ? new Departamento() : distriSon.getIdDepartamento());
         di.setIdDistribuidor(distriSon.getIdDistribuidor());
-        di.setIdMunicipio(distriSon.getIdMunicipio() == null ? new Municipio() : distriSon.getIdMunicipio());
-        di.setIsDepto(distriSon.getIsDepto());
         di.setIsPadre(distriSon.getIsPadre());
         di.setNombre(distriSon.getNombre());
         di.setPadreIdDistribuidor(distriSon.getPadreIdDistribuidor());
@@ -288,12 +293,10 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
                 setSubChannelSelected(subChannelBeanLocal.consultarId(permission.getSubChannel()));
                 setSegmentSelected(segmentoBeanLocal.consultarId(permission.getSegmento()));
                 setSubSegmentSelected(subSegmentoBeanLocal.consultarId(permission.getSubSegmento()));
-                setPotentialSelected(potencialBeanLocal.consultarId(permission.getPotencial()));
             } catch (DiageoNegocioException ex) {
                 Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, ex.getMessage());
             }
         } else {
-            setPotentialSelected(getListPotential().get(0));
             setChannelSelected(getListChannel().get(0));
             setSubChannelSelected(getChannelSelected().getSubChannelList().get(0));
             setSegmentSelected(getSubChannelSelected().getSegmentoList().get(0));
@@ -329,19 +332,45 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         getPermissionsegmentSelected().setSubChannel(getSubChannelSelected().getIdsubchannel());
         getPermissionsegmentSelected().setSegmento(getSegmentSelected().getIdsegmento());
         getPermissionsegmentSelected().setSubSegmento(getSubSegmentSelected().getIdsubSegmento());
-        getPermissionsegmentSelected().setPotencial(getPotentialSelected().getIdPotencial());
         //cancelChangesChain();
         RequestContext.getCurrentInstance().execute("PF('wvChain').hide();");
     }
 
     public void cancelChangesChain() {
         unSelectAllChain();
-        setPotentialSelected(getListPotential().get(0));
         setChannelSelected(getListChannel().get(0));
         setSubChannelSelected(getChannelSelected().getSubChannelList().get(0));
         setSegmentSelected(getSubChannelSelected().getSegmentoList().get(0));
         setSubSegmentSelected(getSegmentSelected().getSubSegmentoList().get(0));
         RequestContext.getCurrentInstance().execute("PF('wvChain').hide();");
+    }
+    
+    public void listenerChannel() {
+        setListSubChannel(getChannelSelected().getSubChannelList());
+        setSubChannelSelected(getListSubChannel().get(0));
+        this.listenerSubChannel();
+    }
+
+    public void listenerSubChannel() {
+        setSegmentSelected(getSubChannelSelected().getSegmentoList().get(0));
+        setListSegment(getSubChannelSelected().getSegmentoList());
+        this.listenerSegment();
+    }
+
+    public void listenerSegment() {
+        setSubSegmentSelected(getSegmentSelected().getSubSegmentoList().get(0));
+        setListSubSegment(getSegmentSelected().getSubSegmentoList());
+        listenerSubSegment();
+    }
+
+    public void listenerSubSegment() {
+        if (getSubSegmentSelected().getPotentialList() == null || getSubSegmentSelected().getPotentialList().isEmpty()) {
+            setListaPotentialAutomatic(new ArrayList<Potential>());
+        } else {
+            setPotentialAutomatic(getSubSegmentSelected().getPotentialList().get(0));
+            setListaPotentialAutomatic(getSubSegmentSelected().getPotentialList());
+        }
+
     }
 
     /**
@@ -628,34 +657,6 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     }
 
     /**
-     * @return the listPotential
-     */
-    public List<Potencial> getListPotential() {
-        return listPotential;
-    }
-
-    /**
-     * @param listPotential the listPotential to set
-     */
-    public void setListPotential(List<Potencial> listPotential) {
-        this.listPotential = listPotential;
-    }
-
-    /**
-     * @return the potentialSelected
-     */
-    public Potencial getPotentialSelected() {
-        return potentialSelected;
-    }
-
-    /**
-     * @param potentialSelected the potentialSelected to set
-     */
-    public void setPotentialSelected(Potencial potentialSelected) {
-        this.potentialSelected = potentialSelected;
-    }
-
-    /**
      * @return the listChannel
      */
     public List<Channel> getListChannel() {
@@ -751,6 +752,74 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      */
     public void setLoginBean(LoginBean loginBean) {
         this.loginBean = loginBean;
+    }
+
+    /**
+     * @return the listPotential
+     */
+    public List<Potential> getListPotential() {
+        return listPotential;
+    }
+
+    /**
+     * @param listPotential the listPotential to set
+     */
+    public void setListPotential(List<Potential> listPotential) {
+        this.listPotential = listPotential;
+    }
+
+    public List<SubChannel> getListSubChannel() {
+        return listSubChannel;
+    }
+
+    public void setListSubChannel(List<SubChannel> listSubChannel) {
+        this.listSubChannel = listSubChannel;
+    }
+
+    public List<Segmento> getListSegment() {
+        return listSegment;
+    }
+
+    public void setListSegment(List<Segmento> listSegment) {
+        this.listSegment = listSegment;
+    }
+
+    public List<SubSegmento> getListSubSegment() {
+        return listSubSegment;
+    }
+
+    public void setListSubSegment(List<SubSegmento> listSubSegment) {
+        this.listSubSegment = listSubSegment;
+    }
+
+    public Potential getPotentialAutomatic() {
+        return potentialAutomatic;
+    }
+
+    public void setPotentialAutomatic(Potential potentialAutomatic) {
+        this.potentialAutomatic = potentialAutomatic;
+    }
+
+    /**
+     * @return the listaPotentialAutomatic
+     */
+    public List<Potential> getListaPotentialAutomatic() {
+        return listaPotentialAutomatic;
+    }
+
+    /**
+     * @param listaPotentialAutomatic the listaPotentialAutomatic to set
+     */
+    public void setListaPotentialAutomatic(List<Potential> listaPotentialAutomatic) {
+        this.listaPotentialAutomatic = listaPotentialAutomatic;
+    }
+
+    public Potential getPotentialManual() {
+        return potentialManual;
+    }
+
+    public void setPotentialManual(Potential potentialManual) {
+        this.potentialManual = potentialManual;
     }
 
 }

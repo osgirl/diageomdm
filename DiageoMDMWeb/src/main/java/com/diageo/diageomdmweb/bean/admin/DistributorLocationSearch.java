@@ -33,7 +33,9 @@ public class DistributorLocationSearch extends DiageoRootBean implements Seriali
     @Size(max = 50, message = "{size.invalido}")
     private String name;
     private List<Distribuidor> listDistributor;
+    private List<Distribuidor> listDistributorFather;
     private Distribuidor selectedDistributor;
+    private Distribuidor selectedDistributorFather;
     private boolean seeDetail;
 
     /**
@@ -45,12 +47,14 @@ public class DistributorLocationSearch extends DiageoRootBean implements Seriali
     @PostConstruct
     public void init() {
         setListDistributor(distributorBeanLocal.searchADistributorPadre(FatherDistributorEnum.NOT_FATHER.getIsPadre()));
+        setListDistributorFather(distributorBeanLocal.searchADistributorPadre(FatherDistributorEnum.FATHER.getIsPadre()));
         setSeeDetail(Boolean.TRUE);
         setSelectedDistributor(new Distribuidor());
     }
 
     public void detail(Distribuidor distri) {
         setSelectedDistributor(distri);
+        setSelectedDistributorFather(distri.getPadreIdDistribuidor());
         setName(distri.getNombre());
         setSeeDetail(Boolean.FALSE);
     }
@@ -126,6 +130,34 @@ public class DistributorLocationSearch extends DiageoRootBean implements Seriali
      */
     public void setSelectedDistributor(Distribuidor selectedDistributor) {
         this.selectedDistributor = selectedDistributor;
+    }
+
+    /**
+     * @return the listDistributorFather
+     */
+    public List<Distribuidor> getListDistributorFather() {
+        return listDistributorFather;
+    }
+
+    /**
+     * @param listDistributorFather the listDistributorFather to set
+     */
+    public void setListDistributorFather(List<Distribuidor> listDistributorFather) {
+        this.listDistributorFather = listDistributorFather;
+    }
+
+    /**
+     * @return the selectedDistributorFather
+     */
+    public Distribuidor getSelectedDistributorFather() {
+        return selectedDistributorFather;
+    }
+
+    /**
+     * @param selectedDistributorFather the selectedDistributorFather to set
+     */
+    public void setSelectedDistributorFather(Distribuidor selectedDistributorFather) {
+        this.selectedDistributorFather = selectedDistributorFather;
     }
 
 }

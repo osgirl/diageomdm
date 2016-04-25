@@ -12,9 +12,11 @@ import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageomdmweb.bean.dto.StateOutletDto;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.OutletBeanLocal;
+import com.diageo.diageonegocio.beans.PotentialBeanLocal;
 import com.diageo.diageonegocio.entidades.Channel;
 import com.diageo.diageonegocio.entidades.Outlet;
 import com.diageo.diageonegocio.entidades.Permissionsegment;
+import com.diageo.diageonegocio.entidades.Potential;
 import com.diageo.diageonegocio.entidades.Sateoutlet;
 import com.diageo.diageonegocio.entidades.Segmento;
 import com.diageo.diageonegocio.entidades.SubChannel;
@@ -57,6 +59,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     private boolean desabledPotential;
     private Outlet outletSelect;
     private String state;
+    private String stateMasive;
     private List<StateOutletDto> listStateOutlet;
     private String messageReject;
 
@@ -72,6 +75,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         listStateOutlet = new ArrayList<>();
         listStateOutlet.add(new StateOutletDto(3, "Aprobado"));
         listStateOutlet.add(new StateOutletDto(4, "Rechazado"));
+        setPotentialAutomatic(new Potential());
+        setPotentialManula(new Potential());
         if (getLoginBean().getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.DATA_STEWARD.getId())) {
             setListaOutlets(outletBeanLocal.consultarTodosOutlets());
@@ -94,14 +99,18 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                                             if (getLoginBean().getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.TMC.getId())) {
                                                 listTemp1.setDisabledButtonEdit(Boolean.TRUE);
                                                 boolean disabled = !(listTemp1.getIdStateOutlet().getName().equals("OUTLET_TMC"));
-                                                if (listTemp1.getIdStateOutlet().getName().equals("REJECTED")) {
+                                                if (listTemp1.getIdStateOutlet().getName().equals("REJECTED") || listTemp1.getIdStateOutlet().getName().equals("OUTLET_TMC")) {
+                                                    listTemp1.setRenderedApprobationMassive(Boolean.TRUE);
                                                     disabled = Boolean.FALSE;
+                                                } else {
+                                                    listTemp1.setRenderedApprobationMassive(Boolean.FALSE);
                                                 }
                                                 listTemp1.setDisabledButtonEdit(disabled);
-                                            } else if (getLoginBean().getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.CP_A.getId())) {
+                                            } else if (getLoginBean().getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
                                                 boolean disabled = !(listTemp1.getIdStateOutlet().getName().equals("PENDING_APPROVAL"));
                                                 if (listTemp1.getIdStateOutlet().getName().equals("PENDING_APPROVAL")) {
                                                     RequestContext.getCurrentInstance().execute("PF('dlgPendiente').show();");
+                                                    listTemp1.setRenderedApprobationMassive(Boolean.TRUE);
                                                 }
                                                 listTemp1.setDisabledButtonEdit(disabled);
                                             }
@@ -152,7 +161,6 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setSubCanalSeleccionado(out.getIdsubsegmento().getIdsegmento().getIdsubchannel());
         setSegmentoSeleccionado(out.getIdsubsegmento().getIdsegmento());
         setSubSegmentoSeleccionado(out.getIdsubsegmento());
-        setPotencialSeleccionado(out.getIdPotencial());
         setDistribuidorSeleccionado(out.getIdDistribuidor());
         setBattlegroundSeleccionado(out.getIdbattledground());
         setDireccion(out.getIdubicacion().getDireccion());
@@ -163,6 +171,13 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setLineaNegocio(out.getLineanegocio());
         setCodigoEan(out.getCodigoEAN());
         setPuntoVenta(out.getNumPDV());
+        System.out.println("tamañooooooooo******"+getListaPotentialManual().size());
+        if (out.getIdPotentialManual() == null) {
+            setPotentialManula(out.getIdPotentialManual());
+        } else {
+            setPotentialManula(getListaPotentialManual().get(0));
+        }
+        listenerSubSegment();
         outletSelect = out;
     }
 
@@ -181,6 +196,36 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         } catch (DiageoNegocioException ex) {
             Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
+        }
+    }
+
+    public void approbatrionMasive() {
+        for (Outlet listaOutlet : listaOutlets) {
+            if (listaOutlet.isApprobationMassive()) {
+                if (getLoginBean().getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.TMC.getId())) {
+                    listaOutlet.setIdStateOutlet(new Sateoutlet(2));
+                } else if (getLoginBean().getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
+                    if (stateMasive.equals("3")) {
+                        listaOutlet.setIdStateOutlet(new Sateoutlet(3));
+                    } else {
+                        listaOutlet.setMessageReject(capturarValor("out_massive_message_reject"));
+                        listaOutlet.setIdStateOutlet(new Sateoutlet(4));
+                    }
+                }
+                try {
+                    outletBeanLocal.modificarOutlet(listaOutlet);
+                } catch (DiageoNegocioException ex) {
+                    Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        init();
+        showInfoMessage(capturarValor("sis_approbation_masive"));
+    }
+
+    public void selectAll() {
+        for (Outlet listaOutlet : listaOutlets) {
+            listaOutlet.setApprobationMassive(Boolean.TRUE);
         }
     }
 
@@ -276,6 +321,14 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
 
     public void setMessageReject(String messageReject) {
         this.messageReject = messageReject;
+    }
+
+    public String getStateMasive() {
+        return stateMasive;
+    }
+
+    public void setStateMasive(String stateMasive) {
+        this.stateMasive = stateMasive;
     }
 
 }

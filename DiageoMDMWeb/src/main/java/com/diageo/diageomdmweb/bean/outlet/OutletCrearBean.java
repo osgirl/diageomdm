@@ -12,7 +12,7 @@ import com.diageo.diageonegocio.beans.BattleGroundBeanLocal;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.DistributorBeanLocal;
 import com.diageo.diageonegocio.beans.OutletBeanLocal;
-import com.diageo.diageonegocio.beans.PotencialBeanLocal;
+import com.diageo.diageonegocio.beans.PotentialBeanLocal;
 import com.diageo.diageonegocio.entidades.Battleground;
 import com.diageo.diageonegocio.entidades.Channel;
 import com.diageo.diageonegocio.entidades.Departamento;
@@ -20,7 +20,7 @@ import com.diageo.diageonegocio.entidades.Distribuidor;
 import com.diageo.diageonegocio.entidades.Municipio;
 import com.diageo.diageonegocio.entidades.Outlet;
 import com.diageo.diageonegocio.entidades.Persona;
-import com.diageo.diageonegocio.entidades.Potencial;
+import com.diageo.diageonegocio.entidades.Potential;
 import com.diageo.diageonegocio.entidades.Segmento;
 import com.diageo.diageonegocio.entidades.SubChannel;
 import com.diageo.diageonegocio.entidades.SubSegmento;
@@ -54,15 +54,21 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     @EJB
     private ChannelBeanLocal channelBeanLocal;
     @EJB
-    private PotencialBeanLocal potencialBeanLocal;
-    @EJB
     private DistributorBeanLocal distribuidorBeanLocal;
     @EJB
     private BattleGroundBeanLocal battleGroundBeanLocal;
+    @EJB
+    protected PotentialBeanLocal potentialBeanLocal;
     @Inject
     private DiageoApplicationBean diageoApplicationBean;
+    //list segment
     private List<Channel> listaCanales;
-    private List<Potencial> listaPotencial;
+    private List<SubChannel> listSubChannel;
+    private List<Segmento> listSegment;
+    private List<SubSegmento> listSubSegment;
+    private List<Potential> listaPotentialAutomatic;
+    private List<Potential> listaPotentialManual;
+    //Other list
     private List<Distribuidor> listaDistribuidor;
     private List<Battleground> listaBattleground;
     private Battleground battlegroundSeleccionado;
@@ -70,8 +76,10 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     private SubChannel subCanalSeleccionado;
     private Segmento segmentoSeleccionado;
     private SubSegmento subSegmentoSeleccionado;
-    private Potencial potencialSeleccionado;
     private Distribuidor distribuidorSeleccionado;
+    private Potential potentialAutomatic;
+    private Potential potentialManula;
+    //location
     private Departamento departamentoDistribuidor;
     private Departamento departamentoOutlet;
     private Municipio municipioDistribuidor;
@@ -104,10 +112,9 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     @PostConstruct
     public void init() {
         setListaCanales(channelBeanLocal.consultarTodosChannel());
+        setListaPotentialManual(potentialBeanLocal.findAll());
         setCanalSeleccionado(getListaCanales().get(0));
         cargarListas();
-        setListaPotencial(potencialBeanLocal.constultarTodosPotenciales());
-        setPotencialSeleccionado(getListaPotencial().get(0));
         setListaDistribuidor(distribuidorBeanLocal.searchAllDistributor());
         setDistribuidorSeleccionado(getListaDistribuidor().get(0));
         setDepartamentoDistribuidor(getDiageoApplicationBean().getListaDepartamento().get(0));
@@ -161,7 +168,6 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             outletEntidad.setPropietario(personaPropietaria);
             //CLASIFICACION
             outletEntidad.setIdsubsegmento(subSegmentoSeleccionado);
-            outletEntidad.setIdPotencial(potencialSeleccionado);
             outletEntidad.setIdDistribuidor(distribuidorSeleccionado);
             outletEntidad.setIdbattledground(battlegroundSeleccionado);
             //UBICACION
@@ -196,6 +202,34 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             LOG.log(Level.SEVERE, e.getMessage());
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
+    }
+
+    public void listenerChannel() {
+        setListSubChannel(getCanalSeleccionado().getSubChannelList());
+        setSubCanalSeleccionado(getListSubChannel().get(0));
+        this.listenerSubChannel();
+    }
+
+    public void listenerSubChannel() {
+        setSegmentoSeleccionado(getSubCanalSeleccionado().getSegmentoList().get(0));
+        setListSegment(getSubCanalSeleccionado().getSegmentoList());
+        this.listenerSegment();
+    }
+
+    public void listenerSegment() {
+        setSubSegmentoSeleccionado(getSegmentoSeleccionado().getSubSegmentoList().get(0));
+        setListSubSegment(getSegmentoSeleccionado().getSubSegmentoList());
+        listenerSubSegment();
+    }
+
+    public void listenerSubSegment() {
+        if (getSubSegmentoSeleccionado().getPotentialList() == null || getSubSegmentoSeleccionado().getPotentialList().isEmpty()) {
+            setListaPotentialAutomatic(new ArrayList<Potential>());
+        } else {
+            setPotentialAutomatic(getSubSegmentoSeleccionado().getPotentialList().get(0));
+            setListaPotentialAutomatic(getSubSegmentoSeleccionado().getPotentialList());
+        }
+
     }
 
     public List<Channel> getListaCanales() {
@@ -246,14 +280,6 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         this.subSegmentoSeleccionado = subSegmentoSeleccionado;
     }
 
-    public Potencial getPotencialSeleccionado() {
-        return potencialSeleccionado;
-    }
-
-    public void setPotencialSeleccionado(Potencial potencialSeleccionado) {
-        this.potencialSeleccionado = potencialSeleccionado;
-    }
-
     public Distribuidor getDistribuidorSeleccionado() {
         return distribuidorSeleccionado;
     }
@@ -276,14 +302,6 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
     public void setMunicipioDistribuidor(Municipio municipioDistribuidor) {
         this.municipioDistribuidor = municipioDistribuidor;
-    }
-
-    public List<Potencial> getListaPotencial() {
-        return listaPotencial;
-    }
-
-    public void setListaPotencial(List<Potencial> listaPotencial) {
-        this.listaPotencial = listaPotencial;
     }
 
     public List<Distribuidor> getListaDistribuidor() {
@@ -462,14 +480,6 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         this.outletBeanLocal = outletBeanLocal;
     }
 
-    public PotencialBeanLocal getPotencialBeanLocal() {
-        return potencialBeanLocal;
-    }
-
-    public void setPotencialBeanLocal(PotencialBeanLocal potencialBeanLocal) {
-        this.potencialBeanLocal = potencialBeanLocal;
-    }
-
     public DistributorBeanLocal getDistribuidorBeanLocal() {
         return distribuidorBeanLocal;
     }
@@ -492,6 +502,62 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
     public void setBattlegroundSeleccionado(Battleground battlegroundSeleccionado) {
         this.battlegroundSeleccionado = battlegroundSeleccionado;
+    }
+
+    public List<SubChannel> getListSubChannel() {
+        return listSubChannel;
+    }
+
+    public void setListSubChannel(List<SubChannel> listSubChannel) {
+        this.listSubChannel = listSubChannel;
+    }
+
+    public List<Segmento> getListSegment() {
+        return listSegment;
+    }
+
+    public void setListSegment(List<Segmento> listSegment) {
+        this.listSegment = listSegment;
+    }
+
+    public List<SubSegmento> getListSubSegment() {
+        return listSubSegment;
+    }
+
+    public void setListSubSegment(List<SubSegmento> listSubSegment) {
+        this.listSubSegment = listSubSegment;
+    }
+
+    public List<Potential> getListaPotentialAutomatic() {
+        return listaPotentialAutomatic;
+    }
+
+    public void setListaPotentialAutomatic(List<Potential> listaPotentialAutomatic) {
+        this.listaPotentialAutomatic = listaPotentialAutomatic;
+    }
+
+    public List<Potential> getListaPotentialManual() {
+        return listaPotentialManual;
+    }
+
+    public void setListaPotentialManual(List<Potential> listaPotentialManual) {
+        this.listaPotentialManual = listaPotentialManual;
+    }
+
+    public Potential getPotentialAutomatic() {
+        return potentialAutomatic;
+    }
+
+    public void setPotentialAutomatic(Potential potentialAutomatic) {
+        this.potentialAutomatic = potentialAutomatic;
+    }
+
+    public Potential getPotentialManula() {
+        return potentialManula;
+    }
+
+    public void setPotentialManula(Potential potentialManula) {
+        this.potentialManula = potentialManula;
     }
 
 }

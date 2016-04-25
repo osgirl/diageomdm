@@ -1,0 +1,91 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../../WEB-INF/templates/diageoWebTemplate.xhtml">
+
+            <ui:define name="content">
+                <h:form id="formPotential">                    
+                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
+                        <h:panelGroup id="pg" style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
+                            <h:panelGroup id="pgListSegment" style="width: 80%;position: absolute;left: 50%;-webkit-transform: translate(-50%)">
+                                <h:panelGrid id="pgSegment" columns="4" style="width: 80%">
+                                    <h:outputLabel value="#{msg.can_canal}"/>
+                                    <p:selectOneMenu value="#{potentialCreateBean.channel}" converter="channelConverter" style="width: 250px">
+                                        <f:selectItems value="#{potentialCreateBean.listChannel}" var="chan" itemLabel="#{chan.nombre}"/>
+                                        <p:ajax process="@this" update="formPotential:somsubcha formPotential:somseg formPotential:somsubseg" listener="#{potentialCreateBean.listenerChannel()}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="#{msg.sub_subcanal}"/>
+                                    <p:selectOneMenu id="somsubcha" value="#{potentialCreateBean.subChannel}" converter="subChannelConverter" style="width: 250px">
+                                        <f:selectItems value="#{potentialCreateBean.listSubChannel}" var="subcha" itemLabel="#{subcha.nombre}"/>
+                                        <p:ajax process="@this" update="formPotential:somseg formPotential:somsubseg" listener="#{potentialCreateBean.listenerSubChannel()}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="#{msg.seg_segmento}"/>
+                                    <p:selectOneMenu id="somseg" value="#{potentialCreateBean.segment}" converter="segmentoConverter" style="width: 250px">
+                                        <f:selectItems value="#{potentialCreateBean.listSegment}" var="seg" itemLabel="#{seg.nombre}"/>
+                                        <p:ajax process="@this" update="formPotential:somsubseg" listener="#{potentialCreateBean.listenerSegment()}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="#{msg.sub_seg_subsegmento}"/>
+                                    <p:selectOneMenu id="somsubseg" value="#{potentialCreateBean.subSegmento}" converter="subSegmentoConverter" style="width: 250px">
+                                        <f:selectItems value="#{potentialCreateBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nomnbre}"/>                                        
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="#{msg.out_potencial}"/>
+                                    <p:inputText value="#{potentialCreateBean.name}" required="true" label="#{msg.out_potencial}"/>
+                                    <h:outputLabel value="#{msg.pot_range}"/>
+                                    <p:selectBooleanCheckbox value="#{potentialCreateBean.range}">
+                                        <p:ajax process="@this" update="formPotential:pgValue"/>
+                                    </p:selectBooleanCheckbox>
+
+                                    <h:outputLabel value="#{msg.pot_type_client}"/>
+                                    <p:selectOneRadio id="sorClient" value="#{potentialCreateBean.clientType}" required="true" label="#{msg.pot_type_client}">
+                                        <f:selectItem itemLabel="#{msg.pot_new_client}" itemValue="N" />
+                                        <f:selectItem itemLabel="#{msg.pot_old_client}" itemValue="O" />
+                                    </p:selectOneRadio>
+                                    
+                                    <h:outputLabel value="#{msg.pot_limit}"/>
+                                    <p:selectOneRadio id="sorLimit" value="#{potentialCreateBean.clusive}" required="true" label="#{msg.pot_limit}">
+                                        <f:selectItem itemLabel="#{msg.pot_exclusive}" itemValue="EX" />
+                                        <f:selectItem itemLabel="#{msg.pot_inclusive}" itemValue="IN" />
+                                    </p:selectOneRadio>
+                                </h:panelGrid>
+
+                                <h:panelGroup id="pgValue">
+                                    <p:separator/>
+                                    <br/><br/>
+                                    <h:panelGroup id="pgValueWithoutRange" rendered="#{!potentialCreateBean.range}">
+                                        <h:panelGrid columns="2" style="width: 80%">
+                                            <h:outputLabel value="#{msg.pot_value_segment}"/>
+                                            <p:inputText value="#{potentialCreateBean.valueDefineSegment}" required="true" label="#{msg.pot_value_segment}"/>
+                                        </h:panelGrid>
+                                    </h:panelGroup>    
+                                    <h:panelGroup id="pgValueWithRange" rendered="#{potentialCreateBean.range}">
+                                        <h:panelGrid columns="4" style="width: 80%">
+                                            <h:outputLabel value="#{msg.pot_value_initial}"/>
+                                            <p:inputText value="#{potentialCreateBean.initialValue}" required="true" label="#{msg.pot_value_initial}"/>
+                                            <h:outputLabel value="#{msg.pot_value_final}"/>
+                                            <p:inputText value="#{potentialCreateBean.finalValue}" required="true" label="#{msg.pot_value_final}"/>
+                                        </h:panelGrid>
+                                    </h:panelGroup>
+                                </h:panelGroup>
+                                <br/><br/>
+                                <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" 
+                                                 actionListener="#{potentialCreateBean.createPotential()}"
+                                                 styleClass="button" style="width: 20%;left: 50%;-webkit-transform: translate(-50%)"/>
+                                <br/>
+                                <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />
+                            </h:panelGroup>
+                        </h:panelGroup>
+                    </div>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
 
@@ -16,8 +17,11 @@
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"                                     
                                      rendered="#{distributorLocationSearch.seeDetail}" paginator="true"
                                      style="width: 60%;left: 50%;-webkit-transform: translate(-50%);position: absolute;">
-                            <p:column headerText="#{msg.m_distri_nombre}" filterBy="#{dis.nombre}" filterMatchMode="startsWith">
+                            <p:column headerText="#{msg.dis_branch}" filterBy="#{dis.nombre}" filterMatchMode="startsWith">
                                 <h:outputLabel value="#{dis.nombre}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.dis_commercial_management}" filterBy="#{dis.padreIdDistribuidor.nombre}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{dis.padreIdDistribuidor.nombre}"/>
                             </p:column>
                             <p:column>
                                 <p:commandLink value="#{msg.btn_detalle}" actionListener="#{distributorLocationSearch.detail(dis)}"
@@ -28,6 +32,10 @@
                         <h:panelGroup id="pgDistri" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
                             <h:panelGroup id="pgDistriDetail" rendered="#{!distributorLocationSearch.seeDetail}" style="width: 100%">
                                 <h:panelGrid columns="2" style="width: 100%">
+                                    <h:outputLabel value="#{msg.dis_commercial_management}"/>
+                                    <p:selectOneMenu id="somDistri" value="#{distributorLocationSearch.selectedDistributorFather}" converter="distribuidorConverter" style="width: 100%">
+                                        <f:selectItems value="#{distributorLocationSearch.listDistributorFather}" var="distri" itemLabel="#{distri.nombre}"/>
+                                    </p:selectOneMenu>
                                     <h:outputLabel value="#{msg.m_distri_nombre}" style="width: 30%"/>
                                     <p:inputText id="itNombre" required="true" label="#{msg.m_distri_nombre}" style="width: 70%" value="#{distributorLocationSearch.name}"/>
                                 </h:panelGrid>
