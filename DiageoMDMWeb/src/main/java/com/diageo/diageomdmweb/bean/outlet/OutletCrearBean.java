@@ -21,6 +21,7 @@ import com.diageo.diageonegocio.entidades.Municipio;
 import com.diageo.diageonegocio.entidades.Outlet;
 import com.diageo.diageonegocio.entidades.Persona;
 import com.diageo.diageonegocio.entidades.Potential;
+import com.diageo.diageonegocio.entidades.Sateoutlet;
 import com.diageo.diageonegocio.entidades.Segmento;
 import com.diageo.diageonegocio.entidades.SubChannel;
 import com.diageo.diageonegocio.entidades.SubSegmento;
@@ -113,6 +114,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     public void init() {
         setListaCanales(channelBeanLocal.consultarTodosChannel());
         setListaPotentialManual(potentialBeanLocal.findAll());
+        setPotentialManula(getListaPotentialManual().get(0));
         setCanalSeleccionado(getListaCanales().get(0));
         cargarListas();
         setListaDistribuidor(distribuidorBeanLocal.searchAllDistributor());
@@ -195,6 +197,9 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             outletEntidad.setLineanegocio(lineaNegocio);
             outletEntidad.setCodigoEAN(codigoEan);
             outletEntidad.setNumPDV(nit);
+            outletEntidad.setIdPotentialManual(potentialManula);
+            outletEntidad.setIdPotential(potentialAutomatic);
+            outletEntidad.setIdStateOutlet(new Sateoutlet(1));
             outletBeanLocal.crearOutlet(outletEntidad);
             init();
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));

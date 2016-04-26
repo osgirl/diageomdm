@@ -9,7 +9,7 @@
     <body>
 
         <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
-   
+
             <ui:define name="content">
                 <style>
                     .tamanio_letra_labels{
@@ -58,54 +58,72 @@
                         </h:panelGrid>
                     </p:fieldset>
                     <p:fieldset legend="#{msg.out_clasificacion}" style="width: 95%">
-                        <h:panelGrid columns="1" style="width: 95%">
-                            <h:panelGrid columns="4" style="width: 100%">
-                                <h:outputLabel value="#{msg.can_canal}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:selectOneMenu id="somCanal" style="width: 90%" value="#{outletCrearBean.canalSeleccionado}" converter="channelConverter">
-                                    <f:selectItems value="#{outletCrearBean.listaCanales}" var="can" itemLabel="#{can.nombre}"/>
-                                    <p:ajax process="@this somSubCanal somSegmento" update="somSubCanal somSegmento somSubSegmento" listener="#{outletCrearBean.cargarListas()}"/>
-                                </p:selectOneMenu>
-                                <h:outputLabel value="#{msg.sub_subcanal}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:selectOneMenu id="somSubCanal" style="width: 90%" value="#{outletCrearBean.subCanalSeleccionado}" converter="subChannelConverter">
-                                    <f:selectItems value="#{outletCrearBean.canalSeleccionado.subChannelList}" var="subcan" itemLabel="#{subcan.nombre}"/>
-                                    <p:ajax process="@this somSegmento" update="somSegmento somSubSegmento"/>
-                                </p:selectOneMenu>
+                        <h:panelGroup id="pgSegment">
+                            <h:panelGrid columns="1" style="width: 95%">
+                                <h:panelGrid columns="4" style="width: 100%">
+                                    <h:outputLabel value="#{msg.can_canal}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:selectOneMenu id="somCanal" style="width: 90%" value="#{outletCrearBean.canalSeleccionado}" converter="channelConverter"
+                                                     >
+                                        <f:selectItems value="#{outletCrearBean.listaCanales}" var="can" itemLabel="#{can.nombre}"/>
+                                        <p:ajax process="@this" update="formOutlet:pgSegment" listener="#{outletCrearBean.listenerChannel()}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="#{msg.sub_subcanal}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:selectOneMenu id="somSubCanal" style="width: 90%" value="#{outletCrearBean.subCanalSeleccionado}" converter="subChannelConverter"
+                                                     >
+                                        <f:selectItems value="#{outletCrearBean.canalSeleccionado.subChannelList}" var="subcan" itemLabel="#{subcan.nombre}"/>
+                                        <p:ajax process="@this" update="formOutlet:pgSegment" listener="#{outletCrearBean.listenerSubChannel()}"/>
+                                    </p:selectOneMenu>
 
-                                <h:outputLabel value="#{msg.seg_segmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:selectOneMenu id="somSegmento" style="width: 90%" value="#{outletCrearBean.segmentoSeleccionado}" converter="segmentoConverter">
-                                    <f:selectItems value="#{outletCrearBean.subCanalSeleccionado.segmentoList}" var="seg" itemLabel="#{seg.nombre}"/>
-                                    <p:ajax process="@this" update="somSubSegmento"/>
-                                </p:selectOneMenu>
-                                <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:selectOneMenu id="somSubSegmento" style="width: 90%" value="#{outletCrearBean.subSegmentoSeleccionado}" converter="subSegmentoConverter">
-                                    <f:selectItems value="#{outletCrearBean.segmentoSeleccionado.subSegmentoList}" var="subseg" itemLabel="#{subseg.nomnbre}"/>
-                                </p:selectOneMenu>
+                                    <h:outputLabel value="#{msg.seg_segmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:selectOneMenu id="somSegmento" style="width: 90%" value="#{outletCrearBean.segmentoSeleccionado}" converter="segmentoConverter"
+                                                     >
+                                        <f:selectItems value="#{outletCrearBean.subCanalSeleccionado.segmentoList}" var="seg" itemLabel="#{seg.nombre}"/>
+                                        <p:ajax process="@this" update="formOutlet:pgSegment" listener="#{outletCrearBean.listenerSegment()}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:selectOneMenu id="somSubSegmento" style="width: 90%" value="#{outletCrearBean.subSegmentoSeleccionado}" converter="subSegmentoConverter"
+                                                     >
+                                        <f:selectItems value="#{outletCrearBean.segmentoSeleccionado.subSegmentoList}" var="subseg" itemLabel="#{subseg.nomnbre}"/>
+                                        <p:ajax process="@this" update="formOutlet:pgSegment" listener="#{outletCrearBean.listenerSubSegment()}"/>
+                                    </p:selectOneMenu>
 
-                                <h:outputLabel value="#{msg.out_potencial}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                               
+                                    <h:outputLabel value="#{msg.out_potencial}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <h:panelGroup>
+                                        <p:selectOneMenu converter="potentialConverter" value="#{outletCrearBean.potentialAutomatic}"
+                                                         rendered="#{not empty outletCrearBean.listaPotentialAutomatic}" disabled="true">
+                                            <f:selectItems value="#{outletCrearBean.listaPotentialAutomatic}" var="potAutomatic" itemLabel="#{potAutomatic.namePot}"/>
+                                        </p:selectOneMenu>
+                                        <h:outputLabel value="#{msg.out_message_not_potential}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
+                                                       rendered="#{empty outletCrearBean.listaPotentialAutomatic}"/>
+                                    </h:panelGroup>
 
-                                <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:selectOneMenu id="somDistri" style="width: 90%" value="#{outletCrearBean.distribuidorSeleccionado}" converter="distribuidorConverter">
-                                    <f:selectItems value="#{outletCrearBean.listaDistribuidor}" var="dis" itemLabel="#{dis.nombre}"/>
-                                </p:selectOneMenu>
+                                    <h:outputLabel value="#{msg.out_potencial} manual" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:selectOneMenu converter="potentialConverter" value="#{outletCrearBean.potentialManula}">
+                                        <f:selectItems value="#{outletCrearBean.listaPotentialManual}" var="potManual" itemLabel="#{potManual.namePot}"/>
+                                    </p:selectOneMenu>
 
-                                <h:outputLabel value="#{msg.out_distri_depto}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:selectOneMenu id="somDeptoDistri" style="width: 90%" value="#{outletCrearBean.departamentoDistribuidor}" converter="departamentoConverter">
-                                    <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptodis" itemLabel="#{deptodis.nombredepto}"/>
-                                    <p:ajax process="@this" update="somMpioDistri"/>
-                                </p:selectOneMenu>
+                                    <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:selectOneMenu id="somDistri" style="width: 90%" value="#{outletCrearBean.distribuidorSeleccionado}" converter="distribuidorConverter"
+                                                     >
+                                        <f:selectItems value="#{outletCrearBean.listaDistribuidor}" var="dis" itemLabel="#{dis.nombre}"/>
+                                    </p:selectOneMenu>
 
-                                <h:outputLabel value="#{msg.out_distri_mpio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:selectOneMenu id="somMpioDistri" style="width: 90%" value="#{outletCrearBean.municipioDistribuidor}" converter="municipioConverter">
-                                    <f:selectItems value="#{outletCrearBean.departamentoDistribuidor.municipioList}" var="mpiodis" itemLabel="#{mpiodis.nombremunicipio}"/>
-                                </p:selectOneMenu>
+                                    <h:outputLabel value="#{msg.out_distri_depto}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:selectOneMenu id="somDeptoDistri" style="width: 90%" value="#{outletCrearBean.departamentoDistribuidor}" converter="departamentoConverter"
+                                                     >
+                                        <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptodis" itemLabel="#{deptodis.nombredepto}"/>
+                                        <p:ajax process="@this" update="somMpioDistri"/>
+                                    </p:selectOneMenu>
 
-                                <h:outputLabel value="#{msg.m_battleground}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:selectOneMenu id="somBattle" style="width: 90%" value="#{outletCrearBean.battlegroundSeleccionado}" converter="battlegroundConverter">
-                                    <f:selectItems value="#{outletCrearBean.listaBattleground}" var="battle" itemLabel="#{battle.nombre}"/>
-                                </p:selectOneMenu>
+                                    <h:outputLabel value="#{msg.out_distri_mpio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:selectOneMenu id="somMpioDistri" style="width: 90%" value="#{outletCrearBean.municipioDistribuidor}" converter="municipioConverter"
+                                                     >
+                                        <f:selectItems value="#{outletCrearBean.departamentoDistribuidor.municipioList}" var="mpiodis" itemLabel="#{mpiodis.nombremunicipio}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>
                             </h:panelGrid>
-                        </h:panelGrid>
+                        </h:panelGroup>
                     </p:fieldset>
                     <p:fieldset legend="#{msg.out_ubicacion}" style="width: 95%">
                         <h:panelGrid columns="1" style="width: 95%">

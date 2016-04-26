@@ -31,7 +31,7 @@
                                 <h:outputLabel value="#{usu.apellidos}"/>
                             </p:column>
                             <p:column headerText="#{msg.mail}" filterBy="#{usu.correo}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{usu.correo}"/>
+                                <h:outputLabel value="#{usu.correo.toLowerCase()}"/>
                             </p:column>
                             <p:column headerText="#{msg.usu_perfil}" filterMatchMode="exact" filterBy="#{usu.idPerfil.nombre}">
                                 <f:facet name="filter">
