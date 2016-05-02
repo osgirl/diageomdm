@@ -49,6 +49,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     @Inject
     private LoginBean loginBean;
     private List<Outlet> listaOutlets;
+    private List<Outlet> listaOutletsOld;
     private List<Permissionsegment> listPermi;
     private List<SubSegmento> listSubSegment;
     private boolean verDetalle;
@@ -79,9 +80,11 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setPotentialManula(new Potential());
         if (getLoginBean().getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.DATA_STEWARD.getId())) {
-            setListaOutlets(outletBeanLocal.consultarTodosOutlets());
+            setListaOutlets(outletBeanLocal.listOutletNew("1"));
+            setListaOutletsOld(outletBeanLocal.listOutletNew("0"));
         } else {
             setListaOutlets(new ArrayList<Outlet>());
+            setListaOutletsOld(new ArrayList<Outlet>());
             listPermi = getLoginBean().getListPermissionSegment();
             for (Permissionsegment permi : listPermi) {
                 List<Outlet> listTemp = outletBeanLocal.findByDistributor(permi.getDistribuidor().getIdDistribuidor());
@@ -114,7 +117,14 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                                                 }
                                                 listTemp1.setDisabledButtonEdit(disabled);
                                             }
-                                            getListaOutlets().add(listTemp1);
+                                            switch (listTemp1.getIsNewOutlet()) {
+                                                case "1":
+                                                    getListaOutlets().add(listTemp1);
+                                                    break;
+                                                case "0":
+                                                    getListaOutletsOld().add(listTemp1);
+                                                    break;
+                                            }
                                         }
                                     }
                                 }
@@ -157,9 +167,9 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setApellidosPropietario(out.getPropietario().getApellidos());
         setNumeroDocumento(out.getPropietario().getNumDoc());
         setTipoDocumento(new TipoDoc(out.getPropietario().getTipodoc().getIdtipoDocumento()));
-        setCanalSeleccionado(out.getIdsubsegmento().getIdsegmento().getIdsubchannel().getChannelIdchannel());
-        setSubCanalSeleccionado(out.getIdsubsegmento().getIdsegmento().getIdsubchannel());
-        setSegmentoSeleccionado(out.getIdsubsegmento().getIdsegmento());
+        setChannelLabel(out.getIdsubsegmento().getIdsegmento().getIdsubchannel().getChannelIdchannel().getNombre());
+        setSubChannelLabel(out.getIdsubsegmento().getIdsegmento().getIdsubchannel().getNombre());
+        setSegmentLabel(out.getIdsubsegmento().getIdsegmento().getNombre());
         setSubSegmentoSeleccionado(out.getIdsubsegmento());
         setDistribuidorSeleccionado(out.getIdDistribuidor());
         setBattlegroundSeleccionado(out.getIdbattledground());
@@ -171,7 +181,6 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setLineaNegocio(out.getLineanegocio());
         setCodigoEan(out.getCodigoEAN());
         setPuntoVenta(out.getNumPDV());
-        System.out.println("tamañooooooooo******"+getListaPotentialManual().size());
         if (out.getIdPotentialManual() == null) {
             setPotentialManula(out.getIdPotentialManual());
         } else {
@@ -331,4 +340,11 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         this.stateMasive = stateMasive;
     }
 
+    public List<Outlet> getListaOutletsOld() {
+        return listaOutletsOld;
+    }
+
+    public void setListaOutletsOld(List<Outlet> listaOutletsOld) {
+        this.listaOutletsOld = listaOutletsOld;
+    }
 }

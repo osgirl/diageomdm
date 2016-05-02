@@ -53,6 +53,12 @@ and open the template in the editor.
                     </p:submenu>
                 </p:submenu>                   
 
+                <p:submenu label="#{msg.m_report}" rendered="#{loginBean.renderizarMenu('REPORT')}"> 
+                    <p:menuitem value="#{msg.m_report_create_outlet}" rendered="#{loginBean.renderizarMenu('REPORT_OUTLET')}" action="#{menuBean.navegar('REPORT_OUTLET')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_report_create_distributor}" rendered="#{loginBean.renderizarMenu('REPORT_DISTRI')}" action="#{menuBean.navegar('REPORT_DISTRI')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_report_outlet_pendding}" rendered="#{loginBean.renderizarMenu('REPORT_PENDING')}" action="#{menuBean.navegar('REPORT_PENDING')}" ajax="false"/>
+                </p:submenu>
+
                 <p:submenu label="#{msg.m_perfil}">                        
                     <p:menuitem value="#{msg.m_mis_datos}" action="#{menuBean.navegar('MIS_DATOS')}" ajax="false"/>
                     <p:menuitem value="#{msg.m_cambiar_contrase}" action="#{menuBean.navegar('CAM_CONTRA')}" ajax="false"/>

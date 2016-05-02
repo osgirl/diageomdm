@@ -9,12 +9,11 @@ import com.diageo.admincontrollerweb.entities.TipoDoc;
 import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import com.diageo.diageonegocio.beans.BattleGroundBeanLocal;
-import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.DistributorBeanLocal;
 import com.diageo.diageonegocio.beans.OutletBeanLocal;
 import com.diageo.diageonegocio.beans.PotentialBeanLocal;
+import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
 import com.diageo.diageonegocio.entidades.Battleground;
-import com.diageo.diageonegocio.entidades.Channel;
 import com.diageo.diageonegocio.entidades.Departamento;
 import com.diageo.diageonegocio.entidades.Distribuidor;
 import com.diageo.diageonegocio.entidades.Municipio;
@@ -22,8 +21,6 @@ import com.diageo.diageonegocio.entidades.Outlet;
 import com.diageo.diageonegocio.entidades.Persona;
 import com.diageo.diageonegocio.entidades.Potential;
 import com.diageo.diageonegocio.entidades.Sateoutlet;
-import com.diageo.diageonegocio.entidades.Segmento;
-import com.diageo.diageonegocio.entidades.SubChannel;
 import com.diageo.diageonegocio.entidades.SubSegmento;
 import com.diageo.diageonegocio.entidades.Telefonos;
 import com.diageo.diageonegocio.entidades.TipoDocumento;
@@ -53,29 +50,26 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     @EJB
     private OutletBeanLocal outletBeanLocal;
     @EJB
-    private ChannelBeanLocal channelBeanLocal;
-    @EJB
     private DistributorBeanLocal distribuidorBeanLocal;
     @EJB
     private BattleGroundBeanLocal battleGroundBeanLocal;
     @EJB
     protected PotentialBeanLocal potentialBeanLocal;
+    @EJB
+    protected SubSegmentoBeanLocal subSegmentoBeanLocal;
     @Inject
     private DiageoApplicationBean diageoApplicationBean;
-    //list segment
-    private List<Channel> listaCanales;
-    private List<SubChannel> listSubChannel;
-    private List<Segmento> listSegment;
+    //list segment   
     private List<SubSegmento> listSubSegment;
     private List<Potential> listaPotentialAutomatic;
     private List<Potential> listaPotentialManual;
+    private String channelLabel;
+    private String subChannelLabel;
+    private String segmentLabel;
     //Other list
     private List<Distribuidor> listaDistribuidor;
     private List<Battleground> listaBattleground;
     private Battleground battlegroundSeleccionado;
-    private Channel canalSeleccionado;
-    private SubChannel subCanalSeleccionado;
-    private Segmento segmentoSeleccionado;
     private SubSegmento subSegmentoSeleccionado;
     private Distribuidor distribuidorSeleccionado;
     private Potential potentialAutomatic;
@@ -112,10 +106,8 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        setListaCanales(channelBeanLocal.consultarTodosChannel());
         setListaPotentialManual(potentialBeanLocal.findAll());
         setPotentialManula(getListaPotentialManual().get(0));
-        setCanalSeleccionado(getListaCanales().get(0));
         cargarListas();
         setListaDistribuidor(distribuidorBeanLocal.searchAllDistributor());
         setDistribuidorSeleccionado(getListaDistribuidor().get(0));
@@ -149,9 +141,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     }
 
     public void cargarListas() {
-        setSubCanalSeleccionado(getCanalSeleccionado().getSubChannelList().get(0));
-        setSegmentoSeleccionado(getSubCanalSeleccionado().getSegmentoList().get(0));
-        setSubSegmentoSeleccionado(getSegmentoSeleccionado().getSubSegmentoList().get(0));
+        setListSubSegment(subSegmentoBeanLocal.consultarTodosSubSegmentos());
     }
 
     public void guardarOutlet() {
@@ -209,72 +199,17 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         }
     }
 
-    public void listenerChannel() {
-        setListSubChannel(getCanalSeleccionado().getSubChannelList());
-        setSubCanalSeleccionado(getListSubChannel().get(0));
-        this.listenerSubChannel();
-    }
-
-    public void listenerSubChannel() {
-        setSegmentoSeleccionado(getSubCanalSeleccionado().getSegmentoList().get(0));
-        setListSegment(getSubCanalSeleccionado().getSegmentoList());
-        this.listenerSegment();
-    }
-
-    public void listenerSegment() {
-        setSubSegmentoSeleccionado(getSegmentoSeleccionado().getSubSegmentoList().get(0));
-        setListSubSegment(getSegmentoSeleccionado().getSubSegmentoList());
-        listenerSubSegment();
-    }
-
     public void listenerSubSegment() {
         if (getSubSegmentoSeleccionado().getPotentialList() == null || getSubSegmentoSeleccionado().getPotentialList().isEmpty()) {
             setListaPotentialAutomatic(new ArrayList<Potential>());
         } else {
             setPotentialAutomatic(getSubSegmentoSeleccionado().getPotentialList().get(0));
             setListaPotentialAutomatic(getSubSegmentoSeleccionado().getPotentialList());
+            setSegmentLabel(getSubSegmentoSeleccionado().getIdsegmento().getNombre());
+            setSubChannelLabel(getSubSegmentoSeleccionado().getIdsegmento().getIdsubchannel().getNombre());
+            setChannelLabel(getSubSegmentoSeleccionado().getIdsegmento().getIdsubchannel().getChannelIdchannel().getNombre());
         }
 
-    }
-
-    public List<Channel> getListaCanales() {
-        return listaCanales;
-    }
-
-    public void setListaCanales(List<Channel> listaCanales) {
-        this.listaCanales = listaCanales;
-    }
-
-    public Channel getCanalSeleccionado() {
-        return canalSeleccionado;
-    }
-
-    public void setCanalSeleccionado(Channel canalSeleccionado) {
-        this.canalSeleccionado = canalSeleccionado;
-    }
-
-    public ChannelBeanLocal getChannelBeanLocal() {
-        return channelBeanLocal;
-    }
-
-    public void setChannelBeanLocal(ChannelBeanLocal channelBeanLocal) {
-        this.channelBeanLocal = channelBeanLocal;
-    }
-
-    public SubChannel getSubCanalSeleccionado() {
-        return subCanalSeleccionado;
-    }
-
-    public void setSubCanalSeleccionado(SubChannel subCanalSeleccionado) {
-        this.subCanalSeleccionado = subCanalSeleccionado;
-    }
-
-    public Segmento getSegmentoSeleccionado() {
-        return segmentoSeleccionado;
-    }
-
-    public void setSegmentoSeleccionado(Segmento segmentoSeleccionado) {
-        this.segmentoSeleccionado = segmentoSeleccionado;
     }
 
     public SubSegmento getSubSegmentoSeleccionado() {
@@ -509,22 +444,6 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         this.battlegroundSeleccionado = battlegroundSeleccionado;
     }
 
-    public List<SubChannel> getListSubChannel() {
-        return listSubChannel;
-    }
-
-    public void setListSubChannel(List<SubChannel> listSubChannel) {
-        this.listSubChannel = listSubChannel;
-    }
-
-    public List<Segmento> getListSegment() {
-        return listSegment;
-    }
-
-    public void setListSegment(List<Segmento> listSegment) {
-        this.listSegment = listSegment;
-    }
-
     public List<SubSegmento> getListSubSegment() {
         return listSubSegment;
     }
@@ -563,6 +482,30 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
     public void setPotentialManula(Potential potentialManula) {
         this.potentialManula = potentialManula;
+    }
+
+    public String getChannelLabel() {
+        return channelLabel;
+    }
+
+    public void setChannelLabel(String channelLabel) {
+        this.channelLabel = channelLabel;
+    }
+
+    public String getSubChannelLabel() {
+        return subChannelLabel;
+    }
+
+    public void setSubChannelLabel(String subChannelLabel) {
+        this.subChannelLabel = subChannelLabel;
+    }
+
+    public String getSegmentLabel() {
+        return segmentLabel;
+    }
+
+    public void setSegmentLabel(String segmentLabel) {
+        this.segmentLabel = segmentLabel;
     }
 
 }

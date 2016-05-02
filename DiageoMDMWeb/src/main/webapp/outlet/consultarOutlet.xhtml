@@ -29,8 +29,10 @@
                         }
                     </style>
                     <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
-                        <h:outputLabel value="#{msg.out_management}" style="font-family: arial;color:blue;font-weight: bolder"/>
-                        <br/><br/>
+                        <h:panelGroup rendered="#{outletConsultarBean.verDetalle}">
+                            <h:outputLabel value="#{msg.out_management_new}" style="font-family: arial;color:blue;font-weight: bolder" />
+                            <br/>
+                        </h:panelGroup>
                         <p:dataTable id="dtOutlet" value="#{outletConsultarBean.listaOutlets}" var="outdt" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      style="font-size:  90%" rendered="#{outletConsultarBean.verDetalle}" paginator="true"> 
@@ -68,7 +70,48 @@
                                 </h:panelGroup>
                             </p:column>
                         </p:dataTable>
-                        <br/><br/>
+                        <h:panelGroup rendered="#{outletConsultarBean.verDetalle}">
+                            <br/>
+                            <h:outputLabel value="#{msg.out_management_old}" style="font-family: arial;color:blue;font-weight: bolder" />
+                            <br/>
+                        </h:panelGroup>
+                        <p:dataTable id="dtOutletNew" value="#{outletConsultarBean.listaOutletsOld}" var="outdt" paginatorAlwaysVisible="false" rows="15"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     style="font-size:  90%" rendered="#{outletConsultarBean.verDetalle}" paginator="true"> 
+                            <p:column headerText="#{msg.out_approbation_massive}">
+                                <p:selectBooleanCheckbox value="#{outdt.approbationMassive}" rendered="#{outdt.renderedApprobationMassive}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.out_razon_social}" filterBy="#{outdt.razonsocial}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{outdt.razonsocial}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.out_nit}" filterBy="#{outdt.nit}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{outdt.nit}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.out_nombre_propietario}" filterBy="#{outdt.propietario.nombres}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{outdt.propietario.nombres}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.out_apellidos_propietario}" filterBy="#{outdt.propietario.apellidos}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{outdt.propietario.apellidos}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{outdt.idsubsegmento.nomnbre}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{outdt.idsubsegmento.nomnbre}"/>
+                            </p:column>                            
+                            <p:column headerText="#{msg.out_distribuidor}" filterBy="#{outdt.idDistribuidor.nombre}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{outdt.idDistribuidor.nombre}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.estado}" filterBy="#{outdt.idStateOutlet.name}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{outdt.idStateOutlet.name}"/>
+                            </p:column>                                
+                            <p:column>
+                                <p:commandLink value="#{msg.btn_edit}" style="color: blue" process="@all" update="@form"
+                                               actionListener="#{outletConsultarBean.detalle(outdt)}" disabled="#{outdt.disabledButtonEdit}"/>
+                                <br/><br/>
+                                <h:panelGroup rendered="#{outdt.idStateOutlet.name eq 'REJECTED'}">
+                                    <h:outputLabel id="labelRe" value="Detalle Rechazo" style="color: blue"/>
+                                    <p:tooltip for="labelRe" value="#{outdt.messageReject}"/>
+                                </h:panelGroup>
+                            </p:column>
+                        </p:dataTable>                        
                         <h:panelGrid columns="3">
                             <p:selectOneMenu id="somStateMassive" value="#{outletConsultarBean.stateMasive}" 
                                              rendered="#{outletConsultarBean.verDetalle and loginBean.usuario.idPerfil.idperfil eq '4'}">                                             
@@ -100,32 +143,32 @@
                                     <h:panelGrid columns="1" style="width: 95%">
                                         <h:panelGrid columns="4" style="width: 100%">
                                             <h:outputLabel value="#{msg.out_kiernan}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                            <p:inputText style="width: 90%" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>                                
+                                            <p:inputText style="width: 90%" disabled="true"/>                                
                                             <h:outputLabel value="#{msg.out_cod_cliente_distri}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                            <p:inputText style="width: 90%" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>         
+                                            <p:inputText style="width: 90%" disabled="true"/>         
                                             <h:outputLabel value="#{msg.out_razon_social}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.razonSocial}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>                                
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.razonSocial}" disabled="true"/>                                
                                             <h:outputLabel value="#{msg.out_tipo_outlet}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                            <p:selectOneMenu style="width: 90%" value="#{outletConsultarBean.tipoOutlet}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}">
+                                            <p:selectOneMenu style="width: 90%" value="#{outletConsultarBean.tipoOutlet}" disabled="true">
                                                 <f:selectItem itemValue="N" itemLabel="#{msg.out_tipo_natural}"/>
                                                 <f:selectItem itemValue="J" itemLabel="#{msg.out_tipo_juri}"/>
                                             </p:selectOneMenu>
 
                                             <h:outputLabel value="#{msg.out_nombre}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" />
-                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.nombreOutlet}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>  
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.nombreOutlet}" disabled="true"/>  
                                             <h:outputLabel value="#{msg.out_nit}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" />
-                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.nit}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>  
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.nit}" disabled="true"/>  
 
                                             <h:outputLabel value="#{msg.out_nombre_propietario}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" />
-                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.nombresPropietarios}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>  
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.nombresPropietarios}" disabled="true"/>  
                                             <h:outputLabel value="#{msg.out_apellidos_propietario}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" />
-                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.apellidosPropietario}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/> 
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.apellidosPropietario}" disabled="true"/> 
 
                                             <h:outputLabel value="#{msg.usu_num_doc}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" />
-                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.numeroDocumento}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/> 
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.numeroDocumento}" disabled="true"/> 
                                             <h:outputLabel value="#{msg.usu_tipo_doc}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" />
                                             <p:selectOneMenu style="width: 90%" value="#{outletConsultarBean.tipoDocumento}" converter="tipoDocConverter" 
-                                                             disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}">
+                                                             disabled="true">
                                                 <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tipoDoc" itemLabel="#{tipoDoc.nombre}"/>
                                             </p:selectOneMenu>
                                         </h:panelGrid>
@@ -136,28 +179,18 @@
                                         <h:panelGrid columns="1" style="width: 95%">
                                             <h:panelGrid columns="4" style="width: 100%">
                                                 <h:outputLabel value="#{msg.can_canal}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                                <p:selectOneMenu id="somCanal" style="width: 90%" value="#{outletConsultarBean.canalSeleccionado}" converter="channelConverter"
-                                                                 disabled="#{ loginBean.usuario.idPerfil.idperfil eq '4' or outletConsultarBean.disabledSegmentChannel}">
-                                                    <f:selectItems value="#{outletConsultarBean.listaCanales}" var="can" itemLabel="#{can.nombre}"/>
-                                                    <p:ajax process="@this" update="formConsultarOutlet:pgSegment" listener="#{outletConsultarBean.listenerChannel()}"/>
-                                                </p:selectOneMenu>
+                                                <p:inputText id="itChannel" readonly="true" value="#{outletConsultarBean.channelLabel}"/>
+
                                                 <h:outputLabel value="#{msg.sub_subcanal}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                                <p:selectOneMenu id="somSubCanal" style="width: 90%" value="#{outletConsultarBean.subCanalSeleccionado}" converter="subChannelConverter"
-                                                                 disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}">
-                                                    <f:selectItems value="#{outletConsultarBean.canalSeleccionado.subChannelList}" var="subcan" itemLabel="#{subcan.nombre}"/>
-                                                    <p:ajax process="@this" update="formConsultarOutlet:pgSegment" listener="#{outletConsultarBean.listenerSubChannel()}"/>
-                                                </p:selectOneMenu>
+                                                <p:inputText id="itSubChannel" readonly="true" value="#{outletConsultarBean.subChannelLabel}"/>
 
                                                 <h:outputLabel value="#{msg.seg_segmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                                <p:selectOneMenu id="somSegmento" style="width: 90%" value="#{outletConsultarBean.segmentoSeleccionado}" converter="segmentoConverter"
-                                                                 disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}">
-                                                    <f:selectItems value="#{outletConsultarBean.subCanalSeleccionado.segmentoList}" var="seg" itemLabel="#{seg.nombre}"/>
-                                                    <p:ajax process="@this" update="formConsultarOutlet:pgSegment" listener="#{outletConsultarBean.listenerSegment()}"/>
-                                                </p:selectOneMenu>
+                                                <p:inputText id="itSegment" readonly="true" value="#{outletConsultarBean.segmentLabel}"/>
+
                                                 <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                                 <p:selectOneMenu id="somSubSegmento" style="width: 90%" value="#{outletConsultarBean.subSegmentoSeleccionado}" converter="subSegmentoConverter"
                                                                  disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}">
-                                                    <f:selectItems value="#{outletConsultarBean.segmentoSeleccionado.subSegmentoList}" var="subseg" itemLabel="#{subseg.nomnbre}"/>
+                                                    <f:selectItems value="#{outletConsultarBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nomnbre}"/>
                                                     <p:ajax process="@this" update="formConsultarOutlet:pgSegment" listener="#{outletConsultarBean.listenerSubSegment()}"/>
                                                 </p:selectOneMenu>
 
@@ -178,21 +211,8 @@
 
                                                 <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                                 <p:selectOneMenu id="somDistri" style="width: 90%" value="#{outletConsultarBean.distribuidorSeleccionado}" converter="distribuidorConverter"
-                                                                 disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}">
+                                                                 disabled="true">
                                                     <f:selectItems value="#{outletConsultarBean.listaDistribuidor}" var="dis" itemLabel="#{dis.nombre}"/>
-                                                </p:selectOneMenu>
-
-                                                <h:outputLabel value="#{msg.out_distri_depto}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                                <p:selectOneMenu id="somDeptoDistri" style="width: 90%" value="#{outletConsultarBean.departamentoDistribuidor}" converter="departamentoConverter"
-                                                                 disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}">
-                                                    <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptodis" itemLabel="#{deptodis.nombredepto}"/>
-                                                    <p:ajax process="@this" update="somMpioDistri"/>
-                                                </p:selectOneMenu>
-
-                                                <h:outputLabel value="#{msg.out_distri_mpio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                                <p:selectOneMenu id="somMpioDistri" style="width: 90%" value="#{outletConsultarBean.municipioDistribuidor}" converter="municipioConverter"
-                                                                 disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}">
-                                                    <f:selectItems value="#{outletConsultarBean.departamentoDistribuidor.municipioList}" var="mpiodis" itemLabel="#{mpiodis.nombremunicipio}"/>
                                                 </p:selectOneMenu>
 
                                             </h:panelGrid>
@@ -204,22 +224,22 @@
                                         <h:panelGrid columns="4" style="width: 100%">
                                             <h:outputLabel value="#{msg.out_out_depto}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                             <p:selectOneMenu id="somDeptoOut" style="width: 90%" value="#{outletConsultarBean.departamentoOutlet}" converter="departamentoConverter"
-                                                             disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}">
+                                                             disabled="true">
                                                 <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptoout" itemLabel="#{deptoout.nombredepto}"/>
                                                 <p:ajax process="@this" update="somMpioOut"/>
                                             </p:selectOneMenu>
 
                                             <h:outputLabel value="#{msg.out_out_mpio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                             <p:selectOneMenu id="somMpioOut" style="width: 90%" value="#{outletConsultarBean.municipioOutlet}" converter="municipioConverter"
-                                                             disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}">
+                                                             disabled="true">
                                                 <f:selectItems value="#{outletConsultarBean.departamentoOutlet.municipioList}" var="mpioout" itemLabel="#{mpioout.nombremunicipio}"/>
                                             </p:selectOneMenu>
 
                                             <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.direccion}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>  
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.direccion}" disabled="true"/>  
 
                                             <h:outputLabel value="#{msg.out_barrio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.barrio}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>  
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.barrio}" disabled="true"/>  
                                         </h:panelGrid>                                
                                     </h:panelGrid>
                                 </p:fieldset>
@@ -227,16 +247,16 @@
                                     <h:panelGrid columns="1" style="width: 95%">
                                         <h:panelGrid columns="4" style="width: 100%">
                                             <h:outputLabel value="#{msg.mail}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.correoElectronico}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.correoElectronico}" disabled="true"/>
 
                                             <h:outputLabel value="#{msg.out_celular}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.celular}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.celular}" disabled="true"/>
 
                                             <h:outputLabel value="#{msg.out_tel_uno}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.telefonoUno}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.telefonoUno}" disabled="true"/>
 
                                             <h:outputLabel value="#{msg.out_tel_dos}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.telefonoDos}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.telefonoDos}" disabled="true"/>
                                         </h:panelGrid>                                
                                     </h:panelGrid>
                                 </p:fieldset>
@@ -244,16 +264,16 @@
                                     <h:panelGrid columns="1" style="width: 95%">
                                         <h:panelGrid columns="4" style="width: 100%">
                                             <h:outputLabel value="#{msg.out_linea_negocio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                            <p:selectOneMenu style="width: 90%" value="#{outletConsultarBean.lineaNegocio}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}">                                    
+                                            <p:selectOneMenu style="width: 90%" value="#{outletConsultarBean.lineaNegocio}" disabled="true">                                    
                                                 <f:selectItem itemValue="CODT" itemLabel="CODT"/>
                                                 <f:selectItem itemValue="COAC" itemLabel="COAC"/>
                                             </p:selectOneMenu>
 
                                             <h:outputLabel value="#{msg.out_codigo_ean}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.codigoEan}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.codigoEan}" disabled="true"/>
 
                                             <h:outputLabel value="#{msg.out_punto_venta}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.puntoVenta}" disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>
+                                            <p:inputText style="width: 90%" value="#{outletConsultarBean.puntoVenta}" disabled="true"/>
                                         </h:panelGrid>                                
                                     </h:panelGrid>
                                 </p:fieldset>

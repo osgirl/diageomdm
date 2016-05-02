@@ -124,10 +124,15 @@
             </ui:define> 
         </ui:composition>
         <h:form id="formCreateUserModal">                
-            <p:dialog id="dChain" modal="true" width="40%" header="#{msg.usu_edit_detail}" widgetVar="wvChain" resizable="false">
+            <p:dialog id="dChain" modal="true" width="50%" header="#{msg.usu_edit_detail}" widgetVar="wvChain" resizable="false">
                 <h:outputStylesheet library="css" name="template.css"/>
                 <h:panelGroup id="pgSegment">
-                    <h:outputLabel value="#{msg.out_seg_functional}"/>
+                    <h:panelGrid columns="3">
+                        <h:outputLabel value="#{msg.out_seg_functional}"/>
+                        <p:spacer width="20px"/>
+                        <p:commandButton value="#{msg.btn_add}" process="@all" update="pgSegment"
+                                         styleClass="button" style="width: 100%" actionListener="#{gestionarUsuarioCreacion.addPermissionDistributorList()}"/>
+                    </h:panelGrid>
                     <br/><br/>
                     <p:panelGrid columns="3" style="width: 90%">
                         <h:outputLabel value="#{msg.can_canal}"/>
@@ -178,6 +183,27 @@
                         <p:commandButton value="#{msg.btn_acept}" process="@all" update="@form" actionListener="#{gestionarUsuarioCreacion.aceptChangesChain()}" styleClass="button" style="width: 100%"/>                        
                         <p:commandButton value="#{msg.btn_cancel}" process="@all" update="@form" actionListener="#{gestionarUsuarioCreacion.cancelChangesChain()}" styleClass="button" style="width: 100%"/>
                     </h:panelGrid>
+                    <br/>
+                    <p:dataTable id="dtSegmentSelect" value="#{gestionarUsuarioCreacion.listSegmentByDistributor}" var="segmentDistributor"
+                                 paginatorAlwaysVisible="false" rows="2"  paginator="true"
+                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                        <p:column headerText="#{msg.can_canal}">                            
+                            <p:selectBooleanCheckbox value="#{segmentDistributor.channelCheck eq '1'}" disabled="true"/>
+                            <h:outputLabel value="#{gestionarUsuarioCreacion.channelName(segmentDistributor.channel)}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.sub_subcanal}">
+                            <p:selectBooleanCheckbox value="#{segmentDistributor.subChannelCheck eq '1'}" disabled="true"/>
+                            <h:outputLabel value="#{gestionarUsuarioCreacion.subChannelName(segmentDistributor.subChannel)}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.seg_segmento}">
+                            <p:selectBooleanCheckbox value="#{segmentDistributor.segmentoCheck eq '1'}" disabled="true"/>
+                            <h:outputLabel value="#{gestionarUsuarioCreacion.segmentName(segmentDistributor.segmento)}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.sub_seg_subsegmento}">
+                            <p:selectBooleanCheckbox value="#{segmentDistributor.subSegmentCheck eq '1'}" disabled="true"/>
+                            <h:outputLabel value="#{gestionarUsuarioCreacion.subSegmentName(segmentDistributor.subSegmento)}"/>                            
+                        </p:column>
+                    </p:dataTable>
                 </h:panelGroup>
             </p:dialog>
         </h:form>

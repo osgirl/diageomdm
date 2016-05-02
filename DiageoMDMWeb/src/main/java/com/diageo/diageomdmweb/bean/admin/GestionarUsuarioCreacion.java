@@ -166,6 +166,10 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     private List<Potential> listPotential;
     private List<Potential> listaPotentialAutomatic;
     /**
+     * List that indicate the channels the user can see by distributor
+     */
+    private List<Permissionsegment> listSegmentByDistributor;
+    /**
      * Distributor selected
      */
     private Distribuidor distributorSelected;
@@ -208,6 +212,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         setListSegment(getSubChannelSelected().getSegmentoList());
         setListSubSegment(getSegmentSelected().getSubSegmentoList());
         listenerSubSegment();
+        setListSegmentByDistributor(new ArrayList<Permissionsegment>());
     }
 
     /**
@@ -229,8 +234,12 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
                 usu.setIntentosFallidos(0);
                 usu.setPrimerIngreso(UserEntryEnum.FIRST_ENTRY.getState());
                 usu.setModuloList(perfil.getModuloList());
-                usu.setDistributor(getDistributorSelected().getIdDistribuidor());
-                usuarioBean.createUser(usu, getListDistributorAddToUser());
+                if (isDetailEdition()) {
+                    usu.setDistributor(getDistributorSelected().getIdDistribuidor());
+                    usuarioBean.createUser(usu, getListDistributorAddToUser());
+                } else {
+                    usuarioBean.createUser(usu, null);
+                }
                 for (Modulo mod : getPerfil().getModuloList()) {
                     mod.getUsuarioList().add(usu);
                     moduloBean.createUserModule(mod);
@@ -244,7 +253,8 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     }
 
     public void listenerDetailEdition() {
-        detailEdition = !((getPerfil().getIdperfil().equals(ProfileEnum.ADMINISTRATOR.getId())) || (getPerfil().getIdperfil().equals(ProfileEnum.DATA_STEWARD.getId())));
+        detailEdition = !((getPerfil().getIdperfil().equals(ProfileEnum.ADMINISTRATOR.getId())) || (getPerfil().getIdperfil().equals(ProfileEnum.DATA_STEWARD.getId()))
+                || (getPerfil().getIdperfil().equals(ProfileEnum.CATDEV.getId())));
     }
 
     public void listenerFindDistributorSonByFather() {
@@ -336,6 +346,24 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         RequestContext.getCurrentInstance().execute("PF('wvChain').hide();");
     }
 
+    /**
+     * Add to the table of the popup, a record about the permissions that have
+     * the distributor
+     */
+    public void addPermissionDistributorList() {
+        Permissionsegment ps = new Permissionsegment();
+        ps.setChannelCheck(isChannelCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        ps.setSubChannelCheck(isSubChannelCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        ps.setSegmentoCheck(isSegmentCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        ps.setSubSegmentCheck(isSubSegmentCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        ps.setPotentialCheck(isPotentialCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        ps.setChannel(getChannelSelected().getIdchannel());
+        ps.setSubChannel(getSubChannelSelected().getIdsubchannel());
+        ps.setSegmento(getSegmentSelected().getIdsegmento());
+        ps.setSubSegmento(getSubSegmentSelected().getIdsubSegmento());
+        getListSegmentByDistributor().add(ps);
+    }
+
     public void cancelChangesChain() {
         unSelectAllChain();
         setChannelSelected(getListChannel().get(0));
@@ -344,7 +372,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         setSubSegmentSelected(getSegmentSelected().getSubSegmentoList().get(0));
         RequestContext.getCurrentInstance().execute("PF('wvChain').hide();");
     }
-    
+
     public void listenerChannel() {
         setListSubChannel(getChannelSelected().getSubChannelList());
         setSubChannelSelected(getListSubChannel().get(0));
@@ -371,6 +399,42 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
             setListaPotentialAutomatic(getSubSegmentSelected().getPotentialList());
         }
 
+    }
+
+    public String channelName(Integer id) {
+        try {
+            return channelBeanLocal.consultarId(id).getNombre();
+        } catch (DiageoNegocioException ex) {
+            Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public String subChannelName(Integer id) {
+        try {
+            return subChannelBeanLocal.consultarId(id).getNombre();
+        } catch (DiageoNegocioException ex) {
+            Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public String segmentName(Integer id) {
+        try {
+            return segmentoBeanLocal.consultarId(id).getNombre();
+        } catch (DiageoNegocioException ex) {
+            Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public String subSegmentName(Integer id) {
+        try {
+            return subSegmentoBeanLocal.consultarId(id).getNomnbre();
+        } catch (DiageoNegocioException ex) {
+            Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     /**
@@ -820,6 +884,20 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
 
     public void setPotentialManual(Potential potentialManual) {
         this.potentialManual = potentialManual;
+    }
+
+    /**
+     * @return the listSegmentByDistributor
+     */
+    public List<Permissionsegment> getListSegmentByDistributor() {
+        return listSegmentByDistributor;
+    }
+
+    /**
+     * @param listSegmentByDistributor the listSegmentByDistributor to set
+     */
+    public void setListSegmentByDistributor(List<Permissionsegment> listSegmentByDistributor) {
+        this.listSegmentByDistributor = listSegmentByDistributor;
     }
 
 }
