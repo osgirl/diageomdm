@@ -49,10 +49,12 @@ public class UserBean extends WebTransaction<Usuario> implements UserBeanLocal {
         try {
             user = super.create(user);
             passContainerBeanLocal.createPassContainer(user.getIdusuario(), user.getContraseina());
-            for (Permissionsegment perTemp : per) {
-                perTemp.getPermissionsegmentPK().setIdUsuario(user.getIdusuario());
+            if (per != null) {
+                for (Permissionsegment perTemp : per) {
+                    perTemp.getPermissionsegmentPK().setIdUsuario(user.getIdusuario());
+                }
+                permissionsegmentBeanLocal.createPermissionSegmentList(per);
             }
-            permissionsegmentBeanLocal.createPermissionSegmentList(per);
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getMessage());
             throw new ControllerWebException(e.getMessage(), e);

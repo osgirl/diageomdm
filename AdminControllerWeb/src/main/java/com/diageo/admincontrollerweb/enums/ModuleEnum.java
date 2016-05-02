@@ -44,14 +44,18 @@ public enum ModuleEnum {
     C_DISTRI_LOCATION("search location distributor"),
     POTENTIAL("potential"),
     C_POTENTIAL("create potential"),
-    S_POTENTIAL("search potential");
+    S_POTENTIAL("search potential"),
+    REPORT("report"),
+    REPORT_OUTLET("report outlet"),
+    REPORT_DISTRI("report distributor"),
+    REPORT_PENDING("report pending");
 
     private final String description;
 
-    private ModuleEnum(String description) {        
+    private ModuleEnum(String description) {
         this.description = description;
     }
-       
+
     public String getDescription() {
         return this.description;
     }
