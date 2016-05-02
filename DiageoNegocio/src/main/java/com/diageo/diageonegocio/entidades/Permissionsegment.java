@@ -22,7 +22,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "permissionsegment")
 @NamedQueries({
-    @NamedQuery(name = Permissionsegment.FIND_BY_USER, query = "SELECT p FROM Permissionsegment p WHERE p.permissionsegmentPK.idUsuario=?1")
+    @NamedQuery(name = Permissionsegment.FIND_BY_USER, 
+            query = "SELECT p FROM Permissionsegment p WHERE p.permissionsegmentPK.idUsuario=?1")
 })
 public class Permissionsegment implements Serializable {
 

@@ -20,16 +20,16 @@ public class PermissionsegmentPK implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "IdUsuario")
-    private int idUsuario;
+    private Integer idUsuario;
     @Basic(optional = false)
     @NotNull
     @Column(name = "IdDistributor")
-    private int idDistributor;
+    private Integer idDistributor;
 
     public PermissionsegmentPK() {
     }
 
-    public PermissionsegmentPK(int idUsuario, int idDistributor) {
+    public PermissionsegmentPK(Integer idUsuario, Integer idDistributor) {
         this.idUsuario = idUsuario;
         this.idDistributor = idDistributor;
     }
@@ -38,15 +38,15 @@ public class PermissionsegmentPK implements Serializable {
         return idUsuario;
     }
 
-    public void setIdUsuario(int idUsuario) {
+    public void setIdUsuario(Integer idUsuario) {
         this.idUsuario = idUsuario;
     }
 
-    public int getIdDistributor() {
+    public Integer getIdDistributor() {
         return idDistributor;
     }
 
-    public void setIdDistributor(int idDistributor) {
+    public void setIdDistributor(Integer idDistributor) {
         this.idDistributor = idDistributor;
     }
 

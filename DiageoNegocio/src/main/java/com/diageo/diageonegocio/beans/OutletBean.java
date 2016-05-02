@@ -62,6 +62,11 @@ public class OutletBean extends BusinessTransaction<Outlet> implements OutletBea
     }
 
     @Override
+    public List<Outlet> listOutletNew(String isNew) {
+        return super.searchByNamedQuery(Outlet.class, Outlet.FIND_BY_NEW, isNew);
+    }
+
+    @Override
     public Outlet consultarId(Integer id) throws DiageoNegocioException {
         try {
             Outlet outlet = (Outlet) super.searchById(Outlet.class, id);

@@ -31,11 +31,13 @@ import javax.validation.constraints.Size;
 @Table(name = "outlet")
 @NamedQueries({
     @NamedQuery(name = Outlet.FIND_ALL, query = "SELECT e FROM Outlet e"),
+    @NamedQuery(name = Outlet.FIND_BY_NEW, query = "SELECT e FROM Outlet e WHERE e.isNewOutlet=?1"),
     @NamedQuery(name = Outlet.FIND_BY_DISTRI, query = "SELECT e FROM Outlet e WHERE e.idDistribuidor.idDistribuidor=?1"),})
-public class Outlet implements Serializable {    
+public class Outlet implements Serializable {
 
     public static final String FIND_ALL = "Outlet.findAll";
     public static final String FIND_BY_DISTRI = "Outlet.findByDistributor";
+    public static final String FIND_BY_NEW = "Outlet.findByNew";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -100,11 +102,12 @@ public class Outlet implements Serializable {
     @JoinColumn(name = "IdPotential", referencedColumnName = "IdPotential")
     @ManyToOne
     private Potential idPotential;
-    
+
     @JoinColumn(name = "IdPotentialManual", referencedColumnName = "IdPotential")
     @ManyToOne
     private Potential idPotentialManual;
-
+    @Column(name = "isNewOutlet")
+    private String isNewOutlet;
     @Transient
     private boolean disabledButtonEdit;
     @Transient
@@ -334,6 +337,20 @@ public class Outlet implements Serializable {
 
     public void setIdPotentialManual(Potential idPotentialManual) {
         this.idPotentialManual = idPotentialManual;
+    }
+
+    /**
+     * @return the isNewOutlet
+     */
+    public String getIsNewOutlet() {
+        return isNewOutlet;
+    }
+
+    /**
+     * @param isNewOutlet the isNewOutlet to set
+     */
+    public void setIsNewOutlet(String isNewOutlet) {
+        this.isNewOutlet = isNewOutlet;
     }
 
 }
