@@ -5,8 +5,8 @@
  */
 package com.diageo.diageomdmweb.bean;
 
-import com.diageo.admincontrollerweb.entities.Perfil;
-import com.diageo.admincontrollerweb.entities.TipoDoc;
+import com.diageo.admincontrollerweb.entities.DwProfiles;
+import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
 import com.diageo.diageonegocio.beans.DepartamentoBeanLocal;
 import com.diageo.diageonegocio.entidades.Departamento;
 import java.io.Serializable;
@@ -44,11 +44,11 @@ public class DiageoApplicationBean extends DiageoRootBean implements Serializabl
     /**
      * Lista con todos los tipos de documento
      */
-    private List<TipoDoc> listaTipoDocumento;
+    private List<DwDocumentTypes> listaTipoDocumento;
     /**
      * Lista con todos los perfiles del sistema
      */
-    private List<Perfil> listaPerfiles;
+    private List<DwProfiles> listaPerfiles;
     /**
      * Lista departamentos
      */
@@ -62,36 +62,36 @@ public class DiageoApplicationBean extends DiageoRootBean implements Serializabl
 
     @PostConstruct
     public void init() {
-        setListaTipoDocumento((List<TipoDoc>) tipoDocBean.findAll());
-        setListaPerfiles((List<Perfil>) perfilBean.findAll());     
+        setListaTipoDocumento((List<DwDocumentTypes>) tipoDocBean.findAll());
+        setListaPerfiles((List<DwProfiles>) perfilBean.findAll());     
         setListaDepartamento(departamentoBeanLocal.consultarTodoDepartamento());
     }
 
     /**
      * @return the listaTipoDocumento
      */
-    public List<TipoDoc> getListaTipoDocumento() {
+    public List<DwDocumentTypes> getListaTipoDocumento() {
         return listaTipoDocumento;
     }
 
     /**
      * @param listaTipoDocumento the listaTipoDocumento to set
      */
-    public void setListaTipoDocumento(List<TipoDoc> listaTipoDocumento) {
+    public void setListaTipoDocumento(List<DwDocumentTypes> listaTipoDocumento) {
         this.listaTipoDocumento = listaTipoDocumento;
     }
 
     /**
      * @return the listaPerfiles
      */
-    public List<Perfil> getListaPerfiles() {
+    public List<DwProfiles> getListaPerfiles() {
         return listaPerfiles;
     }
 
     /**
      * @param listaPerfiles the listaPerfiles to set
      */
-    public void setListaPerfiles(List<Perfil> listaPerfiles) {
+    public void setListaPerfiles(List<DwProfiles> listaPerfiles) {
         this.listaPerfiles = listaPerfiles;
     }
 

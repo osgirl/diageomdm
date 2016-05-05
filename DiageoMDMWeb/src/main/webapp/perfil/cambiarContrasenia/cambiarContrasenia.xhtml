@@ -13,7 +13,7 @@
                 <h:form id="formCambiarContra"> 
                     <div style="left: 50%;-webkit-transform: translate(-50%);text-align: center;position: absolute;width: 100%">
                         <h:panelGrid id="pgContra" columns="1" style="width: 100%;text-align: center">
-                            <h:outputLabel rendered="#{loginBean.usuario.primerIngreso eq '1'}" value="#{msg.cam_pass_primer_ingreso}"/>
+                            <h:outputLabel rendered="#{loginBean.usuario.firstEntry eq '1'}" value="#{msg.cam_pass_primer_ingreso}"/>
                             <br/>
                             <p:password id="passActual" style="width: 25%" value="#{cambiarContraseniaBean.contrasenaActual}" required="true" label="#{msg.cam_pass_actual}"/>
                             <p:watermark for="passActual" value="#{msg.cam_pass_actual}"/>
@@ -42,7 +42,7 @@
             </ui:define>
         </ui:composition>
         <h:form id="formCamPassModal">
-            <p:dialog id="dHelp" widgetVar="wvHelp" width="20%" header="#{msg.cam_pass_header_pass_rules}" closeOnEscape="true" modal="true">
+            <p:dialog id="dHelp" widgetVar="wvHelp" width="33%" header="#{msg.cam_pass_header_pass_rules}" closeOnEscape="true" modal="true">
                 <p:panelGrid columns="1">
                     <h:outputLabel value="- #{msg.cam_pass_pass_rules}"/>
                     <h:outputLabel value="- #{msg.cam_pass_pass_rules_1}"/>

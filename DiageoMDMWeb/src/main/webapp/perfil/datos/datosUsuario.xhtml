@@ -12,32 +12,32 @@
                     <p:panelGrid columns="2" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
 
                         <h:outputLabel value="#{msg.usu_tipo_doc}" style="width: 20%"/>
-                        <h:outputLabel value="#{misDatosBean.tipoDocumento}" style="width: 75%"/>                            
+                        <h:outputLabel value="#{myDataBean.tipoDocumento}" style="width: 75%"/>                            
 
 
                         <h:outputLabel value="#{msg.usu_num_doc}" style="width: 20%"/>
-                        <h:outputLabel value="#{misDatosBean.numDocumento}" style="width: 75%"/>
+                        <h:outputLabel value="#{myDataBean.numDocumento}" style="width: 75%"/>
 
 
                         <h:outputLabel value="#{msg.usu_correo}" style="width: 25%"/>
-                        <h:outputLabel value="#{misDatosBean.correo}" style="width: 75%"/>
+                        <h:outputLabel value="#{myDataBean.correo}" style="width: 75%"/>
                         
                         <h:outputLabel value="#{msg.usu_perfil}" style="width: 25%"/>
-                        <h:outputLabel value="#{misDatosBean.perfil}" style="width: 75%"/>
+                        <h:outputLabel value="#{myDataBean.perfil}" style="width: 75%"/>
 
                         <h:outputLabel value="#{msg.usu_nombres}" style="width: 25%"/>
                         <h:panelGroup>
-                            <p:inputText id="itNombres" value="#{misDatosBean.nombres}" label="#{msg.usu_nombres   }" style="width: 75%" required="true"/>
-                            <p:message for="itNombres"/>
+                            <p:inputText id="itName" value="#{myDataBean.nombres}" label="#{msg.usu_nombres   }" style="width: 75%" required="true"/>
+                            <p:message for="itName"/>
                         </h:panelGroup>
 
                         <h:outputLabel value="#{msg.usu_apellidos}" style="width: 25%"/>
                         <h:panelGroup>
-                            <p:inputText id="itApellidos" value="#{misDatosBean.apellidos}" label="#{msg.usu_apellidos}" style="width: 75%" required="true"/>                                 
-                            <p:message for="itApellidos"/>
+                            <p:inputText id="itLastName" value="#{myDataBean.apellidos}" label="#{msg.usu_apellidos}" style="width: 75%" required="true"/>                                 
+                            <p:message for="itLastName"/>
                         </h:panelGroup>
 
-                        <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{misDatosBean.modificarDatos()}"
+                        <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{myDataBean.modificarDatos()}"
                                          style="width: 60%;color: white;background: -webkit-linear-gradient(#0088cc, #149bdf);text-align: center"/>
                         <p:messages id="mCamPas" closable="true" showDetail="true" showSummary="false" globalOnly="true"
                                    />

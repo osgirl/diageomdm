@@ -5,8 +5,8 @@
  */
 package com.diageo.diageomdmweb.filtros;
 
-import com.diageo.admincontrollerweb.entities.Modulo;
-import com.diageo.admincontrollerweb.entities.Usuario;
+import com.diageo.admincontrollerweb.entities.DwModules;
+import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.admincontrollerweb.enums.UserEntryEnum;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
@@ -123,11 +123,11 @@ public class AdminFilter implements Filter {
             HttpServletRequest req = (HttpServletRequest) request;
             HttpServletResponse res = (HttpServletResponse) response;
             HttpSession session = (HttpSession) req.getSession();
-            Usuario usu = (Usuario) session.getAttribute(DiageoRootBean.USUARIO);
+            DwUsers usu = (DwUsers) session.getAttribute(DiageoRootBean.USUARIO);
             if (usu == null) {
                 res.sendRedirect(req.getContextPath() + "/faces/login.xhtml");
                 return;
-            } else if (usu.getPrimerIngreso().equals(UserEntryEnum.FIRST_ENTRY.getState())) {
+            } else if (usu.getFirstEntry().equals(UserEntryEnum.FIRST_ENTRY.getState())) {
                 String contexto = req.getRequestURI();
                 contexto = contexto.substring(contexto.lastIndexOf("/"), contexto.length());
                 if (!contexto.contains("cambiarContrasenia.xhtml")) {
@@ -141,17 +141,17 @@ public class AdminFilter implements Filter {
                  * o no esa url
                  */
                 boolean bandera = false;
-                for (Modulo mod : usu.getModuloList()) {
-                    String urlModulo = req.getContextPath() + "/faces/" + mod.getUrl();
+                for (DwModules mod : usu.getDwModulesList()) {
+                    String urlModulo = req.getContextPath() + "/faces/" + mod.getUrlModule();
                     if (contextoDestino.equals(urlModulo)) {
                         bandera = true;
                         break;
                     }
                 }
                 if (!bandera) {
-                    if (usu.getIdPerfil().getIdperfil().equals(ProfileEnum.ADMINISTRATOR.getId())) {
+                    if (usu.getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())) {
                         res.sendRedirect(req.getContextPath() + "/faces/admin/usuario/consultarUsuario.xhtml");
-                    } else if (usu.getIdPerfil().getIdperfil().equals(ProfileEnum.DATA_STEWARD.getId())) {
+                    } else if (usu.getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
                         res.sendRedirect(req.getContextPath() + "/faces/outlet/consultarOutlet.xhtml");
                     }
                     return;

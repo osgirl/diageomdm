@@ -52,7 +52,7 @@
                                 <p:inputText style="width: 90%" value="#{outletCrearBean.numeroDocumento}"/> 
                                 <h:outputLabel value="#{msg.usu_tipo_doc}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" />
                                 <p:selectOneMenu style="width: 90%" value="#{outletCrearBean.tipoDocumento}" converter="tipoDocConverter">
-                                    <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tipoDoc" itemLabel="#{tipoDoc.nombre}"/>
+                                    <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tipoDoc" itemLabel="#{tipoDoc.nameDocumentType}"/>
                                 </p:selectOneMenu>
                             </h:panelGrid>
                         </h:panelGrid>

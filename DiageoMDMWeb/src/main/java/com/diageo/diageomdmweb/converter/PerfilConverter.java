@@ -5,7 +5,7 @@
  */
 package com.diageo.diageomdmweb.converter;
 
-import com.diageo.admincontrollerweb.entities.Perfil;
+import com.diageo.admincontrollerweb.entities.DwProfiles;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -29,7 +29,7 @@ public class PerfilConverter implements Converter {
             return null;
         }
         Integer id = Integer.parseInt(value);
-        Perfil p = (Perfil) transaccion.findById(id);
+        DwProfiles p = (DwProfiles) transaccion.findById(id);
         return p;
     }
 
@@ -38,8 +38,8 @@ public class PerfilConverter implements Converter {
         if (value == null) {
             return "";
         }
-        Perfil perfil = (Perfil) value;
-        return perfil.getIdperfil() + "";
+        DwProfiles perfil = (DwProfiles) value;
+        return perfil.getProfileId() + "";
     }
 
 }

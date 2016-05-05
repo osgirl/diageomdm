@@ -5,8 +5,8 @@
  */
 package com.diageo.diageomdmweb.bean;
 
-import com.diageo.admincontrollerweb.entities.Modulo;
-import com.diageo.admincontrollerweb.entities.Usuario;
+import com.diageo.admincontrollerweb.entities.DwModules;
+import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.admincontrollerweb.enums.UserEntryEnum;
@@ -58,10 +58,10 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     @EJB
     private OutletBeanLocal outletBeanLocal;
     @Pattern(regexp = PatternConstant.EMAIL_VALIDADOR, message = "{correo.pattern}")
-    private List<Modulo> listModulos;
+    private List<DwModules> listModulos;
     private String user;
     private String password;
-    private Usuario usuario;
+    private DwUsers usuario;
     private boolean recordarme;
     private MenuModel migaPan;
     private List<Permissionsegment> listPermissionSegment;
@@ -85,21 +85,21 @@ public class LoginBean extends DiageoRootBean implements Serializable {
         String pass = DigestUtils.md5Hex(getPassword());
         setUsuario(getUsuarioLocal().validateUserPassword(getUser(), pass));
         if (getUsuario() != null) {
-            if (getUsuario().getEstado().equals(StateEnum.ACTIVE.getState())) {
+            if (getUsuario().getStateUser().equals(StateEnum.ACTIVE.getState())) {
                 HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-                setListModulos(getUsuario().getModuloList());
+                setListModulos(getUsuario().getDwModulesList());
                 session.setAttribute(USUARIO, getUsuario());
                 setPassword(null);
-                findPermissionSegment(getUsuario().getIdusuario());
-                if (getUsuario().getPrimerIngreso().equals(UserEntryEnum.FIRST_ENTRY.getState())) {
+                findPermissionSegment(getUsuario().getUserId());
+                if (getUsuario().getFirstEntry().equals(UserEntryEnum.FIRST_ENTRY.getState())) {
                     armarMigaPan(capturarValor("m_perfil"), capturarValor("m_cambiar_contrase"));
                     return "/perfil/cambiarContrasenia/cambiarContrasenia?faces-redirect=true";
                 }
-                if (getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.ADMINISTRATOR.getId())) {
+                if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())) {
                     armarMigaPan(capturarValor("m_administrador"), capturarValor("m_usuario"), capturarValor("m_usuario_consultar"));
                     return "/admin/usuario/consultarUsuario?faces-redirect=true";
                 } else {
-                    if (getUsuario().getIdPerfil().getIdperfil().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
+                    if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
                         if (revisarOutletsPendientesRevision()) {
                             System.out.println("entro aprobacionoo");
                             RequestContext.getCurrentInstance().execute("PF('dlgPendiente').show();");                                                        
@@ -133,8 +133,8 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     }
 
     public boolean renderizarMenu(String idModulo) {
-        for (Modulo mod : getListModulos()) {
-            if (mod.getLlave().equals(idModulo)) {
+        for (DwModules mod : getListModulos()) {
+            if (mod.getKekModule().equals(idModulo)) {
                 return true;
             }
         }
@@ -280,14 +280,14 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     /**
      * @return the usuario
      */
-    public Usuario getUsuario() {
+    public DwUsers getUsuario() {
         return usuario;
     }
 
     /**
      * @param usuario the usuario to set
      */
-    public void setUsuario(Usuario usuario) {
+    public void setUsuario(DwUsers usuario) {
         this.usuario = usuario;
     }
 
@@ -305,11 +305,11 @@ public class LoginBean extends DiageoRootBean implements Serializable {
         this.recordarme = recordarme;
     }
 
-    public List<Modulo> getListModulos() {
+    public List<DwModules> getListModulos() {
         return listModulos;
     }
 
-    public void setListModulos(List<Modulo> listModulos) {
+    public void setListModulos(List<DwModules> listModulos) {
         this.listModulos = listModulos;
     }
 

@@ -5,7 +5,7 @@
  */
 package com.diageo.diageomdmweb.filtros;
 
-import com.diageo.admincontrollerweb.entities.Usuario;
+import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.UserEntryEnum;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import java.io.IOException;
@@ -117,11 +117,11 @@ public class PerfilFilter implements Filter {
             HttpServletRequest req = (HttpServletRequest) request;
             HttpServletResponse res = (HttpServletResponse) response;
             HttpSession session = (HttpSession) req.getSession();
-            Usuario usu = (Usuario) session.getAttribute(DiageoRootBean.USUARIO);
+            DwUsers usu = (DwUsers) session.getAttribute(DiageoRootBean.USUARIO);
             if (usu == null) {
                 res.sendRedirect(req.getContextPath() + "/faces/login.xhtml");
                 return;
-            } else if (usu.getPrimerIngreso().equals(UserEntryEnum.FIRST_ENTRY.getState())) {
+            } else if (usu.getFirstEntry().equals(UserEntryEnum.FIRST_ENTRY.getState())) {
                 String contexto = req.getRequestURI();
                 contexto = contexto.substring(contexto.lastIndexOf("/"), contexto.length());
                 if (!contexto.contains("cambiarContrasenia.xhtml")) {

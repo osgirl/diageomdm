@@ -114,7 +114,7 @@
                         </p:dataTable>                        
                         <h:panelGrid columns="3">
                             <p:selectOneMenu id="somStateMassive" value="#{outletConsultarBean.stateMasive}" 
-                                             rendered="#{outletConsultarBean.verDetalle and loginBean.usuario.idPerfil.idperfil eq '4'}">                                             
+                                             rendered="#{outletConsultarBean.verDetalle and loginBean.usuario.profileId.nameProfile eq '4'}">                                             
                                 <f:selectItem itemLabel="Aprobado" itemValue="3"/>
                                 <f:selectItem itemLabel="Rechazado" itemValue="4"/>
                                 <p:ajax process="@this" listener="#{outletConsultarBean.listenerReject()}"/>
@@ -129,9 +129,9 @@
 
                         <h:panelGroup id="pgCOnsultarOut">
                             <h:panelGroup id="pgCOnsultarOutHijo" rendered="#{!outletConsultarBean.verDetalle}">
-                                <h:outputLabel value="Aprobar" style="font-family: arial;color:blue;" rendered="#{loginBean.usuario.idPerfil.idperfil eq '4'}"/>
+                                <h:outputLabel value="Aprobar" style="font-family: arial;color:blue;" rendered="#{loginBean.usuario.profileId.nameProfile eq '4'}"/>
                                 <p:selectOneMenu id="somState" value="#{outletConsultarBean.state}" 
-                                                 rendered="#{loginBean.usuario.idPerfil.idperfil eq '4'}" 
+                                                 rendered="#{loginBean.usuario.profileId.nameProfile eq '4'}" 
                                                  style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 80%">
 
                                     <f:selectItem itemLabel="Aprobado" itemValue="3"/>
@@ -169,7 +169,7 @@
                                             <h:outputLabel value="#{msg.usu_tipo_doc}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" />
                                             <p:selectOneMenu style="width: 90%" value="#{outletConsultarBean.tipoDocumento}" converter="tipoDocConverter" 
                                                              disabled="true">
-                                                <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tipoDoc" itemLabel="#{tipoDoc.nombre}"/>
+                                                <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tipoDoc" itemLabel="#{tipoDoc.nameDocumentType}"/>
                                             </p:selectOneMenu>
                                         </h:panelGrid>
                                     </h:panelGrid>
@@ -189,7 +189,7 @@
 
                                                 <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                                 <p:selectOneMenu id="somSubSegmento" style="width: 90%" value="#{outletConsultarBean.subSegmentoSeleccionado}" converter="subSegmentoConverter"
-                                                                 disabled="#{loginBean.usuario.idPerfil.idperfil eq '4'}">
+                                                                 disabled="#{loginBean.usuario.profileId.profileId eq '4'}">
                                                     <f:selectItems value="#{outletConsultarBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nomnbre}"/>
                                                     <p:ajax process="@this" update="formConsultarOutlet:pgSegment" listener="#{outletConsultarBean.listenerSubSegment()}"/>
                                                 </p:selectOneMenu>

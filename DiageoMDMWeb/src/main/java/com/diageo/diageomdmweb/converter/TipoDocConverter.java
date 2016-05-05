@@ -5,7 +5,7 @@
  */
 package com.diageo.diageomdmweb.converter;
 
-import com.diageo.admincontrollerweb.entities.TipoDoc;
+import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -29,7 +29,7 @@ public class TipoDocConverter implements Converter {
             return null;
         }
         Integer id = Integer.parseInt(value);
-        TipoDoc tidpoDoc = (TipoDoc) transacciones.findById(id);
+        DwDocumentTypes tidpoDoc = (DwDocumentTypes) transacciones.findById(id);
         return tidpoDoc;
     }
 
@@ -38,8 +38,8 @@ public class TipoDocConverter implements Converter {
         if (value == null) {
             return "";
         }
-        TipoDoc tipoDocumento = (TipoDoc) value;
-        return tipoDocumento.getIdtipoDoc() + "";
+        DwDocumentTypes tipoDocumento = (DwDocumentTypes) value;
+        return tipoDocumento.getDocumentTypeId() + "";
     }
 
 }

@@ -6,7 +6,7 @@
 package com.diageo.diageomdmweb.bean.perfil;
 
 import com.diageo.admincontrollerweb.beans.PassContainerBeanLocal;
-import com.diageo.admincontrollerweb.entities.PassContainer;
+import com.diageo.admincontrollerweb.entities.DwPasscontainers;
 import com.diageo.admincontrollerweb.enums.UserEntryEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
@@ -43,11 +43,11 @@ public class CambiarContraseniaBean extends DiageoRootBean implements Serializab
     private String contrasenaActual;
     @Pattern(regexp = PatternConstant.PASSWORD_RULES, message = "{password.rules}")
     private String contrseniaNueva;
-    private List<PassContainer> listPassContainer;
+    private List<DwPasscontainers> listPassContainer;
 
     @PostConstruct
     public void init() {
-        setListPassContainer(passContainerBeanLocal.findPassContainerByUser(getLoginBean().getUsuario().getIdusuario()));
+        setListPassContainer(passContainerBeanLocal.findPassContainerByUser(getLoginBean().getUsuario().getUserId()));
     }
 
     public void cambiarContrasenia() {
@@ -58,24 +58,24 @@ public class CambiarContraseniaBean extends DiageoRootBean implements Serializab
         } else {
             try {
                 if (!getListPassContainer().isEmpty()) {
-                    for (PassContainer pc : getListPassContainer()) {
-                        if (pc.getPassContainerPK().getPassword().equals(DigestUtils.md5Hex(getContrseniaNueva()))) {
+                    for (DwPasscontainers pc : getListPassContainer()) {
+                        if (pc.getPasswordUser().equals(DigestUtils.md5Hex(getContrseniaNueva()))) {
                             showWarningMessage(capturarValor("cam_pass_used"));
                             return;
                         }
                     }
                 }
-                getLoginBean().getUsuario().setPrimerIngreso(UserEntryEnum.NOT_FIRST_ENTRY.getState());
+                getLoginBean().getUsuario().setFirstEntry(UserEntryEnum.NOT_FIRST_ENTRY.getState());
                 String pass = DigestUtils.md5Hex(getContrseniaNueva());
-                getLoginBean().getUsuario().setContraseina(pass);
+                getLoginBean().getUsuario().setPasswordUser(pass);
                 usuarioBean.updateUser(getLoginBean().getUsuario());
                 if (getListPassContainer().size() >= 12) {
-                    PassContainer pc = passContainerBeanLocal.findFirstRecordSaved(getListPassContainer());
-                    System.out.println(pc.getModificationDate());
-                    passContainerBeanLocal.deletePassContainer(pc.getPassContainerPK().getIdUser(), pc.getPassContainerPK().getPassword());
+                    DwPasscontainers pc = passContainerBeanLocal.findFirstRecordSaved(getListPassContainer());
+                    System.out.println(pc.getUpdatePassword());
+                    passContainerBeanLocal.deletePassContainer(pc.getUserId().getUserId(), pc.getPasswordUser());
                     getListPassContainer().remove(pc);
                 }
-                PassContainer pc = passContainerBeanLocal.createPassContainer(getLoginBean().getUsuario().getIdusuario(), DigestUtils.md5Hex(getContrseniaNueva()));
+                DwPasscontainers pc = passContainerBeanLocal.createPassContainer(getLoginBean().getUsuario().getUserId(), DigestUtils.md5Hex(getContrseniaNueva()));
                 getListPassContainer().add(pc);
                 showInfoMessage(capturarValor("cam_pass_cambio_exitoso"));
             } catch (ControllerWebException ex) {
@@ -136,14 +136,14 @@ public class CambiarContraseniaBean extends DiageoRootBean implements Serializab
     /**
      * @return the listPassContainer
      */
-    public List<PassContainer> getListPassContainer() {
+    public List<DwPasscontainers> getListPassContainer() {
         return listPassContainer;
     }
 
     /**
      * @param listPassContainer the listPassContainer to set
      */
-    public void setListPassContainer(List<PassContainer> listPassContainer) {
+    public void setListPassContainer(List<DwPasscontainers> listPassContainer) {
         this.listPassContainer = listPassContainer;
     }
 

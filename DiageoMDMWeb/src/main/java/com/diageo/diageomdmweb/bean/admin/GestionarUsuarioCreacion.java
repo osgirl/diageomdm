@@ -5,10 +5,10 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
-import com.diageo.admincontrollerweb.entities.Modulo;
-import com.diageo.admincontrollerweb.entities.Perfil;
-import com.diageo.admincontrollerweb.entities.TipoDoc;
-import com.diageo.admincontrollerweb.entities.Usuario;
+import com.diageo.admincontrollerweb.entities.DwModules;
+import com.diageo.admincontrollerweb.entities.DwProfiles;
+import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
+import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.UserEntryEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
@@ -111,11 +111,11 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     /**
      * Tipo de documentl
      */
-    private TipoDoc tipoDocumento;
+    private DwDocumentTypes tipoDocumento;
     /**
-     * Perfil que se le asignará al usuario creado
+     * DwProfiles que se le asignará al usuario creado
      */
-    private Perfil perfil;
+    private DwProfiles perfil;
     /**
      * Bandeera que indica si el usuario puede o no después de ser creado
      * ingresar al sistema
@@ -192,8 +192,8 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      */
     @PostConstruct
     public void init() {
-        setPerfil(new Perfil());
-        setTipoDocumento(new TipoDoc());
+        setPerfil(new DwProfiles());
+        setTipoDocumento(new DwDocumentTypes());
         setListDistributor(distributorBeanLocal.searchADistributorPadre(FatherDistributorEnum.FATHER.getIsPadre()));
         setListDistributorSon(distributorBeanLocal.searchDistributorByPadre(getListDistributor().get(0).getIdDistribuidor()));
         setListDistributorAddToUser(new ArrayList<Permissionsegment>());
@@ -221,27 +221,27 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     public void crearUsuario() {
         if (!validarExisteciaCorreo()) {
             try {
-                Usuario usu = new Usuario();
-                usu.setNombres(getNombres().toUpperCase());
-                usu.setApellidos(getApellidos().toUpperCase());
-                usu.setCorreo(getCorreo().toUpperCase());
-                usu.setContraseina(DigestUtils.md5Hex(getTipoDocumento().getNombre().toLowerCase() + getNumDoc()));
-                usu.setNumDoc(getNumDoc().toUpperCase());
-                usu.setFechaCreacion(getFechaActual());
-                usu.setEstado(isActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-                usu.setTipoDoc(getTipoDocumento().getIdtipoDoc());
-                usu.setIdPerfil(getPerfil());
-                usu.setIntentosFallidos(0);
-                usu.setPrimerIngreso(UserEntryEnum.FIRST_ENTRY.getState());
-                usu.setModuloList(perfil.getModuloList());
+                DwUsers usu = new DwUsers();
+                usu.setNameUser(getNombres().toUpperCase());
+                usu.setLastName(getApellidos().toUpperCase());
+                usu.setEmailUser(getCorreo().toUpperCase());
+                usu.setPasswordUser(DigestUtils.md5Hex(getTipoDocumento().getNameDocumentType().toLowerCase() + getNumDoc()));
+                usu.setDocumentNumber(getNumDoc().toUpperCase());
+                usu.setCreationDate(getFechaActual());
+                usu.setStateUser(isActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+                usu.setDocumentTypeId(getTipoDocumento());
+                usu.setProfileId(getPerfil());
+                usu.setFailedAttempt(0);
+                usu.setFirstEntry(UserEntryEnum.FIRST_ENTRY.getState());
+                usu.setDwModulesList(perfil.getDwModulesList());
                 if (isDetailEdition()) {
-                    usu.setDistributor(getDistributorSelected().getIdDistribuidor());
+                    usu.setDistributorId(getDistributorSelected().getIdDistribuidor());
                     usuarioBean.createUser(usu, getListDistributorAddToUser());
                 } else {
                     usuarioBean.createUser(usu, null);
                 }
-                for (Modulo mod : getPerfil().getModuloList()) {
-                    mod.getUsuarioList().add(usu);
+                for (DwModules mod : getPerfil().getDwModulesList()) {
+                    mod.getDwUsersList().add(usu);
                     moduloBean.createUserModule(mod);
                 }
                 showInfoMessage(capturarValor("usu_creado_exito"));
@@ -253,8 +253,8 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     }
 
     public void listenerDetailEdition() {
-        detailEdition = !((getPerfil().getIdperfil().equals(ProfileEnum.ADMINISTRATOR.getId())) || (getPerfil().getIdperfil().equals(ProfileEnum.DATA_STEWARD.getId()))
-                || (getPerfil().getIdperfil().equals(ProfileEnum.CATDEV.getId())));
+        detailEdition = !((getPerfil().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())) || (getPerfil().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()))
+                || (getPerfil().getProfileId().equals(ProfileEnum.CATDEV.getId())));
     }
 
     public void listenerFindDistributorSonByFather() {
@@ -513,14 +513,14 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     /**
      * @return the tipoDocumento
      */
-    public TipoDoc getTipoDocumento() {
+    public DwDocumentTypes getTipoDocumento() {
         return tipoDocumento;
     }
 
     /**
      * @param tipoDocumento the tipoDocumento to set
      */
-    public void setTipoDocumento(TipoDoc tipoDocumento) {
+    public void setTipoDocumento(DwDocumentTypes tipoDocumento) {
         this.tipoDocumento = tipoDocumento;
     }
 
@@ -541,14 +541,14 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     /**
      * @return the perfil
      */
-    public Perfil getPerfil() {
+    public DwProfiles getPerfil() {
         return perfil;
     }
 
     /**
      * @param perfil the perfil to set
      */
-    public void setPerfil(Perfil perfil) {
+    public void setPerfil(DwProfiles perfil) {
         this.perfil = perfil;
     }
 

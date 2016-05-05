@@ -30,7 +30,7 @@
                                 </h:panelGroup>
                                 <h:outputLabel value="#{msg.usu_tipo_doc}"/>                        
                                 <p:selectOneMenu style="width: 73%" label="#{msg.usu_tipo_doc}" value="#{gestionarUsuarioCreacion.tipoDocumento}" converter="tipoDocConverter">
-                                    <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tiDoc" itemLabel="#{tiDoc.nombre}"/>
+                                    <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tiDoc" itemLabel="#{tiDoc.nameDocumentType}"/>
                                 </p:selectOneMenu>
                                 <h:outputLabel value="#{msg.usu_num_doc}"/>
                                 <h:panelGroup>
@@ -44,7 +44,7 @@
                                 </h:panelGroup>
                                 <h:outputLabel value="#{msg.usu_perfil}"/>                        
                                 <p:selectOneMenu style="width: 73%" label="#{msg.usu_perfil}" value="#{gestionarUsuarioCreacion.perfil}" converter="perfilConverter">
-                                    <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemLabel="#{per.nombre}"/>
+                                    <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemLabel="#{per.nameProfile}"/>
                                     <p:ajax update="formCrearUsuario:pgEditDetail" process="@this" listener="#{gestionarUsuarioCreacion.listenerDetailEdition()}"/>
                                 </p:selectOneMenu>
                                 <h:outputLabel value="#{msg.usu_activo}"/>           

@@ -5,7 +5,7 @@
  */
 package com.diageo.diageomdmweb.bean.outlet;
 
-import com.diageo.admincontrollerweb.entities.TipoDoc;
+import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
 import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import com.diageo.diageonegocio.beans.BattleGroundBeanLocal;
@@ -87,7 +87,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     private String nombresPropietarios;
     private String apellidosPropietario;
     private String numeroDocumento;
-    private TipoDoc tipoDocumento;
+    private DwDocumentTypes tipoDocumento;
     private String direccion;
     private String barrio;
     private String correoElectronico;
@@ -156,7 +156,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             personaPropietaria.setApellidos(apellidosPropietario);
             personaPropietaria.setNombres(nombresPropietarios);
             personaPropietaria.setNumDoc(numeroDocumento);
-            personaPropietaria.setTipodoc(new TipoDocumento(tipoDocumento.getIdtipoDoc()));
+            personaPropietaria.setTipodoc(new TipoDocumento(tipoDocumento.getDocumentTypeId()));
             outletEntidad.setPropietario(personaPropietaria);
             //CLASIFICACION
             outletEntidad.setIdsubsegmento(subSegmentoSeleccionado);
@@ -332,11 +332,11 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         this.numeroDocumento = numeroDocumento;
     }
 
-    public TipoDoc getTipoDocumento() {
+    public DwDocumentTypes getTipoDocumento() {
         return tipoDocumento;
     }
 
-    public void setTipoDocumento(TipoDoc tipoDocumento) {
+    public void setTipoDocumento(DwDocumentTypes tipoDocumento) {
         this.tipoDocumento = tipoDocumento;
     }
 

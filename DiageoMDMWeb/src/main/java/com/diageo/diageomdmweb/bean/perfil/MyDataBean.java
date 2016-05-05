@@ -5,7 +5,7 @@
  */
 package com.diageo.diageomdmweb.bean.perfil;
 
-import com.diageo.admincontrollerweb.entities.Usuario;
+import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.DocumentTypeEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
@@ -24,11 +24,11 @@ import com.diageo.admincontrollerweb.beans.UserBeanLocal;
  *
  * @author yovanoty126
  */
-@Named(value = "misDatosBean")
+@Named(value = "myDataBean")
 @ViewScoped
-public class MisDatosBean extends DiageoRootBean implements Serializable {
+public class MyDataBean extends DiageoRootBean implements Serializable {
 
-    private static final Logger LOG = Logger.getLogger(MisDatosBean.class.getName());
+    private static final Logger LOG = Logger.getLogger(MyDataBean.class.getName());
     @Inject
     private LoginBean loginBean;
     @EJB
@@ -43,17 +43,17 @@ public class MisDatosBean extends DiageoRootBean implements Serializable {
     /**
      * Creates a new instance of MisDatosBean
      */
-    public MisDatosBean() {
+    public MyDataBean() {
     }
 
     @PostConstruct
     public void init() {
-        setApellidos(getLoginBean().getUsuario().getApellidos());
-        setNombres(getLoginBean().getUsuario().getNombres());
-        setCorreo(getLoginBean().getUsuario().getCorreo());
-        setNumDocumento(getLoginBean().getUsuario().getNumDoc());
-        setTipoDoc(getLoginBean().getUsuario().getTipoDoc());
-        setPerfil(getLoginBean().getUsuario().getIdPerfil().getNombre());
+        setApellidos(getLoginBean().getUsuario().getLastName());
+        setNombres(getLoginBean().getUsuario().getNameUser());
+        setCorreo(getLoginBean().getUsuario().getEmailUser());
+        setNumDocumento(getLoginBean().getUsuario().getDocumentNumber());
+        setTipoDoc(getLoginBean().getUsuario().getDocumentTypeId().getDocumentTypeId());
+        setPerfil(getLoginBean().getUsuario().getProfileId().getNameProfile());
     }
 
     public String getTipoDocumento() {
@@ -62,9 +62,9 @@ public class MisDatosBean extends DiageoRootBean implements Serializable {
 
     public void modificarDatos() {
         try {
-            Usuario usuario = getLoginBean().getUsuario();
-            usuario.setNombres(getNombres());
-            usuario.setApellidos(getApellidos());
+            DwUsers usuario = getLoginBean().getUsuario();
+            usuario.setNameUser(getNombres());
+            usuario.setLastName(getApellidos());
             usuario=usuarioBeanLocal.updateUser(usuario);
             getLoginBean().setUsuario(usuario);
             super.showInfoMessage(capturarValor("usu_mis_datos"));
