@@ -5,7 +5,7 @@
  */
 package com.diageo.admincontrollerweb.beans;
 
-import com.diageo.admincontrollerweb.entities.TipoDoc;
+import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -16,8 +16,8 @@ import javax.ejb.Local;
 @Local
 public interface DocumentTypeBeanLocal {
 
-    public List<TipoDoc> findAll();
+    public List<DwDocumentTypes> findAll();
 
-    public TipoDoc findById(Integer id);
+    public DwDocumentTypes findById(Integer id);
     
 }

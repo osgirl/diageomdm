@@ -5,7 +5,7 @@
  */
 package com.diageo.admincontrollerweb.beans;
 
-import com.diageo.admincontrollerweb.entities.TipoDoc;
+import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
 import java.util.List;
 import javax.ejb.Stateless;
 
@@ -14,18 +14,18 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class DocumentTypeBean extends WebTransaction<TipoDoc> implements DocumentTypeBeanLocal {
+public class DocumentTypeBean extends WebTransaction<DwDocumentTypes> implements DocumentTypeBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public List<TipoDoc> findAll() {
-        return findAll(TipoDoc.class);
+    public List<DwDocumentTypes> findAll() {
+        return findAll(DwDocumentTypes.class);
     }
 
     @Override
-    public TipoDoc findById(Integer id) {
-        return (TipoDoc) findById(TipoDoc.class, id);
+    public DwDocumentTypes findById(Integer id) {
+        return (DwDocumentTypes) findById(DwDocumentTypes.class, id);
     }
 
 }

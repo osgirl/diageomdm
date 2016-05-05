@@ -5,7 +5,7 @@
  */
 package com.diageo.admincontrollerweb.beans;
 
-import com.diageo.admincontrollerweb.entities.Modulo;
+import com.diageo.admincontrollerweb.entities.DwModules;
 import javax.ejb.Local;
 
 /**
@@ -15,6 +15,6 @@ import javax.ejb.Local;
 @Local
 public interface ModuleBeanLocal {
 
-    public void createUserModule(Modulo mod);
+    public void createUserModule(DwModules mod);
     
 }

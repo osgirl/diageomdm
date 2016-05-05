@@ -5,7 +5,7 @@
  */
 package com.diageo.admincontrollerweb.beans;
 
-import com.diageo.admincontrollerweb.entities.Perfil;
+import com.diageo.admincontrollerweb.entities.DwProfiles;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -16,8 +16,8 @@ import javax.ejb.Local;
 @Local
 public interface ProfileBeanLocal {
 
-    public List<Perfil> findAll();
+    public List<DwProfiles> findAll();
 
-    public Perfil findById(Integer id);
+    public DwProfiles findById(Integer id);
     
 }

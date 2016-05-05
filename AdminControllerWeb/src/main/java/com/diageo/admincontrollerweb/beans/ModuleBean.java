@@ -5,7 +5,7 @@
  */
 package com.diageo.admincontrollerweb.beans;
 
-import com.diageo.admincontrollerweb.entities.Modulo;
+import com.diageo.admincontrollerweb.entities.DwModules;
 import javax.ejb.Stateless;
 
 /**
@@ -13,12 +13,12 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class ModuleBean extends WebTransaction<Modulo>implements ModuleBeanLocal {
+public class ModuleBean extends WebTransaction<DwModules>implements ModuleBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public void createUserModule(Modulo mod){
+    public void createUserModule(DwModules mod){
         super.update(mod);        
     }
     

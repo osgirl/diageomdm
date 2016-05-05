@@ -5,7 +5,7 @@
  */
 package com.diageo.admincontrollerweb.beans;
 
-import com.diageo.admincontrollerweb.entities.PassContainer;
+import com.diageo.admincontrollerweb.entities.DwPasscontainers;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -16,12 +16,12 @@ import javax.ejb.Local;
 @Local
 public interface PassContainerBeanLocal {
 
-    public PassContainer createPassContainer(Integer userId, String password);
+    public DwPasscontainers createPassContainer(Integer userId, String password);
 
-    public List<PassContainer> findPassContainerByUser(Integer id);
+    public List<DwPasscontainers> findPassContainerByUser(Integer id);
 
     public void deletePassContainer(Integer idUser, String password);
 
-    public PassContainer findFirstRecordSaved(List<PassContainer> list);
+    public DwPasscontainers findFirstRecordSaved(List<DwPasscontainers> list);
     
 }

@@ -37,29 +37,29 @@ public class WebTransaction<T> {
         return obj;
     }
 
-    public T create(T entidad) {
-        getEntityManager().persist(entidad);
+    public T create(T entity) {
+        getEntityManager().persist(entity);
         getEntityManager().flush();
-        return entidad;
+        return entity;
     }
 
-    public void delete(T entidad) {
-        entidad=getEntityManager().merge(entidad);
-        getEntityManager().remove(entidad);
+    public void delete(T entity) {
+        entity=getEntityManager().merge(entity);
+        getEntityManager().remove(entity);
     }
 
-    public List<T> findByNamedQuery(Class tipo, String namedQuery, Object... parametros) {
-        Query query = getEntityManager().createNamedQuery(namedQuery, tipo);
-        for (int i = 0; i < parametros.length; i++) {
-            query.setParameter(i + 1, parametros[i]);
+    public List<T> findByNamedQuery(Class type, String namedQuery, Object... parameter) {
+        Query query = getEntityManager().createNamedQuery(namedQuery, type);
+        for (int i = 0; i < parameter.length; i++) {
+            query.setParameter(i + 1, parameter[i]);
         }
         return query.getResultList();
     }
 
-    public List<T> findAll(Class tipo) {
+    public List<T> findAll(Class type) {
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-        CriteriaQuery<T> criteria = cb.createQuery(tipo);
-        criteria.from(tipo);
+        CriteriaQuery<T> criteria = cb.createQuery(type);
+        criteria.from(type);
         Query query = getEntityManager().createQuery(criteria);
         return query.getResultList();
     }

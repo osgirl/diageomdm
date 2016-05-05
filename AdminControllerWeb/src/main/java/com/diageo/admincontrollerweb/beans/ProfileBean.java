@@ -5,7 +5,7 @@
  */
 package com.diageo.admincontrollerweb.beans;
 
-import com.diageo.admincontrollerweb.entities.Perfil;
+import com.diageo.admincontrollerweb.entities.DwProfiles;
 import java.util.List;
 import javax.ejb.Stateless;
 
@@ -14,18 +14,18 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class ProfileBean extends WebTransaction<Perfil> implements ProfileBeanLocal {
+public class ProfileBean extends WebTransaction<DwProfiles> implements ProfileBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public List<Perfil> findAll() {
-        return findAll(Perfil.class);
+    public List<DwProfiles> findAll() {
+        return findAll(DwProfiles.class);
     }
 
     @Override
-    public Perfil findById(Integer id) {
-        return (Perfil) findById(Perfil.class, id);
+    public DwProfiles findById(Integer id) {
+        return (DwProfiles) findById(DwProfiles.class, id);
     }
  
 }

@@ -5,10 +5,9 @@
  */
 package com.diageo.admincontrollerweb.beans;
 
-import com.diageo.admincontrollerweb.entities.Usuario;
+import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
-import com.diageo.diageonegocio.beans.PermissionsegmentBean;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
 import com.diageo.diageonegocio.entidades.Permissionsegment;
 import java.util.Calendar;
@@ -17,15 +16,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 /**
  *
  * @author yovanoty126
  */
 @Stateless
-public class UserBean extends WebTransaction<Usuario> implements UserBeanLocal {
+public class UserBean extends WebTransaction<DwUsers> implements UserBeanLocal {
 
     private static final Logger LOG = Logger.getLogger(UserBean.class.getName());
     @EJB
@@ -34,9 +31,9 @@ public class UserBean extends WebTransaction<Usuario> implements UserBeanLocal {
     private PermissionsegmentBeanLocal permissionsegmentBeanLocal;
 
     @Override
-    public Usuario updateUser(Usuario user) throws ControllerWebException {
+    public DwUsers updateUser(DwUsers user) throws ControllerWebException {
         try {
-            user = (Usuario) update(user);
+            user = (DwUsers) update(user);
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getMessage());
             throw new ControllerWebException(e.getMessage(), e);
@@ -45,13 +42,13 @@ public class UserBean extends WebTransaction<Usuario> implements UserBeanLocal {
     }
 
     @Override
-    public Usuario createUser(Usuario user, List<Permissionsegment> per) throws ControllerWebException {
+    public DwUsers createUser(DwUsers user, List<Permissionsegment> per) throws ControllerWebException {
         try {
             user = super.create(user);
-            passContainerBeanLocal.createPassContainer(user.getIdusuario(), user.getContraseina());
+            passContainerBeanLocal.createPassContainer(user.getUserId(), user.getPasswordUser());
             if (per != null) {
                 for (Permissionsegment perTemp : per) {
-                    perTemp.getPermissionsegmentPK().setIdUsuario(user.getIdusuario());
+                    perTemp.getPermissionsegmentPK().setIdUsuario(user.getUserId());
                 }
                 permissionsegmentBeanLocal.createPermissionSegmentList(per);
             }
@@ -63,8 +60,8 @@ public class UserBean extends WebTransaction<Usuario> implements UserBeanLocal {
     }
 
     @Override
-    public Usuario findEmail(String correo) throws ControllerWebException {
-        List<Usuario> listaUsuario = super.findByNamedQuery(Usuario.class, Usuario.FIND_CORREO, correo);
+    public DwUsers findEmail(String correo) throws ControllerWebException {
+        List<DwUsers> listaUsuario = super.findByNamedQuery(DwUsers.class, DwUsers.FIND_MAIL, correo);
         if (listaUsuario == null || listaUsuario.isEmpty()) {
             throw new ControllerWebException("La consulta no arroja resultados");
         }
@@ -72,8 +69,8 @@ public class UserBean extends WebTransaction<Usuario> implements UserBeanLocal {
     }
 
     @Override
-    public List<Usuario> findAll() throws ControllerWebException {
-        List<Usuario> listaUsuarios = super.findAll(Usuario.class);
+    public List<DwUsers> findAll() throws ControllerWebException {
+        List<DwUsers> listaUsuarios = super.findAll(DwUsers.class);
         if (listaUsuarios == null || listaUsuarios.isEmpty()) {
             throw new ControllerWebException("La consulta no arroja resultados");
         }
@@ -81,21 +78,21 @@ public class UserBean extends WebTransaction<Usuario> implements UserBeanLocal {
     }
 
     @Override
-    public Usuario validateUserPassword(String user, String pass) {
+    public DwUsers validateUserPassword(String user, String pass) {
         try {
-            List<Usuario> userLogin = findByNamedQuery(Usuario.class, Usuario.FIND_CORREO, user);
+            List<DwUsers> userLogin = findByNamedQuery(DwUsers.class, DwUsers.FIND_MAIL, user);
             if (userLogin == null || userLogin.isEmpty()) {
                 return null;
             }
-            Usuario usu = userLogin.get(0);
-            if (usu.getEstado().equals(StateEnum.ACTIVE.getState())) {
-                if (!pass.equals(usu.getContraseina())) {
+            DwUsers usu = userLogin.get(0);
+            if (usu.getStateUser().equals(StateEnum.ACTIVE.getState())) {
+                if (!pass.equals(usu.getPasswordUser())) {
                     try {
-                        usu.setIngresoFallido(Calendar.getInstance().getTime());
-                        usu.setIntentosFallidos((usu.getIntentosFallidos() + 1));
-                        if (usu.getIntentosFallidos() >= usu.getIdPerfil().getIntentos()) {
-                            usu.setEstado(StateEnum.INACTIVE.getState());
-                            usu.setIntentosFallidos(0);
+                        usu.setFailedLoginDate(Calendar.getInstance().getTime());
+                        usu.setFailedAttempt((usu.getFailedAttempt() + 1));
+                        if (usu.getFailedAttempt() >= usu.getProfileId().getAttempt()) {
+                            usu.setStateUser(StateEnum.INACTIVE.getState());
+                            usu.setFailedAttempt(0);
                             updateUser(usu);
                             return usu;
                         }
@@ -105,9 +102,9 @@ public class UserBean extends WebTransaction<Usuario> implements UserBeanLocal {
                         LOG.log(Level.SEVERE, ex.getMessage());
                     }
                 }
-                usu.setUltimoIngresoExitoso(usu.getIngresoExitoso());
-                usu.setIngresoExitoso(Calendar.getInstance().getTime());
-                usu.setIntentosFallidos(0);
+                usu.setLastSuccesfulLogin(usu.getSuccesfulLoginDate());
+                usu.setSuccesfulLoginDate(Calendar.getInstance().getTime());
+                usu.setFailedAttempt(0);
                 updateUser(usu);
                 return usu;
             }
