@@ -13,6 +13,8 @@ import java.util.Calendar;
 import java.util.Comparator;
 import java.util.List;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 
 /**
  *
@@ -23,11 +25,11 @@ public class PassContainerBean extends WebTransaction<DwPasscontainers> implemen
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
-    @Override
-    public DwPasscontainers createPassContainer(Integer userId, String password) {
+    @Override 
+    public DwPasscontainers createPassContainer(DwUsers userId, String password) {
         DwPasscontainers entity = new DwPasscontainers();
         entity.setPasswordUser(password);
-        entity.setUserId(new DwUsers(userId));
+        entity.setUserId(userId);
         entity.setUpdatePassword(Calendar.getInstance().getTime());
         DwPasscontainers pc = super.create(entity);
         return pc;

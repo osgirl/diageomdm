@@ -7,7 +7,7 @@ package com.diageo.admincontrollerweb.beans;
 
 import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
-import com.diageo.diageonegocio.entidades.Permissionsegment;
+import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -26,6 +26,6 @@ public interface UserBeanLocal {
 
     public DwUsers findEmail(String email) throws ControllerWebException;
 
-    public DwUsers createUser(DwUsers user, List<Permissionsegment> per) throws ControllerWebException;
+    public DwUsers createUser(DwUsers user, List<DbPermissionSegments> per) throws ControllerWebException;
 
 }

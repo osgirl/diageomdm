@@ -33,7 +33,7 @@ import javax.validation.constraints.Size;
  * @author yovanoty126
  */
 @Entity
-@Table(name = "DW_USERS",schema = "DIAGEO_WEB")
+@Table(name = "DW_USERS", schema = "DIAGEO_WEB")
 @NamedQueries({
     @NamedQuery(name = DwUsers.FIND_MAIL, query = "SELECT u FROM DwUsers u WHERE u.emailUser = ?1"),
     @NamedQuery(name = DwUsers.FIND_MAIL_PASS, query = "SELECT u FROM DwUsers u WHERE u.passwordUser = ?1 AND u.emailUser = ?2")})

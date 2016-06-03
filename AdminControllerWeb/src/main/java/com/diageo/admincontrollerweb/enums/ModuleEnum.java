@@ -48,7 +48,8 @@ public enum ModuleEnum {
     REPORT("report"),
     REPORT_OUTLET("report outlet"),
     REPORT_DISTRI("report distributor"),
-    REPORT_PENDING("report pending");
+    REPORT_PENDING("report pending"),
+    C_CHAIN("create chain");
 
     private final String description;
 
