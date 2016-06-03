@@ -6,7 +6,7 @@
 package com.diageo.diageomdmweb.converter;
 
 import com.diageo.diageonegocio.beans.PotentialBeanLocal;
-import com.diageo.diageonegocio.entidades.Potential;
+import com.diageo.diageonegocio.entidades.DbPotentials;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -29,7 +29,7 @@ public class PotentialConverter implements Converter {
             return null;
         }
         Integer id = Integer.parseInt(value);
-        Potential pot = potentialBeanLocal.findById(id);
+        DbPotentials pot = potentialBeanLocal.findById(id);
         return pot;
     }
 
@@ -38,8 +38,8 @@ public class PotentialConverter implements Converter {
         if (value == null) {
             return "";
         }
-        Potential pot = (Potential) value;
-        return pot.getIdPotential() + "";
+        DbPotentials pot = (DbPotentials) value;
+        return pot.getPotentialId() + "";
     }
 
 }

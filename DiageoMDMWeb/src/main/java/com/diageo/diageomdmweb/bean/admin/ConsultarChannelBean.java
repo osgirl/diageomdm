@@ -7,10 +7,10 @@ package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
-import com.diageo.diageonegocio.enums.EstadosDiageo;
+import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
-import com.diageo.diageonegocio.entidades.Channel;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbChannels;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
@@ -32,8 +32,8 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
     private static final Logger LOG = Logger.getLogger(ConsultarChannelBean.class.getName());
     @EJB
     private ChannelBeanLocal channelBeanLocal;
-    private List<Channel> listaChannels;
-    private Channel channelSeleccionado;
+    private List<DbChannels> listaChannels;
+    private DbChannels channelSeleccionado;
     @Size(max = 100, message = "{size.invalido}")
     private String nombreChannel;
     private boolean verDetalle;
@@ -53,23 +53,23 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
     }
 
     public void consultarListaChannel() {
-        setListaChannels(channelBeanLocal.consultarTodosChannel());
+        setListaChannels(channelBeanLocal.findAllChannel());
     }
 
-    public void detalleChannel(Channel cha) {
+    public void detalleChannel(DbChannels cha) {
         setChannelSeleccionado(cha);
-        setNombreChannel(cha.getNombre());
-        setEstado(cha.getEstado().equals(EstadosDiageo.ACTIVO.getId()));
+        setNombreChannel(cha.getNameChannel());
+        setEstado(cha.getStateChannel().equals(StateDiageo.ACTIVO.getId()));
         setVerDetalle(Boolean.FALSE);
     }
 
     public void modificarChannel() {
         try {
-            getChannelSeleccionado().setEstado(isEstado() ? EstadosDiageo.ACTIVO.getId() : EstadosDiageo.INACTIVO.getId());
-            getChannelSeleccionado().setNombre(getNombreChannel());
-            channelBeanLocal.modificarChannel(getChannelSeleccionado());
+            getChannelSeleccionado().setStateChannel(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+            getChannelSeleccionado().setNameChannel(getNombreChannel());
+            channelBeanLocal.updateChannel(getChannelSeleccionado());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-        } catch (DiageoNegocioException ex) {
+        } catch (DiageoBusinessException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
@@ -84,28 +84,28 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
     /**
      * @return the listaChannels
      */
-    public List<Channel> getListaChannels() {
+    public List<DbChannels> getListaChannels() {
         return listaChannels;
     }
 
     /**
      * @param listaChannels the listaChannels to set
      */
-    public void setListaChannels(List<Channel> listaChannels) {
+    public void setListaChannels(List<DbChannels> listaChannels) {
         this.listaChannels = listaChannels;
     }
 
     /**
      * @return the channelSeleccionado
      */
-    public Channel getChannelSeleccionado() {
+    public DbChannels getChannelSeleccionado() {
         return channelSeleccionado;
     }
 
     /**
      * @param channelSeleccionado the channelSeleccionado to set
      */
-    public void setChannelSeleccionado(Channel channelSeleccionado) {
+    public void setChannelSeleccionado(DbChannels channelSeleccionado) {
         this.channelSeleccionado = channelSeleccionado;
     }
 

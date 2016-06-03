@@ -5,12 +5,9 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
-import com.diageo.admincontrollerweb.entities.DwModules;
 import com.diageo.admincontrollerweb.entities.DwProfiles;
 import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
-import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.StateEnum;
-import com.diageo.admincontrollerweb.enums.UserEntryEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import com.diageo.diageomdmweb.constant.PatternConstant;
@@ -22,32 +19,33 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.validation.constraints.Pattern;
-import org.apache.commons.codec.digest.DigestUtils;
 import com.diageo.admincontrollerweb.beans.UserBeanLocal;
 import com.diageo.admincontrollerweb.beans.ModuleBeanLocal;
+import com.diageo.admincontrollerweb.entities.DwModules;
+import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.ProfileEnum;
+import com.diageo.admincontrollerweb.enums.UserEntryEnum;
 import com.diageo.diageomdmweb.bean.LoginBean;
+import com.diageo.diageomdmweb.bean.dto.DistributorPermissionDto;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
-import com.diageo.diageonegocio.beans.DistributorBeanLocal;
+import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
 import com.diageo.diageonegocio.beans.PotentialBeanLocal;
-import com.diageo.diageonegocio.beans.SegmentoBeanLocal;
+import com.diageo.diageonegocio.beans.SegmentBeanLocal;
 import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
 import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
-import com.diageo.diageonegocio.entidades.Channel;
-import com.diageo.diageonegocio.entidades.Departamento;
-import com.diageo.diageonegocio.entidades.Distribuidor;
-import com.diageo.diageonegocio.entidades.Municipio;
-import com.diageo.diageonegocio.entidades.Permissionsegment;
-import com.diageo.diageonegocio.entidades.PermissionsegmentPK;
-import com.diageo.diageonegocio.entidades.Potential;
-import com.diageo.diageonegocio.entidades.Segmento;
-import com.diageo.diageonegocio.entidades.SubChannel;
-import com.diageo.diageonegocio.entidades.SubSegmento;
+import com.diageo.diageonegocio.entidades.DbChannels;
+import com.diageo.diageonegocio.entidades.Db3party;
+import com.diageo.diageonegocio.entidades.DbPermissionSegments;
+import com.diageo.diageonegocio.entidades.DbPotentials;
+import com.diageo.diageonegocio.entidades.DbSegments;
+import com.diageo.diageonegocio.entidades.DbSubChannels;
+import com.diageo.diageonegocio.entidades.DbSubSegments;
 import com.diageo.diageonegocio.enums.FatherDistributorEnum;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.inject.Inject;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -77,7 +75,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      * Ejb distributor
      */
     @EJB
-    private DistributorBeanLocal distributorBeanLocal;
+    private Db3PartyBeanLocal distributorBeanLocal;
     @EJB
     private PotentialBeanLocal potentialBeanLocal;
     @EJB
@@ -85,7 +83,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     @EJB
     private SubChannelBeanLocal subChannelBeanLocal;
     @EJB
-    private SegmentoBeanLocal segmentoBeanLocal;
+    private SegmentBeanLocal segmentoBeanLocal;
     @EJB
     private SubSegmentoBeanLocal subSegmentoBeanLocal;
 
@@ -156,30 +154,28 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     /**
      * List distributor
      */
-    private List<Distribuidor> listDistributor;
-    private List<Distribuidor> listDistributorSon;
-    private List<Permissionsegment> listDistributorAddToUser;
-    private List<Channel> listChannel;
-    private List<SubChannel> listSubChannel;
-    private List<Segmento> listSegment;
-    private List<SubSegmento> listSubSegment;
-    private List<Potential> listPotential;
-    private List<Potential> listaPotentialAutomatic;
-    /**
-     * List that indicate the channels the user can see by distributor
-     */
-    private List<Permissionsegment> listSegmentByDistributor;
+    private List<Db3party> listDistributor;
+    private List<Db3party> listDistributorSon;
+    private List<DbChannels> listChannel;
+    private List<DbSubChannels> listSubChannel;
+    private List<DbSegments> listSegment;
+    private List<DbSubSegments> listSubSegment;
+    private List<DbPotentials> listPotential;
+    private List<DbPotentials> listaPotentialAutomatic;
+    private List<DistributorPermissionDto> listDistributorPermission;
+    private DistributorPermissionDto distributorPermissionDtoSelected;
+    private List<DbPermissionSegments> listPermissionSegmentToPersist;
     /**
      * Distributor selected
      */
-    private Distribuidor distributorSelected;
-    private Channel channelSelected;
-    private SubChannel subChannelSelected;
-    private Segmento segmentSelected;
-    private SubSegmento subSegmentSelected;
-    private Permissionsegment permissionsegmentSelected;
-    private Potential potentialAutomatic;
-    private Potential potentialManual;
+    private Db3party distributorSelected;
+    private DbChannels channelSelected;
+    private DbSubChannels subChannelSelected;
+    private DbSegments segmentSelected;
+    private DbSubSegments subSegmentSelected;
+    private DbPermissionSegments permissionsegmentSelected;
+    private DbPotentials potentialAutomatic;
+    private DbPotentials potentialManual;
 
     /**
      * Creates a new instance of GestionarUsuarioCreacion
@@ -194,60 +190,64 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     public void init() {
         setPerfil(new DwProfiles());
         setTipoDocumento(new DwDocumentTypes());
-        setListDistributor(distributorBeanLocal.searchADistributorPadre(FatherDistributorEnum.FATHER.getIsPadre()));
-        setListDistributorSon(distributorBeanLocal.searchDistributorByPadre(getListDistributor().get(0).getIdDistribuidor()));
-        setListDistributorAddToUser(new ArrayList<Permissionsegment>());
+        setListDistributor(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsPadre()));
+        setListDistributorSon(distributorBeanLocal.searchDistributorByFather(getListDistributor().get(0).getDb3partyId()));
         setListPotential(potentialBeanLocal.findAll());
+        setListDistributorPermission(new ArrayList<DistributorPermissionDto>());
+        setListPermissionSegmentToPersist(new ArrayList<DbPermissionSegments>());
         //segmentation
-        setListChannel(channelBeanLocal.consultarTodosChannel());
+        setListChannel(channelBeanLocal.findAllChannel());
         initList();
+        setChannelCheck(Boolean.TRUE);
     }
 
     private void initList() {
         setChannelSelected(getListChannel().get(0));
-        setSubChannelSelected(getChannelSelected().getSubChannelList().get(0));
-        setSegmentSelected(getSubChannelSelected().getSegmentoList().get(0));
-        setSubSegmentSelected(getSegmentSelected().getSubSegmentoList().get(0));
-        setListSubChannel(getChannelSelected().getSubChannelList());
-        setListSegment(getSubChannelSelected().getSegmentoList());
-        setListSubSegment(getSegmentSelected().getSubSegmentoList());
+        setSubChannelSelected(getChannelSelected().getDbSubChannelsList().get(0));
+        setSegmentSelected(getSubChannelSelected().getDbSegmentsList().get(0));
+        setSubSegmentSelected(getSegmentSelected().getDbSubSegmentsList().get(0));
+        setListSubChannel(getChannelSelected().getDbSubChannelsList());
+        setListSegment(getSubChannelSelected().getDbSegmentsList());
+        setListSubSegment(getSegmentSelected().getDbSubSegmentsList());
         listenerSubSegment();
-        setListSegmentByDistributor(new ArrayList<Permissionsegment>());
+        setDistributorPermissionDtoSelected(new DistributorPermissionDto(null, new ArrayList<DbPermissionSegments>()));
     }
 
     /**
      * Crea un usuario del sistema
      */
     public void crearUsuario() {
-        if (!validarExisteciaCorreo()) {
-            try {
-                DwUsers usu = new DwUsers();
-                usu.setNameUser(getNombres().toUpperCase());
-                usu.setLastName(getApellidos().toUpperCase());
-                usu.setEmailUser(getCorreo().toUpperCase());
-                usu.setPasswordUser(DigestUtils.md5Hex(getTipoDocumento().getNameDocumentType().toLowerCase() + getNumDoc()));
-                usu.setDocumentNumber(getNumDoc().toUpperCase());
-                usu.setCreationDate(getFechaActual());
-                usu.setStateUser(isActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-                usu.setDocumentTypeId(getTipoDocumento());
-                usu.setProfileId(getPerfil());
-                usu.setFailedAttempt(0);
-                usu.setFirstEntry(UserEntryEnum.FIRST_ENTRY.getState());
-                usu.setDwModulesList(perfil.getDwModulesList());
-                if (isDetailEdition()) {
-                    usu.setDistributorId(getDistributorSelected().getIdDistribuidor());
-                    usuarioBean.createUser(usu, getListDistributorAddToUser());
-                } else {
-                    usuarioBean.createUser(usu, null);
+        if (!validateListDistributorPermission()) {
+            if (!validarExisteciaCorreo()) {
+                try {
+                    DwUsers usu = new DwUsers();
+                    usu.setNameUser(getNombres().toUpperCase());
+                    usu.setLastName(getApellidos().toUpperCase());
+                    usu.setEmailUser(getCorreo().toUpperCase());
+                    usu.setPasswordUser(DigestUtils.md5Hex(getTipoDocumento().getNameDocumentType().toLowerCase() + getNumDoc()));
+                    usu.setDocumentNumber(getNumDoc().toUpperCase());
+                    usu.setCreationDate(getFechaActual());
+                    usu.setStateUser(isActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+                    usu.setDocumentTypeId(getTipoDocumento());
+                    usu.setProfileId(getPerfil());
+                    usu.setFailedAttempt(0);
+                    usu.setFirstEntry(UserEntryEnum.FIRST_ENTRY.getState());
+                    usu.setDwModulesList(perfil.getDwModulesList());
+                    if (isDetailEdition()) {
+                        usu.setDistributorId(getDistributorSelected().getDb3partyId());
+                        usuarioBean.createUser(usu, getListPermissionSegmentToPersist());
+                    } else {
+                        usuarioBean.createUser(usu, null);
+                    }
+                    for (DwModules mod : getPerfil().getDwModulesList()) {
+                        mod.getDwUsersList().add(usu);
+                        moduloBean.createUserModule(mod);
+                    }
+                    showInfoMessage(capturarValor("usu_creado_exito"));
+                } catch (ControllerWebException ex) {
+                    showErrorMessage(capturarValor("usu_creado_fallo"));
+                    LOG.log(Level.SEVERE, ex.getMessage());
                 }
-                for (DwModules mod : getPerfil().getDwModulesList()) {
-                    mod.getDwUsersList().add(usu);
-                    moduloBean.createUserModule(mod);
-                }
-                showInfoMessage(capturarValor("usu_creado_exito"));
-            } catch (ControllerWebException ex) {
-                showErrorMessage(capturarValor("usu_creado_fallo"));
-                LOG.log(Level.SEVERE, ex.getMessage());
             }
         }
     }
@@ -258,65 +258,34 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     }
 
     public void listenerFindDistributorSonByFather() {
-        setListDistributorSon(distributorBeanLocal.searchDistributorByPadre(distributorSelected.getIdDistribuidor()));
+        setListDistributorSon(distributorBeanLocal.searchDistributorByFather(distributorSelected.getDb3partyId()));
     }
 
-    public void addDistributorToUser(Distribuidor distriSon) {
-        for (Permissionsegment d : getListDistributorAddToUser()) {
-            if (d.getDistribuidor().getIdDistribuidor().equals(distriSon.getIdDistribuidor())) {
-                showWarningMessage(capturarValor("usu_mjs_distri_exists"));
+    public void addDistributorToUser(Db3party distriSon) {
+        for (DistributorPermissionDto temp : getListDistributorPermission()) {
+            if (temp.getDistributor().getDb3partyId().equals(distriSon.getDb3partyId())) {
+                showWarningMessage(capturarValor("usu_msg_distri_exists"));
                 return;
             }
         }
-        Distribuidor di = new Distribuidor();
-        di.setIdDistribuidor(distriSon.getIdDistribuidor());
-        di.setIsPadre(distriSon.getIsPadre());
-        di.setNombre(distriSon.getNombre());
-        di.setPadreIdDistribuidor(distriSon.getPadreIdDistribuidor());
-        Permissionsegment ps = new Permissionsegment();
-        PermissionsegmentPK permissionsegmentPK = new PermissionsegmentPK();
-        permissionsegmentPK.setIdDistributor(di.getIdDistribuidor());
-        ps.setDistribuidor(di);
-        ps.setPermissionsegmentPK(permissionsegmentPK);
-        getListDistributorAddToUser().add(ps);
+        DistributorPermissionDto dtoTemp = new DistributorPermissionDto();
+        dtoTemp.setDistributor(distriSon);
+        dtoTemp.setListPermissionSegment(new ArrayList<DbPermissionSegments>());
+        getListDistributorPermission().add(dtoTemp);
     }
 
-    public void removeDistributorToUser(Permissionsegment distriSon) {
-        getListDistributorAddToUser().remove(distriSon);
+    public void removeDistributorToUser(DistributorPermissionDto distriSon) {
+        getListDistributorPermission().remove(distriSon);
     }
 
-    public void seeDetailDistributorAddedUser(Permissionsegment permission) {
-        setPermissionsegmentSelected(permission);
-        getPermissionsegmentSelected().setDistribuidor(permission.getDistribuidor());
-        //Assign primary key        
-        getPermissionsegmentSelected().setPermissionsegmentPK(permission.getPermissionsegmentPK());
-        //BooleanCheck
-        setChannelCheck(permission.getChannelCheck() != null ? (permission.getChannelCheck().equals(StateEnum.ACTIVE.getState())) : false);
-        setSubChannelCheck(permission.getSubChannelCheck() != null ? (permission.getSubChannelCheck().equals(StateEnum.ACTIVE.getState())) : false);
-        setSegmentCheck(permission.getSegmentoCheck() != null ? (permission.getSegmentoCheck().equals(StateEnum.ACTIVE.getState())) : false);
-        setSubSegmentCheck(permission.getSubSegmentCheck() != null ? (permission.getSubSegmentCheck().equals(StateEnum.ACTIVE.getState())) : false);
-        setPotentialCheck(permission.getPotentialCheck() != null ? (permission.getPotentialCheck().equals(StateEnum.ACTIVE.getState())) : false);
-        //Objects segmentation
-        if (permission.getChannel() != null) {
-            try {
-                setChannelSelected(channelBeanLocal.consultarId(permission.getChannel()));
-                setSubChannelSelected(subChannelBeanLocal.consultarId(permission.getSubChannel()));
-                setSegmentSelected(segmentoBeanLocal.consultarId(permission.getSegmento()));
-                setSubSegmentSelected(subSegmentoBeanLocal.consultarId(permission.getSubSegmento()));
-            } catch (DiageoNegocioException ex) {
-                Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, ex.getMessage());
-            }
-        } else {
-            setChannelSelected(getListChannel().get(0));
-            setSubChannelSelected(getChannelSelected().getSubChannelList().get(0));
-            setSegmentSelected(getSubChannelSelected().getSegmentoList().get(0));
-            setSubSegmentSelected(getSegmentSelected().getSubSegmentoList().get(0));
-        }
+    public void seeDetailDistributorAddedUser(DistributorPermissionDto permission) {
+        System.out.println(permission.getDistributor());
+        System.out.println(permission.getListPermissionSegment());
+        setDistributorPermissionDtoSelected(permission);
         RequestContext.getCurrentInstance().execute("PF('wvChain').show();");
     }
 
     public void selectAllChain() {
-        setChannelCheck(Boolean.TRUE);
         setSubChannelCheck(Boolean.TRUE);
         setSegmentCheck(Boolean.TRUE);
         setSubSegmentCheck(Boolean.TRUE);
@@ -324,7 +293,6 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     }
 
     public void unSelectAllChain() {
-        setChannelCheck(Boolean.FALSE);
         setSubChannelCheck(Boolean.FALSE);
         setSegmentCheck(Boolean.FALSE);
         setSubSegmentCheck(Boolean.FALSE);
@@ -332,17 +300,11 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     }
 
     public void aceptChangesChain() {
-        LOG.log(Level.INFO, ("isChainCheck()" + isChannelCheck()));
-        getPermissionsegmentSelected().setChannelCheck(isChannelCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-        getPermissionsegmentSelected().setSubChannelCheck(isSubChannelCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-        getPermissionsegmentSelected().setSegmentoCheck(isSegmentCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-        getPermissionsegmentSelected().setSubSegmentCheck(isSubSegmentCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-        getPermissionsegmentSelected().setPotentialCheck(isPotentialCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-        getPermissionsegmentSelected().setChannel(getChannelSelected().getIdchannel());
-        getPermissionsegmentSelected().setSubChannel(getSubChannelSelected().getIdsubchannel());
-        getPermissionsegmentSelected().setSegmento(getSegmentSelected().getIdsegmento());
-        getPermissionsegmentSelected().setSubSegmento(getSubSegmentSelected().getIdsubSegmento());
-        //cancelChangesChain();
+        for (DbPermissionSegments ps : getDistributorPermissionDtoSelected().getListPermissionSegment()) {
+            getListPermissionSegmentToPersist().add(ps);
+        }
+        initList();
+        unSelectAllChain();
         RequestContext.getCurrentInstance().execute("PF('wvChain').hide();");
     }
 
@@ -351,87 +313,106 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      * the distributor
      */
     public void addPermissionDistributorList() {
-        Permissionsegment ps = new Permissionsegment();
+        if (!getDistributorPermissionDtoSelected().getListPermissionSegment().isEmpty()) {
+            for (DbPermissionSegments perSeg : getDistributorPermissionDtoSelected().getListPermissionSegment()) {
+                if (getChannelSelected().getChannelId().equals(perSeg.getChannelId())) {
+                    showWarningMessage(capturarValor("usu_msg_segment_exists"));
+                    return;
+                }
+            }
+        }
+        DbPermissionSegments ps = new DbPermissionSegments();
         ps.setChannelCheck(isChannelCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
         ps.setSubChannelCheck(isSubChannelCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-        ps.setSegmentoCheck(isSegmentCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        ps.setSegmentCheck(isSegmentCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
         ps.setSubSegmentCheck(isSubSegmentCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
         ps.setPotentialCheck(isPotentialCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-        ps.setChannel(getChannelSelected().getIdchannel());
-        ps.setSubChannel(getSubChannelSelected().getIdsubchannel());
-        ps.setSegmento(getSegmentSelected().getIdsegmento());
-        ps.setSubSegmento(getSubSegmentSelected().getIdsubSegmento());
-        getListSegmentByDistributor().add(ps);
+
+        ps.setChannelId(getChannelSelected().getChannelId());
+        ps.setSubChannelId(getSubChannelSelected().getSubChannelId());
+        ps.setSegmentId(getSegmentSelected().getSegmentId());
+        ps.setSubSegmentId(getSubSegmentSelected().getSubSegmentId());
+        ps.setDb3partyId(getDistributorPermissionDtoSelected().getDistributor());
+        getDistributorPermissionDtoSelected().getListPermissionSegment().add(ps);
     }
 
     public void cancelChangesChain() {
         unSelectAllChain();
         setChannelSelected(getListChannel().get(0));
-        setSubChannelSelected(getChannelSelected().getSubChannelList().get(0));
-        setSegmentSelected(getSubChannelSelected().getSegmentoList().get(0));
-        setSubSegmentSelected(getSegmentSelected().getSubSegmentoList().get(0));
+        setSubChannelSelected(getChannelSelected().getDbSubChannelsList().get(0));
+        setSegmentSelected(getSubChannelSelected().getDbSegmentsList().get(0));
+        setSubSegmentSelected(getSegmentSelected().getDbSubSegmentsList().get(0));
         RequestContext.getCurrentInstance().execute("PF('wvChain').hide();");
     }
 
     public void listenerChannel() {
-        setListSubChannel(getChannelSelected().getSubChannelList());
+        setListSubChannel(getChannelSelected().getDbSubChannelsList());
         setSubChannelSelected(getListSubChannel().get(0));
         this.listenerSubChannel();
     }
 
     public void listenerSubChannel() {
-        setSegmentSelected(getSubChannelSelected().getSegmentoList().get(0));
-        setListSegment(getSubChannelSelected().getSegmentoList());
+        setSegmentSelected(getSubChannelSelected().getDbSegmentsList().get(0));
+        setListSegment(getSubChannelSelected().getDbSegmentsList());
         this.listenerSegment();
     }
 
     public void listenerSegment() {
-        setSubSegmentSelected(getSegmentSelected().getSubSegmentoList().get(0));
-        setListSubSegment(getSegmentSelected().getSubSegmentoList());
+        setSubSegmentSelected(getSegmentSelected().getDbSubSegmentsList().get(0));
+        setListSubSegment(getSegmentSelected().getDbSubSegmentsList());
         listenerSubSegment();
     }
 
     public void listenerSubSegment() {
-        if (getSubSegmentSelected().getPotentialList() == null || getSubSegmentSelected().getPotentialList().isEmpty()) {
-            setListaPotentialAutomatic(new ArrayList<Potential>());
+        if (getSubSegmentSelected().getDbPotentialsList() == null || getSubSegmentSelected().getDbPotentialsList().isEmpty()) {
+            setListaPotentialAutomatic(new ArrayList<DbPotentials>());
         } else {
-            setPotentialAutomatic(getSubSegmentSelected().getPotentialList().get(0));
-            setListaPotentialAutomatic(getSubSegmentSelected().getPotentialList());
+            setPotentialAutomatic(getSubSegmentSelected().getDbPotentialsList().get(0));
+            setListaPotentialAutomatic(getSubSegmentSelected().getDbPotentialsList());
         }
 
     }
 
     public String channelName(Integer id) {
         try {
-            return channelBeanLocal.consultarId(id).getNombre();
-        } catch (DiageoNegocioException ex) {
+            return channelBeanLocal.findById(id).getNameChannel();
+        } catch (DiageoBusinessException ex) {
             Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
 
     public String subChannelName(Integer id) {
+        if (id == -1) {
+            return capturarValor("usu_msg_all");
+        }
         try {
-            return subChannelBeanLocal.consultarId(id).getNombre();
-        } catch (DiageoNegocioException ex) {
+            return subChannelBeanLocal.consultarId(id).getNameSubChannel();
+        } catch (DiageoBusinessException ex) {
             Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
 
     public String segmentName(Integer id) {
+        if (id == -1) {
+            return capturarValor("usu_msg_all");
+        }
         try {
-            return segmentoBeanLocal.consultarId(id).getNombre();
-        } catch (DiageoNegocioException ex) {
+            return segmentoBeanLocal.findById(id).getNameSegment();
+        } catch (DiageoBusinessException ex) {
             Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
     }
 
     public String subSegmentName(Integer id) {
+        if (id == -1) {
+            return capturarValor("usu_msg_all");
+        }
         try {
-            return subSegmentoBeanLocal.consultarId(id).getNomnbre();
-        } catch (DiageoNegocioException ex) {
+            return subSegmentoBeanLocal.findById(id).getNameSubsegment();
+        } catch (DiageoBusinessException ex) {
             Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
@@ -445,13 +426,28 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      */
     private boolean validarExisteciaCorreo() {
         try {
-            usuarioBean.findEmail(correo);
+            usuarioBean.findEmail(getCorreo().toUpperCase());
             showWarningMessage(capturarValor("usu_correo_existe"));
             return true;
         } catch (ControllerWebException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
             return false;
         }
+    }
+
+    /**
+     * validates the permissions list
+     *
+     * @return true if some permissions list is empty false when all is fine
+     */
+    private boolean validateListDistributorPermission() {
+        for (DistributorPermissionDto dto : getListDistributorPermission()) {
+            if (dto.getListPermissionSegment().isEmpty()) {
+                showWarningMessage(capturarValor("usu_msg_validate_list_permission"));
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -667,140 +663,126 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     /**
      * @return the listDistributor
      */
-    public List<Distribuidor> getListDistributor() {
+    public List<Db3party> getListDistributor() {
         return listDistributor;
     }
 
     /**
      * @param listDistributor the listDistributor to set
      */
-    public void setListDistributor(List<Distribuidor> listDistributor) {
+    public void setListDistributor(List<Db3party> listDistributor) {
         this.listDistributor = listDistributor;
     }
 
     /**
      * @return the distributorSelected
      */
-    public Distribuidor getDistributorSelected() {
+    public Db3party getDistributorSelected() {
         return distributorSelected;
     }
 
     /**
      * @param distributorSelected the distributorSelected to set
      */
-    public void setDistributorSelected(Distribuidor distributorSelected) {
+    public void setDistributorSelected(Db3party distributorSelected) {
         this.distributorSelected = distributorSelected;
     }
 
     /**
      * @return the listDistributorSon
      */
-    public List<Distribuidor> getListDistributorSon() {
+    public List<Db3party> getListDistributorSon() {
         return listDistributorSon;
     }
 
     /**
      * @param listDistributorSon the listDistributorSon to set
      */
-    public void setListDistributorSon(List<Distribuidor> listDistributorSon) {
+    public void setListDistributorSon(List<Db3party> listDistributorSon) {
         this.listDistributorSon = listDistributorSon;
-    }
-
-    /**
-     * @return the listDistributorAddToUser
-     */
-    public List<Permissionsegment> getListDistributorAddToUser() {
-        return listDistributorAddToUser;
-    }
-
-    /**
-     * @param listDistributorAddToUser the listDistributorAddToUser to set
-     */
-    public void setListDistributorAddToUser(List<Permissionsegment> listDistributorAddToUser) {
-        this.listDistributorAddToUser = listDistributorAddToUser;
     }
 
     /**
      * @return the listChannel
      */
-    public List<Channel> getListChannel() {
+    public List<DbChannels> getListChannel() {
         return listChannel;
     }
 
     /**
      * @param listChannel the listChannel to set
      */
-    public void setListChannel(List<Channel> listChannel) {
+    public void setListChannel(List<DbChannels> listChannel) {
         this.listChannel = listChannel;
     }
 
     /**
      * @return the channelSelected
      */
-    public Channel getChannelSelected() {
+    public DbChannels getChannelSelected() {
         return channelSelected;
     }
 
     /**
      * @param channelSelected the channelSelected to set
      */
-    public void setChannelSelected(Channel channelSelected) {
+    public void setChannelSelected(DbChannels channelSelected) {
         this.channelSelected = channelSelected;
     }
 
     /**
      * @return the subChannelSelected
      */
-    public SubChannel getSubChannelSelected() {
+    public DbSubChannels getSubChannelSelected() {
         return subChannelSelected;
     }
 
     /**
      * @param subChannelSelected the subChannelSelected to set
      */
-    public void setSubChannelSelected(SubChannel subChannelSelected) {
+    public void setSubChannelSelected(DbSubChannels subChannelSelected) {
         this.subChannelSelected = subChannelSelected;
     }
 
     /**
      * @return the segmentSelected
      */
-    public Segmento getSegmentSelected() {
+    public DbSegments getSegmentSelected() {
         return segmentSelected;
     }
 
     /**
      * @param segmentSelected the segmentSelected to set
      */
-    public void setSegmentSelected(Segmento segmentSelected) {
+    public void setSegmentSelected(DbSegments segmentSelected) {
         this.segmentSelected = segmentSelected;
     }
 
     /**
      * @return the subSegmentSelected
      */
-    public SubSegmento getSubSegmentSelected() {
+    public DbSubSegments getSubSegmentSelected() {
         return subSegmentSelected;
     }
 
     /**
      * @param subSegmentSelected the subSegmentSelected to set
      */
-    public void setSubSegmentSelected(SubSegmento subSegmentSelected) {
+    public void setSubSegmentSelected(DbSubSegments subSegmentSelected) {
         this.subSegmentSelected = subSegmentSelected;
     }
 
     /**
      * @return the permissionsegmentSelected
      */
-    public Permissionsegment getPermissionsegmentSelected() {
+    public DbPermissionSegments getPermissionsegmentSelected() {
         return permissionsegmentSelected;
     }
 
     /**
      * @param permissionsegmentSelected the permissionsegmentSelected to set
      */
-    public void setPermissionsegmentSelected(Permissionsegment permissionsegmentSelected) {
+    public void setPermissionsegmentSelected(DbPermissionSegments permissionsegmentSelected) {
         this.permissionsegmentSelected = permissionsegmentSelected;
     }
 
@@ -821,83 +803,93 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     /**
      * @return the listPotential
      */
-    public List<Potential> getListPotential() {
+    public List<DbPotentials> getListPotential() {
         return listPotential;
     }
 
     /**
      * @param listPotential the listPotential to set
      */
-    public void setListPotential(List<Potential> listPotential) {
+    public void setListPotential(List<DbPotentials> listPotential) {
         this.listPotential = listPotential;
     }
 
-    public List<SubChannel> getListSubChannel() {
+    public List<DbSubChannels> getListSubChannel() {
         return listSubChannel;
     }
 
-    public void setListSubChannel(List<SubChannel> listSubChannel) {
+    public void setListSubChannel(List<DbSubChannels> listSubChannel) {
         this.listSubChannel = listSubChannel;
     }
 
-    public List<Segmento> getListSegment() {
+    public List<DbSegments> getListSegment() {
         return listSegment;
     }
 
-    public void setListSegment(List<Segmento> listSegment) {
+    public void setListSegment(List<DbSegments> listSegment) {
         this.listSegment = listSegment;
     }
 
-    public List<SubSegmento> getListSubSegment() {
+    public List<DbSubSegments> getListSubSegment() {
         return listSubSegment;
     }
 
-    public void setListSubSegment(List<SubSegmento> listSubSegment) {
+    public void setListSubSegment(List<DbSubSegments> listSubSegment) {
         this.listSubSegment = listSubSegment;
     }
 
-    public Potential getPotentialAutomatic() {
+    public DbPotentials getPotentialAutomatic() {
         return potentialAutomatic;
     }
 
-    public void setPotentialAutomatic(Potential potentialAutomatic) {
+    public void setPotentialAutomatic(DbPotentials potentialAutomatic) {
         this.potentialAutomatic = potentialAutomatic;
     }
 
     /**
      * @return the listaPotentialAutomatic
      */
-    public List<Potential> getListaPotentialAutomatic() {
+    public List<DbPotentials> getListaPotentialAutomatic() {
         return listaPotentialAutomatic;
     }
 
     /**
      * @param listaPotentialAutomatic the listaPotentialAutomatic to set
      */
-    public void setListaPotentialAutomatic(List<Potential> listaPotentialAutomatic) {
+    public void setListaPotentialAutomatic(List<DbPotentials> listaPotentialAutomatic) {
         this.listaPotentialAutomatic = listaPotentialAutomatic;
     }
 
-    public Potential getPotentialManual() {
+    public DbPotentials getPotentialManual() {
         return potentialManual;
     }
 
-    public void setPotentialManual(Potential potentialManual) {
+    public void setPotentialManual(DbPotentials potentialManual) {
         this.potentialManual = potentialManual;
     }
 
-    /**
-     * @return the listSegmentByDistributor
-     */
-    public List<Permissionsegment> getListSegmentByDistributor() {
-        return listSegmentByDistributor;
+    public List<DistributorPermissionDto> getListDistributorPermission() {
+        return listDistributorPermission;
     }
 
-    /**
-     * @param listSegmentByDistributor the listSegmentByDistributor to set
-     */
-    public void setListSegmentByDistributor(List<Permissionsegment> listSegmentByDistributor) {
-        this.listSegmentByDistributor = listSegmentByDistributor;
+    public void setListDistributorPermission(List<DistributorPermissionDto> listDistributorPermission) {
+        this.listDistributorPermission = listDistributorPermission;
+    }
+
+    public DistributorPermissionDto getDistributorPermissionDtoSelected() {
+        return distributorPermissionDtoSelected;
+    }
+
+    public void setDistributorPermissionDtoSelected(DistributorPermissionDto distributorPermissionDtoSelected) {
+        this.distributorPermissionDtoSelected = distributorPermissionDtoSelected;
+    }
+
+    public List<DbPermissionSegments> getListPermissionSegmentToPersist() {
+        return listPermissionSegmentToPersist;
+    }
+
+    public void setListPermissionSegmentToPersist(List<DbPermissionSegments> listPermissionSegmentToPersist) {
+        this.listPermissionSegmentToPersist = listPermissionSegmentToPersist;
     }
 
 }

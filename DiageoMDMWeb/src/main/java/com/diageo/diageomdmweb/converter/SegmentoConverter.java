@@ -5,9 +5,9 @@
  */
 package com.diageo.diageomdmweb.converter;
 
-import com.diageo.diageonegocio.beans.SegmentoBeanLocal;
-import com.diageo.diageonegocio.entidades.Segmento;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.beans.SegmentBeanLocal;
+import com.diageo.diageonegocio.entidades.DbSegments;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -24,7 +24,7 @@ import javax.faces.convert.FacesConverter;
 public class SegmentoConverter implements Converter {
 
     @EJB
-    private SegmentoBeanLocal segmentoBeanLocal;
+    private SegmentBeanLocal segmentoBeanLocal;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -33,9 +33,9 @@ public class SegmentoConverter implements Converter {
                 return null;
             }
             Integer id = Integer.parseInt(value);
-            Segmento seg = segmentoBeanLocal.consultarId(id);
+            DbSegments seg = segmentoBeanLocal.findById(id);
             return seg;
-        } catch (DiageoNegocioException ex) {
+        } catch (DiageoBusinessException ex) {
             Logger.getLogger(SegmentoConverter.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -46,9 +46,9 @@ public class SegmentoConverter implements Converter {
         if (value == null) {
             return "";
         }
-        if (value instanceof Segmento) {
-            Segmento seg = (Segmento) value;
-            return seg.getIdsegmento() + "";
+        if (value instanceof DbSegments) {
+            DbSegments seg = (DbSegments) value;
+            return seg.getSegmentId() + "";
         }
         return "";
     }

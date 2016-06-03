@@ -19,12 +19,12 @@
                                 <p:inputText id="itNombre" value="#{segmentoCrearBean.nombre}" required="true" label="#{msg.can_nombre}" style="width: 70%"/>
                                 <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
                                 <p:selectOneMenu value="#{segmentoCrearBean.canal}" converter="channelConverter" required="true" label="#{msg.can_canal}">
-                                    <f:selectItems value="#{segmentoCrearBean.listaCanales}" var="cha" itemLabel="#{cha.nombre}"/>
+                                    <f:selectItems value="#{segmentoCrearBean.listaCanales}" var="cha" itemLabel="#{cha.nameChannel}"/>
                                     <p:ajax listener="#{segmentoCrearBean.listenerListaSubCanales()}" process="@this" update="somSubCanal"/>
                                 </p:selectOneMenu>
                                 <h:outputLabel value="#{msg.sub_subcanal}" style="width: 30%"/>
                                 <p:selectOneMenu id="somSubCanal" value="#{segmentoCrearBean.subCanal}" converter="subChannelConverter" required="true" label="#{msg.sub_subcanal}">
-                                    <f:selectItems value="#{segmentoCrearBean.listaSubCanales}" var="subcha" itemLabel="#{subcha.nombre}"/>
+                                    <f:selectItems value="#{segmentoCrearBean.listaSubCanales}" var="subcha" itemLabel="#{subcha.nameSubChannel}"/>
                                 </p:selectOneMenu>
                                 <h:outputLabel value="#{msg.estado}"/>
                                 <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{segmentoCrearBean.estado}"/>

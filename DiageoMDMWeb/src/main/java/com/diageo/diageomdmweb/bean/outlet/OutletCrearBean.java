@@ -8,25 +8,24 @@ package com.diageo.diageomdmweb.bean.outlet;
 import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
 import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
-import com.diageo.diageonegocio.beans.BattleGroundBeanLocal;
-import com.diageo.diageonegocio.beans.DistributorBeanLocal;
+import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
 import com.diageo.diageonegocio.beans.OutletBeanLocal;
+import com.diageo.diageonegocio.beans.PhonesBeanLocal;
 import com.diageo.diageonegocio.beans.PotentialBeanLocal;
 import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
-import com.diageo.diageonegocio.entidades.Battleground;
-import com.diageo.diageonegocio.entidades.Departamento;
-import com.diageo.diageonegocio.entidades.Distribuidor;
-import com.diageo.diageonegocio.entidades.Municipio;
-import com.diageo.diageonegocio.entidades.Outlet;
-import com.diageo.diageonegocio.entidades.Persona;
-import com.diageo.diageonegocio.entidades.Potential;
-import com.diageo.diageonegocio.entidades.Sateoutlet;
-import com.diageo.diageonegocio.entidades.SubSegmento;
-import com.diageo.diageonegocio.entidades.Telefonos;
-import com.diageo.diageonegocio.entidades.TipoDocumento;
-import com.diageo.diageonegocio.entidades.TipoTelefono;
-import com.diageo.diageonegocio.entidades.Ubicacion;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbDepartaments;
+import com.diageo.diageonegocio.entidades.Db3party;
+import com.diageo.diageonegocio.entidades.DbTowns;
+import com.diageo.diageonegocio.entidades.DbOutlets;
+import com.diageo.diageonegocio.entidades.DbCustomers;
+import com.diageo.diageonegocio.entidades.DbPotentials;
+import com.diageo.diageonegocio.entidades.DbSubSegments;
+import com.diageo.diageonegocio.entidades.DbPhones;
+import com.diageo.diageonegocio.entidades.DbTypeDocuments;
+import com.diageo.diageonegocio.entidades.DbTypePhones;
+import com.diageo.diageonegocio.entidades.DbLocations;
+import com.diageo.diageonegocio.enums.StateOutletChain;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,9 +49,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     @EJB
     private OutletBeanLocal outletBeanLocal;
     @EJB
-    private DistributorBeanLocal distribuidorBeanLocal;
-    @EJB
-    private BattleGroundBeanLocal battleGroundBeanLocal;
+    private Db3PartyBeanLocal distribuidorBeanLocal;    
     @EJB
     protected PotentialBeanLocal potentialBeanLocal;
     @EJB
@@ -60,25 +57,23 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     @Inject
     private DiageoApplicationBean diageoApplicationBean;
     //list segment   
-    private List<SubSegmento> listSubSegment;
-    private List<Potential> listaPotentialAutomatic;
-    private List<Potential> listaPotentialManual;
+    private List<DbSubSegments> listSubSegment;
+    private List<DbPotentials> listaPotentialAutomatic;
+    private List<DbPotentials> listaPotentialManual;
     private String channelLabel;
     private String subChannelLabel;
     private String segmentLabel;
     //Other list
-    private List<Distribuidor> listaDistribuidor;
-    private List<Battleground> listaBattleground;
-    private Battleground battlegroundSeleccionado;
-    private SubSegmento subSegmentoSeleccionado;
-    private Distribuidor distribuidorSeleccionado;
-    private Potential potentialAutomatic;
-    private Potential potentialManula;
+    private List<Db3party> listaDistribuidor;    
+    private DbSubSegments subSegmentoSeleccionado;
+    private Db3party distribuidorSeleccionado;
+    private DbPotentials potentialAutomatic;
+    private DbPotentials potentialManula;
     //location
-    private Departamento departamentoDistribuidor;
-    private Departamento departamentoOutlet;
-    private Municipio municipioDistribuidor;
-    private Municipio municipioOutlet;
+    private DbDepartaments departamentoDistribuidor;
+    private DbDepartaments departamentoOutlet;
+    private DbTowns municipioDistribuidor;
+    private DbTowns municipioOutlet;
 
     private String razonSocial;
     private String tipoOutlet;
@@ -113,11 +108,9 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         setDistribuidorSeleccionado(getListaDistribuidor().get(0));
         setDepartamentoDistribuidor(getDiageoApplicationBean().getListaDepartamento().get(0));
         setDepartamentoOutlet(getDiageoApplicationBean().getListaDepartamento().get(0));
-        setMunicipioDistribuidor(getDepartamentoDistribuidor().getMunicipioList().get(0));
-        setMunicipioOutlet(getDepartamentoOutlet().getMunicipioList().get(0));
-        setTipoDocumento(getDiageoApplicationBean().getListaTipoDocumento().get(0));
-        setListaBattleground(battleGroundBeanLocal.consultarTodosBattlegroun());
-        setBattlegroundSeleccionado(getListaBattleground().get(0));
+        setMunicipioDistribuidor(getDepartamentoDistribuidor().getDbTownsList().get(0));
+        setMunicipioOutlet(getDepartamentoOutlet().getDbTownsList().get(0));
+        setTipoDocumento(getDiageoApplicationBean().getListaTipoDocumento().get(0));                
         inicializarCampos();
     }
 
@@ -141,114 +134,112 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     }
 
     public void cargarListas() {
-        setListSubSegment(subSegmentoBeanLocal.consultarTodosSubSegmentos());
+        setListSubSegment(subSegmentoBeanLocal.findAllSubSegment());
     }
 
     public void guardarOutlet() {
         try {
-            Outlet outletEntidad = new Outlet();
+            DbOutlets outletEntidad = new DbOutlets();
             //DATOS BASICOS
-            outletEntidad.setRazonsocial(razonSocial);
-            outletEntidad.setTipoPersona(tipoOutlet);
-            outletEntidad.setOutletname(nombreOutlet);
+            outletEntidad.setBusinessName(razonSocial);
+            outletEntidad.setTypeOutlet(tipoOutlet);
+            outletEntidad.setOutletName(nombreOutlet);
             outletEntidad.setNit(nit);
-            Persona personaPropietaria = new Persona();
-            personaPropietaria.setApellidos(apellidosPropietario);
-            personaPropietaria.setNombres(nombresPropietarios);
-            personaPropietaria.setNumDoc(numeroDocumento);
-            personaPropietaria.setTipodoc(new TipoDocumento(tipoDocumento.getDocumentTypeId()));
-            outletEntidad.setPropietario(personaPropietaria);
+            DbCustomers personaPropietaria = new DbCustomers();
+            personaPropietaria.setLastName(apellidosPropietario);
+            personaPropietaria.setNamePerson(nombresPropietarios);
+            personaPropietaria.setDocumentNumber(numeroDocumento);
+            personaPropietaria.setTypeDocument(new DbTypeDocuments(tipoDocumento.getDocumentTypeId()));
+            //pendiente guardar los tipos de personas pertenecientes al outlet
             //CLASIFICACION
-            outletEntidad.setIdsubsegmento(subSegmentoSeleccionado);
-            outletEntidad.setIdDistribuidor(distribuidorSeleccionado);
-            outletEntidad.setIdbattledground(battlegroundSeleccionado);
+            outletEntidad.setSubSegmentId(subSegmentoSeleccionado);
             //UBICACION
-            Ubicacion ubicacion = new Ubicacion();
-            ubicacion.setIdMunicipio(municipioOutlet);
-            ubicacion.setBarrio(barrio);
-            ubicacion.setDireccion(direccion);
-            outletEntidad.setIdubicacion(ubicacion);
+            DbLocations ubicacion = new DbLocations();
+            ubicacion.setTownId(municipioOutlet);
+            ubicacion.setNeighborhood(barrio);
+            ubicacion.setAddress(direccion);
+            outletEntidad.setLocationId(ubicacion);
             //DATOS CONTACTO
-            List<Telefonos> listaTelefonoses = new ArrayList<>();
-            Telefonos cel = new Telefonos();
-            cel.setNumeroTel(celular);
-            cel.setTipoTelefono(new TipoTelefono(1));
-            Telefonos telUno = new Telefonos();
-            telUno.setNumeroTel(telefonoUno);
-            telUno.setTipoTelefono(new TipoTelefono(2));
-            Telefonos telDos = new Telefonos();
-            telDos.setNumeroTel(telefonoDos);
-            telDos.setTipoTelefono(new TipoTelefono(3));
+            List<DbPhones> listaTelefonoses = new ArrayList<>();
+            DbPhones cel = new DbPhones();
+            cel.setNumberPhone(celular);
+            cel.setTypePhoneId(new DbTypePhones(1));
+            DbPhones telUno = new DbPhones();
+            telUno.setNumberPhone(telefonoUno);
+            telUno.setTypePhoneId(new DbTypePhones(2));
+            DbPhones telDos = new DbPhones();
+            telDos.setNumberPhone(telefonoDos);
+            telDos.setTypePhoneId(new DbTypePhones(3));
             listaTelefonoses.add(cel);
             listaTelefonoses.add(telUno);
             listaTelefonoses.add(telDos);
-            outletEntidad.setTelefonosList(listaTelefonoses);
+            outletEntidad.setDbPhonesList(listaTelefonoses);
             //OTROS DATOS
-            outletEntidad.setLineanegocio(lineaNegocio);
-            outletEntidad.setCodigoEAN(codigoEan);
-            outletEntidad.setNumPDV(nit);
-            outletEntidad.setIdPotentialManual(potentialManula);
-            outletEntidad.setIdPotential(potentialAutomatic);
-            outletEntidad.setIdStateOutlet(new Sateoutlet(1));
-            outletBeanLocal.crearOutlet(outletEntidad);
+            outletEntidad.setBusinessLine(lineaNegocio);
+            outletEntidad.setEanCode(codigoEan);
+            outletEntidad.setNumberPdv(nit);
+            
+            outletEntidad.setPotentialId(potentialAutomatic);
+            outletEntidad.setStateOutletId(StateOutletChain.OUTLET_TMC.getId());
+            outletBeanLocal.createOutlet(outletEntidad);
             init();
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-        } catch (DiageoNegocioException e) {
+        } catch (DiageoBusinessException e) {
             LOG.log(Level.SEVERE, e.getMessage());
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
     }
 
     public void listenerSubSegment() {
-        if (getSubSegmentoSeleccionado().getPotentialList() == null || getSubSegmentoSeleccionado().getPotentialList().isEmpty()) {
-            setListaPotentialAutomatic(new ArrayList<Potential>());
+        if (getSubSegmentoSeleccionado().getDbPotentialsList() == null || getSubSegmentoSeleccionado().getDbPotentialsList().isEmpty()) {
+            setListaPotentialAutomatic(new ArrayList<DbPotentials>());
         } else {
-            setPotentialAutomatic(getSubSegmentoSeleccionado().getPotentialList().get(0));
-            setListaPotentialAutomatic(getSubSegmentoSeleccionado().getPotentialList());
-            setSegmentLabel(getSubSegmentoSeleccionado().getIdsegmento().getNombre());
-            setSubChannelLabel(getSubSegmentoSeleccionado().getIdsegmento().getIdsubchannel().getNombre());
-            setChannelLabel(getSubSegmentoSeleccionado().getIdsegmento().getIdsubchannel().getChannelIdchannel().getNombre());
+            setPotentialAutomatic(getSubSegmentoSeleccionado().getDbPotentialsList().get(0));
+            setListaPotentialAutomatic(getSubSegmentoSeleccionado().getDbPotentialsList());
+            setSegmentLabel(getSubSegmentoSeleccionado().getSegmentId().getNameSegment());
+            setSubChannelLabel(getSubSegmentoSeleccionado().getSegmentId().getSubChannelId().getNameSubChannel());
+            setChannelLabel(getSubSegmentoSeleccionado().getSegmentId().getSubChannelId().getChannelId().getNameChannel());
         }
 
     }
 
-    public SubSegmento getSubSegmentoSeleccionado() {
+    public DbSubSegments getSubSegmentoSeleccionado() {
         return subSegmentoSeleccionado;
     }
 
-    public void setSubSegmentoSeleccionado(SubSegmento subSegmentoSeleccionado) {
+    public void setSubSegmentoSeleccionado(DbSubSegments subSegmentoSeleccionado) {
         this.subSegmentoSeleccionado = subSegmentoSeleccionado;
     }
 
-    public Distribuidor getDistribuidorSeleccionado() {
+    public Db3party getDistribuidorSeleccionado() {
         return distribuidorSeleccionado;
     }
 
-    public void setDistribuidorSeleccionado(Distribuidor distribuidorSeleccionado) {
+    public void setDistribuidorSeleccionado(Db3party distribuidorSeleccionado) {
         this.distribuidorSeleccionado = distribuidorSeleccionado;
     }
 
-    public Departamento getDepartamentoDistribuidor() {
+    public DbDepartaments getDepartamentoDistribuidor() {
         return departamentoDistribuidor;
     }
 
-    public void setDepartamentoDistribuidor(Departamento departamentoDistribuidor) {
+    public void setDepartamentoDistribuidor(DbDepartaments departamentoDistribuidor) {
         this.departamentoDistribuidor = departamentoDistribuidor;
     }
 
-    public Municipio getMunicipioDistribuidor() {
+    public DbTowns getMunicipioDistribuidor() {
         return municipioDistribuidor;
     }
 
-    public void setMunicipioDistribuidor(Municipio municipioDistribuidor) {
+    public void setMunicipioDistribuidor(DbTowns municipioDistribuidor) {
         this.municipioDistribuidor = municipioDistribuidor;
     }
 
-    public List<Distribuidor> getListaDistribuidor() {
+    public List<Db3party> getListaDistribuidor() {
         return listaDistribuidor;
     }
 
-    public void setListaDistribuidor(List<Distribuidor> listaDistribuidor) {
+    public void setListaDistribuidor(List<Db3party> listaDistribuidor) {
         this.listaDistribuidor = listaDistribuidor;
     }
 
@@ -260,19 +251,19 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         this.diageoApplicationBean = diageoApplicationBean;
     }
 
-    public Departamento getDepartamentoOutlet() {
+    public DbDepartaments getDepartamentoOutlet() {
         return departamentoOutlet;
     }
 
-    public void setDepartamentoOutlet(Departamento departamentoOutlet) {
+    public void setDepartamentoOutlet(DbDepartaments departamentoOutlet) {
         this.departamentoOutlet = departamentoOutlet;
     }
 
-    public Municipio getMunicipioOutlet() {
+    public DbTowns getMunicipioOutlet() {
         return municipioOutlet;
     }
 
-    public void setMunicipioOutlet(Municipio municipioOutlet) {
+    public void setMunicipioOutlet(DbTowns municipioOutlet) {
         this.municipioOutlet = municipioOutlet;
     }
 
@@ -420,67 +411,51 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         this.outletBeanLocal = outletBeanLocal;
     }
 
-    public DistributorBeanLocal getDistribuidorBeanLocal() {
+    public Db3PartyBeanLocal getDistribuidorBeanLocal() {
         return distribuidorBeanLocal;
     }
 
-    public void setDistribuidorBeanLocal(DistributorBeanLocal distribuidorBeanLocal) {
+    public void setDistribuidorBeanLocal(Db3PartyBeanLocal distribuidorBeanLocal) {
         this.distribuidorBeanLocal = distribuidorBeanLocal;
     }
 
-    public List<Battleground> getListaBattleground() {
-        return listaBattleground;
-    }
-
-    public void setListaBattleground(List<Battleground> listaBattleground) {
-        this.listaBattleground = listaBattleground;
-    }
-
-    public Battleground getBattlegroundSeleccionado() {
-        return battlegroundSeleccionado;
-    }
-
-    public void setBattlegroundSeleccionado(Battleground battlegroundSeleccionado) {
-        this.battlegroundSeleccionado = battlegroundSeleccionado;
-    }
-
-    public List<SubSegmento> getListSubSegment() {
+    public List<DbSubSegments> getListSubSegment() {
         return listSubSegment;
     }
 
-    public void setListSubSegment(List<SubSegmento> listSubSegment) {
+    public void setListSubSegment(List<DbSubSegments> listSubSegment) {
         this.listSubSegment = listSubSegment;
     }
 
-    public List<Potential> getListaPotentialAutomatic() {
+    public List<DbPotentials> getListaPotentialAutomatic() {
         return listaPotentialAutomatic;
     }
 
-    public void setListaPotentialAutomatic(List<Potential> listaPotentialAutomatic) {
+    public void setListaPotentialAutomatic(List<DbPotentials> listaPotentialAutomatic) {
         this.listaPotentialAutomatic = listaPotentialAutomatic;
     }
 
-    public List<Potential> getListaPotentialManual() {
+    public List<DbPotentials> getListaPotentialManual() {
         return listaPotentialManual;
     }
 
-    public void setListaPotentialManual(List<Potential> listaPotentialManual) {
+    public void setListaPotentialManual(List<DbPotentials> listaPotentialManual) {
         this.listaPotentialManual = listaPotentialManual;
     }
 
-    public Potential getPotentialAutomatic() {
+    public DbPotentials getPotentialAutomatic() {
         return potentialAutomatic;
     }
 
-    public void setPotentialAutomatic(Potential potentialAutomatic) {
+    public void setPotentialAutomatic(DbPotentials potentialAutomatic) {
         this.potentialAutomatic = potentialAutomatic;
     }
 
-    public Potential getPotentialManula() {
+    public DbPotentials getPotentialManula() {
         return potentialManula;
     }
 
-    public void setPotentialManula(Potential potentialManula) {
+    public void setPotentialManula(DbPotentials potentialManula) {
         this.potentialManula = potentialManula;
     }
 

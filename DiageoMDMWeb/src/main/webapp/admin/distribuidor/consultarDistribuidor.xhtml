@@ -16,8 +16,8 @@
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"                                     
                                      rendered="#{distributorSearch.seeDetail}" paginator="true"
                                      style="width: 60%;left: 50%;-webkit-transform: translate(-50%);position: absolute;">
-                            <p:column headerText="#{msg.m_distri_nombre}" filterBy="#{dis.nombre}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{dis.nombre}"/>
+                            <p:column headerText="#{msg.m_distri_nombre}" filterBy="#{dis.name3party}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{dis.name3party}"/>
                             </p:column>
                             <p:column>
                                 <p:commandLink value="#{msg.btn_detalle}" actionListener="#{distributorSearch.detail(dis)}"

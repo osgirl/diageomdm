@@ -6,8 +6,8 @@
 package com.diageo.diageomdmweb.converter;
 
 import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
-import com.diageo.diageonegocio.entidades.SubChannel;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbSubChannels;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -33,9 +33,9 @@ public class SubChannelConverter implements Converter {
                 return null;
             }
             Integer id = Integer.parseInt(value);
-            SubChannel subChannel = (SubChannel) subChannelBeanLocal.consultarId(id);
+            DbSubChannels subChannel = (DbSubChannels) subChannelBeanLocal.consultarId(id);
             return subChannel;
-        } catch (DiageoNegocioException ex) {
+        } catch (DiageoBusinessException ex) {
             Logger.getLogger(SubChannelConverter.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -45,10 +45,10 @@ public class SubChannelConverter implements Converter {
     public String getAsString(FacesContext context, UIComponent component, Object value) {
         if (value == null) {
             return "";
-        }        
-        if (value instanceof SubChannel) {
-            SubChannel sc = (SubChannel) value;
-            return sc.getIdsubchannel() + "";
+        }
+        if (value instanceof DbSubChannels) {
+            DbSubChannels sc = (DbSubChannels) value;
+            return sc.getSubChannelId() + "";
         }
         return "";
     }

@@ -69,7 +69,7 @@
                                     <p:inputText id="itSegment" readonly="true" value="#{outletCrearBean.segmentLabel}"/>
                                     <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <p:selectOneMenu id="somSubSegmento" style="width: 90%" value="#{outletCrearBean.subSegmentoSeleccionado}" converter="subSegmentoConverter">
-                                        <f:selectItems value="#{outletCrearBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nomnbre}"/>
+                                        <f:selectItems value="#{outletCrearBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
                                         <p:ajax process="@this" update="formOutlet:pgSegment" listener="#{outletCrearBean.listenerSubSegment()}"/>
                                     </p:selectOneMenu>
 
@@ -77,34 +77,29 @@
                                     <h:panelGroup>
                                         <p:selectOneMenu converter="potentialConverter" value="#{outletCrearBean.potentialAutomatic}"
                                                          rendered="#{not empty outletCrearBean.listaPotentialAutomatic}" disabled="true">
-                                            <f:selectItems value="#{outletCrearBean.listaPotentialAutomatic}" var="potAutomatic" itemLabel="#{potAutomatic.namePot}"/>
+                                            <f:selectItems value="#{outletCrearBean.listaPotentialAutomatic}" var="potAutomatic" itemLabel="#{potAutomatic.namePotential}"/>
                                         </p:selectOneMenu>
                                         <h:outputLabel value="#{msg.out_message_not_potential}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
                                                        rendered="#{empty outletCrearBean.listaPotentialAutomatic}"/>
                                     </h:panelGroup>
 
-                                    <h:outputLabel value="#{msg.out_potencial} manual" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:selectOneMenu converter="potentialConverter" value="#{outletCrearBean.potentialManula}">
-                                        <f:selectItems value="#{outletCrearBean.listaPotentialManual}" var="potManual" itemLabel="#{potManual.namePot}"/>
-                                    </p:selectOneMenu>
-
                                     <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <p:selectOneMenu id="somDistri" style="width: 90%" value="#{outletCrearBean.distribuidorSeleccionado}" converter="distribuidorConverter"
                                                      >
-                                        <f:selectItems value="#{outletCrearBean.listaDistribuidor}" var="dis" itemLabel="#{dis.nombre}"/>
+                                        <f:selectItems value="#{outletCrearBean.listaDistribuidor}" var="dis" itemLabel="#{dis.name3party}"/>
                                     </p:selectOneMenu>
 
                                     <h:outputLabel value="#{msg.out_distri_depto}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <p:selectOneMenu id="somDeptoDistri" style="width: 90%" value="#{outletCrearBean.departamentoDistribuidor}" converter="departamentoConverter"
                                                      >
-                                        <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptodis" itemLabel="#{deptodis.nombredepto}"/>
+                                        <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptodis" itemLabel="#{deptodis.nameDepartament}"/>
                                         <p:ajax process="@this" update="somMpioDistri"/>
                                     </p:selectOneMenu>
 
                                     <h:outputLabel value="#{msg.out_distri_mpio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <p:selectOneMenu id="somMpioDistri" style="width: 90%" value="#{outletCrearBean.municipioDistribuidor}" converter="municipioConverter"
                                                      >
-                                        <f:selectItems value="#{outletCrearBean.departamentoDistribuidor.municipioList}" var="mpiodis" itemLabel="#{mpiodis.nombremunicipio}"/>
+                                        <f:selectItems value="#{outletCrearBean.departamentoDistribuidor.dbTownsList}" var="mpiodis" itemLabel="#{mpiodis.nameTown}"/>
                                     </p:selectOneMenu>
 
                                 </h:panelGrid>
@@ -116,13 +111,13 @@
                             <h:panelGrid columns="4" style="width: 100%">
                                 <h:outputLabel value="#{msg.out_out_depto}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                 <p:selectOneMenu id="somDeptoOut" style="width: 90%" value="#{outletCrearBean.departamentoOutlet}" converter="departamentoConverter">
-                                    <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptoout" itemLabel="#{deptoout.nombredepto}"/>
+                                    <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptoout" itemLabel="#{deptoout.nameDepartament}"/>
                                     <p:ajax process="@this" update="somMpioOut"/>
                                 </p:selectOneMenu>
 
                                 <h:outputLabel value="#{msg.out_out_mpio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                 <p:selectOneMenu id="somMpioOut" style="width: 90%" value="#{outletCrearBean.municipioOutlet}" converter="municipioConverter">
-                                    <f:selectItems value="#{outletCrearBean.departamentoOutlet.municipioList}" var="mpioout" itemLabel="#{mpioout.nombremunicipio}"/>
+                                    <f:selectItems value="#{outletCrearBean.departamentoOutlet.dbTownsList}" var="mpioout" itemLabel="#{mpioout.nameTown}"/>
                                 </p:selectOneMenu>
 
                                 <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>

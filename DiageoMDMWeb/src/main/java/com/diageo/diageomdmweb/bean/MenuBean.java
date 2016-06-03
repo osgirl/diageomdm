@@ -39,6 +39,9 @@ public class MenuBean extends DiageoRootBean {
             case LOAD_OUT:
                 getLoginBean().armarMigaPan(capturarValor("m_outlet"), capturarValor("m_outlet_carga"));
                 return "/outlet/cargaMasivaOutlet?faces-redirect=true";
+            case C_CHAIN:
+                getLoginBean().armarMigaPan(capturarValor("m_outlet"), capturarValor("m_chain_create"));
+                return "/outlet/createChain?faces-redirect=true";
             case S_USU:
                 getLoginBean().armarMigaPan(capturarValor("m_administrador"), capturarValor("m_usuario"), capturarValor("m_usuario_consultar"));
                 return "/admin/usuario/consultarUsuario?faces-redirect=true";
@@ -101,13 +104,13 @@ public class MenuBean extends DiageoRootBean {
                 return "/admin/potential/searchPotential?faces-redirect=true";
             case REPORT_OUTLET:
                 getLoginBean().armarMigaPan(capturarValor("m_report"), capturarValor("m_report_create_outlet"));
-                return "/reports/potential/outletReport?faces-redirect=true";
+                return "/reports/outletReport?faces-redirect=true";
             case REPORT_DISTRI:
                 getLoginBean().armarMigaPan(capturarValor("m_report"), capturarValor("m_report_create_distributor"));
-                return "/reports/potential/distributorReport?faces-redirect=true";
+                return "/reports/distributorReport?faces-redirect=true";
             case REPORT_PENDING:
                 getLoginBean().armarMigaPan(capturarValor("m_report"), capturarValor("m_report_outlet_pendding"));
-                return "/reports/potential/pendingReport?faces-redirect=true";
+                return "/reports/pendingReport?faces-redirect=true";
         }
         return null;
     }

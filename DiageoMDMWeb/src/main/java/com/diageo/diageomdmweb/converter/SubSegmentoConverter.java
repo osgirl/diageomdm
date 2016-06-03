@@ -6,8 +6,8 @@
 package com.diageo.diageomdmweb.converter;
 
 import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
-import com.diageo.diageonegocio.entidades.SubSegmento;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbSubSegments;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -33,9 +33,9 @@ public class SubSegmentoConverter implements Converter {
                 return null;
             }
             Integer id = Integer.parseInt(value);
-            SubSegmento seg = subSegmentoBeanLocal.consultarId(id);
+            DbSubSegments seg = subSegmentoBeanLocal.findById(id);
             return seg;
-        } catch (DiageoNegocioException ex) {
+        } catch (DiageoBusinessException ex) {
             Logger.getLogger(SubSegmentoConverter.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -46,9 +46,9 @@ public class SubSegmentoConverter implements Converter {
         if (value == null) {
             return "";
         }
-        if (value instanceof SubSegmento) {
-            SubSegmento seg = (SubSegmento) value;
-            return seg.getIdsubSegmento() + "";
+        if (value instanceof DbSubSegments) {
+            DbSubSegments seg = (DbSubSegments) value;
+            return seg.getSubSegmentId() + "";
         }
         return "";
     }

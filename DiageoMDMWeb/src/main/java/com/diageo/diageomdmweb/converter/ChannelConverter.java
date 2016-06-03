@@ -6,8 +6,8 @@
 package com.diageo.diageomdmweb.converter;
 
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
-import com.diageo.diageonegocio.entidades.Channel;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbChannels;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
@@ -33,9 +33,9 @@ public class ChannelConverter implements Converter {
         }
         Integer id = Integer.parseInt(value);
         try {
-            Channel cha = channelBeanLocal.consultarId(id);
+            DbChannels cha = channelBeanLocal.findById(id);
             return cha;
-        } catch (DiageoNegocioException ex) {
+        } catch (DiageoBusinessException ex) {
             Logger.getLogger(ChannelConverter.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
@@ -46,9 +46,9 @@ public class ChannelConverter implements Converter {
         if (value == null) {
             return "";
         }
-        if (value instanceof Channel) {
-            Channel cha = (Channel) value;
-            return cha.getIdchannel() + "";
+        if (value instanceof DbChannels) {
+            DbChannels cha = (DbChannels) value;
+            return cha.getChannelId() + "";
         }
         return "";
     }

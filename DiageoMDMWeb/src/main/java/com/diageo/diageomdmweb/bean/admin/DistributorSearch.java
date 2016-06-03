@@ -6,10 +6,10 @@
 package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
-import com.diageo.diageonegocio.beans.DistributorBeanLocal;
-import com.diageo.diageonegocio.entidades.Distribuidor;
+import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
+import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.enums.FatherDistributorEnum;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
@@ -29,11 +29,11 @@ import javax.validation.constraints.Size;
 public class DistributorSearch extends DiageoRootBean implements Serializable {
 
     @EJB
-    protected DistributorBeanLocal distributorBeanLocal;
+    protected Db3PartyBeanLocal distributorBeanLocal;
     @Size(max = 50, message = "{size.invalido}")
     private String name;
-    private List<Distribuidor> listDistributor;
-    private Distribuidor selectedDistributor;
+    private List<Db3party> listDistributor;
+    private Db3party selectedDistributor;
     private boolean seeDetail;
 
     /**
@@ -44,23 +44,23 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        setListDistributor(distributorBeanLocal.searchADistributorPadre(FatherDistributorEnum.FATHER.getIsPadre()));
+        setListDistributor(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsPadre()));
         setSeeDetail(Boolean.TRUE);
-        setSelectedDistributor(new Distribuidor());
+        setSelectedDistributor(new Db3party());
     }
 
-    public void detail(Distribuidor distri) {
+    public void detail(Db3party distri) {
         setSelectedDistributor(distri);
-        setName(distri.getNombre());
+        setName(distri.getName3party());
         setSeeDetail(Boolean.FALSE);
     }
 
     public void update() {
         try {
-            getSelectedDistributor().setNombre(getName());
+            getSelectedDistributor().setName3party(getName());
             distributorBeanLocal.updateDistributor(getSelectedDistributor());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-        } catch (DiageoNegocioException ex) {
+        } catch (DiageoBusinessException ex) {
             Logger.getLogger(DistributorSearch.class.getName()).log(Level.SEVERE, null, ex);
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
@@ -89,14 +89,14 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
     /**
      * @return the listDistributor
      */
-    public List<Distribuidor> getListDistributor() {
+    public List<Db3party> getListDistributor() {
         return listDistributor;
     }
 
     /**
      * @param listDistributor the listDistributor to set
      */
-    public void setListDistributor(List<Distribuidor> listDistributor) {
+    public void setListDistributor(List<Db3party> listDistributor) {
         this.listDistributor = listDistributor;
     }
 
@@ -117,14 +117,14 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
     /**
      * @return the selectedDistributor
      */
-    public Distribuidor getSelectedDistributor() {
+    public Db3party getSelectedDistributor() {
         return selectedDistributor;
     }
 
     /**
      * @param selectedDistributor the selectedDistributor to set
      */
-    public void setSelectedDistributor(Distribuidor selectedDistributor) {
+    public void setSelectedDistributor(Db3party selectedDistributor) {
         this.selectedDistributor = selectedDistributor;
     }
 

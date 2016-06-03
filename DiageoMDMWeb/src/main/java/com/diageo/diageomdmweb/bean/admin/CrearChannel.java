@@ -6,10 +6,10 @@
 package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
-import com.diageo.diageonegocio.enums.EstadosDiageo;
+import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
-import com.diageo.diageonegocio.entidades.Channel;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbChannels;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -48,13 +48,13 @@ public class CrearChannel extends DiageoRootBean implements Serializable {
 
     public void crearChannel() {
         try {
-            Channel channel = new Channel();
-            channel.setNombre(getNombreChannel());
-            channel.setEstado(isEstado() ? EstadosDiageo.ACTIVO.getId() : EstadosDiageo.INACTIVO.getId());
-            channelBeanLocal.crearChannel(channel);
+            DbChannels channel = new DbChannels();
+            channel.setNameChannel(getNombreChannel());
+            channel.setStateChannel(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+            channelBeanLocal.createChannel(channel);
             init();
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-        } catch (DiageoNegocioException ex) {
+        } catch (DiageoBusinessException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }

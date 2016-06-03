@@ -5,8 +5,8 @@
  */
 package com.diageo.diageomdmweb.converter;
 
-import com.diageo.diageonegocio.beans.MunicipioBeanLocal;
-import com.diageo.diageonegocio.entidades.Municipio;
+import com.diageo.diageonegocio.beans.CityBeanLocal;
+import com.diageo.diageonegocio.entidades.DbTowns;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -21,7 +21,7 @@ import javax.faces.convert.FacesConverter;
 public class MunicipioConverter implements Converter {
 
     @EJB
-    private MunicipioBeanLocal municipioBeanLocal;
+    private CityBeanLocal municipioBeanLocal;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -29,7 +29,7 @@ public class MunicipioConverter implements Converter {
             return null;
         }
         Integer id = Integer.parseInt(value);
-        Municipio municipio = municipioBeanLocal.consultarId(id);
+        DbTowns municipio = municipioBeanLocal.findById(id);
         return municipio;
     }
 
@@ -38,9 +38,9 @@ public class MunicipioConverter implements Converter {
         if (value == null) {
             return "";
         }
-        if (value instanceof Municipio) {
-            Municipio mun = (Municipio) value;
-            return mun.getIdmunicipio() + "";
+        if (value instanceof DbTowns) {
+            DbTowns mun = (DbTowns) value;
+            return mun.getTownId() + "";
         }
         return "";
     }

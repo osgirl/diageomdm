@@ -6,10 +6,10 @@
 package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
-import com.diageo.diageonegocio.beans.DistributorBeanLocal;
-import com.diageo.diageonegocio.entidades.Distribuidor;
+import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
+import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.enums.FatherDistributorEnum;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
@@ -29,13 +29,13 @@ import javax.validation.constraints.Size;
 public class DistributorLocationSearch extends DiageoRootBean implements Serializable {
 
     @EJB
-    protected DistributorBeanLocal distributorBeanLocal;
+    protected Db3PartyBeanLocal distributorBeanLocal;
     @Size(max = 50, message = "{size.invalido}")
     private String name;
-    private List<Distribuidor> listDistributor;
-    private List<Distribuidor> listDistributorFather;
-    private Distribuidor selectedDistributor;
-    private Distribuidor selectedDistributorFather;
+    private List<Db3party> listDistributor;
+    private List<Db3party> listDistributorFather;
+    private Db3party selectedDistributor;
+    private Db3party selectedDistributorFather;
     private boolean seeDetail;
 
     /**
@@ -46,25 +46,25 @@ public class DistributorLocationSearch extends DiageoRootBean implements Seriali
 
     @PostConstruct
     public void init() {
-        setListDistributor(distributorBeanLocal.searchADistributorPadre(FatherDistributorEnum.NOT_FATHER.getIsPadre()));
-        setListDistributorFather(distributorBeanLocal.searchADistributorPadre(FatherDistributorEnum.FATHER.getIsPadre()));
+        setListDistributor(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.NOT_FATHER.getIsPadre()));
+        setListDistributorFather(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsPadre()));
         setSeeDetail(Boolean.TRUE);
-        setSelectedDistributor(new Distribuidor());
+        setSelectedDistributor(new Db3party());
     }
 
-    public void detail(Distribuidor distri) {
+    public void detail(Db3party distri) {
         setSelectedDistributor(distri);
-        setSelectedDistributorFather(distri.getPadreIdDistribuidor());
-        setName(distri.getNombre());
+        setSelectedDistributorFather(distri.getDb3partyIdFather());
+        setName(distri.getName3party());
         setSeeDetail(Boolean.FALSE);
     }
 
     public void update() {
         try {
-            getSelectedDistributor().setNombre(getName());
+            getSelectedDistributor().setName3party(getName());
             distributorBeanLocal.updateDistributor(getSelectedDistributor());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-        } catch (DiageoNegocioException ex) {
+        } catch (DiageoBusinessException ex) {
             Logger.getLogger(DistributorLocationSearch.class.getName()).log(Level.SEVERE, null, ex);
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
@@ -93,14 +93,14 @@ public class DistributorLocationSearch extends DiageoRootBean implements Seriali
     /**
      * @return the listDistributor
      */
-    public List<Distribuidor> getListDistributor() {
+    public List<Db3party> getListDistributor() {
         return listDistributor;
     }
 
     /**
      * @param listDistributor the listDistributor to set
      */
-    public void setListDistributor(List<Distribuidor> listDistributor) {
+    public void setListDistributor(List<Db3party> listDistributor) {
         this.listDistributor = listDistributor;
     }
 
@@ -121,42 +121,42 @@ public class DistributorLocationSearch extends DiageoRootBean implements Seriali
     /**
      * @return the selectedDistributor
      */
-    public Distribuidor getSelectedDistributor() {
+    public Db3party getSelectedDistributor() {
         return selectedDistributor;
     }
 
     /**
      * @param selectedDistributor the selectedDistributor to set
      */
-    public void setSelectedDistributor(Distribuidor selectedDistributor) {
+    public void setSelectedDistributor(Db3party selectedDistributor) {
         this.selectedDistributor = selectedDistributor;
     }
 
     /**
      * @return the listDistributorFather
      */
-    public List<Distribuidor> getListDistributorFather() {
+    public List<Db3party> getListDistributorFather() {
         return listDistributorFather;
     }
 
     /**
      * @param listDistributorFather the listDistributorFather to set
      */
-    public void setListDistributorFather(List<Distribuidor> listDistributorFather) {
+    public void setListDistributorFather(List<Db3party> listDistributorFather) {
         this.listDistributorFather = listDistributorFather;
     }
 
     /**
      * @return the selectedDistributorFather
      */
-    public Distribuidor getSelectedDistributorFather() {
+    public Db3party getSelectedDistributorFather() {
         return selectedDistributorFather;
     }
 
     /**
      * @param selectedDistributorFather the selectedDistributorFather to set
      */
-    public void setSelectedDistributorFather(Distribuidor selectedDistributorFather) {
+    public void setSelectedDistributorFather(Db3party selectedDistributorFather) {
         this.selectedDistributorFather = selectedDistributorFather;
     }
 

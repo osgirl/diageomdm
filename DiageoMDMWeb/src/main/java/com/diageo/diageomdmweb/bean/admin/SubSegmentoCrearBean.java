@@ -5,10 +5,10 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
-import com.diageo.diageonegocio.entidades.Channel;
-import com.diageo.diageonegocio.entidades.Segmento;
-import com.diageo.diageonegocio.entidades.SubChannel;
-import com.diageo.diageonegocio.entidades.SubSegmento;
+import com.diageo.diageonegocio.entidades.DbChannels;
+import com.diageo.diageonegocio.entidades.DbSegments;
+import com.diageo.diageonegocio.entidades.DbSubChannels;
+import com.diageo.diageonegocio.entidades.DbSubSegments;
 import java.io.Serializable;
 import java.util.ArrayList;
 import javax.annotation.PostConstruct;
@@ -32,9 +32,9 @@ public class SubSegmentoCrearBean extends SubSegmentoConsultarBean implements Se
     @Override
     @PostConstruct
     public void init() {
-        setSubCanal(new SubChannel());
-        setSegmento(new Segmento());
-        setListaCanales(channelBeanLocal.consultarTodosChannel());
+        setSubCanal(new DbSubChannels());
+        setSegmento(new DbSegments());
+        setListaCanales(channelBeanLocal.findAllChannel());
         if (getListaCanales() != null && !getListaCanales().isEmpty()) {
             setCanal(getListaCanales().get(0));
             super.listenerListaSubCanales();
@@ -42,11 +42,11 @@ public class SubSegmentoCrearBean extends SubSegmentoConsultarBean implements Se
                 setSubCanal(getListaSubCanales().get(0));
                 super.listenerSegmento();
             } else {
-                setListaSubCanales(new ArrayList<SubChannel>());
-                setListaSegmento(new ArrayList<Segmento>());
+                setListaSubCanales(new ArrayList<DbSubChannels>());
+                setListaSegmento(new ArrayList<DbSegments>());
             }
         } else {
-            setListaCanales(new ArrayList<Channel>());
+            setListaCanales(new ArrayList<DbChannels>());
         }        
     }
 
@@ -58,13 +58,13 @@ public class SubSegmentoCrearBean extends SubSegmentoConsultarBean implements Se
             setSubCanal(getListaSubCanales().get(0));
             super.listenerSegmento();
         } else {
-            setListaSegmento(new ArrayList<Segmento>());
+            setListaSegmento(new ArrayList<DbSegments>());
         }
     }
     
     @Override
     public void guardarCambios(){
-        setSubSegmentoSeleccionado(new SubSegmento());
+        setSubSegmentoSeleccionado(new DbSubSegments());
         super.guardarCambios();
         setNombre("");
         setEstado(Boolean.FALSE);

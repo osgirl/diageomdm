@@ -7,12 +7,12 @@ package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
-import com.diageo.diageonegocio.enums.EstadosDiageo;
+import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
-import com.diageo.diageonegocio.entidades.Channel;
-import com.diageo.diageonegocio.entidades.SubChannel;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbChannels;
+import com.diageo.diageonegocio.entidades.DbSubChannels;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
@@ -36,10 +36,10 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
     private SubChannelBeanLocal subChannelBeanLocal;
     @EJB
     private ChannelBeanLocal channelBeanLocal;
-    private List<SubChannel> listaSubChannel;
-    private List<Channel> listaChannel;
-    private SubChannel subChannelSeleccionado;
-    private Channel channel;
+    private List<DbSubChannels> listaSubChannel;
+    private List<DbChannels> listaChannel;
+    private DbSubChannels subChannelSeleccionado;
+    private DbChannels channel;
     @Size(max = 100, message = "{size.invalido}")
     private String nombreSubChannel;
     private boolean verDetalle;
@@ -54,7 +54,7 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
     @PostConstruct
     public void init() {
         setVerDetalle(Boolean.TRUE);
-        setListaChannel(channelBeanLocal.consultarTodosChannel());
+        setListaChannel(channelBeanLocal.findAllChannel());
         consultarSubChannel();
     }
 
@@ -62,22 +62,22 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
         setListaSubChannel(subChannelBeanLocal.consultarTodosSubChannel());
     }
 
-    public void detalleSubChannel(SubChannel sc) {       
-        setNombreSubChannel(sc.getNombre());
-        setEstado(sc.getEstado().equals(EstadosDiageo.ACTIVO.getId()));
-        setChannel(sc.getChannelIdchannel());
+    public void detalleSubChannel(DbSubChannels sc) {       
+        setNombreSubChannel(sc.getNameSubChannel());
+        setEstado(sc.getStateSubChannel().equals(StateDiageo.ACTIVO.getId()));
+        setChannel(sc.getChannelId());
         setSubChannelSeleccionado(sc);
          setVerDetalle(Boolean.FALSE);
     }
     
     public void modificarChannel() {
         try {
-            getSubChannelSeleccionado().setEstado(isEstado() ? EstadosDiageo.ACTIVO.getId() : EstadosDiageo.INACTIVO.getId());
-            getSubChannelSeleccionado().setNombre(getNombreSubChannel());
-            getSubChannelSeleccionado().setChannelIdchannel(getChannel());
+            getSubChannelSeleccionado().setStateSubChannel(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+            getSubChannelSeleccionado().setNameSubChannel(getNombreSubChannel());
+            getSubChannelSeleccionado().setChannelId(getChannel());
             subChannelBeanLocal.modificarSubChannel(getSubChannelSeleccionado());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-        } catch (DiageoNegocioException ex) {
+        } catch (DiageoBusinessException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
@@ -93,28 +93,28 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
     /**
      * @return the listaSubChannel
      */
-    public List<SubChannel> getListaSubChannel() {
+    public List<DbSubChannels> getListaSubChannel() {
         return listaSubChannel;
     }
 
     /**
      * @param listaSubChannel the listaSubChannel to set
      */
-    public void setListaSubChannel(List<SubChannel> listaSubChannel) {
+    public void setListaSubChannel(List<DbSubChannels> listaSubChannel) {
         this.listaSubChannel = listaSubChannel;
     }
 
     /**
      * @return the subChannelSeleccionado
      */
-    public SubChannel getSubChannelSeleccionado() {
+    public DbSubChannels getSubChannelSeleccionado() {
         return subChannelSeleccionado;
     }
 
     /**
      * @param subChannelSeleccionado the subChannelSeleccionado to set
      */
-    public void setSubChannelSeleccionado(SubChannel subChannelSeleccionado) {
+    public void setSubChannelSeleccionado(DbSubChannels subChannelSeleccionado) {
         this.subChannelSeleccionado = subChannelSeleccionado;
     }
 
@@ -163,28 +163,28 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
     /**
      * @return the channel
      */
-    public Channel getChannel() {
+    public DbChannels getChannel() {
         return channel;
     }
 
     /**
      * @param channel the channel to set
      */
-    public void setChannel(Channel channel) {
+    public void setChannel(DbChannels channel) {
         this.channel = channel;
     }
 
     /**
      * @return the listaChannel
      */
-    public List<Channel> getListaChannel() {
+    public List<DbChannels> getListaChannel() {
         return listaChannel;
     }
 
     /**
      * @param listaChannel the listaChannel to set
      */
-    public void setListaChannel(List<Channel> listaChannel) {
+    public void setListaChannel(List<DbChannels> listaChannel) {
         this.listaChannel = listaChannel;
     }
 

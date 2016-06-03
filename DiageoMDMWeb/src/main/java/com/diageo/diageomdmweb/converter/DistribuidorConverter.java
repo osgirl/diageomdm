@@ -5,8 +5,8 @@
  */
 package com.diageo.diageomdmweb.converter;
 
-import com.diageo.diageonegocio.beans.DistributorBeanLocal;
-import com.diageo.diageonegocio.entidades.Distribuidor;
+import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
+import com.diageo.diageonegocio.entidades.Db3party;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -21,7 +21,7 @@ import javax.faces.convert.FacesConverter;
 public class DistribuidorConverter implements Converter {
 
     @EJB
-    private DistributorBeanLocal distribuidorBeanLocal;
+    private Db3PartyBeanLocal distribuidorBeanLocal;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -29,7 +29,7 @@ public class DistribuidorConverter implements Converter {
             return null;
         }
         Integer id = Integer.parseInt(value);
-        Distribuidor distri = distribuidorBeanLocal.searchId(id);
+        Db3party distri = distribuidorBeanLocal.searchId(id);
         return distri;
     }
 
@@ -38,9 +38,9 @@ public class DistribuidorConverter implements Converter {
         if (value == null) {
             return "";
         }
-        if (value instanceof Distribuidor) {
-            Distribuidor dis = (Distribuidor) value;
-            return dis.getIdDistribuidor() + "";
+        if (value instanceof Db3party) {
+            Db3party dis = (Db3party) value;
+            return dis.getDb3partyId() + "";
         }
         return "";
     }

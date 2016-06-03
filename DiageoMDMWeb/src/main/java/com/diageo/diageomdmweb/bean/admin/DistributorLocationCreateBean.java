@@ -5,10 +5,9 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
-import com.diageo.diageonegocio.entidades.Departamento;
-import com.diageo.diageonegocio.entidades.Distribuidor;
-import com.diageo.diageonegocio.entidades.Municipio;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.Db3party;
+import com.diageo.diageonegocio.enums.FatherDistributorEnum;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
@@ -36,14 +35,14 @@ public class DistributorLocationCreateBean extends DistributorCreate {
     }
 
     public void createLocatorDistributor() {
-        Distribuidor distri = new Distribuidor();
-        distri.setPadreIdDistribuidor(getSelectedDistributor());
-        distri.setIsPadre("0");
-        distri.setNombre(getName().toUpperCase());
+        Db3party distri = new Db3party();
+        distri.setDb3partyIdFather(getSelectedDistributor());
+        distri.setIsFather(FatherDistributorEnum.NOT_FATHER.getIsPadre());
+        distri.setName3party(getName().toUpperCase());
         try {
             distributorBeanLocal.createDistributor(distri);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-        } catch (DiageoNegocioException ex) {
+        } catch (DiageoBusinessException ex) {
             Logger.getLogger(DistributorLocationCreateBean.class.getName()).log(Level.SEVERE, null, ex);
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }

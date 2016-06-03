@@ -35,8 +35,9 @@ import org.primefaces.model.menu.MenuModel;
 import com.diageo.admincontrollerweb.beans.UserBeanLocal;
 import com.diageo.diageonegocio.beans.OutletBeanLocal;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
-import com.diageo.diageonegocio.entidades.Outlet;
-import com.diageo.diageonegocio.entidades.Permissionsegment;
+import com.diageo.diageonegocio.entidades.DbOutlets;
+import com.diageo.diageonegocio.entidades.DbPermissionSegments;
+import com.diageo.diageonegocio.enums.StateOutletChain;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -64,7 +65,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     private DwUsers usuario;
     private boolean recordarme;
     private MenuModel migaPan;
-    private List<Permissionsegment> listPermissionSegment;
+    private List<DbPermissionSegments> listPermissionSegment;
     /**
      * Idioma seleccionado
      */
@@ -83,7 +84,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     public String login() {
         administrarCookies();
         String pass = DigestUtils.md5Hex(getPassword());
-        setUsuario(getUsuarioLocal().validateUserPassword(getUser(), pass));
+        setUsuario(getUsuarioLocal().validateUserPassword(getUser().toUpperCase(), pass));
         if (getUsuario() != null) {
             if (getUsuario().getStateUser().equals(StateEnum.ACTIVE.getState())) {
                 HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
@@ -102,7 +103,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
                     if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
                         if (revisarOutletsPendientesRevision()) {
                             System.out.println("entro aprobacionoo");
-                            RequestContext.getCurrentInstance().execute("PF('dlgPendiente').show();");                                                        
+                            RequestContext.getCurrentInstance().execute("PF('dlgPendiente').show();");
                         }
                     }
                     armarMigaPan(capturarValor("m_outlet"), capturarValor("m_outlet_consultar"));
@@ -118,12 +119,12 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     }
 
     private boolean revisarOutletsPendientesRevision() {
-        List<Permissionsegment> listPermi = getListPermissionSegment();
-        for (Permissionsegment permi : listPermi) {
-            List<Outlet> listTemp = outletBeanLocal.findByDistributor(permi.getDistribuidor().getIdDistribuidor());
-            for (Outlet out : listTemp) {
-                if (permi.getSubSegmento().equals(out.getIdsubsegmento().getIdsubSegmento())) {
-                    if (out.getIdStateOutlet().getIdSateOutlet().equals(2)) {
+        List<DbPermissionSegments> listPermi = getListPermissionSegment();
+        for (DbPermissionSegments permi : listPermi) {
+            List<DbOutlets> listTemp = outletBeanLocal.findByDistributor(permi.getDb3partyId().getDb3partyId());
+            for (DbOutlets out : listTemp) {
+                if (permi.getSubSegmentId().equals(out.getSubSegmentId().getSubSegmentId())) {
+                    if (out.getStateOutletId().equals(StateOutletChain.PENDING_APPROVAL.getId())) {
                         return true;
                     }
                 }
@@ -358,14 +359,14 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     /**
      * @return the listPermissionSegment
      */
-    public List<Permissionsegment> getListPermissionSegment() {
+    public List<DbPermissionSegments> getListPermissionSegment() {
         return listPermissionSegment;
     }
 
     /**
      * @param listPermissionSegment the listPermissionSegment to set
      */
-    public void setListPermissionSegment(List<Permissionsegment> listPermissionSegment) {
+    public void setListPermissionSegment(List<DbPermissionSegments> listPermissionSegment) {
         this.listPermissionSegment = listPermissionSegment;
     }
 

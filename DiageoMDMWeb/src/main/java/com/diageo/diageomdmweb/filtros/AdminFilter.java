@@ -31,7 +31,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author yovanoty126
  */
-@WebFilter(filterName = "AdminFilter", urlPatterns = {"/faces/admin/*", "/faces/outlet/*"})
+@WebFilter(filterName = "AdminFilter", urlPatterns = {"/faces/admin/*", "/faces/outlet/*","/faces/reports/*"})
 public class AdminFilter implements Filter {
 
     private static final Logger LOG = Logger.getLogger(AdminFilter.class.getName());

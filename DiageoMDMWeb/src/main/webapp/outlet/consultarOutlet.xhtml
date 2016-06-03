@@ -39,34 +39,28 @@
                             <p:column headerText="#{msg.out_approbation_massive}">
                                 <p:selectBooleanCheckbox value="#{outdt.approbationMassive}" rendered="#{outdt.renderedApprobationMassive}"/>
                             </p:column>
-                            <p:column headerText="#{msg.out_razon_social}" filterBy="#{outdt.razonsocial}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{outdt.razonsocial}"/>
+                            <p:column headerText="#{msg.out_razon_social}" filterBy="#{outdt.businessName}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{outdt.businessName}"/>
                             </p:column>
                             <p:column headerText="#{msg.out_nit}" filterBy="#{outdt.nit}" filterMatchMode="startsWith">
                                 <h:outputLabel value="#{outdt.nit}"/>
                             </p:column>
-                            <p:column headerText="#{msg.out_nombre_propietario}" filterBy="#{outdt.propietario.nombres}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{outdt.propietario.nombres}"/>
-                            </p:column>
-                            <p:column headerText="#{msg.out_apellidos_propietario}" filterBy="#{outdt.propietario.apellidos}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{outdt.propietario.apellidos}"/>
-                            </p:column>
-                            <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{outdt.idsubsegmento.nomnbre}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{outdt.idsubsegmento.nomnbre}"/>
+
+
+                            <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{outdt.subSegmentId.nameSubsegment}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{outdt.subSegmentId.nameSubsegment}"/>
                             </p:column>                            
-                            <p:column headerText="#{msg.out_distribuidor}" filterBy="#{outdt.idDistribuidor.nombre}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{outdt.idDistribuidor.nombre}"/>
-                            </p:column>
-                            <p:column headerText="#{msg.estado}" filterBy="#{outdt.idStateOutlet.name}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{outdt.idStateOutlet.name}"/>
+
+                            <p:column headerText="#{msg.estado}" filterBy="#{outdt.stateOutletId}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{outletConsultarBean.labelState(outdt.stateOutletId)}"/>
                             </p:column>                                
                             <p:column>
                                 <p:commandLink value="#{msg.btn_edit}" style="color: blue" process="@all" update="@form"
                                                actionListener="#{outletConsultarBean.detalle(outdt)}" disabled="#{outdt.disabledButtonEdit}"/>
                                 <br/><br/>
-                                <h:panelGroup rendered="#{outdt.idStateOutlet.name eq 'REJECTED'}">
+                                <h:panelGroup rendered="#{outdt.stateOutletId eq 4}">
                                     <h:outputLabel id="labelRe" value="Detalle Rechazo" style="color: blue"/>
-                                    <p:tooltip for="labelRe" value="#{outdt.messageReject}"/>
+                                    <p:tooltip for="labelRe" value="#{outdt.rejectMessage}"/>
                                 </h:panelGroup>
                             </p:column>
                         </p:dataTable>
@@ -81,34 +75,28 @@
                             <p:column headerText="#{msg.out_approbation_massive}">
                                 <p:selectBooleanCheckbox value="#{outdt.approbationMassive}" rendered="#{outdt.renderedApprobationMassive}"/>
                             </p:column>
-                            <p:column headerText="#{msg.out_razon_social}" filterBy="#{outdt.razonsocial}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{outdt.razonsocial}"/>
+                            <p:column headerText="#{msg.out_razon_social}" filterBy="#{outdt.businessName}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{outdt.businessName}"/>
                             </p:column>
                             <p:column headerText="#{msg.out_nit}" filterBy="#{outdt.nit}" filterMatchMode="startsWith">
                                 <h:outputLabel value="#{outdt.nit}"/>
                             </p:column>
-                            <p:column headerText="#{msg.out_nombre_propietario}" filterBy="#{outdt.propietario.nombres}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{outdt.propietario.nombres}"/>
-                            </p:column>
-                            <p:column headerText="#{msg.out_apellidos_propietario}" filterBy="#{outdt.propietario.apellidos}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{outdt.propietario.apellidos}"/>
-                            </p:column>
-                            <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{outdt.idsubsegmento.nomnbre}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{outdt.idsubsegmento.nomnbre}"/>
+
+
+                            <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{outdt.subSegmentId.nameSubsegment}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{outdt.subSegmentId.nameSubsegment}"/>
                             </p:column>                            
-                            <p:column headerText="#{msg.out_distribuidor}" filterBy="#{outdt.idDistribuidor.nombre}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{outdt.idDistribuidor.nombre}"/>
-                            </p:column>
-                            <p:column headerText="#{msg.estado}" filterBy="#{outdt.idStateOutlet.name}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{outdt.idStateOutlet.name}"/>
+
+                            <p:column headerText="#{msg.estado}" filterBy="#{outdt.stateOutletId}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{outletConsultarBean.labelState(outdt.stateOutletId)}"/>
                             </p:column>                                
                             <p:column>
                                 <p:commandLink value="#{msg.btn_edit}" style="color: blue" process="@all" update="@form"
                                                actionListener="#{outletConsultarBean.detalle(outdt)}" disabled="#{outdt.disabledButtonEdit}"/>
                                 <br/><br/>
-                                <h:panelGroup rendered="#{outdt.idStateOutlet.name eq 'REJECTED'}">
+                                <h:panelGroup rendered="#{outdt.stateOutletId eq 4}">
                                     <h:outputLabel id="labelRe" value="Detalle Rechazo" style="color: blue"/>
-                                    <p:tooltip for="labelRe" value="#{outdt.messageReject}"/>
+                                    <p:tooltip for="labelRe" value="#{outdt.rejectMessage}"/>
                                 </h:panelGroup>
                             </p:column>
                         </p:dataTable>                        
@@ -190,7 +178,7 @@
                                                 <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                                 <p:selectOneMenu id="somSubSegmento" style="width: 90%" value="#{outletConsultarBean.subSegmentoSeleccionado}" converter="subSegmentoConverter"
                                                                  disabled="#{loginBean.usuario.profileId.profileId eq '4'}">
-                                                    <f:selectItems value="#{outletConsultarBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nomnbre}"/>
+                                                    <f:selectItems value="#{outletConsultarBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
                                                     <p:ajax process="@this" update="formConsultarOutlet:pgSegment" listener="#{outletConsultarBean.listenerSubSegment()}"/>
                                                 </p:selectOneMenu>
 
@@ -198,21 +186,16 @@
                                                 <h:panelGroup>
                                                     <p:selectOneMenu converter="potentialConverter" value="#{outletConsultarBean.potentialAutomatic}"
                                                                      rendered="#{not empty outletConsultarBean.listaPotentialAutomatic}" disabled="true">
-                                                        <f:selectItems value="#{outletConsultarBean.listaPotentialAutomatic}" var="potAutomatic" itemLabel="#{potAutomatic.namePot}"/>
+                                                        <f:selectItems value="#{outletConsultarBean.listaPotentialAutomatic}" var="potAutomatic" itemLabel="#{potAutomatic.namePotential}"/>
                                                     </p:selectOneMenu>
                                                     <h:outputLabel value="#{msg.out_message_not_potential}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
                                                                    rendered="#{empty outletConsultarBean.listaPotentialAutomatic}"/>
-                                                </h:panelGroup>
-
-                                                <h:outputLabel value="#{msg.out_potencial} manual" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                                <p:selectOneMenu converter="potentialConverter" value="#{outletConsultarBean.potentialManula}">
-                                                    <f:selectItems value="#{outletConsultarBean.listaPotentialManual}" var="potManual" itemLabel="#{potManual.namePot}"/>
-                                                </p:selectOneMenu>
+                                                </h:panelGroup>                                               
 
                                                 <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                                 <p:selectOneMenu id="somDistri" style="width: 90%" value="#{outletConsultarBean.distribuidorSeleccionado}" converter="distribuidorConverter"
                                                                  disabled="true">
-                                                    <f:selectItems value="#{outletConsultarBean.listaDistribuidor}" var="dis" itemLabel="#{dis.nombre}"/>
+                                                    <f:selectItems value="#{outletConsultarBean.listaDistribuidor}" var="dis" itemLabel="#{dis.name3party}"/>
                                                 </p:selectOneMenu>
 
                                             </h:panelGrid>
@@ -225,14 +208,14 @@
                                             <h:outputLabel value="#{msg.out_out_depto}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                             <p:selectOneMenu id="somDeptoOut" style="width: 90%" value="#{outletConsultarBean.departamentoOutlet}" converter="departamentoConverter"
                                                              disabled="true">
-                                                <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptoout" itemLabel="#{deptoout.nombredepto}"/>
+                                                <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptoout" itemLabel="#{deptoout.nameDepartament}"/>
                                                 <p:ajax process="@this" update="somMpioOut"/>
                                             </p:selectOneMenu>
 
                                             <h:outputLabel value="#{msg.out_out_mpio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                             <p:selectOneMenu id="somMpioOut" style="width: 90%" value="#{outletConsultarBean.municipioOutlet}" converter="municipioConverter"
                                                              disabled="true">
-                                                <f:selectItems value="#{outletConsultarBean.departamentoOutlet.municipioList}" var="mpioout" itemLabel="#{mpioout.nombremunicipio}"/>
+                                                <f:selectItems value="#{outletConsultarBean.departamentoOutlet.dbTownsList}" var="mpioout" itemLabel="#{mpioout.nameTown}"/>
                                             </p:selectOneMenu>
 
                                             <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>

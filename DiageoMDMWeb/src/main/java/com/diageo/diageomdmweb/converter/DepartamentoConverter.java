@@ -5,8 +5,8 @@
  */
 package com.diageo.diageomdmweb.converter;
 
-import com.diageo.diageonegocio.beans.DepartamentoBeanLocal;
-import com.diageo.diageonegocio.entidades.Departamento;
+import com.diageo.diageonegocio.beans.DepartamentBeanLocal;
+import com.diageo.diageonegocio.entidades.DbDepartaments;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
@@ -21,7 +21,7 @@ import javax.faces.convert.FacesConverter;
 public class DepartamentoConverter implements Converter {
 
     @EJB
-    private DepartamentoBeanLocal departamentoBeanLocal;
+    private DepartamentBeanLocal departamentoBeanLocal;
 
     @Override
     public Object getAsObject(FacesContext context, UIComponent component, String value) {
@@ -29,7 +29,7 @@ public class DepartamentoConverter implements Converter {
             return null;
         }
         Integer id = Integer.parseInt(value);
-        Departamento depto = departamentoBeanLocal.consultarId(id);
+        DbDepartaments depto = departamentoBeanLocal.findById(id);
         return depto;
     }
 
@@ -38,9 +38,9 @@ public class DepartamentoConverter implements Converter {
         if (value == null) {
             return "";
         }
-        if (value instanceof Departamento) {
-            Departamento d = (Departamento) value;
-            return d.getIddepartamento() + "";
+        if (value instanceof DbDepartaments) {
+            DbDepartaments d = (DbDepartaments) value;
+            return d.getDepartamentId() + "";
         }
         return "";
     }

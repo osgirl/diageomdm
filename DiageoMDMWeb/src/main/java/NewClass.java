@@ -2,6 +2,8 @@
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,9 +27,13 @@ public class NewClass {
     }
     
     public static void main(String[] args) {
-        BigInteger bi=new BigInteger("123");
+        Set<Integer> set=new HashSet<>();
+        set.add(1);
+        set.add(1);
+        set.add(1);
+        set.add(2);
+        System.out.println(set);
         
-        System.out.println(bi);
     }
 
 }

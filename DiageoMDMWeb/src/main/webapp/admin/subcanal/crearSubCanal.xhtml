@@ -19,7 +19,7 @@
                                 <p:inputText id="itNombre" value="#{subChannelCrear.nombreSubChannel}" required="true" label="#{msg.sub_can_nombre}" style="width: 70%"/>                             
                                 <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
                                 <p:selectOneMenu value="#{subChannelCrear.channel}" converter="channelConverter">
-                                    <f:selectItems value="#{subChannelCrear.listaChannel}" var="cha" itemLabel="#{cha.nombre}"/>
+                                    <f:selectItems value="#{subChannelCrear.listaChannel}" var="cha" itemLabel="#{cha.nameChannel}"/>
                                 </p:selectOneMenu>
                                 <h:outputLabel value="#{msg.estado}"/>
                                 <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{subChannelCrear.estado}"/>

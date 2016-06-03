@@ -19,7 +19,7 @@
                                 <h:panelGrid columns="2" style="width: 100%">
                                     <h:outputLabel value="#{msg.dis_commercial_management}"/>
                                     <p:selectOneMenu id="somDistri" value="#{distributorLocationCreateBean.selectedDistributor}" converter="distribuidorConverter" style="width: 100%">
-                                        <f:selectItems value="#{distributorLocationCreateBean.listDistributor}" var="distri" itemLabel="#{distri.nombre}"/>
+                                        <f:selectItems value="#{distributorLocationCreateBean.listDistributor}" var="distri" itemLabel="#{distri.name3party}"/>
                                     </p:selectOneMenu>
                                     <h:outputLabel value="#{msg.dis_branch}"/>
                                     <h:panelGroup>

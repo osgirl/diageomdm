@@ -5,11 +5,11 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
-import com.diageo.diageonegocio.enums.EstadosDiageo;
+import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
-import com.diageo.diageonegocio.entidades.Segmento;
-import com.diageo.diageonegocio.entidades.SubSegmento;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbSegments;
+import com.diageo.diageonegocio.entidades.DbSubSegments;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +31,9 @@ public class SubSegmentoConsultarBean extends SegementoConsultarBean implements 
     private static final Logger LOG = Logger.getLogger(SubSegmentoConsultarBean.class.getName());
     @EJB
     private SubSegmentoBeanLocal subSegmentoBeanLocal;
-    private List<SubSegmento> listaSubSegmentos;
-    private Segmento segmento;
-    private SubSegmento subSegmentoSeleccionado;
+    private List<DbSubSegments> listaSubSegmentos;
+    private DbSegments segmento;
+    private DbSubSegments subSegmentoSeleccionado;
 
     /**
      * Creates a new instance of SubSegmentoBean
@@ -44,31 +44,31 @@ public class SubSegmentoConsultarBean extends SegementoConsultarBean implements 
     @PostConstruct
     @Override
     public void init() {
-        setListaSubSegmentos(subSegmentoBeanLocal.consultarTodosSubSegmentos());
+        setListaSubSegmentos(subSegmentoBeanLocal.findAllSubSegment());
         super.init();
     }
 
     public void listenerSegmento() {
         if (super.getListaSubCanales() != null && !super.getListaCanales().isEmpty()) {
-            List<Segmento> segementoTemporal = super.segmentoBeanLocal.consultarPorSubChannel(super.getSubCanal().getIdsubchannel());
+            List<DbSegments> segementoTemporal = super.segmentoBeanLocal.findBySubChannel(super.getSubCanal().getSubChannelId());
             if (segementoTemporal != null && !segementoTemporal.isEmpty()) {
                 super.setListaSegmento(segementoTemporal);
             } else {
-                super.setListaSegmento(new ArrayList<Segmento>());
+                super.setListaSegmento(new ArrayList<DbSegments>());
             }
         } else {
-            super.setListaSegmento(new ArrayList<Segmento>());
+            super.setListaSegmento(new ArrayList<DbSegments>());
         }
     }
 
-    public void detalle(SubSegmento subSegmento) {
+    public void detalle(DbSubSegments subSegmento) {
         setSubSegmentoSeleccionado(subSegmento);
         super.setVerDetalle(Boolean.FALSE);
-        super.setNombre(subSegmento.getNomnbre());
-        super.setEstado(subSegmento.getEstado().equals(EstadosDiageo.ACTIVO.getId()));
-        super.setCanal(subSegmento.getIdsegmento().getIdsubchannel().getChannelIdchannel());
-        super.setSubCanal(subSegmento.getIdsegmento().getIdsubchannel());
-        setSegmento(subSegmento.getIdsegmento());
+        super.setNombre(subSegmento.getNameSubsegment());
+        super.setEstado(subSegmento.getStateSubSegment().equals(StateDiageo.ACTIVO.getId()));
+        super.setCanal(subSegmento.getSegmentId().getSubChannelId().getChannelId());
+        super.setSubCanal(subSegmento.getSegmentId().getSubChannelId());
+        setSegmento(subSegmento.getSegmentId());
         super.listenerListaSubCanales();
         listenerSegmento();
     }
@@ -76,12 +76,12 @@ public class SubSegmentoConsultarBean extends SegementoConsultarBean implements 
     @Override
     public void guardarCambios() {
         try {            
-            getSubSegmentoSeleccionado().setNomnbre(super.getNombre());
-            getSubSegmentoSeleccionado().setEstado(super.isEstado() ? EstadosDiageo.ACTIVO.getId() : EstadosDiageo.INACTIVO.getId());
-            getSubSegmentoSeleccionado().setIdsegmento(getSegmento());
-            subSegmentoBeanLocal.modificarSubSegmento(getSubSegmentoSeleccionado());
+            getSubSegmentoSeleccionado().setNameSubsegment(super.getNombre());
+            getSubSegmentoSeleccionado().setStateSubSegment(super.isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+            getSubSegmentoSeleccionado().setSegmentId(getSegmento());
+            subSegmentoBeanLocal.updateSubSegment(getSubSegmentoSeleccionado());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-        } catch (DiageoNegocioException ex) {
+        } catch (DiageoBusinessException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         }
@@ -90,42 +90,42 @@ public class SubSegmentoConsultarBean extends SegementoConsultarBean implements 
     /**
      * @return the listaSubSegmentos
      */
-    public List<SubSegmento> getListaSubSegmentos() {
+    public List<DbSubSegments> getListaSubSegmentos() {
         return listaSubSegmentos;
     }
 
     /**
      * @param listaSubSegmentos the listaSubSegmentos to set
      */
-    public void setListaSubSegmentos(List<SubSegmento> listaSubSegmentos) {
+    public void setListaSubSegmentos(List<DbSubSegments> listaSubSegmentos) {
         this.listaSubSegmentos = listaSubSegmentos;
     }
 
     /**
      * @return the subSegmentoSeleccionado
      */
-    public SubSegmento getSubSegmentoSeleccionado() {
+    public DbSubSegments getSubSegmentoSeleccionado() {
         return subSegmentoSeleccionado;
     }
 
     /**
      * @param subSegmentoSeleccionado the subSegmentoSeleccionado to set
      */
-    public void setSubSegmentoSeleccionado(SubSegmento subSegmentoSeleccionado) {
+    public void setSubSegmentoSeleccionado(DbSubSegments subSegmentoSeleccionado) {
         this.subSegmentoSeleccionado = subSegmentoSeleccionado;
     }
 
     /**
      * @return the segmento
      */
-    public Segmento getSegmento() {
+    public DbSegments getSegmento() {
         return segmento;
     }
 
     /**
      * @param segmento the segmento to set
      */
-    public void setSegmento(Segmento segmento) {
+    public void setSegmento(DbSegments segmento) {
         this.segmento = segmento;
     }
 

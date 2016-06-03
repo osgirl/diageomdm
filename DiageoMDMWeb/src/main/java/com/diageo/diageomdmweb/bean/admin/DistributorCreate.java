@@ -5,7 +5,8 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
-import com.diageo.diageonegocio.entidades.Distribuidor;
+import com.diageo.diageonegocio.entidades.Db3party;
+import com.diageo.diageonegocio.enums.FatherDistributorEnum;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 
@@ -24,10 +25,10 @@ public class DistributorCreate extends DistributorSearch {
     }
 
     public void create() {
-        getSelectedDistributor().setIsPadre("1");
+        getSelectedDistributor().setIsFather(FatherDistributorEnum.FATHER.getIsPadre());
         super.update();
         setName("");
-        setSelectedDistributor(new Distribuidor());
+        setSelectedDistributor(new Db3party());
     }
 
 }

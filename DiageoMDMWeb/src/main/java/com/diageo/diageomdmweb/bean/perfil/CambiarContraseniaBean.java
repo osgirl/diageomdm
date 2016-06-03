@@ -75,7 +75,7 @@ public class CambiarContraseniaBean extends DiageoRootBean implements Serializab
                     passContainerBeanLocal.deletePassContainer(pc.getUserId().getUserId(), pc.getPasswordUser());
                     getListPassContainer().remove(pc);
                 }
-                DwPasscontainers pc = passContainerBeanLocal.createPassContainer(getLoginBean().getUsuario().getUserId(), DigestUtils.md5Hex(getContrseniaNueva()));
+                DwPasscontainers pc = passContainerBeanLocal.createPassContainer(getLoginBean().getUsuario(), DigestUtils.md5Hex(getContrseniaNueva()));
                 getListPassContainer().add(pc);
                 showInfoMessage(capturarValor("cam_pass_cambio_exitoso"));
             } catch (ControllerWebException ex) {

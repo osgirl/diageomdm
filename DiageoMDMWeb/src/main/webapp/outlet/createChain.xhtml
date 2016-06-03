@@ -1,0 +1,84 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
+
+            <ui:define name="content">
+                <style>
+                    .tamanio_letra_labels{
+                        font-size: 15px;
+                    }
+                    @media screen and (max-width: 1500px) {
+                        .tamanio_letra_labels{
+                            font-size: 11px;
+                        }
+                    }
+
+                </style>
+                <h:form id="formChain">
+                    <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
+                        <h:panelGrid columns="4" style="width: 100%">
+                            <h:outputLabel value="#{msg.chain_code_chain_father}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:inputText style="width: 90%"/>
+                            <h:outputLabel value="#{msg.chain_code_ean}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:inputText style="width: 90%"/>
+                            <h:outputLabel value="#{msg.chain_name}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:inputText style="width: 90%"/>
+                            <h:outputLabel value="#{msg.chain_code_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:inputText style="width: 90%"/>
+                            <h:outputLabel value="#{msg.chain_code_ean_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:inputText style="width: 90%"/>
+                            <h:outputLabel value="#{msg.chain_name_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:inputText style="width: 90%"/>
+                            <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>                            
+                            <p:inputText style="width: 90%"/>
+                            <h:outputLabel value="#{msg.chain_phone}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:inputText style="width: 90%"/>
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <p:fieldset legend="#{msg.out_clasificacion}" style="width: 95%">
+                        <h:panelGroup id="pgSegment">
+                            <h:panelGrid columns="4" style="width: 95%">
+                                <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:selectOneMenu id="somSubSegmento" style="width: 90%" value="#{outletCrearBean.subSegmentoSeleccionado}" converter="subSegmentoConverter">
+                                    <f:selectItems value="#{outletCrearBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
+                                    <p:ajax process="@this" update="formChain:pgSegment" listener="#{outletCrearBean.listenerSubSegment()}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="#{msg.out_potencial}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <h:panelGroup>
+                                    <p:selectOneMenu converter="potentialConverter" value="#{outletCrearBean.potentialAutomatic}"
+                                                     rendered="#{not empty outletCrearBean.listaPotentialAutomatic}" disabled="true">
+                                        <f:selectItems value="#{outletCrearBean.listaPotentialAutomatic}" var="potAutomatic" itemLabel="#{potAutomatic.namePotential}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="#{msg.out_message_not_potential}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
+                                                   rendered="#{empty outletCrearBean.listaPotentialAutomatic}"/>
+                                </h:panelGroup>
+                                <h:outputLabel value="#{msg.chain_cluster}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:selectOneMenu>
+                                    <f:selectItem itemValue="C1" itemLabel="Cluster 1"/>
+                                    <f:selectItem itemValue="C2" itemLabel="Cluster 2"/>
+                                    <f:selectItem itemValue="C3" itemLabel="Cluster 3"/>
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </p:fieldset>
+                    <br/><br/>
+                    <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{outletCrearBean.guardarOutlet()}"
+                                     styleClass="button" style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 20%"/>
+                    <br/>
+                    <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

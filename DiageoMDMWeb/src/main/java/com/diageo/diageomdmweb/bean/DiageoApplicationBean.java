@@ -7,8 +7,8 @@ package com.diageo.diageomdmweb.bean;
 
 import com.diageo.admincontrollerweb.entities.DwProfiles;
 import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
-import com.diageo.diageonegocio.beans.DepartamentoBeanLocal;
-import com.diageo.diageonegocio.entidades.Departamento;
+import com.diageo.diageonegocio.beans.DepartamentBeanLocal;
+import com.diageo.diageonegocio.entidades.DbDepartaments;
 import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
@@ -40,7 +40,7 @@ public class DiageoApplicationBean extends DiageoRootBean implements Serializabl
      * Ejb departamentoBeanLocal
      */
     @EJB
-    private DepartamentoBeanLocal departamentoBeanLocal;
+    private DepartamentBeanLocal departamentoBeanLocal;
     /**
      * Lista con todos los tipos de documento
      */
@@ -52,7 +52,7 @@ public class DiageoApplicationBean extends DiageoRootBean implements Serializabl
     /**
      * Lista departamentos
      */
-    private List<Departamento> listaDepartamento;
+    private List<DbDepartaments> listaDepartamento;
 
     /**
      * Creates a new instance of DiageoApplicationBean
@@ -64,7 +64,7 @@ public class DiageoApplicationBean extends DiageoRootBean implements Serializabl
     public void init() {
         setListaTipoDocumento((List<DwDocumentTypes>) tipoDocBean.findAll());
         setListaPerfiles((List<DwProfiles>) perfilBean.findAll());     
-        setListaDepartamento(departamentoBeanLocal.consultarTodoDepartamento());
+        setListaDepartamento(departamentoBeanLocal.findAllDepartament());
     }
 
     /**
@@ -98,14 +98,14 @@ public class DiageoApplicationBean extends DiageoRootBean implements Serializabl
     /**
      * @return the listaDepartamento
      */
-    public List<Departamento> getListaDepartamento() {
+    public List<DbDepartaments> getListaDepartamento() {
         return listaDepartamento;
     }
 
     /**
      * @param listaDepartamento the listaDepartamento to set
      */
-    public void setListaDepartamento(List<Departamento> listaDepartamento) {
+    public void setListaDepartamento(List<DbDepartaments> listaDepartamento) {
         this.listaDepartamento = listaDepartamento;
     }
 
