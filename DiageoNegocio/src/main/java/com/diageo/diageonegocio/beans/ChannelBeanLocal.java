@@ -5,8 +5,8 @@
  */
 package com.diageo.diageonegocio.beans;
 
-import com.diageo.diageonegocio.entidades.Channel;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbChannels;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -17,12 +17,12 @@ import javax.ejb.Local;
 @Local
 public interface ChannelBeanLocal {
 
-    public Channel crearChannel(Channel channel) throws DiageoNegocioException;
+    public DbChannels createChannel(DbChannels channel) throws DiageoBusinessException;
 
-    public Channel modificarChannel(Channel channel) throws DiageoNegocioException;
+    public DbChannels updateChannel(DbChannels channel) throws DiageoBusinessException;
 
-    public List<Channel> consultarTodosChannel();
+    public List<DbChannels> findAllChannel();
 
-    public Channel consultarId(Integer id) throws DiageoNegocioException;
+    public DbChannels findById(Integer id) throws DiageoBusinessException;
     
 }

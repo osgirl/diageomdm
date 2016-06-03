@@ -5,8 +5,8 @@
  */
 package com.diageo.diageonegocio.beans;
 
-import com.diageo.diageonegocio.entidades.SubSegmento;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbSubSegments;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -17,12 +17,14 @@ import javax.ejb.Local;
 @Local
 public interface SubSegmentoBeanLocal {
 
-    public SubSegmento crearSubSegmento(SubSegmento subSegmento) throws DiageoNegocioException;
+    public DbSubSegments createSubSegment(DbSubSegments subSegment) throws DiageoBusinessException;
 
-    public SubSegmento modificarSubSegmento(SubSegmento subSegmento) throws DiageoNegocioException;
+    public DbSubSegments updateSubSegment(DbSubSegments subSegment) throws DiageoBusinessException;
 
-    public List<SubSegmento> consultarTodosSubSegmentos();
+    public List<DbSubSegments> findAllSubSegment();
 
-    public SubSegmento consultarId(Integer id) throws DiageoNegocioException;
+    public DbSubSegments findById(Integer id) throws DiageoBusinessException;
+
+    public List<DbSubSegments> findSubSegment(Integer id);
     
 }

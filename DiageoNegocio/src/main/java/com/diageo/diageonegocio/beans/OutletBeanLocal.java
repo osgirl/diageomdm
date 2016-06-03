@@ -5,9 +5,10 @@
  */
 package com.diageo.diageonegocio.beans;
 
-import com.diageo.diageonegocio.entidades.Outlet;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbOutlets;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Local;
 
 /**
@@ -17,16 +18,20 @@ import javax.ejb.Local;
 @Local
 public interface OutletBeanLocal {
 
-    public Outlet crearOutlet(Outlet out) throws DiageoNegocioException;
+    public DbOutlets createOutlet(DbOutlets out) throws DiageoBusinessException;
 
-    public Outlet modificarOutlet(Outlet outlet) throws DiageoNegocioException;
+    public DbOutlets updateOutlet(DbOutlets outlet) throws DiageoBusinessException;
 
-    public List<Outlet> consultarTodosOutlets();
+    public List<DbOutlets> findAllOutlets();
 
-    public Outlet consultarId(Integer id) throws DiageoNegocioException;
+    public DbOutlets findById(Integer id) throws DiageoBusinessException;
 
-    public List<Outlet> findByDistributor(Integer idDistri);
+    public List<DbOutlets> findByDistributor(Integer idDistri);
 
-    public List<Outlet> listOutletNew(String isNew);
+    public List<DbOutlets> listOutletNew(String isNew);
+
+    public List<DbOutlets> findByDistributor(Set<Integer> setDistributor, Set<Integer> setSubSegment, List<Integer> listState, String isNew);
+
+    public List<DbOutlets> findBySubSegment(Integer idSubSegment);
     
 }

@@ -5,8 +5,8 @@
  */
 package com.diageo.diageonegocio.beans;
 
-import com.diageo.diageonegocio.entidades.Potential;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbPotentials;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -16,29 +16,29 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class PotentialBean extends BusinessTransaction<Potential> implements PotentialBeanLocal {
+public class PotentialBean extends BusinessTransaction<DbPotentials> implements PotentialBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public void createPotential(Potential pot) throws DiageoNegocioException {
+    public void createPotential(DbPotentials pot) throws DiageoBusinessException {
         try {
             super.create(pot);
         } catch (Exception e) {
-            throw new DiageoNegocioException(e.getMessage());
+            throw new DiageoBusinessException(e.getMessage());
         }
 
     }
 
     @Override
-    public Potential findById(Integer id) {
-        Potential pot = (Potential) super.searchById(Potential.class, id);
+    public DbPotentials findById(Integer id) {
+        DbPotentials pot = (DbPotentials) super.searchById(DbPotentials.class, id);
         return pot;
     }
 
     @Override
-    public List<Potential> findAll() {
-        List<Potential> list = super.searchAll(Potential.class);
+    public List<DbPotentials> findAll() {
+        List<DbPotentials> list = super.searchAll(DbPotentials.class);
         if (list == null) {
             return new ArrayList<>();
         }
@@ -46,8 +46,8 @@ public class PotentialBean extends BusinessTransaction<Potential> implements Pot
     }
 
     @Override
-    public List<Potential> findBySubSegment(Integer id) {
-        List<Potential> list = super.searchByNamedQuery(Potential.class, Potential.FIND_BY_SUBSEGMENT, id);
+    public List<DbPotentials> findBySubSegment(Integer id) {
+        List<DbPotentials> list = super.searchByNamedQuery(DbPotentials.class, DbPotentials.FIND_BY_SUBSEGMENT, id);
         if (list == null) {
             return new ArrayList<>();
         }

@@ -5,8 +5,8 @@
  */
 package com.diageo.diageonegocio.beans;
 
-import com.diageo.diageonegocio.entidades.SubChannel;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbSubChannels;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -16,33 +16,33 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class SubChannelBean extends BusinessTransaction<SubChannel> implements SubChannelBeanLocal {
+public class SubChannelBean extends BusinessTransaction<DbSubChannels> implements SubChannelBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public SubChannel crearSubChannel(SubChannel subChannel) throws DiageoNegocioException {
+    public DbSubChannels crearSubChannel(DbSubChannels subChannel) throws DiageoBusinessException {
         try {
             subChannel = super.create(subChannel);
             return subChannel;
         } catch (Exception e) {
-            throw new DiageoNegocioException(e, e.getMessage());
+            throw new DiageoBusinessException(e, e.getMessage());
         }
     }
 
     @Override
-    public SubChannel modificarSubChannel(SubChannel subChannel) throws DiageoNegocioException {
+    public DbSubChannels modificarSubChannel(DbSubChannels subChannel) throws DiageoBusinessException {
         try {
-            subChannel = (SubChannel) super.update(subChannel);
+            subChannel = (DbSubChannels) super.update(subChannel);
             return subChannel;
         } catch (Exception e) {
-            throw new DiageoNegocioException(e, e.getMessage());
+            throw new DiageoBusinessException(e, e.getMessage());
         }
     }
 
     @Override
-    public List<SubChannel> consultarTodosSubChannel() {
-        List<SubChannel> lista = super.searchAll(SubChannel.class);
+    public List<DbSubChannels> consultarTodosSubChannel() {
+        List<DbSubChannels> lista = super.searchAll(DbSubChannels.class);
         if (lista == null) {
             return new ArrayList<>();
         }
@@ -50,17 +50,17 @@ public class SubChannelBean extends BusinessTransaction<SubChannel> implements S
     }
 
     @Override
-    public List<SubChannel> consultarSubChannelPorChannel(Integer id) {
-        return super.searchByNamedQuery(SubChannel.class, SubChannel.FIND_BY_CHANNEL, id);
+    public List<DbSubChannels> consultarSubChannelPorChannel(Integer id) {
+        return super.searchByNamedQuery(DbSubChannels.class, DbSubChannels.FIND_BY_CHANNEL, id);
     }
 
     @Override
-    public SubChannel consultarId(Integer id) throws DiageoNegocioException {
+    public DbSubChannels consultarId(Integer id) throws DiageoBusinessException {
         try {
-            SubChannel cha = (SubChannel) super.searchById(SubChannel.class, id);
+            DbSubChannels cha = (DbSubChannels) super.searchById(DbSubChannels.class, id);
             return cha;
         } catch (Exception e) {
-            throw new DiageoNegocioException(e, e.getMessage());
+            throw new DiageoBusinessException(e, e.getMessage());
         }
     }
 

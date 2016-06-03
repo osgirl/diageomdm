@@ -5,8 +5,8 @@
  */
 package com.diageo.diageonegocio.beans;
 
-import com.diageo.diageonegocio.entidades.SubChannel;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbSubChannels;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -17,14 +17,14 @@ import javax.ejb.Local;
 @Local
 public interface SubChannelBeanLocal {
 
-    public SubChannel crearSubChannel(SubChannel subChannel) throws DiageoNegocioException;
+    public DbSubChannels crearSubChannel(DbSubChannels subChannel) throws DiageoBusinessException;
 
-    public SubChannel modificarSubChannel(SubChannel subChannel) throws DiageoNegocioException;
+    public DbSubChannels modificarSubChannel(DbSubChannels subChannel) throws DiageoBusinessException;
 
-    public List<SubChannel> consultarTodosSubChannel();
+    public List<DbSubChannels> consultarTodosSubChannel();
 
-    public SubChannel consultarId(Integer id) throws DiageoNegocioException;
+    public DbSubChannels consultarId(Integer id) throws DiageoBusinessException;
 
-    public List<SubChannel> consultarSubChannelPorChannel(Integer id);
+    public List<DbSubChannels> consultarSubChannelPorChannel(Integer id);
     
 }

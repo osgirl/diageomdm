@@ -6,6 +6,7 @@
 package com.diageo.diageonegocio.beans;
 
 import java.util.List;
+import java.util.Objects;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -20,6 +21,7 @@ import javax.persistence.criteria.CriteriaQuery;
  */
 public class BusinessTransaction<T> {
 
+    private static final long serialVersionUID = 41L;
     @PersistenceContext(unitName = "DiageoNegocioUP")
     private EntityManager em;
 
@@ -63,5 +65,27 @@ public class BusinessTransaction<T> {
         Query query = getEntityManager().createQuery(criteria);
         return query.getResultList();
     }
+
+    
+    @Override
+    public boolean equals(Object obj) {
+        if(obj==null){
+            return false;
+        }
+        if(obj instanceof BusinessTransaction){
+            BusinessTransaction bt=(BusinessTransaction)obj;
+            return bt.em.equals(this.em);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 17 * hash + Objects.hashCode(this.em);
+        return hash;
+    }
+    
+    
 
 }

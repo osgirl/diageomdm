@@ -5,11 +5,11 @@
  */
 package com.diageo.diageonegocio.beans;
 
-import com.diageo.diageonegocio.entidades.Outlet;
-import com.diageo.diageonegocio.entidades.Persona;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbOutlets;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -18,43 +18,43 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class OutletBean extends BusinessTransaction<Outlet> implements OutletBeanLocal {
+public class OutletBean extends BusinessTransaction<DbOutlets> implements OutletBeanLocal {
 
     @EJB
-    private PersonaBeanLocal personaBeanLocal;
+    private CustomerBeanLocal personaBeanLocal;
     @EJB
-    private UbicacionBeanLocal ubicacionBeanLocal;
+    private LocationBeanLocal ubicacionBeanLocal;
     @EJB
-    private TelefonosBeanLocal telefonosBeanLocal;
+    private PhonesBeanLocal telefonosBeanLocal;
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public Outlet crearOutlet(Outlet out) throws DiageoNegocioException {
+    public DbOutlets createOutlet(DbOutlets out) throws DiageoBusinessException {
         try {
-            out.setPropietario(personaBeanLocal.crearPersona(out.getPropietario()));
-            out.setIdubicacion(ubicacionBeanLocal.crearUbicacion(out.getIdubicacion()));
-            out.setTelefonosList(telefonosBeanLocal.crearTelefonos(out.getTelefonosList()));
+            //out.setOwnerId(personaBeanLocal.createCustomer());
+            out.setLocationId(ubicacionBeanLocal.createLocation(out.getLocationId()));
+            out.setDbPhonesList(telefonosBeanLocal.createPhones(out.getDbPhonesList()));
             out = super.create(out);
             return out;
         } catch (Exception e) {
-            throw new DiageoNegocioException(e, e.getMessage());
+            throw new DiageoBusinessException(e, e.getMessage());
         }
     }
 
     @Override
-    public Outlet modificarOutlet(Outlet outlet) throws DiageoNegocioException {
+    public DbOutlets updateOutlet(DbOutlets outlet) throws DiageoBusinessException {
         try {
-            outlet = (Outlet) super.update(outlet);
+            outlet = (DbOutlets) super.update(outlet);
             return outlet;
         } catch (Exception e) {
-            throw new DiageoNegocioException(e, e.getMessage());
+            throw new DiageoBusinessException(e, e.getMessage());
         }
     }
 
     @Override
-    public List<Outlet> consultarTodosOutlets() {
-        List<Outlet> lista = super.searchAll(Outlet.class);
+    public List<DbOutlets> findAllOutlets() {
+        List<DbOutlets> lista = super.searchAll(DbOutlets.class);
         if (lista == null) {
             return new ArrayList<>();
         }
@@ -62,27 +62,46 @@ public class OutletBean extends BusinessTransaction<Outlet> implements OutletBea
     }
 
     @Override
-    public List<Outlet> listOutletNew(String isNew) {
-        return super.searchByNamedQuery(Outlet.class, Outlet.FIND_BY_NEW, isNew);
+    public List<DbOutlets> listOutletNew(String isNew) {
+        return super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_NEW, isNew);
     }
 
     @Override
-    public Outlet consultarId(Integer id) throws DiageoNegocioException {
+    public DbOutlets findById(Integer id) throws DiageoBusinessException {
         try {
-            Outlet outlet = (Outlet) super.searchById(Outlet.class, id);
+            DbOutlets outlet = (DbOutlets) super.searchById(DbOutlets.class, id);
             return outlet;
         } catch (Exception e) {
-            throw new DiageoNegocioException(e, e.getMessage());
+            throw new DiageoBusinessException(e, e.getMessage());
         }
     }
 
     @Override
-    public List<Outlet> findByDistributor(Integer idDistri) {
-        List<Outlet> list = super.searchByNamedQuery(Outlet.class, Outlet.FIND_BY_DISTRI, idDistri);
+    public List<DbOutlets> findByDistributor(Integer idDistri) {
+        List<DbOutlets> list = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_DISTRI, idDistri);
         if (list == null) {
             return new ArrayList<>();
         }
         return list;
     }
 
+    @Override
+    public List<DbOutlets> findByDistributor(Set<Integer> setDistributor, Set<Integer> setSubSegment, List<Integer> listState, String isNew) {
+        List<DbOutlets> list
+                = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_DISTRI_SUBSEGMENT, setDistributor, setSubSegment, listState, isNew);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
+    
+    @Override
+    public List<DbOutlets> findBySubSegment(Integer idSubSegment){
+        List<DbOutlets> list
+                = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_SUB_SEGMENT, idSubSegment);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
 }

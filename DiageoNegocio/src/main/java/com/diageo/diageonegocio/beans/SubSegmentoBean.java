@@ -5,8 +5,8 @@
  */
 package com.diageo.diageonegocio.beans;
 
-import com.diageo.diageonegocio.entidades.SubSegmento;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbSubSegments;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
@@ -16,33 +16,33 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class SubSegmentoBean extends BusinessTransaction<SubSegmento>implements SubSegmentoBeanLocal {
+public class SubSegmentoBean extends BusinessTransaction<DbSubSegments>implements SubSegmentoBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public SubSegmento crearSubSegmento(SubSegmento subSegmento) throws DiageoNegocioException{
+    public DbSubSegments createSubSegment(DbSubSegments subSegmento) throws DiageoBusinessException{
         try {
             subSegmento = super.create(subSegmento);
             return subSegmento;
         } catch (Exception e) {
-            throw new DiageoNegocioException(e, e.getMessage());
+            throw new DiageoBusinessException(e, e.getMessage());
         }
     }
     
     @Override
-    public SubSegmento modificarSubSegmento(SubSegmento subSegmento) throws DiageoNegocioException{
+    public DbSubSegments updateSubSegment(DbSubSegments subSegmento) throws DiageoBusinessException{
         try {
-            subSegmento = (SubSegmento) super.update(subSegmento);
+            subSegmento = (DbSubSegments) super.update(subSegmento);
             return subSegmento;
         } catch (Exception e) {
-            throw new DiageoNegocioException(e, e.getMessage());
+            throw new DiageoBusinessException(e, e.getMessage());
         }
     }
     
     @Override
-    public List<SubSegmento> consultarTodosSubSegmentos(){
-        List<SubSegmento> lista = super.searchAll(SubSegmento.class);
+    public List<DbSubSegments> findAllSubSegment(){
+        List<DbSubSegments> lista = super.searchAll(DbSubSegments.class);
         if (lista == null) {
             return new ArrayList<>();
         }
@@ -50,12 +50,21 @@ public class SubSegmentoBean extends BusinessTransaction<SubSegmento>implements 
     }
     
     @Override
-    public SubSegmento consultarId(Integer id) throws DiageoNegocioException{
+    public DbSubSegments findById(Integer id) throws DiageoBusinessException{
         try {
-            SubSegmento subSegmento = (SubSegmento) super.searchById(SubSegmento.class, id);
+            DbSubSegments subSegmento = (DbSubSegments) super.searchById(DbSubSegments.class, id);
             return subSegmento;
         } catch (Exception e) {
-            throw new DiageoNegocioException(e, e.getMessage());
+            throw new DiageoBusinessException(e, e.getMessage());
         }
+    }
+    
+    @Override
+    public List<DbSubSegments> findSubSegment(Integer id){
+        List<DbSubSegments> list=super.searchByNamedQuery(DbSubSegments.class, DbSubSegments.FIND_BY_SEGMENT, id);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
     }
 }

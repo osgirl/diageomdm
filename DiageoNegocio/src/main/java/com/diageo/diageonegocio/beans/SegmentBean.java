@@ -5,7 +5,7 @@
  */
 package com.diageo.diageonegocio.beans;
 
-import com.diageo.diageonegocio.entidades.DbChannels;
+import com.diageo.diageonegocio.entidades.DbSegments;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,33 +16,33 @@ import javax.ejb.Stateless;
  * @author yovanoty126
  */
 @Stateless
-public class ChannelBean extends BusinessTransaction<DbChannels> implements ChannelBeanLocal {
+public class SegmentBean extends BusinessTransaction<DbSegments> implements SegmentBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public DbChannels createChannel(DbChannels channel) throws DiageoBusinessException {
+    public DbSegments createSegment(DbSegments segmento) throws DiageoBusinessException {
         try {
-            channel = super.create(channel);
-            return channel;
+            segmento = super.create(segmento);
+            return segmento;
         } catch (Exception e) {
             throw new DiageoBusinessException(e, e.getMessage());
         }
     }
 
     @Override
-    public DbChannels updateChannel(DbChannels channel) throws DiageoBusinessException {
+    public DbSegments updateSegment(DbSegments segmento) throws DiageoBusinessException {
         try {
-            channel = (DbChannels) super.update(channel);
-            return channel;
+            segmento = (DbSegments) super.update(segmento);
+            return segmento;
         } catch (Exception e) {
             throw new DiageoBusinessException(e, e.getMessage());
         }
     }
 
     @Override
-    public List<DbChannels> findAllChannel() {
-        List<DbChannels> lista = super.searchAll(DbChannels.class);
+    public List<DbSegments> findAllSegment() {
+        List<DbSegments> lista = super.searchAll(DbSegments.class);
         if (lista == null) {
             return new ArrayList<>();
         }
@@ -50,13 +50,17 @@ public class ChannelBean extends BusinessTransaction<DbChannels> implements Chan
     }
 
     @Override
-    public DbChannels findById(Integer id) throws DiageoBusinessException {
+    public List<DbSegments> findBySubChannel(Integer id) {
+        return super.searchByNamedQuery(DbSegments.class, DbSegments.FIND_BY_SUBCHANNEL, id);
+    }
+
+    @Override
+    public DbSegments findById(Integer id) throws DiageoBusinessException {
         try {
-            DbChannels cha = (DbChannels) super.searchById(DbChannels.class, id);
-            return cha;
+            DbSegments seg = (DbSegments) super.searchById(DbSegments.class, id);
+            return seg;
         } catch (Exception e) {
             throw new DiageoBusinessException(e, e.getMessage());
         }
     }
-
 }

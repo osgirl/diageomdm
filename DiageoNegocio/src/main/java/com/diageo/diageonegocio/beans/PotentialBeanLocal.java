@@ -5,8 +5,8 @@
  */
 package com.diageo.diageonegocio.beans;
 
-import com.diageo.diageonegocio.entidades.Potential;
-import com.diageo.diageonegocio.exceptions.DiageoNegocioException;
+import com.diageo.diageonegocio.entidades.DbPotentials;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -17,12 +17,12 @@ import javax.ejb.Local;
 @Local
 public interface PotentialBeanLocal {
 
-    public void createPotential(Potential pot) throws DiageoNegocioException;
+    public void createPotential(DbPotentials pot) throws DiageoBusinessException;
 
-    public Potential findById(Integer id);
+    public DbPotentials findById(Integer id);
 
-    public List<Potential> findAll();
+    public List<DbPotentials> findAll();
 
-    public List<Potential> findBySubSegment(Integer id);
+    public List<DbPotentials> findBySubSegment(Integer id);
     
 }

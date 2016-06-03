@@ -5,20 +5,17 @@
  */
 package com.diageo.diageonegocio.beans;
 
-import com.diageo.diageonegocio.entidades.DbPermissionSegments;
+import com.diageo.diageonegocio.entidades.DbCustomers;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
-import java.util.List;
 import javax.ejb.Local;
 
 /**
  *
- * @author EDUARDO
+ * @author yovanoty126
  */
 @Local
-public interface PermissionsegmentBeanLocal {
+public interface CustomerBeanLocal {
 
-    public void createPermissionSegmentList(List<DbPermissionSegments> entity) throws DiageoBusinessException;
-
-    public List<DbPermissionSegments> findByUser(Integer idUser);
+    public DbCustomers createCustomer(DbCustomers per) throws DiageoBusinessException;
     
 }
