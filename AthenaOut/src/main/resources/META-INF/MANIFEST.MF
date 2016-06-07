@@ -1,0 +1,3 @@
+Manifest-Version: 1.0
+Class-Path: C:\Users\EDUARDO\Documents\JHOVANY\LATINOBI\DIAGEO\SOFTWARE\diageomdm\DiageoNegocio\target\DiageoNegocio-1.0.jar
+
