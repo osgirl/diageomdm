@@ -203,10 +203,10 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setSegmentLabel(out.getSubSegmentId().getSegmentId().getNameSegment());
         setSubSegmentoSeleccionado(out.getSubSegmentId());
 
-        setDireccion(out.getLocationId().getAddress());
-        setBarrio(out.getLocationId().getNeighborhood());
-        setDepartamentoOutlet(out.getLocationId().getTownId().getDepartamentId());
-        setMunicipioOutlet(out.getLocationId().getTownId());
+        setDireccion(out.getAddress());
+        setBarrio(out.getNeighborhood());
+        setDepartamentoOutlet(out.getTownId().getDepartamentId());
+        setMunicipioOutlet(out.getTownId());
         setCorreoElectronico(out.getEmail());
         setLineaNegocio(out.getBusinessLine());
         setCodigoEan(out.getEanCode());

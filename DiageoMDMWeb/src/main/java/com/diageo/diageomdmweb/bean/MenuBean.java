@@ -111,6 +111,9 @@ public class MenuBean extends DiageoRootBean {
             case REPORT_PENDING:
                 getLoginBean().armarMigaPan(capturarValor("m_report"), capturarValor("m_report_outlet_pendding"));
                 return "/reports/pendingReport?faces-redirect=true";
+            case QUERY_SEGMENT_EDIT:
+                getLoginBean().armarMigaPan(capturarValor("m_administrador"), capturarValor("param"),capturarValor("param_segment_query"));
+                return "/admin/parameter/filterQuerySegment?faces-redirect=true";
         }
         return null;
     }

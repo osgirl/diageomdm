@@ -10,20 +10,16 @@ import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
 import com.diageo.diageonegocio.beans.OutletBeanLocal;
-import com.diageo.diageonegocio.beans.PhonesBeanLocal;
 import com.diageo.diageonegocio.beans.PotentialBeanLocal;
 import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
 import com.diageo.diageonegocio.entidades.DbDepartaments;
 import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.DbTowns;
 import com.diageo.diageonegocio.entidades.DbOutlets;
-import com.diageo.diageonegocio.entidades.DbCustomers;
 import com.diageo.diageonegocio.entidades.DbPotentials;
 import com.diageo.diageonegocio.entidades.DbSubSegments;
 import com.diageo.diageonegocio.entidades.DbPhones;
-import com.diageo.diageonegocio.entidades.DbTypeDocuments;
 import com.diageo.diageonegocio.entidades.DbTypePhones;
-import com.diageo.diageonegocio.entidades.DbLocations;
 import com.diageo.diageonegocio.enums.StateOutletChain;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
@@ -144,21 +140,15 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             outletEntidad.setBusinessName(razonSocial);
             outletEntidad.setTypeOutlet(tipoOutlet);
             outletEntidad.setOutletName(nombreOutlet);
-            outletEntidad.setNit(nit);
-            DbCustomers personaPropietaria = new DbCustomers();
-            personaPropietaria.setLastName(apellidosPropietario);
-            personaPropietaria.setNamePerson(nombresPropietarios);
-            personaPropietaria.setDocumentNumber(numeroDocumento);
-            personaPropietaria.setTypeDocument(new DbTypeDocuments(tipoDocumento.getDocumentTypeId()));
+            outletEntidad.setNit(nit);            
             //pendiente guardar los tipos de personas pertenecientes al outlet
             //CLASIFICACION
             outletEntidad.setSubSegmentId(subSegmentoSeleccionado);
-            //UBICACION
-            DbLocations ubicacion = new DbLocations();
-            ubicacion.setTownId(municipioOutlet);
-            ubicacion.setNeighborhood(barrio);
-            ubicacion.setAddress(direccion);
-            outletEntidad.setLocationId(ubicacion);
+            //UBICACION            
+            outletEntidad.setAddress(direccion);
+            outletEntidad.setNeighborhood(barrio);
+            setDepartamentoOutlet(departamentoOutlet);
+            setMunicipioOutlet(municipioOutlet);            
             //DATOS CONTACTO
             List<DbPhones> listaTelefonoses = new ArrayList<>();
             DbPhones cel = new DbPhones();
