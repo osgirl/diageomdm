@@ -47,9 +47,7 @@ public class DbTowns implements Serializable {
     private String nameTown;
     @JoinColumn(name = "DEPARTAMENT_ID", referencedColumnName = "DEPARTAMENT_ID")
     @ManyToOne(optional = false)
-    private DbDepartaments departamentId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "townId")
-    private List<DbLocations> dbLocationsList;
+    private DbDepartaments departamentId;    
     @Column(name = "DISTRI_1")
     private String distri_1;
 
@@ -87,14 +85,6 @@ public class DbTowns implements Serializable {
 
     public void setDepartamentId(DbDepartaments departamentId) {
         this.departamentId = departamentId;
-    }
-
-    public List<DbLocations> getDbLocationsList() {
-        return dbLocationsList;
-    }
-
-    public void setDbLocationsList(List<DbLocations> dbLocationsList) {
-        this.dbLocationsList = dbLocationsList;
     }
 
     public String getDistri_1() {

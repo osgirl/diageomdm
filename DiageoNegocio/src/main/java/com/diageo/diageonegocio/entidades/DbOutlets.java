@@ -7,7 +7,6 @@ package com.diageo.diageonegocio.entidades;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -19,10 +18,10 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -132,17 +131,42 @@ public class DbOutlets implements Serializable {
     @JoinColumn(name = "OCS_SECONDARY", referencedColumnName = "OCS_ID")
     @ManyToOne
     private DbOcs ocsSecondary;
-    @JoinColumn(name = "LOCATION_ID", referencedColumnName = "LOCATION_ID")
-    @ManyToOne(optional = false)
-    private DbLocations locationId;
+    @Column(name = "WEBSITE")
+    private String website;
+    @Column(name = "VERIFICATION_NUMBER")
+    private String verificationNumber;
+    @Column(name = "STATUS_ZRT")
+    private String statusZrt;
+    @Column(name = "ADDRESS")
+    private String address;
+    @Column(name = "NEIGHBORHOOD")
+    private String neighborhood;
+    @Column(name = "GEOGRAPHIC_LOCATION")
+    private String geographicLocation;
+    @Column(name = "LATITUDE")
+    private Double latitude;
+    @Column(name = "LONGITUDE")
+    private Double longitude;
+    @ManyToOne
+    @JoinColumn(name = "TOWN_ID")
+    private DbTowns townId;
+    @Column(name = "JOURNEY_PLAN")
+    private String journeyPlan;
+    @Column(name = "IS_FATHER")
+    private String isFather;
+    @Column(name = "STATUS_OUTLET")
+    private String statusOutlet;
+    @ManyToOne
+    @JoinColumn(name = "OUTLET_ID_FATHER")
+    private DbOutlets outletIdFather;
+    @OneToMany(mappedBy = "outletIdFather")
+    private List<DbOutlets> listOutletFather;
     @Transient
     private boolean disabledButtonEdit;
     @Transient
     private boolean approbationMassive;
     @Transient
     private boolean renderedApprobationMassive;
-    @Column(name = "WEBSITE")
-    private String website;
 
     public DbOutlets() {
     }
@@ -351,14 +375,6 @@ public class DbOutlets implements Serializable {
         this.ocsSecondary = ocsSecondary;
     }
 
-    public DbLocations getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(DbLocations locationId) {
-        this.locationId = locationId;
-    }
-
     public boolean isDisabledButtonEdit() {
         return disabledButtonEdit;
     }
@@ -391,6 +407,110 @@ public class DbOutlets implements Serializable {
         this.website = website;
     }
 
+    public String getVerificationNumber() {
+        return verificationNumber;
+    }
+
+    public void setVerificationNumber(String verificationNumber) {
+        this.verificationNumber = verificationNumber;
+    }
+
+    public String getStatusZrt() {
+        return statusZrt;
+    }
+
+    public void setStatusZrt(String statusZrt) {
+        this.statusZrt = statusZrt;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getNeighborhood() {
+        return neighborhood;
+    }
+
+    public void setNeighborhood(String neighborhood) {
+        this.neighborhood = neighborhood;
+    }
+
+    public String getGeographicLocation() {
+        return geographicLocation;
+    }
+
+    public void setGeographicLocation(String geographicLocation) {
+        this.geographicLocation = geographicLocation;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public DbTowns getTownId() {
+        return townId;
+    }
+
+    public void setTownId(DbTowns townId) {
+        this.townId = townId;
+    }
+
+    public String getJourneyPlan() {
+        return journeyPlan;
+    }
+
+    public void setJourneyPlan(String journeyPlan) {
+        this.journeyPlan = journeyPlan;
+    }
+
+    public String getIsFather() {
+        return isFather;
+    }
+
+    public void setIsFather(String isFather) {
+        this.isFather = isFather;
+    }
+
+    public String getStatusOutlet() {
+        return statusOutlet;
+    }
+
+    public void setStatusOutlet(String statusOutlet) {
+        this.statusOutlet = statusOutlet;
+    }
+
+    public DbOutlets getOutletIdFather() {
+        return outletIdFather;
+    }
+
+    public void setOutletIdFather(DbOutlets outletIdFather) {
+        this.outletIdFather = outletIdFather;
+    }
+
+    public List<DbOutlets> getListOutletFather() {
+        return listOutletFather;
+    }
+
+    public void setListOutletFather(List<DbOutlets> listOutletFather) {
+        this.listOutletFather = listOutletFather;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -405,10 +525,7 @@ public class DbOutlets implements Serializable {
             return false;
         }
         DbOutlets other = (DbOutlets) object;
-        if ((this.outletId == null && other.outletId != null) || (this.outletId != null && !this.outletId.equals(other.outletId))) {
-            return false;
-        }
-        return true;
+        return !((this.outletId == null && other.outletId != null) || (this.outletId != null && !this.outletId.equals(other.outletId)));
     }
 
     @Override

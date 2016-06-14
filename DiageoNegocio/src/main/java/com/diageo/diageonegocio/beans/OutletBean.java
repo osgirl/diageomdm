@@ -21,9 +21,7 @@ import javax.ejb.Stateless;
 public class OutletBean extends BusinessTransaction<DbOutlets> implements OutletBeanLocal {
 
     @EJB
-    private CustomerBeanLocal personaBeanLocal;
-    @EJB
-    private LocationBeanLocal ubicacionBeanLocal;
+    private CustomerBeanLocal personaBeanLocal;   
     @EJB
     private PhonesBeanLocal telefonosBeanLocal;
 
@@ -33,7 +31,6 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
     public DbOutlets createOutlet(DbOutlets out) throws DiageoBusinessException {
         try {
             //out.setOwnerId(personaBeanLocal.createCustomer());
-            out.setLocationId(ubicacionBeanLocal.createLocation(out.getLocationId()));
             out.setDbPhonesList(telefonosBeanLocal.createPhones(out.getDbPhonesList()));
             out = super.create(out);
             return out;

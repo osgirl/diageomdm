@@ -7,7 +7,6 @@ package com.diageo.diageonegocio.entidades;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -22,7 +21,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -77,10 +75,7 @@ public class DbChains implements Serializable {
     private DbSubSegments subSegmentId;
     @JoinColumn(name = "POTENTIAL_ID", referencedColumnName = "POTENTIAL_ID")
     @ManyToOne(optional = false)
-    private DbPotentials potentialId;
-    @JoinColumn(name = "LOCATION_ID", referencedColumnName = "LOCATION_ID")
-    @ManyToOne(optional = false)
-    private DbLocations locationId;
+    private DbPotentials potentialId;    
     @JoinColumn(name = "DB_CLUSTER_ID", referencedColumnName = "DB_CLUSTER_ID")
     @ManyToOne(optional = false)
     private DbClusters dbClusterId;
@@ -183,14 +178,6 @@ public class DbChains implements Serializable {
 
     public void setPotentialId(DbPotentials potentialId) {
         this.potentialId = potentialId;
-    }
-
-    public DbLocations getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(DbLocations locationId) {
-        this.locationId = locationId;
     }
 
     public DbClusters getDbClusterId() {

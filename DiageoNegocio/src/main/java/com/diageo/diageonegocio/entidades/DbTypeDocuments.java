@@ -41,9 +41,7 @@ public class DbTypeDocuments implements Serializable {
     @NotNull
     @Size(min = 1, max = 30)
     @Column(name = "NAME_TYPE_DOCUMENT")
-    private String nameTypeDocument;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "typeDocument")
-    private List<DbCustomers> dbCustomersList;
+    private String nameTypeDocument;    
 
     public DbTypeDocuments() {
     }
@@ -71,14 +69,6 @@ public class DbTypeDocuments implements Serializable {
 
     public void setNameTypeDocument(String nameTypeDocument) {
         this.nameTypeDocument = nameTypeDocument;
-    }
-
-    public List<DbCustomers> getDbCustomersList() {
-        return dbCustomersList;
-    }
-
-    public void setDbCustomersList(List<DbCustomers> dbCustomersList) {
-        this.dbCustomersList = dbCustomersList;
     }
 
     @Override
