@@ -49,6 +49,8 @@ public enum ModuleEnum {
     REPORT_OUTLET("report outlet"),
     REPORT_DISTRI("report distributor"),
     REPORT_PENDING("report pending"),
+    QUERY_SEGMENT("query segment"),
+    QUERY_SEGMENT_EDIT("query segment edit"),
     C_CHAIN("create chain");
 
     private final String description;
