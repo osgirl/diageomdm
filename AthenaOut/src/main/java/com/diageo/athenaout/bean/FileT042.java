@@ -27,19 +27,18 @@ public class FileT042 {
 
     public List<T042PartyAddrDto> findOutlets() {
         List<T042PartyAddrDto> listDto = new ArrayList<>();
-        String sql = "SELECT o.OUTLET_ID AS codParty,lo.ADDRESS AS desAddre_1,ci.NAME_TOWN AS desLoc_1, "
-                + "pho.NUMBER_PHONE AS numPhone_1,ci.DISTRI_1 AS codArea,pr.NAME_REGIONAL AS codZone,co.DISTRI_1 AS codNation, "
-                + "o.EMAIL AS email_1,o.WEBSITE AS website_1, lo.LATITUDE AS valLatitude,lo.LONGITUDE AS valLongitude "
-                + "FROM DIAGEO_BUSINESS.DB_OUTLETS o "
-                + "LEFT JOIN DIAGEO_BUSINESS.DB_LOCATIONS lo ON lo.LOCATION_ID= o.LOCATION_ID "
-                + "LEFT JOIN DIAGEO_BUSINESS.DB_TOWNS ci ON ci.TOWN_ID=lo.TOWN_ID "
-                + "LEFT JOIN DIAGEO_BUSINESS.DB_OUTLETS_PHONES ph ON ph.OUTLET_ID=o.OUTLET_ID "
-                + "LEFT JOIN DIAGEO_BUSINESS.DB_PHONES pho ON pho.PHONE_ID=ph.PHONE_ID "
-                + "LEFT JOIN DIAGEO_BUSINESS.DB_OUTLETS_3PARTY op ON op.OUTLET_ID=o.OUTLET_ID "
-                + "LEFT JOIN DIAGEO_BUSINESS.DB_3PARTY pa ON pa.DB_3PARTY_ID=op.DB_3PARTY_ID "
-                + "LEFT JOIN DIAGEO_BUSINESS.DB_3PARTY_REGIONAL pr ON pr.DB_3PARTY_REGIONAL_ID=pa.DB_3PARTY_REGIONAL_ID "
-                + "LEFT JOIN DIAGEO_BUSINESS.DB_DEPARTAMENTS de ON de.DEPARTAMENT_ID=ci.DEPARTAMENT_ID "
-                + "LEFT JOIN DIAGEO_BUSINESS.DB_COUNTRIES co ON co.COUNTRY_ID=de.COUNTRY_ID";
+        String sql = "SELECT o.OUTLET_ID AS codParty,o.ADDRESS AS desAddre_1,ci.NAME_TOWN AS desLoc_1, "
+                + "                pho.NUMBER_PHONE AS numPhone_1,de.DISTRI_1 AS codArea,pr.NAME_REGIONAL AS codZone,co.DISTRI_1 AS codNation, "
+                + "                o.EMAIL AS email_1,o.WEBSITE AS website_1 "
+                + "                FROM DIAGEO_BUSINESS.DB_OUTLETS o "
+                + "                LEFT JOIN DIAGEO_BUSINESS.DB_TOWNS ci ON ci.TOWN_ID=o.TOWN_ID "
+                + "                LEFT JOIN DIAGEO_BUSINESS.DB_OUTLETS_PHONES ph ON ph.OUTLET_ID=o.OUTLET_ID "
+                + "                LEFT JOIN DIAGEO_BUSINESS.DB_PHONES pho ON pho.PHONE_ID=ph.PHONE_ID "
+                + "                LEFT JOIN DIAGEO_BUSINESS.DB_OUTLETS_3PARTY op ON op.OUTLET_ID=o.OUTLET_ID "
+                + "                LEFT JOIN DIAGEO_BUSINESS.DB_3PARTY pa ON pa.DB_3PARTY_ID=op.DB_3PARTY_ID "
+                + "                LEFT JOIN DIAGEO_BUSINESS.DB_3PARTY_REGIONAL pr ON pr.DB_3PARTY_REGIONAL_ID=pa.DB_3PARTY_REGIONAL_ID "
+                + "                LEFT JOIN DIAGEO_BUSINESS.DB_DEPARTAMENTS de ON de.DEPARTAMENT_ID=ci.DEPARTAMENT_ID "
+                + "                LEFT JOIN DIAGEO_BUSINESS.DB_COUNTRIES co ON co.COUNTRY_ID=de.COUNTRY_ID";
         System.out.println(sql);
         Query query = em.createNativeQuery(sql);
         List list = query.getResultList();
@@ -52,7 +51,7 @@ public class FileT042 {
             dto.setNumPhone_1(arrayObj[3] == null ? "" : arrayObj[3] + "");
             dto.setCodArea(arrayObj[4] == null ? "" : arrayObj[4] + "");
             dto.setCodZone(arrayObj[5] == null ? "" : arrayObj[5] + "");
-            dto.setCodNation(arrayObj[6] == null ? "" : arrayObj[6] + "");
+            dto.setCodNation("CO");
             listDto.add(dto);
         }
         return listDto;

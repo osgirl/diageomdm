@@ -23,9 +23,7 @@ public class T042PartyAddrDto implements Serializable {
     private String codZone;
     private String codNation;
     private String email_1;
-    private String website_1;
-    private String valLatitude;
-    private String valLongitude;
+    private String website_1;   
 
     public T042PartyAddrDto() {
     }
@@ -100,23 +98,7 @@ public class T042PartyAddrDto implements Serializable {
 
     public void setWebsite_1(String website_1) {
         this.website_1 = website_1;
-    }
-
-    public String getValLatitude() {
-        return valLatitude;
-    }
-
-    public void setValLatitude(String valLatitude) {
-        this.valLatitude = valLatitude;
-    }
-
-    public String getValLongitude() {
-        return valLongitude;
-    }
-
-    public void setValLongitude(String valLongitude) {
-        this.valLongitude = valLongitude;
-    }
+    }   
 
     @Override
     public boolean equals(Object obj) {
