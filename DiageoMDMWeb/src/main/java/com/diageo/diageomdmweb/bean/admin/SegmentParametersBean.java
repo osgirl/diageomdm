@@ -5,21 +5,24 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
+import com.diageo.admincontrollerweb.beans.ParameterBeanLocal;
+import com.diageo.admincontrollerweb.entities.DwParameters;
+import com.diageo.admincontrollerweb.enums.ParameterKeyEnum;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
-import com.diageo.diageomdmweb.bean.dto.DistributorPermissionDto;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.SegmentBeanLocal;
 import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
 import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
 import com.diageo.diageonegocio.entidades.DbChannels;
-import com.diageo.diageonegocio.entidades.DbPermissionSegments;
-import com.diageo.diageonegocio.entidades.DbPotentials;
 import com.diageo.diageonegocio.entidades.DbSegments;
 import com.diageo.diageonegocio.entidades.DbSubChannels;
 import com.diageo.diageonegocio.entidades.DbSubSegments;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -36,11 +39,9 @@ public class SegmentParametersBean extends DiageoRootBean implements Serializabl
     @EJB
     private ChannelBeanLocal channelBeanLocal;
     @EJB
-    private SubChannelBeanLocal subChannelBeanLocal;
-    @EJB
-    private SegmentBeanLocal segmentoBeanLocal;
-    @EJB
     private SubSegmentoBeanLocal subSegmentoBeanLocal;
+    @EJB
+    private ParameterBeanLocal parameterBeanLocal;
     private List<DbChannels> listChannel;
     private List<DbSubChannels> listSubChannel;
     private List<DbSegments> listSegment;
@@ -49,6 +50,8 @@ public class SegmentParametersBean extends DiageoRootBean implements Serializabl
     private DbSubChannels subChannelSelected;
     private DbSegments segmentSelected;
     private DbSubSegments subSegmentSelected;
+    private List<DwParameters> listSubSegmentFiler;
+    private List<DwParameters> listSubSegmentDelete;
 
     /**
      * Creates a new instance of SegmentParametersBean
@@ -59,6 +62,8 @@ public class SegmentParametersBean extends DiageoRootBean implements Serializabl
     @PostConstruct
     public void init() {
         setListChannel(channelBeanLocal.findAllChannel());
+        setListSubSegmentFiler(parameterBeanLocal.findByKey(ParameterKeyEnum.QUERY_SUB_SEGMENT.name()));
+        setListSubSegmentDelete(new ArrayList<DwParameters>());
         initList();
     }
 
@@ -88,6 +93,52 @@ public class SegmentParametersBean extends DiageoRootBean implements Serializabl
     public void listenerSegment() {
         setSubSegmentSelected(getSegmentSelected().getDbSubSegmentsList().get(0));
         setListSubSegment(getSegmentSelected().getDbSubSegmentsList());
+    }
+
+    public void createParameter() {
+        for (DwParameters param : listSubSegmentFiler) {
+            if (param.getParameterId() == null) {
+                parameterBeanLocal.createParameter(param);
+            }
+        }
+        for (DwParameters param : listSubSegmentDelete) {
+            if (param.getParameterId() != null) {
+                parameterBeanLocal.deleteParameter(param);
+            }
+        }
+        showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+    }
+
+    public void deleteParameterTable(DwParameters param) {
+        getListSubSegmentDelete().add(param);
+        getListSubSegmentFiler().remove(param);
+    }
+
+    public DbSubSegments nameSegment(String val) {
+        if (val != null && !val.isEmpty()) {
+            try {
+                return subSegmentoBeanLocal.findById(Integer.parseInt(val));
+            } catch (DiageoBusinessException ex) {
+                Logger.getLogger(SegmentParametersBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return null;
+        }
+        return new DbSubSegments();
+    }
+
+    public void addSubSegment() {
+        //subSegmentSelected
+        DwParameters param = new DwParameters();
+        param.setParameterKey(ParameterKeyEnum.QUERY_SUB_SEGMENT.name());
+        param.setParameterValue(getSubSegmentSelected().getSubSegmentId() + "");
+        for (DwParameters par : getListSubSegmentFiler()) {
+            boolean flag = par.getParameterValue().equals(String.valueOf(getSubSegmentSelected().getSubSegmentId()));
+            if (flag) {
+                showWarningMessage(capturarValor("param_message_duplicate"));
+                return;
+            }
+        }
+        getListSubSegmentFiler().add(param);
     }
 
     public List<DbChannels> getListChannel() {
@@ -152,6 +203,22 @@ public class SegmentParametersBean extends DiageoRootBean implements Serializabl
 
     public void setSubSegmentSelected(DbSubSegments subSegmentSelected) {
         this.subSegmentSelected = subSegmentSelected;
+    }
+
+    public List<DwParameters> getListSubSegmentFiler() {
+        return listSubSegmentFiler;
+    }
+
+    public void setListSubSegmentFiler(List<DwParameters> listSubSegmentFiler) {
+        this.listSubSegmentFiler = listSubSegmentFiler;
+    }
+
+    public List<DwParameters> getListSubSegmentDelete() {
+        return listSubSegmentDelete;
+    }
+
+    public void setListSubSegmentDelete(List<DwParameters> listSubSegmentDelete) {
+        this.listSubSegmentDelete = listSubSegmentDelete;
     }
 
 }

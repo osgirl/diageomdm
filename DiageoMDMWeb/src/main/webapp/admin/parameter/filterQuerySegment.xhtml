@@ -1,48 +1,73 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
-                template="./../../WEB-INF/templates/diageoWebTemplate.xhtml"
-                xmlns:h="http://xmlns.jcp.org/jsf/html"
-                xmlns:p="http://primefaces.org/ui"
-                xmlns:f="http://xmlns.jcp.org/jsf/core">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
-    <ui:define name="content">
-        <h:form id="formQuerySegment">
-            <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width:80%">
-                <h:panelGroup id="pgSegment">
-                    <h:panelGrid columns="4">
-                        <h:outputLabel value="#{msg.can_canal}"/>
-                        <p:selectOneMenu style="width: 80%" value="#{segmentParametersBean.channelSelected}" converter="channelConverter">
-                            <f:selectItems value="#{segmentParametersBean.listChannel}" var="cha" itemLabel="#{cha.nameChannel}"/>
-                            <p:ajax update="formQuerySegment:pgSegment" process="@this" listener="#{segmentParametersBean.listenerChannel()}"/>
-                        </p:selectOneMenu>
-                        <h:outputLabel value="#{msg.sub_subcanal}"/>
-                        <p:selectOneMenu style="width: 80%" value="#{segmentParametersBean.subChannelSelected}" converter="subChannelConverter">
-                            <f:selectItems value="#{segmentParametersBean.listSubChannel}" var="subcha" itemLabel="#{subcha.nameSubChannel}"/>
-                            <p:ajax update="formQuerySegment:pgSegment" process="@this" listener="#{segmentParametersBean.listenerSubChannel()}"/>
-                        </p:selectOneMenu>
-                        <h:outputLabel value="#{msg.seg_segmento}"/>
-                        <p:selectOneMenu style="width: 80%" converter="segmentoConverter" value="#{segmentParametersBean.segmentSelected}">
-                            <f:selectItems value="#{segmentParametersBean.listSegment}" var="seg" itemLabel="#{seg.nameSegment}"/>
-                            <p:ajax update="formQuerySegment:pgSegment" process="@this" listener="#{segmentParametersBean.listenerSegment()}"/>
-                        </p:selectOneMenu>
-                        <h:outputLabel value="#{msg.sub_seg_subsegmento}"/>
-                        <p:selectOneMenu style="width: 80%" value="#{segmentParametersBean.subSegmentSelected}" converter="subSegmentoConverter">
-                            <f:selectItems value="#{segmentParametersBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
-                        </p:selectOneMenu>      
-                    </h:panelGrid>
-                </h:panelGroup>
-                <br/>
-                <p:commandButton value="#{msg.btn_add}" styleClass="button"/>
-                <br/>
-                <p:dataTable id="dtQuerySegment" style="width: 90%">
-                    <p:column headerText="#{msg.can_canal}"></p:column>
-                    <p:column headerText="#{msg.sub_subcanal}"></p:column>
-                    <p:column headerText="#{msg.seg_segmento}"></p:column>
-                    <p:column headerText="#{msg.sub_seg_subsegmento}"></p:column>
-                </p:dataTable>
-            </div>
-        </h:form>
-    </ui:define>
+    <body>
 
-</ui:composition>
+        <ui:composition template="./../../WEB-INF/templates/diageoWebTemplate.xhtml">
+
+            <ui:define name="content">
+                <h:form id="formQuerySegment">
+                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width:80%">
+                        <h:panelGroup id="pgSegment" style="width: 100%">
+                            <h:panelGrid columns="4" style="width: 100%">
+                                <h:outputLabel value="#{msg.can_canal}"/>
+                                <p:selectOneMenu style="width: 80%" value="#{segmentParametersBean.channelSelected}" converter="channelConverter">
+                                    <f:selectItems value="#{segmentParametersBean.listChannel}" var="cha" itemLabel="#{cha.nameChannel}"/>
+                                    <p:ajax update="formQuerySegment:pgSegment" process="@this" listener="#{segmentParametersBean.listenerChannel()}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.sub_subcanal}"/>
+                                <p:selectOneMenu style="width: 80%" value="#{segmentParametersBean.subChannelSelected}" converter="subChannelConverter">
+                                    <f:selectItems value="#{segmentParametersBean.listSubChannel}" var="subcha" itemLabel="#{subcha.nameSubChannel}"/>
+                                    <p:ajax update="formQuerySegment:pgSegment" process="@this" listener="#{segmentParametersBean.listenerSubChannel()}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.seg_segmento}"/>
+                                <p:selectOneMenu style="width: 80%" converter="segmentoConverter" value="#{segmentParametersBean.segmentSelected}">
+                                    <f:selectItems value="#{segmentParametersBean.listSegment}" var="seg" itemLabel="#{seg.nameSegment}"/>
+                                    <p:ajax update="formQuerySegment:pgSegment" process="@this" listener="#{segmentParametersBean.listenerSegment()}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.sub_seg_subsegmento}"/>
+                                <p:selectOneMenu style="width: 80%" value="#{segmentParametersBean.subSegmentSelected}" converter="subSegmentoConverter">
+                                    <f:selectItems value="#{segmentParametersBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
+                                </p:selectOneMenu>      
+                            </h:panelGrid>
+                        </h:panelGroup>
+                        <br/>
+                        <p:commandButton value="#{msg.btn_add}" styleClass="button" style="width: 20%" process="@all" update="@form"
+                                         actionListener="#{segmentParametersBean.addSubSegment()}"/>
+                        <p:commandButton value="#{msg.btn_send}" styleClass="button" style="width: 20%" actionListener="#{segmentParametersBean.createParameter()}" 
+                                         update="@form" process="@this"/>
+                        <br/><br/>
+                        <p:messages closable="true" showDetail="true" showSummary="false" globalOnly="false"/>
+                        <p:dataTable id="dtQuerySegment" style="width: 90%" value="#{segmentParametersBean.listSubSegmentFiler}" var="paramSeg"
+                                     paginatorAlwaysVisible="false" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     paginator="true" rows="10">
+                            <p:column headerText="#{msg.can_canal}">
+                                <h:outputLabel value="#{paramSeg.parameterValue != '' ? segmentParametersBean.nameSegment(paramSeg.parameterValue).segmentId.subChannelId.channelId.nameChannel:''}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.sub_subcanal}">
+                                <h:outputLabel value="#{paramSeg.parameterValue != '' ?segmentParametersBean.nameSegment(paramSeg.parameterValue).segmentId.subChannelId.nameSubChannel:''}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.seg_segmento}">
+                                <h:outputLabel value="#{paramSeg.parameterValue != '' ?segmentParametersBean.nameSegment(paramSeg.parameterValue).segmentId.nameSegment:''}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.sub_seg_subsegmento}">
+                                <h:outputLabel value="#{paramSeg.parameterValue != '' ?segmentParametersBean.nameSegment(paramSeg.parameterValue).nameSubsegment:''}"/>
+                            </p:column>
+                            <p:column headerText="">
+                                <p:commandLink value="#{msg.btn_remove}" actionListener="#{segmentParametersBean.deleteParameterTable(paramSeg)}"  process="@this"
+                                               update="formQuerySegment:dtQuerySegment"/>
+                            </p:column>
+                        </p:dataTable>
+                    </div>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>
