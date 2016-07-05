@@ -5,9 +5,12 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
+import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
+import com.diageo.diageonegocio.beans.RegionalBeanLocal;
 import com.diageo.diageonegocio.entidades.Db3party;
+import com.diageo.diageonegocio.entidades.Db3partyRegional;
 import com.diageo.diageonegocio.enums.FatherDistributorEnum;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
@@ -30,11 +33,21 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
 
     @EJB
     protected Db3PartyBeanLocal distributorBeanLocal;
+    @EJB
+    protected RegionalBeanLocal regionalBeanLocal;
     @Size(max = 50, message = "{size.invalido}")
     private String name;
+    private String nameAdmin;
+    private String athenaCode;
+    private Db3partyRegional db3partyRegionalSelected;
+    private Db3party partyFatherSelected;
     private List<Db3party> listDistributor;
+    private List<Db3party> listDistributorFather;
+    private List<Db3partyRegional> listRegional;
     private Db3party selectedDistributor;
     private boolean seeDetail;
+    private boolean isFather;
+    private boolean father;
 
     /**
      * Creates a new instance of DistributorSearch
@@ -44,20 +57,36 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        setListDistributor(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsPadre()));
+        setListDistributor(distributorBeanLocal.searchAllDistributor());
+        setListDistributorFather(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsPadre()));
         setSeeDetail(Boolean.TRUE);
         setSelectedDistributor(new Db3party());
+        setListRegional(regionalBeanLocal.findAll());
     }
 
     public void detail(Db3party distri) {
         setSelectedDistributor(distri);
         setName(distri.getName3party());
+        setNameAdmin(distri.getAdmin3party());
+        setIsFather(distri.getIsFather().equals(FatherDistributorEnum.FATHER.getIsPadre()));
+        setFather(distri.getDb3partyIdFather() != null);
+        setAthenaCode(distri.getDistri1());
+        if (father) {
+            setPartyFatherSelected(distri.getDb3partyIdFather());
+        }
         setSeeDetail(Boolean.FALSE);
     }
 
     public void update() {
         try {
-            getSelectedDistributor().setName3party(getName());
+            getSelectedDistributor().setName3party(getName().toUpperCase());
+            getSelectedDistributor().setAdmin3party(getNameAdmin().toUpperCase());
+            getSelectedDistributor().setDistri1(getAthenaCode().toUpperCase());
+            getSelectedDistributor().setDb3partyRegionalId(db3partyRegionalSelected);
+            getSelectedDistributor().setIsFather(isFather ? FatherDistributorEnum.FATHER.getIsPadre() : FatherDistributorEnum.NOT_FATHER.getIsPadre());
+            if (father) {
+                getSelectedDistributor().setDb3partyIdFather(partyFatherSelected);
+            }
             distributorBeanLocal.updateDistributor(getSelectedDistributor());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
@@ -126,6 +155,70 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
      */
     public void setSelectedDistributor(Db3party selectedDistributor) {
         this.selectedDistributor = selectedDistributor;
+    }
+
+    public String getNameAdmin() {
+        return nameAdmin;
+    }
+
+    public void setNameAdmin(String nameAdmin) {
+        this.nameAdmin = nameAdmin;
+    }
+
+    public String getAthenaCode() {
+        return athenaCode;
+    }
+
+    public void setAthenaCode(String athenaCode) {
+        this.athenaCode = athenaCode;
+    }
+
+    public Db3partyRegional getDb3partyRegionalSelected() {
+        return db3partyRegionalSelected;
+    }
+
+    public void setDb3partyRegionalSelected(Db3partyRegional db3partyRegionalSelected) {
+        this.db3partyRegionalSelected = db3partyRegionalSelected;
+    }
+
+    public Db3party getPartyFatherSelected() {
+        return partyFatherSelected;
+    }
+
+    public void setPartyFatherSelected(Db3party partyFatherSelected) {
+        this.partyFatherSelected = partyFatherSelected;
+    }
+
+    public List<Db3party> getListDistributorFather() {
+        return listDistributorFather;
+    }
+
+    public void setListDistributorFather(List<Db3party> listDistributorFather) {
+        this.listDistributorFather = listDistributorFather;
+    }
+
+    public boolean isIsFather() {
+        return isFather;
+    }
+
+    public void setIsFather(boolean isFather) {
+        this.isFather = isFather;
+    }
+
+    public List<Db3partyRegional> getListRegional() {
+        return listRegional;
+    }
+
+    public void setListRegional(List<Db3partyRegional> listRegional) {
+        this.listRegional = listRegional;
+    }
+
+    public boolean isFather() {
+        return father;
+    }
+
+    public void setFather(boolean father) {
+        this.father = father;
     }
 
 }

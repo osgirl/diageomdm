@@ -16,6 +16,7 @@ import com.diageo.diageonegocio.entidades.DbSubSegments;
 import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -92,19 +93,40 @@ public class PotentialCreateBean extends DiageoRootBean implements Serializable 
 
     public void listenerChannel() {
         setListSubChannel(getChannel().getDbSubChannelsList());
-        setSubChannel(getListSubChannel().get(0));
-        this.listenerSubChannel();
+        if (getListSubChannel() != null || !getListSubChannel().isEmpty()) {
+            setSubChannel(getListSubChannel().get(0));
+            this.listenerSubChannel();
+        } else {
+            listSubChannel = new ArrayList<>();
+            listSegment = new ArrayList<>();
+            listSubSegment = new ArrayList<>();
+            setSubChannel(new DbSubChannels());
+            setSegment(new DbSegments());
+            setSubSegmento(new DbSubSegments());
+        }
     }
 
     public void listenerSubChannel() {
-        setSegment(getSubChannel().getDbSegmentsList().get(0));
-        setListSegment(getSubChannel().getDbSegmentsList());
-        this.listenerSegment();
+        if (getSubChannel().getDbSegmentsList() != null || !getSubChannel().getDbSegmentsList().isEmpty()) {
+            setSegment(getSubChannel().getDbSegmentsList().get(0));
+            setListSegment(getSubChannel().getDbSegmentsList());
+            this.listenerSegment();
+        } else {
+            listSegment = new ArrayList<>();
+            listSubSegment = new ArrayList<>();
+            setSegment(new DbSegments());
+            setSubSegmento(new DbSubSegments());
+        }
     }
 
     public void listenerSegment() {
-        setSubSegmento(getSegment().getDbSubSegmentsList().get(0));
-        setListSubSegment(getSegment().getDbSubSegmentsList());
+        if (getSegment().getDbSubSegmentsList() != null || !getSegment().getDbSubSegmentsList().isEmpty()) {
+            setSubSegmento(getSegment().getDbSubSegmentsList().get(0));
+            setListSubSegment(getSegment().getDbSubSegmentsList());
+        } else {
+            listSubSegment = new ArrayList<>();
+            setSubSegmento(new DbSubSegments());
+        }
     }
 
     /**

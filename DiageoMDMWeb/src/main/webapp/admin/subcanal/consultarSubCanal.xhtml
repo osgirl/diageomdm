@@ -20,6 +20,9 @@
                             <p:column headerText="#{msg.sub_can_nombre}">
                                 <h:outputLabel value="#{subcha.nameSubChannel}"/>
                             </p:column>
+                            <p:column headerText="#{msg.athena_code}">
+                                <h:outputLabel value="#{subcha.distri_1}"/>
+                            </p:column>
                             <p:column headerText="#{msg.can_nombre}">
                                 <h:outputLabel value="#{subcha.channelId.nameChannel}"/>
                             </p:column>
@@ -39,6 +42,10 @@
                                 <h:panelGrid columns="2" style="width: 100%">
                                     <h:outputLabel value="#{msg.sub_can_nombre}" style="width: 30%"/>
                                     <p:inputText id="itNombre" value="#{consultarSubChannel.nombreSubChannel}" required="true" label="#{msg.sub_can_nombre}" style="width: 70%"/>
+
+                                    <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
+                                    <p:inputText id="itAthenaCode" value="#{consultarSubChannel.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"/>                             
+
                                     <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
                                     <p:selectOneMenu value="#{consultarSubChannel.channel}" converter="channelConverter">                                        
                                         <f:selectItems value="#{consultarSubChannel.listaChannel}" var="channel" itemLabel="#{channel.nameChannel}"/>

@@ -17,6 +17,7 @@ and open the template in the editor.
                     <p:menuitem value="#{msg.m_outlet_consultar}" rendered="#{loginBean.renderizarMenu('S_OUT')}" action="#{menuBean.navegar('S_OUT')}" ajax="false"/>
                     <p:menuitem value="#{msg.m_outlet_carga}" rendered="#{loginBean.renderizarMenu('LOAD_OUT')}" action="#{menuBean.navegar('LOAD_OUT')}" ajax="false"/>
                     <p:menuitem value="#{msg.m_chain_create}" rendered="#{loginBean.renderizarMenu('C_CHAIN')}" action="#{menuBean.navegar('C_CHAIN')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_chain_search}" rendered="#{loginBean.renderizarMenu('S_CHAIN')}" action="#{menuBean.navegar('S_CHAIN')}" ajax="false"/>
                 </p:submenu>   
 
                 <p:submenu label="#{msg.m_administrador}" rendered="#{loginBean.renderizarMenu('MAGANER')}">
@@ -48,9 +49,9 @@ and open the template in the editor.
                         <p:menuitem value="#{msg.m_distri_crear}" rendered="#{loginBean.renderizarMenu('C_DISTRI')}" action="#{menuBean.navegar('C_DISTRI')}" ajax="false"/>
                         <p:menuitem value="#{msg.m_distri_consultar}" rendered="#{loginBean.renderizarMenu('S_DISTRI')}" action="#{menuBean.navegar('S_DISTRI')}" ajax="false"/>
                     </p:submenu>
-                    <p:submenu label="#{msg.m_distri_location}" rendered="#{loginBean.renderizarMenu('DISTRI_LOCATION')}">
-                        <p:menuitem value="#{msg.m_distri_location_create}" rendered="#{loginBean.renderizarMenu('C_DISTRI_LOCATION')}" action="#{menuBean.navegar('C_DISTRI_LOCATION')}" ajax="false"/>
-                        <p:menuitem value="#{msg.m_distri_location_search}" rendered="#{loginBean.renderizarMenu('S_DISTRI_LOCATION')}" action="#{menuBean.navegar('S_DISTRI_LOCATION')}" ajax="false"/>
+                    <p:submenu label="#{msg.regional}" rendered="#{loginBean.renderizarMenu('DISTRI_LOCATION')}">
+                        <p:menuitem value="#{msg.regional_create}" rendered="#{loginBean.renderizarMenu('C_DISTRI_LOCATION')}" action="#{menuBean.navegar('C_DISTRI_LOCATION')}" ajax="false"/>
+                        <p:menuitem value="#{msg.regional_search}" rendered="#{loginBean.renderizarMenu('S_DISTRI_LOCATION')}" action="#{menuBean.navegar('S_DISTRI_LOCATION')}" ajax="false"/>
                     </p:submenu>
                     
                     <p:submenu label="#{msg.param}" rendered="#{loginBean.renderizarMenu('QUERY_SEGMENT')}">

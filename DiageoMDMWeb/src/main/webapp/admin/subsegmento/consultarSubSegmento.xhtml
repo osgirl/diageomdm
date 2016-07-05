@@ -20,6 +20,9 @@
                             <p:column headerText="#{msg.sub_seg_nombre}">
                                 <h:outputLabel value="#{seg.nameSubsegment}"/>
                             </p:column>
+                            <p:column headerText="#{msg.athena_code}">
+                                <h:outputLabel value="#{seg.distri_1}"/>
+                            </p:column>
                             <p:column headerText="#{msg.seg_segmento}">
                                 <h:outputLabel value="#{seg.segmentId.nameSegment}"/>
                             </p:column>
@@ -45,6 +48,9 @@
                                 <h:panelGrid columns="2" style="width: 100%">
                                     <h:outputLabel value="#{msg.sub_seg_nombre}" style="width: 30%"/>
                                     <p:inputText id="itNombre" value="#{subSegmentoConsultarBean.nombre}" required="true" label="#{msg.sub_seg_nombre}" style="width: 70%"/>
+                                    
+                                    <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
+                                    <p:inputText id="itAthenaCode" value="#{subSegmentoConsultarBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"/>
 
                                     <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
                                     <p:selectOneMenu value="#{subSegmentoConsultarBean.canal}" converter="channelConverter" required="true" label="#{msg.can_canal}">

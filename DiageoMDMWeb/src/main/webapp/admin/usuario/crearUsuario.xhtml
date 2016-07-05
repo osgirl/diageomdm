@@ -51,22 +51,10 @@
                                 <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{gestionarUsuarioCreacion.activo}"/>
                             </h:panelGrid>
                             <h:panelGroup id="pgEditDetail">
-                                <h:panelGroup rendered="#{gestionarUsuarioCreacion.detailEdition}">
-                                    <p:separator/>
-                                    <h:panelGrid columns="2" width="30%">
-                                        <h:outputLabel value="#{msg.out_distribuidor}"/>
-                                        <p:selectBooleanCheckbox label="#{msg.out_distribuidor}" value="#{gestionarUsuarioCreacion.distributorCheck}">
-                                            <p:ajax process="@this" update="pgDistri"/>
-                                        </p:selectBooleanCheckbox>                                                                                
-
-                                        <h:outputLabel value="#{msg.usu_chain}"/>
-                                        <p:selectBooleanCheckbox label="#{msg.usu_chain}" value="#{gestionarUsuarioCreacion.chainCheck}">
-                                            <p:ajax process="@this"/>
-                                        </p:selectBooleanCheckbox>
-                                    </h:panelGrid>
+                                <h:panelGroup rendered="#{gestionarUsuarioCreacion.detailEdition}">                                    
                                     <p:separator/>
                                     <h:panelGroup id="pgDistri">
-                                        <h:panelGroup id="pgDistriRendered" rendered="#{gestionarUsuarioCreacion.distributorCheck}">
+                                        <h:panelGroup id="pgDistriRendered">
                                             <h:panelGrid columns="3" width="90%">
                                                 <h:outputLabel value="#{msg.out_distribuidor}"/>
                                                 <p:selectOneMenu id="somDistriFather" value="#{gestionarUsuarioCreacion.distributorSelected}" converter="distribuidorConverter">
@@ -117,7 +105,7 @@
                                              /> 
                             <br/><br/>   
                             <p:messages id="mCamPas" closable="true" showDetail="true" showSummary="false" globalOnly="true" 
-                                        style="width: 85%;left: 35%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"/>
+                                        style="width: 100%;left: 35%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"/>
                         </h:panelGroup>
                     </div>
                 </h:form>

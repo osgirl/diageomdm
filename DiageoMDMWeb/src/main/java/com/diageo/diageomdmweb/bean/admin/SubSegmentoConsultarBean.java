@@ -68,6 +68,7 @@ public class SubSegmentoConsultarBean extends SegementoConsultarBean implements 
         super.setEstado(subSegmento.getStateSubSegment().equals(StateDiageo.ACTIVO.getId()));
         super.setCanal(subSegmento.getSegmentId().getSubChannelId().getChannelId());
         super.setSubCanal(subSegmento.getSegmentId().getSubChannelId());
+        super.setAthenaCode(subSegmento.getDistri_1());
         setSegmento(subSegmento.getSegmentId());
         super.listenerListaSubCanales();
         listenerSegmento();
@@ -76,9 +77,10 @@ public class SubSegmentoConsultarBean extends SegementoConsultarBean implements 
     @Override
     public void guardarCambios() {
         try {            
-            getSubSegmentoSeleccionado().setNameSubsegment(super.getNombre());
+            getSubSegmentoSeleccionado().setNameSubsegment(super.getNombre().toUpperCase());
             getSubSegmentoSeleccionado().setStateSubSegment(super.isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             getSubSegmentoSeleccionado().setSegmentId(getSegmento());
+            getSubSegmentoSeleccionado().setDistri_1(getAthenaCode().toUpperCase());
             subSegmentoBeanLocal.updateSubSegment(getSubSegmentoSeleccionado());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {

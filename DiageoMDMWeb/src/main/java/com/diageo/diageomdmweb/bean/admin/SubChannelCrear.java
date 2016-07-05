@@ -40,6 +40,7 @@ public class SubChannelCrear extends DiageoRootBean implements Serializable {
     private String nombreSubChannel;
     private boolean estado;
     private DbChannels channel;
+    private String athenaCode;
 
     /**
      * Creates a new instance of SubChannelCrear
@@ -56,6 +57,7 @@ public class SubChannelCrear extends DiageoRootBean implements Serializable {
     private void inicializarCampos() {
         setNombreSubChannel("");
         setEstado(Boolean.FALSE);
+        setAthenaCode("");
         if (getListaChannel() != null && !getListaChannel().isEmpty()) {
             setChannel(getListaChannel().get(0));
         }else{
@@ -66,8 +68,9 @@ public class SubChannelCrear extends DiageoRootBean implements Serializable {
     public void guardarSubCanal(){
         try {
             DbSubChannels sc=new DbSubChannels();
-            sc.setNameSubChannel(getNombreSubChannel());
+            sc.setNameSubChannel(getNombreSubChannel().toUpperCase());
             sc.setStateSubChannel(isEstado()?StateDiageo.ACTIVO.getId():StateDiageo.INACTIVO.getId());
+            sc.setDistri_1(getAthenaCode().toUpperCase());
             sc.setChannelId(getChannel());
             subChannelBeanLocal.crearSubChannel(sc);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
@@ -132,6 +135,20 @@ public class SubChannelCrear extends DiageoRootBean implements Serializable {
      */
     public void setChannel(DbChannels channel) {
         this.channel = channel;
+    }
+
+    /**
+     * @return the athenaCode
+     */
+    public String getAthenaCode() {
+        return athenaCode;
+    }
+
+    /**
+     * @param athenaCode the athenaCode to set
+     */
+    public void setAthenaCode(String athenaCode) {
+        this.athenaCode = athenaCode;
     }
 
 }

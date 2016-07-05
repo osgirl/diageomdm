@@ -8,6 +8,8 @@ package com.diageo.diageomdmweb.bean.dto;
 import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  *
@@ -16,12 +18,12 @@ import java.util.List;
 public class DistributorPermissionDto {
 
     private Db3party distributor;
-    private List<DbPermissionSegments> listPermissionSegment;
+    private Set<DbPermissionSegments> listPermissionSegment;
 
     public DistributorPermissionDto() {
     }
 
-    public DistributorPermissionDto(Db3party distributor, List<DbPermissionSegments> listPermissionSegment) {
+    public DistributorPermissionDto(Db3party distributor, Set<DbPermissionSegments> listPermissionSegment) {
         this.distributor = distributor;
         this.listPermissionSegment = listPermissionSegment;
     }
@@ -34,12 +36,31 @@ public class DistributorPermissionDto {
         this.distributor = distributor;
     }
 
-    public List<DbPermissionSegments> getListPermissionSegment() {
+    public Set<DbPermissionSegments> getListPermissionSegment() {
         return listPermissionSegment;
     }
 
-    public void setListPermissionSegment(List<DbPermissionSegments> listPermissionSegment) {
+    public void setListPermissionSegment(Set<DbPermissionSegments> listPermissionSegment) {
         this.listPermissionSegment = listPermissionSegment;
+    }
+    
+    @Override
+    public boolean equals(Object obj){
+        if(obj==null){
+            return false;
+        }
+        if(obj instanceof DistributorPermissionDto){
+            DistributorPermissionDto dto=(DistributorPermissionDto)obj;
+            return this.getDistributor().getDb3partyId().equals(dto.getDistributor().getDb3partyId());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 19 * hash + Objects.hashCode(this.distributor);
+        return hash;
     }
 
 }

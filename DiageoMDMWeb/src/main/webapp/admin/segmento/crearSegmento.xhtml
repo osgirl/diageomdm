@@ -17,6 +17,10 @@
                             <h:panelGrid columns="2" style="width: 100%">
                                 <h:outputLabel value="#{msg.seg_nombre}" style="width: 30%"/>
                                 <p:inputText id="itNombre" value="#{segmentoCrearBean.nombre}" required="true" label="#{msg.can_nombre}" style="width: 70%"/>
+                                
+                                <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
+                                <p:inputText id="itAthenaCode" value="#{segmentoCrearBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"/>
+                                
                                 <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
                                 <p:selectOneMenu value="#{segmentoCrearBean.canal}" converter="channelConverter" required="true" label="#{msg.can_canal}">
                                     <f:selectItems value="#{segmentoCrearBean.listaCanales}" var="cha" itemLabel="#{cha.nameChannel}"/>

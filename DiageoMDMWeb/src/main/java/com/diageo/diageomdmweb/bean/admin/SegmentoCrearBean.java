@@ -47,6 +47,7 @@ public class SegmentoCrearBean extends DiageoRootBean implements Serializable {
     private DbChannels canal;
     private DbSubChannels subCanal;
     private boolean estado;
+    private String athenaCode;
 
     /**
      * Creates a new instance of SegmentoCrear
@@ -77,21 +78,23 @@ public class SegmentoCrearBean extends DiageoRootBean implements Serializable {
     public void guardarCambios() {
         try {
             DbSegments seg = new DbSegments();
-            seg.setNameSegment(getNombre());
+            seg.setNameSegment(getNombre().toUpperCase());
             seg.setStateSegment(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             seg.setSubChannelId(getSubCanal());
+            seg.setDistri_1(getAthenaCode().toUpperCase());
             segmentoBeanLocal.createSegment(seg);
             inicializarCampos();
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
-            showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+            showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
     }
 
     private void inicializarCampos() {
         setNombre("");
         setEstado(Boolean.FALSE);
+        setAthenaCode("");
         if (getListaCanales() != null && !listaCanales.isEmpty()) {
             setCanal(getListaCanales().get(0));
         }
@@ -180,6 +183,20 @@ public class SegmentoCrearBean extends DiageoRootBean implements Serializable {
      */
     public void setEstado(boolean estado) {
         this.estado = estado;
+    }
+
+    /**
+     * @return the athenaCode
+     */
+    public String getAthenaCode() {
+        return athenaCode;
+    }
+
+    /**
+     * @param athenaCode the athenaCode to set
+     */
+    public void setAthenaCode(String athenaCode) {
+        this.athenaCode = athenaCode;
     }
 
 }

@@ -50,6 +50,7 @@ public class SegementoConsultarBean extends DiageoRootBean implements Serializab
     private DbSubChannels subCanal;
     private boolean estado;
     private boolean verDetalle;
+    private String athenaCode;
 
     /**
      * Creates a new instance of SegementoConsultarBean
@@ -74,7 +75,8 @@ public class SegementoConsultarBean extends DiageoRootBean implements Serializab
         setSegmentoSeleccionado(seg);
         setNombre(seg.getNameSegment());
         setEstado(seg.getStateSegment().equals(StateDiageo.ACTIVO.getId()));
-        setCanal(seg.getSubChannelId().getChannelId());        
+        setCanal(seg.getSubChannelId().getChannelId());
+        setAthenaCode(seg.getDistri_1());
         listenerListaSubCanales();
         setSubCanal(seg.getSubChannelId());
         setVerDetalle(Boolean.FALSE);
@@ -82,14 +84,15 @@ public class SegementoConsultarBean extends DiageoRootBean implements Serializab
 
     public void guardarCambios() {
         try {
-            getSegmentoSeleccionado().setNameSegment(getNombre());
+            getSegmentoSeleccionado().setNameSegment(getNombre().toUpperCase());
             getSegmentoSeleccionado().setStateSegment(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             getSegmentoSeleccionado().setSubChannelId(getSubCanal());
+            getSegmentoSeleccionado().setDistri_1(getAthenaCode().toUpperCase());
             segmentoBeanLocal.updateSegment(getSegmentoSeleccionado());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
-            showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+            showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
     }
 
@@ -98,7 +101,7 @@ public class SegementoConsultarBean extends DiageoRootBean implements Serializab
             List<DbSubChannels> listaSubChaTemporal = subChannelBeanLocal.consultarSubChannelPorChannel(getCanal().getChannelId());
             if (listaSubChaTemporal != null && !listaSubChaTemporal.isEmpty()) {
                 setListaSubCanales(listaSubChaTemporal);
-            }else{
+            } else {
                 setListaSubCanales(new ArrayList<DbSubChannels>());
             }
         } else {
@@ -235,6 +238,20 @@ public class SegementoConsultarBean extends DiageoRootBean implements Serializab
      */
     public void setVerDetalle(boolean verDetalle) {
         this.verDetalle = verDetalle;
+    }
+
+    /**
+     * @return the athenaCode
+     */
+    public String getAthenaCode() {
+        return athenaCode;
+    }
+
+    /**
+     * @param athenaCode the athenaCode to set
+     */
+    public void setAthenaCode(String athenaCode) {
+        this.athenaCode = athenaCode;
     }
 
 }

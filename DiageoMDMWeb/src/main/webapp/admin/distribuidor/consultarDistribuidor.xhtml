@@ -3,7 +3,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
 
@@ -25,19 +26,53 @@
                             </p:column>
                         </p:dataTable>                             
 
-                        <h:panelGroup id="pgDistri" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                        <h:panelGroup id="pgDistri" style="width: 90%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
                             <h:panelGroup id="pgDistriDetail" rendered="#{!distributorSearch.seeDetail}" style="width: 100%">
-                                <h:panelGrid columns="2" style="width: 100%">
+                                <h:panelGrid columns="4" style="width: 100%">
                                     <h:outputLabel value="#{msg.m_distri_nombre}" style="width: 30%"/>
-                                    <p:inputText id="itNombre" required="true" label="#{msg.m_distri_nombre}" style="width: 70%" value="#{distributorSearch.name}"/>
+                                    <p:inputText id="itNombre" required="true" value="#{distributorSearch.name}" 
+                                                 label="#{msg.m_distri_nombre}" style="width: 90%"/>
+
+                                    <h:outputLabel value="#{msg.admin}" style="width: 30%"/>
+                                    <p:inputText id="itNombreAdmin" required="true" value="#{distributorSearch.nameAdmin}"
+                                                 label="#{msg.admin}" style="width: 90%"/>
+
+                                    <h:outputLabel value="#{msg.regional}" style="width: 30%"/>
+                                    <p:selectOneMenu id="somRegional" value="#{distributorSearch.db3partyRegionalSelected}" converter="regionalConverter" label="#{msg.regional}"
+                                                     style="width: 90%">
+                                        <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}"/>
+                                        <f:selectItems value="#{distributorSearch.listRegional}" var="reg" itemLabel="#{reg.nameRegional}"/>
+                                    </p:selectOneMenu>
+
+                                    <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
+                                    <p:inputText id="itAthenaCode" required="true" value="#{distributorSearch.athenaCode}"
+                                                 label="#{msg.athena_code}" style="width: 90%"/>
+
+                                    <h:outputLabel value="#{msg.is_father}" style="width: 30%"/>
+                                    <p:selectBooleanCheckbox value="#{distributorSearch.isFather}"/>
+
+                                    <h:outputLabel value="#{msg.father}" style="width: 30%"/>
+                                    <p:selectBooleanCheckbox value="#{distributorSearch.father}">
+                                        <p:ajax process="@this" update="formDistri:ol3partyFather formDistri:sompartyFather"/>
+                                    </p:selectBooleanCheckbox>
+
+                                    <h:panelGroup id="ol3partyFather">
+                                        <h:outputLabel value="#{msg.distri_father}" style="width: 30%" rendered="#{distributorSearch.father}"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup id="sompartyFather">
+                                        <p:selectOneMenu value="#{distributorSearch.partyFatherSelected}" converter="distribuidorConverter" label="#{msg.distri_father}"
+                                                         rendered="#{distributorSearch.father}" style="width: 90%">
+                                            <f:selectItems value="#{distributorSearch.listDistributorFather}" var="reg" itemLabel="#{reg.name3party}"/>
+                                        </p:selectOneMenu>
+                                    </h:panelGroup>
                                 </h:panelGrid>
                                 <br/>
                                 <br/>
                                 <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{distributorSearch.update()}"
-                                                 styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
+                                                 styleClass="button" style="width: 40%;"/>
                                 <p:commandButton value="#{msg.btn_regresar}" process="@all" update="@form" immediate="true"
                                                  actionListener="#{distributorSearch.back()}"
-                                                 styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
+                                                 styleClass="button" style="width: 40%;"/>
                                 <br/>
                                 <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />
                             </h:panelGroup>

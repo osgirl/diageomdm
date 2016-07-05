@@ -43,7 +43,9 @@ import com.diageo.diageonegocio.entidades.DbSubSegments;
 import com.diageo.diageonegocio.enums.FatherDistributorEnum;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.inject.Inject;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.primefaces.context.RequestContext;
@@ -65,30 +67,30 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      * Ejb UserBeanLocal
      */
     @EJB
-    private UserBeanLocal usuarioBean;
+    protected UserBeanLocal usuarioBean;
     /**
      * Ejb ModuleBeanLocal
      */
     @EJB
-    private ModuleBeanLocal moduloBean;
+    protected ModuleBeanLocal moduloBean;
     /**
      * Ejb distributor
      */
     @EJB
-    private Db3PartyBeanLocal distributorBeanLocal;
+    protected Db3PartyBeanLocal distributorBeanLocal;
     @EJB
-    private PotentialBeanLocal potentialBeanLocal;
+    protected PotentialBeanLocal potentialBeanLocal;
     @EJB
-    private ChannelBeanLocal channelBeanLocal;
+    protected ChannelBeanLocal channelBeanLocal;
     @EJB
-    private SubChannelBeanLocal subChannelBeanLocal;
+    protected SubChannelBeanLocal subChannelBeanLocal;
     @EJB
-    private SegmentBeanLocal segmentoBeanLocal;
+    protected SegmentBeanLocal segmentoBeanLocal;
     @EJB
-    private SubSegmentoBeanLocal subSegmentoBeanLocal;
+    protected SubSegmentoBeanLocal subSegmentoBeanLocal;
 
     @Inject
-    private LoginBean loginBean;
+    protected LoginBean loginBean;
     /**
      * Nombres
      */
@@ -124,14 +126,6 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      */
     private boolean detailEdition;
     /**
-     * Check distributor
-     */
-    private boolean distributorCheck;
-    /**
-     * Check chain
-     */
-    private boolean chainCheck;
-    /**
      * Check channel
      */
     private boolean channelCheck;
@@ -162,7 +156,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     private List<DbSubSegments> listSubSegment;
     private List<DbPotentials> listPotential;
     private List<DbPotentials> listaPotentialAutomatic;
-    private List<DistributorPermissionDto> listDistributorPermission;
+    private Set<DistributorPermissionDto> listDistributorPermission;
     private DistributorPermissionDto distributorPermissionDtoSelected;
     private List<DbPermissionSegments> listPermissionSegmentToPersist;
     /**
@@ -193,7 +187,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         setListDistributor(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsPadre()));
         setListDistributorSon(distributorBeanLocal.searchDistributorByFather(getListDistributor().get(0).getDb3partyId()));
         setListPotential(potentialBeanLocal.findAll());
-        setListDistributorPermission(new ArrayList<DistributorPermissionDto>());
+        setListDistributorPermission(new HashSet<DistributorPermissionDto>());
         setListPermissionSegmentToPersist(new ArrayList<DbPermissionSegments>());
         //segmentation
         setListChannel(channelBeanLocal.findAllChannel());
@@ -210,7 +204,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         setListSegment(getSubChannelSelected().getDbSegmentsList());
         setListSubSegment(getSegmentSelected().getDbSubSegmentsList());
         listenerSubSegment();
-        setDistributorPermissionDtoSelected(new DistributorPermissionDto(null, new ArrayList<DbPermissionSegments>()));
+        setDistributorPermissionDtoSelected(new DistributorPermissionDto(null, new HashSet<DbPermissionSegments>()));
     }
 
     /**
@@ -270,17 +264,16 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         }
         DistributorPermissionDto dtoTemp = new DistributorPermissionDto();
         dtoTemp.setDistributor(distriSon);
-        dtoTemp.setListPermissionSegment(new ArrayList<DbPermissionSegments>());
+        dtoTemp.setListPermissionSegment(new HashSet<DbPermissionSegments>());
         getListDistributorPermission().add(dtoTemp);
     }
 
     public void removeDistributorToUser(DistributorPermissionDto distriSon) {
         getListDistributorPermission().remove(distriSon);
+
     }
 
     public void seeDetailDistributorAddedUser(DistributorPermissionDto permission) {
-        System.out.println(permission.getDistributor());
-        System.out.println(permission.getListPermissionSegment());
         setDistributorPermissionDtoSelected(permission);
         RequestContext.getCurrentInstance().execute("PF('wvChain').show();");
     }
@@ -383,6 +376,9 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     }
 
     public String subChannelName(Integer id) {
+        if (id == null) {
+            return "";
+        }
         if (id == -1) {
             return capturarValor("usu_msg_all");
         }
@@ -395,6 +391,9 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     }
 
     public String segmentName(Integer id) {
+        if (id == null) {
+            return "";
+        }
         if (id == -1) {
             return capturarValor("usu_msg_all");
         }
@@ -407,6 +406,9 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     }
 
     public String subSegmentName(Integer id) {
+        if (id == null) {
+            return "";
+        }
         if (id == -1) {
             return capturarValor("usu_msg_all");
         }
@@ -424,7 +426,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      * @return true si el usuario ya existe con ese correo, false por lo
      * contrario
      */
-    private boolean validarExisteciaCorreo() {
+    protected boolean validarExisteciaCorreo() {
         try {
             usuarioBean.findEmail(getCorreo().toUpperCase());
             showWarningMessage(capturarValor("usu_correo_existe"));
@@ -440,7 +442,11 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      *
      * @return true if some permissions list is empty false when all is fine
      */
-    private boolean validateListDistributorPermission() {
+    protected boolean validateListDistributorPermission() {
+        if (getListDistributorPermission().isEmpty()) {
+            showWarningMessage(capturarValor("usu_msg_validate_list_permission_distributor"));
+            return true;
+        }
         for (DistributorPermissionDto dto : getListDistributorPermission()) {
             if (dto.getListPermissionSegment().isEmpty()) {
                 showWarningMessage(capturarValor("usu_msg_validate_list_permission"));
@@ -560,34 +566,6 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      */
     public void setDetailEdition(boolean detailEdition) {
         this.detailEdition = detailEdition;
-    }
-
-    /**
-     * @return the distributorCheck
-     */
-    public boolean isDistributorCheck() {
-        return distributorCheck;
-    }
-
-    /**
-     * @param distributorCheck the distributorCheck to set
-     */
-    public void setDistributorCheck(boolean distributorCheck) {
-        this.distributorCheck = distributorCheck;
-    }
-
-    /**
-     * @return the chainCheck
-     */
-    public boolean isChainCheck() {
-        return chainCheck;
-    }
-
-    /**
-     * @param chainCheck the chainCheck to set
-     */
-    public void setChainCheck(boolean chainCheck) {
-        this.chainCheck = chainCheck;
     }
 
     /**
@@ -868,11 +846,11 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         this.potentialManual = potentialManual;
     }
 
-    public List<DistributorPermissionDto> getListDistributorPermission() {
+    public Set<DistributorPermissionDto> getListDistributorPermission() {
         return listDistributorPermission;
     }
 
-    public void setListDistributorPermission(List<DistributorPermissionDto> listDistributorPermission) {
+    public void setListDistributorPermission(Set<DistributorPermissionDto> listDistributorPermission) {
         this.listDistributorPermission = listDistributorPermission;
     }
 

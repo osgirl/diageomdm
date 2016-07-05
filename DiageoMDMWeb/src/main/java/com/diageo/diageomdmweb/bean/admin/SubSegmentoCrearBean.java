@@ -67,7 +67,9 @@ public class SubSegmentoCrearBean extends SubSegmentoConsultarBean implements Se
         setSubSegmentoSeleccionado(new DbSubSegments());
         super.guardarCambios();
         setNombre("");
+        setAthenaCode("");
         setEstado(Boolean.FALSE);
+        init();
     }
 
 }

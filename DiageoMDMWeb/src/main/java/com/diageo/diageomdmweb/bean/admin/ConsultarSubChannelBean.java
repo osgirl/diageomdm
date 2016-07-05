@@ -44,6 +44,7 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
     private String nombreSubChannel;
     private boolean verDetalle;
     private boolean estado;
+    private String athenaCode;
 
     /**
      * Creates a new instance of ConsultarSubChannel
@@ -62,18 +63,20 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
         setListaSubChannel(subChannelBeanLocal.consultarTodosSubChannel());
     }
 
-    public void detalleSubChannel(DbSubChannels sc) {       
+    public void detalleSubChannel(DbSubChannels sc) {
         setNombreSubChannel(sc.getNameSubChannel());
         setEstado(sc.getStateSubChannel().equals(StateDiageo.ACTIVO.getId()));
         setChannel(sc.getChannelId());
         setSubChannelSeleccionado(sc);
-         setVerDetalle(Boolean.FALSE);
+        setAthenaCode(sc.getDistri_1());
+        setVerDetalle(Boolean.FALSE);
     }
-    
+
     public void modificarChannel() {
         try {
             getSubChannelSeleccionado().setStateSubChannel(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
-            getSubChannelSeleccionado().setNameSubChannel(getNombreSubChannel());
+            getSubChannelSeleccionado().setNameSubChannel(getNombreSubChannel().toUpperCase());
+            getSubChannelSeleccionado().setDistri_1(getAthenaCode().toUpperCase());
             getSubChannelSeleccionado().setChannelId(getChannel());
             subChannelBeanLocal.modificarSubChannel(getSubChannelSeleccionado());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
@@ -186,6 +189,20 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
      */
     public void setListaChannel(List<DbChannels> listaChannel) {
         this.listaChannel = listaChannel;
+    }
+
+    /**
+     * @return the athenaCode
+     */
+    public String getAthenaCode() {
+        return athenaCode;
+    }
+
+    /**
+     * @param athenaCode the athenaCode to set
+     */
+    public void setAthenaCode(String athenaCode) {
+        this.athenaCode = athenaCode;
     }
 
 }

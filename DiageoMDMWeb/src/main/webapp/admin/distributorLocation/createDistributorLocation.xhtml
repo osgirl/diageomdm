@@ -17,20 +17,14 @@
                         <h:panelGroup id="pgDistri" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
                             <h:panelGrid columns="1" style="width: 100%">
                                 <h:panelGrid columns="2" style="width: 100%">
-                                    <h:outputLabel value="#{msg.dis_commercial_management}"/>
-                                    <p:selectOneMenu id="somDistri" value="#{distributorLocationCreateBean.selectedDistributor}" converter="distribuidorConverter" style="width: 100%">
-                                        <f:selectItems value="#{distributorLocationCreateBean.listDistributor}" var="distri" itemLabel="#{distri.name3party}"/>
-                                    </p:selectOneMenu>
-                                    <h:outputLabel value="#{msg.dis_branch}"/>
-                                    <h:panelGroup>
-                                        <p:inputText id="itBranch" label="#{msg.dis_branch}" required="true" value="#{distributorLocationCreateBean.name}"/>                                        
-                                    </h:panelGroup>
+                                    <h:outputLabel value="#{msg.regional}"/>                                    
+                                    <p:inputText id="itNameRegional" label="#{msg.regional}" required="true"/>
                                 </h:panelGrid>
                                 <br/>                                
                             </h:panelGrid>
                             <br/>                            
                             <br/>
-                            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{distributorLocationCreateBean.createLocatorDistributor()}"
+                            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" 
                                              styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
                             <br/>
                             <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />

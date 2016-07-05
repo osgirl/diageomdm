@@ -36,8 +36,9 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
     private DbChannels channelSeleccionado;
     @Size(max = 100, message = "{size.invalido}")
     private String nombreChannel;
+    private String athenaCode;
     private boolean verDetalle;
-    private boolean estado;
+    private boolean estado;    
 
     /**
      * Creates a new instance of ConsultarChannelBean
@@ -60,13 +61,15 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
         setChannelSeleccionado(cha);
         setNombreChannel(cha.getNameChannel());
         setEstado(cha.getStateChannel().equals(StateDiageo.ACTIVO.getId()));
+        setAthenaCode(cha.getDistri_1());
         setVerDetalle(Boolean.FALSE);
     }
 
     public void modificarChannel() {
         try {
             getChannelSeleccionado().setStateChannel(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
-            getChannelSeleccionado().setNameChannel(getNombreChannel());
+            getChannelSeleccionado().setNameChannel(getNombreChannel().toUpperCase());
+            getChannelSeleccionado().setDistri_1(getAthenaCode().toUpperCase());
             channelBeanLocal.updateChannel(getChannelSeleccionado());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
@@ -137,6 +140,14 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
 
     public void setNombreChannel(String nombreChannel) {
         this.nombreChannel = nombreChannel;
+    }
+
+    public String getAthenaCode() {
+        return athenaCode;
+    }
+
+    public void setAthenaCode(String athenaCode) {
+        this.athenaCode = athenaCode;
     }
 
 }

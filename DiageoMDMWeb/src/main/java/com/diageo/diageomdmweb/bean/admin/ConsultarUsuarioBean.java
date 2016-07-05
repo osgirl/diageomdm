@@ -5,21 +5,26 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
-import com.diageo.admincontrollerweb.entities.DwProfiles;
 import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
 import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
-import com.diageo.diageomdmweb.bean.DiageoRootBean;
+import com.diageo.diageomdmweb.bean.dto.DistributorPermissionDto;
+import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
+import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
-import com.diageo.admincontrollerweb.beans.UserBeanLocal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+import javax.ejb.EJB;
 
 /**
  *
@@ -27,17 +32,21 @@ import com.diageo.admincontrollerweb.beans.UserBeanLocal;
  */
 @Named(value = "consultarUsuarioBean")
 @ViewScoped
-public class ConsultarUsuarioBean extends DiageoRootBean implements Serializable {
+public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(ConsultarUsuarioBean.class.getName());
     @EJB
-    private UserBeanLocal usuarioLocal;
+    private PermissionsegmentBeanLocal permissionsegmentBeanLocal;
     private List<DwUsers> listaUsuariosSistema;
     private boolean verDetalle;
     private DwUsers usuarioSeleccionado;
-    private DwProfiles perfil;
-    private DwDocumentTypes tipoDocumento;
     private boolean usuarioActivo;
+    private Set<DbPermissionSegments> listDistributorPermissionRemove;
+    private String temporalMail;
+    /**
+     * Contains the records that will be removed
+     */
+    private List<DistributorPermissionDto> listDistributorPermissionRemoveUser;
 
     /**
      * Creates a new instance of ConsultarUsuarioBean
@@ -46,16 +55,18 @@ public class ConsultarUsuarioBean extends DiageoRootBean implements Serializable
     }
 
     @PostConstruct
+    @Override
     public void init() {
+        super.init();
         setVerDetalle(Boolean.TRUE);
-        setPerfil(new DwProfiles());
-        setTipoDocumento(new DwDocumentTypes());
         consultarUsuariosSistema();
+        setListDistributorPermissionRemove(new HashSet<DbPermissionSegments>());
+        setListDistributorPermissionRemoveUser(new ArrayList<DistributorPermissionDto>());
     }
 
     public void consultarUsuariosSistema() {
         try {
-            setListaUsuariosSistema(usuarioLocal.findAll());
+            setListaUsuariosSistema(usuarioBean.findAll());
         } catch (ControllerWebException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
         }
@@ -65,35 +76,92 @@ public class ConsultarUsuarioBean extends DiageoRootBean implements Serializable
     public void verDetalleUsuario(DwUsers usu) {
         setVerDetalle(Boolean.FALSE);
         setUsuarioSeleccionado(usu);
+        setTemporalMail(usu.getEmailUser());
         setPerfil(usu.getProfileId());
         setTipoDocumento(new DwDocumentTypes(usu.getDocumentTypeId().getDocumentTypeId()));
         setUsuarioActivo(usu.getStateUser().equals(StateEnum.ACTIVE.getState()));
+        //find permission segment
+        List<DbPermissionSegments> list = permissionsegmentBeanLocal.findByUser(usu.getUserId());
+        setListDistributorPermission(new HashSet<DistributorPermissionDto>());
+        for (DbPermissionSegments list1 : list) {
+            DistributorPermissionDto dto = new DistributorPermissionDto();
+            dto.setDistributor(list1.getDb3partyId());
+            Set<DbPermissionSegments> listPS = permissionsegmentBeanLocal.findByUserDistributor(getUsuarioSeleccionado().getUserId(), list1.getDb3partyId().getDb3partyId());
+            dto.setListPermissionSegment(listPS);
+            getListDistributorPermission().add(dto);
+        }
+        super.listenerDetailEdition();
     }
 
     public void guardarCambiosUsuario() {
+        if (!validateListDistributorPermission()) {
+            if (!validarExisteciaCorreo()) {
+                try {
+                    getUsuarioSeleccionado().setProfileId(getPerfil());
+                    getUsuarioSeleccionado().setDocumentTypeId(getTipoDocumento());
+                    getUsuarioSeleccionado().setStateUser(isUsuarioActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+                    getUsuarioSeleccionado().setUpdateDate(super.getFechaActual());
+                    getUsuarioSeleccionado().setNameUser(getUsuarioSeleccionado().getNameUser().toUpperCase());
+                    getUsuarioSeleccionado().setLastName(getUsuarioSeleccionado().getLastName().toUpperCase());
+                    getUsuarioSeleccionado().setEmailUser(getUsuarioSeleccionado().getEmailUser().toUpperCase());
+                    getUsuarioSeleccionado().setDocumentNumber(getUsuarioSeleccionado().getDocumentNumber());
+                    deletePermissionSegment();
+                    setListPermissionSegmentToPersist(new ArrayList<DbPermissionSegments>());
+                    for (DistributorPermissionDto ps : getListDistributorPermission()) {
+                        getListPermissionSegmentToPersist().addAll(ps.getListPermissionSegment());
+                    }
+                    usuarioBean.updateUser(getUsuarioSeleccionado(), getListPermissionSegmentToPersist());
+                    showInfoMessage(capturarValor("usu_mis_datos"));
+                } catch (ControllerWebException ex) {
+                    LOG.log(Level.SEVERE, ex.getMessage());
+                    showErrorMessage(capturarValor("usu_erro_mis_datos"));
+                }
+            }
+        }
+    }
+
+    @Override
+    protected boolean validarExisteciaCorreo() {
         try {
-            getUsuarioSeleccionado().setProfileId(getPerfil());
-            getUsuarioSeleccionado().setDocumentTypeId(getTipoDocumento());
-            getUsuarioSeleccionado().setStateUser(isUsuarioActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-            getUsuarioSeleccionado().setUpdateDate(super.getFechaActual());
-            getUsuarioSeleccionado().setNameUser(getUsuarioSeleccionado().getNameUser().toUpperCase());
-            getUsuarioSeleccionado().setLastName(getUsuarioSeleccionado().getLastName().toUpperCase());
-            getUsuarioSeleccionado().setEmailUser(getUsuarioSeleccionado().getEmailUser().toUpperCase());
-            getUsuarioSeleccionado().setDocumentNumber(getUsuarioSeleccionado().getDocumentNumber());
-            usuarioLocal.updateUser(getUsuarioSeleccionado());
-            showInfoMessage(capturarValor("usu_mis_datos"));
+            if (getUsuarioSeleccionado().getEmailUser().toUpperCase().equals(getTemporalMail().toUpperCase())) {
+                return false;
+            }
+            usuarioBean.findEmail(getUsuarioSeleccionado().getEmailUser().toUpperCase());
+            showWarningMessage(capturarValor("usu_correo_existe"));
+            return true;
         } catch (ControllerWebException ex) {
             LOG.log(Level.SEVERE, ex.getMessage());
-            showErrorMessage(capturarValor("usu_erro_mis_datos"));
+            return false;
         }
     }
 
     public void regresar() {
         setUsuarioSeleccionado(null);
+        setDetailEdition(Boolean.FALSE);
         setPerfil(null);
         setTipoDocumento(null);
         setUsuarioActivo(Boolean.FALSE);
         setVerDetalle(Boolean.TRUE);
+    }
+
+    public void removePermissionFromPopup(DbPermissionSegments dto) {
+        getListDistributorPermissionRemove().add(dto);
+        getDistributorPermissionDtoSelected().getListPermissionSegment().remove(dto);
+    }
+
+    public void deletePermissionSegment() {
+        for (DbPermissionSegments ps : getListDistributorPermissionRemove()) {
+            permissionsegmentBeanLocal.remove(ps);
+        }
+    }
+
+    @Override
+    public void removeDistributorToUser(DistributorPermissionDto dto) {
+        getListDistributorPermission().remove(dto);
+        getListDistributorPermissionRemoveUser().add(dto);
+        for (DbPermissionSegments ps : dto.getListPermissionSegment()) {
+            getListDistributorPermissionRemove().add(ps);
+        }
     }
 
     /**
@@ -139,34 +207,6 @@ public class ConsultarUsuarioBean extends DiageoRootBean implements Serializable
     }
 
     /**
-     * @return the perfil
-     */
-    public DwProfiles getPerfil() {
-        return perfil;
-    }
-
-    /**
-     * @param perfil the perfil to set
-     */
-    public void setPerfil(DwProfiles perfil) {
-        this.perfil = perfil;
-    }
-
-    /**
-     * @return the tipoDocumento
-     */
-    public DwDocumentTypes getTipoDocumento() {
-        return tipoDocumento;
-    }
-
-    /**
-     * @param tipoDocumento the tipoDocumento to set
-     */
-    public void setTipoDocumento(DwDocumentTypes tipoDocumento) {
-        this.tipoDocumento = tipoDocumento;
-    }
-
-    /**
      * @return the usuarioActivo
      */
     public boolean isUsuarioActivo() {
@@ -180,4 +220,27 @@ public class ConsultarUsuarioBean extends DiageoRootBean implements Serializable
         this.usuarioActivo = usuarioActivo;
     }
 
+    public Set<DbPermissionSegments> getListDistributorPermissionRemove() {
+        return listDistributorPermissionRemove;
+    }
+
+    public void setListDistributorPermissionRemove(Set<DbPermissionSegments> listDistributorPermissionRemove) {
+        this.listDistributorPermissionRemove = listDistributorPermissionRemove;
+    }
+
+    public List<DistributorPermissionDto> getListDistributorPermissionRemoveUser() {
+        return listDistributorPermissionRemoveUser;
+    }
+
+    public void setListDistributorPermissionRemoveUser(List<DistributorPermissionDto> listDistributorPermissionRemoveUser) {
+        this.listDistributorPermissionRemoveUser = listDistributorPermissionRemoveUser;
+    }
+
+    public String getTemporalMail() {
+        return temporalMail;
+    }
+
+    public void setTemporalMail(String temporalMail) {
+        this.temporalMail = temporalMail;
+    }
 }

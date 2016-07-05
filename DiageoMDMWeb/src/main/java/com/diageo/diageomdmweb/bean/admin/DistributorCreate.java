@@ -7,6 +7,7 @@ package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.enums.FatherDistributorEnum;
+import java.io.Serializable;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 
@@ -16,7 +17,7 @@ import javax.faces.view.ViewScoped;
  */
 @Named(value = "distributorCreate")
 @ViewScoped
-public class DistributorCreate extends DistributorSearch {
+public class DistributorCreate extends DistributorSearch implements Serializable{
 
     /**
      * Creates a new instance of DistributorCreate
@@ -24,11 +25,17 @@ public class DistributorCreate extends DistributorSearch {
     public DistributorCreate() {
     }
 
-    public void create() {
-        getSelectedDistributor().setIsFather(FatherDistributorEnum.FATHER.getIsPadre());
-        super.update();
+    private void cleanUpFields() {
         setName("");
+        setNameAdmin("");
+        setAthenaCode("");
+        setIsFather(Boolean.FALSE);
+    }
+
+    public void create() {
+        super.update();
         setSelectedDistributor(new Db3party());
+        cleanUpFields();
     }
 
 }

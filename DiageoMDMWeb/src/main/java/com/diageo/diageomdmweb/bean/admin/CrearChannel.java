@@ -32,6 +32,7 @@ public class CrearChannel extends DiageoRootBean implements Serializable {
     private ChannelBeanLocal channelBeanLocal;
     @Size(max = 100, message = "{size.invalido}")
     private String nombreChannel;
+    private String athenaCode;
     private boolean estado;
 
     /**
@@ -43,13 +44,15 @@ public class CrearChannel extends DiageoRootBean implements Serializable {
     @PostConstruct
     public void init() {
         setNombreChannel("");
+        setAthenaCode("");
         setEstado(Boolean.FALSE);
     }
 
-    public void crearChannel() {
+    public void createChannel() {
         try {
             DbChannels channel = new DbChannels();
-            channel.setNameChannel(getNombreChannel());
+            channel.setNameChannel(getNombreChannel().toUpperCase());
+            channel.setDistri_1(getAthenaCode().toUpperCase());
             channel.setStateChannel(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             channelBeanLocal.createChannel(channel);
             init();
@@ -86,6 +89,20 @@ public class CrearChannel extends DiageoRootBean implements Serializable {
      */
     public void setEstado(boolean estado) {
         this.estado = estado;
+    }
+
+    /**
+     * @return the athenaCode
+     */
+    public String getAthenaCode() {
+        return athenaCode;
+    }
+
+    /**
+     * @param athenaCode the athenaCode to set
+     */
+    public void setAthenaCode(String athenaCode) {
+        this.athenaCode = athenaCode;
     }
 
 }

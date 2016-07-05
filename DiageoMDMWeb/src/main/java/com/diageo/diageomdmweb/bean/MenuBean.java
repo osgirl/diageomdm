@@ -91,10 +91,10 @@ public class MenuBean extends DiageoRootBean {
                 getLoginBean().armarMigaPan(capturarValor("m_administrador"), capturarValor("m_distribuidor"), capturarValor("m_distri_consultar"));
                 return "/admin/distribuidor/consultarDistribuidor?faces-redirect=true";
             case C_DISTRI_LOCATION:
-                getLoginBean().armarMigaPan(capturarValor("m_administrador"), capturarValor("m_distri_location"), capturarValor("m_distri_location_create"));
+                getLoginBean().armarMigaPan(capturarValor("m_administrador"), capturarValor("regional"), capturarValor("regional_create"));
                 return "/admin/distributorLocation/createDistributorLocation?faces-redirect=true";
             case S_DISTRI_LOCATION:
-                getLoginBean().armarMigaPan(capturarValor("m_administrador"), capturarValor("m_distri_location"), capturarValor("m_distri_location_search"));
+                getLoginBean().armarMigaPan(capturarValor("m_administrador"), capturarValor("regional"), capturarValor("regional_search"));
                 return "/admin/distributorLocation/searchDistributorLocation?faces-redirect=true";
             case C_POTENTIAL:
                 getLoginBean().armarMigaPan(capturarValor("m_administrador"), capturarValor("m_management_potential"), capturarValor("m_potential_create"));
@@ -114,6 +114,9 @@ public class MenuBean extends DiageoRootBean {
             case QUERY_SEGMENT_EDIT:
                 getLoginBean().armarMigaPan(capturarValor("m_administrador"), capturarValor("param"),capturarValor("param_segment_query"));
                 return "/admin/parameter/filterQuerySegment?faces-redirect=true";
+            case S_CHAIN:
+                getLoginBean().armarMigaPan(capturarValor("m_outlet"), capturarValor("m_chain_search"));
+                return "/outlet/searchChain?faces-redirect=true";
         }
         return null;
     }
