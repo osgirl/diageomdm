@@ -7,21 +7,17 @@ package com.diageo.diageonegocio.entidades;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -43,14 +39,11 @@ public class Db3partyManagers implements Serializable {
     @SequenceGenerator(name = "SQ_DB_3PARTY_MANAGERS", sequenceName = "SQ_DB_3PARTY_MANAGERS", allocationSize = 1)
     @Column(name = "DB_3PARTY_MANAGER_ID")
     private Integer db3partyManagerId;
-    @Size(max = 500)
     @Column(name = "NAME_MANAGER")
     private String nameManager;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "db3partyManagerId")
     private List<Db3partySales> db3partySalesList;
-    @JoinColumn(name = "DB_3PARTY_ID", referencedColumnName = "DB_3PARTY_ID")
-    @ManyToOne(optional = false)
-    private Db3party db3partyId;
+   
 
     public Db3partyManagers() {
     }
@@ -81,14 +74,6 @@ public class Db3partyManagers implements Serializable {
 
     public void setDb3partySalesList(List<Db3partySales> db3partySalesList) {
         this.db3partySalesList = db3partySalesList;
-    }
-
-    public Db3party getDb3partyId() {
-        return db3partyId;
-    }
-
-    public void setDb3partyId(Db3party db3partyId) {
-        this.db3partyId = db3partyId;
     }
 
     @Override

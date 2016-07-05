@@ -8,7 +8,10 @@ package com.diageo.diageonegocio.beans;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -27,7 +30,7 @@ public class PermissionsegmentBean extends BusinessTransaction<DbPermissionSegme
     public void createPermissionSegmentList(List<DbPermissionSegments> entity) throws DiageoBusinessException {
         try {
             for (DbPermissionSegments entity1 : entity) {
-                super.create(entity1);
+                super.update(entity1);
             }
         } catch (Exception e) {
             throw new DiageoBusinessException(e, e.getMessage());
@@ -41,5 +44,23 @@ public class PermissionsegmentBean extends BusinessTransaction<DbPermissionSegme
             return new ArrayList<>();
         }
         return list;
+    }
+
+    @Override
+    public Set<DbPermissionSegments> findByUserDistributor(Integer idUser, Integer distributor) {
+        List<DbPermissionSegments> list = super.searchByNamedQuery(DbPermissionSegments.class, DbPermissionSegments.FIND_BY_USER_DISTRIBUTOR, idUser, distributor);
+        Set<DbPermissionSegments> listSet=new HashSet<>();
+        for (DbPermissionSegments list1 : list) {
+            listSet.add(list1);
+        }
+        if (list == null) {
+            return new HashSet<>();
+        }
+        return listSet;
+    }
+
+    @Override
+    public void remove(DbPermissionSegments ps) {
+        super.delete(ps);
     }
 }

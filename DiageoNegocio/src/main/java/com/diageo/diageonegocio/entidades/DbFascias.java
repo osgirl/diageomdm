@@ -44,6 +44,8 @@ public class DbFascias implements Serializable {
     private String nameFascia;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "fasciaId")
     private List<DbOwners> dbOwnersList;
+    @Column(name = "DISTRI_1")
+    private String distri_1;
 
     public DbFascias() {
     }
@@ -79,6 +81,14 @@ public class DbFascias implements Serializable {
 
     public void setDbOwnersList(List<DbOwners> dbOwnersList) {
         this.dbOwnersList = dbOwnersList;
+    }
+
+    public String getDistri_1() {
+        return distri_1;
+    }
+
+    public void setDistri_1(String distri_1) {
+        this.distri_1 = distri_1;
     }
 
     @Override

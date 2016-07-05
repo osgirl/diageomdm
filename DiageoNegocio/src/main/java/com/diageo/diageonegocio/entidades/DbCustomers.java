@@ -6,7 +6,6 @@
 package com.diageo.diageonegocio.entidades;
 
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -66,7 +65,7 @@ public class DbCustomers implements Serializable {
     @Column(name = "TYPE_CUSTOMER")
     private String typeCustomer;
     @Column(name = "STATE_CUSTOMER_ID")
-    private BigInteger stateCustomerId;
+    private Integer stateCustomerId;
     @Size(max = 1)
     @Column(name = "IS_NEW_CUSTOMER")
     private String isNewCustomer;
@@ -101,9 +100,9 @@ public class DbCustomers implements Serializable {
     @Column(name = "GEOGRAPHIC_LOCATION")
     private String geographicLocation;
     @Column(name = "LATITUDE")
-    private BigInteger latitude;
+    private Integer latitude;
     @Column(name = "LONGITUDE")
-    private BigInteger longitude;
+    private Integer longitude;
     @Size(max = 1)
     @Column(name = "JOURNEY_PLAN")
     private String journeyPlan;
@@ -138,12 +137,9 @@ public class DbCustomers implements Serializable {
     private DbOcs ocsSecondary;
     @JoinColumn(name = "OCS_PRIMARY", referencedColumnName = "OCS_ID")
     @ManyToOne
-    private DbOcs ocsPrimary;
-    @OneToMany(mappedBy = "customerIdFather")
-    private List<DbCustomers> dbCustomersList;
-    @JoinColumn(name = "CUSTOMER_ID_FATHER", referencedColumnName = "CUSTOMER_ID")
-    @ManyToOne
-    private DbCustomers customerIdFather;
+    private DbOcs ocsPrimary;    
+    @ManyToMany(mappedBy = "dbCustomerList")
+    private List<DbChains> sbChainsList;
 
     public DbCustomers() {
     }
@@ -232,11 +228,11 @@ public class DbCustomers implements Serializable {
         this.typeCustomer = typeCustomer;
     }
 
-    public BigInteger getStateCustomerId() {
+    public Integer getStateCustomerId() {
         return stateCustomerId;
     }
 
-    public void setStateCustomerId(BigInteger stateCustomerId) {
+    public void setStateCustomerId(Integer stateCustomerId) {
         this.stateCustomerId = stateCustomerId;
     }
 
@@ -328,19 +324,19 @@ public class DbCustomers implements Serializable {
         this.geographicLocation = geographicLocation;
     }
 
-    public BigInteger getLatitude() {
+    public Integer getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(BigInteger latitude) {
+    public void setLatitude(Integer latitude) {
         this.latitude = latitude;
     }
 
-    public BigInteger getLongitude() {
+    public Integer getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(BigInteger longitude) {
+    public void setLongitude(Integer longitude) {
         this.longitude = longitude;
     }
 
@@ -432,20 +428,12 @@ public class DbCustomers implements Serializable {
         this.ocsPrimary = ocsPrimary;
     }
 
-    public List<DbCustomers> getDbCustomersList() {
-        return dbCustomersList;
+    public List<DbChains> getSbChainsList() {
+        return sbChainsList;
     }
 
-    public void setDbCustomersList(List<DbCustomers> dbCustomersList) {
-        this.dbCustomersList = dbCustomersList;
-    }
-
-    public DbCustomers getCustomerIdFather() {
-        return customerIdFather;
-    }
-
-    public void setCustomerIdFather(DbCustomers customerIdFather) {
-        this.customerIdFather = customerIdFather;
+    public void setSbChainsList(List<DbChains> sbChainsList) {
+        this.sbChainsList = sbChainsList;
     }
 
     @Override

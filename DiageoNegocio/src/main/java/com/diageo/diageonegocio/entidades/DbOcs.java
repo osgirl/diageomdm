@@ -45,6 +45,8 @@ public class DbOcs implements Serializable {
     private List<DbOutlets> dbOutletsList;
     @OneToMany(mappedBy = "ocsSecondary")
     private List<DbOutlets> dbOutletsList1;
+    @Column(name = "DISTRI_1")
+    private String distri_1;
 
     public DbOcs() {
     }
@@ -88,6 +90,14 @@ public class DbOcs implements Serializable {
 
     public void setDbOutletsList1(List<DbOutlets> dbOutletsList1) {
         this.dbOutletsList1 = dbOutletsList1;
+    }
+
+    public String getDistri_1() {
+        return distri_1;
+    }
+
+    public void setDistri_1(String distri_1) {
+        this.distri_1 = distri_1;
     }
 
     @Override

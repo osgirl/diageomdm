@@ -59,6 +59,8 @@ public class DbSubSegments implements Serializable {
     private List<DbChains> dbChainsList;
     @Column(name = "STATE_SUB_SEGMENT")
     private String stateSubSegment;
+    @Column(name = "DISTRI_1")
+    private String distri_1;
 
     public DbSubSegments() {
     }
@@ -126,6 +128,14 @@ public class DbSubSegments implements Serializable {
 
     public void setStateSubSegment(String stateSubSegment) {
         this.stateSubSegment = stateSubSegment;
+    }
+
+    public String getDistri_1() {
+        return distri_1;
+    }
+
+    public void setDistri_1(String distri_1) {
+        this.distri_1 = distri_1;
     }
 
     @Override

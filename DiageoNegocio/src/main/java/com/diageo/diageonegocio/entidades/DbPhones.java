@@ -51,6 +51,8 @@ public class DbPhones implements Serializable {
     @JoinColumn(name = "TYPE_PHONE_ID", referencedColumnName = "TYPE_PHONE_ID")
     @ManyToOne(optional = false)
     private DbTypePhones typePhoneId;
+    @Column(name = "DISTRI_1")
+    private String distri_1;
 
     public DbPhones() {
     }
@@ -97,6 +99,14 @@ public class DbPhones implements Serializable {
 
     public void setTypePhoneId(DbTypePhones typePhoneId) {
         this.typePhoneId = typePhoneId;
+    }
+
+    public String getDistri_1() {
+        return distri_1;
+    }
+
+    public void setDistri_1(String distri_1) {
+        this.distri_1 = distri_1;
     }
 
     @Override

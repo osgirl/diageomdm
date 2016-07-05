@@ -47,6 +47,7 @@ public class BusinessTransaction<T> {
     }
 
     public void delete(Object entity) {
+        entity=getEntityManager().merge(entity);
         getEntityManager().remove(entity);
     }
 

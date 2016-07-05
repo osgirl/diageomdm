@@ -49,6 +49,8 @@ public class DbDepartaments implements Serializable {
     private DbCountries countryId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "departamentId")
     private List<DbTowns> dbTownsList;
+    @Column(name = "DISTRI_1")
+    private String distri_1;
 
     public DbDepartaments() {
     }
@@ -92,6 +94,14 @@ public class DbDepartaments implements Serializable {
 
     public void setDbTownsList(List<DbTowns> dbTownsList) {
         this.dbTownsList = dbTownsList;
+    }
+
+    public String getDistri_1() {
+        return distri_1;
+    }
+
+    public void setDistri_1(String distri_1) {
+        this.distri_1 = distri_1;
     }
 
     @Override

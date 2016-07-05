@@ -49,8 +49,11 @@ public class Db3partySales implements Serializable {
     private Db3partyManagers db3partyManagerId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "db3partySaleId")
     private List<DbOutlets> dbOutletsList;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "db3partySaleId")
-    private List<DbChains> dbChainsList;
+    
+    @ManyToOne
+    @JoinColumn(name = "DB_3PARTY_PROFILE_ID")
+    private Db3partyProfiles db3PartyProfileId;
+    
 
     public Db3partySales() {
     }
@@ -91,12 +94,12 @@ public class Db3partySales implements Serializable {
         this.dbOutletsList = dbOutletsList;
     }
 
-    public List<DbChains> getDbChainsList() {
-        return dbChainsList;
+    public Db3partyProfiles getDb3PartyProfileId() {
+        return db3PartyProfileId;
     }
 
-    public void setDbChainsList(List<DbChains> dbChainsList) {
-        this.dbChainsList = dbChainsList;
+    public void setDb3PartyProfileId(Db3partyProfiles db3PartyProfileId) {
+        this.db3PartyProfileId = db3PartyProfileId;
     }
 
     @Override

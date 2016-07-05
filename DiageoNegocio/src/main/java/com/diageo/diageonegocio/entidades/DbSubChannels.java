@@ -53,6 +53,8 @@ public class DbSubChannels implements Serializable {
     private List<DbSegments> dbSegmentsList;
     @Column(name = "STATE_SUB_CHANNEL")
     private String stateSubChannel;
+    @Column(name = "DISTRI_1")
+    private String distri_1;
 
     public DbSubChannels() {
     }
@@ -99,6 +101,14 @@ public class DbSubChannels implements Serializable {
 
     public void setStateSubChannel(String stateSubChannel) {
         this.stateSubChannel = stateSubChannel;
+    }
+
+    public String getDistri_1() {
+        return distri_1;
+    }
+
+    public void setDistri_1(String distri_1) {
+        this.distri_1 = distri_1;
     }
 
     @Override

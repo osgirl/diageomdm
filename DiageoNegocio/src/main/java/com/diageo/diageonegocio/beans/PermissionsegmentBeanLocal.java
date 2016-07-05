@@ -7,7 +7,9 @@ package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Local;
 
 /**
@@ -20,5 +22,9 @@ public interface PermissionsegmentBeanLocal {
     public void createPermissionSegmentList(List<DbPermissionSegments> entity) throws DiageoBusinessException;
 
     public List<DbPermissionSegments> findByUser(Integer idUser);
+
+    public Set<DbPermissionSegments> findByUserDistributor(Integer idUser, Integer distributor);
+
+    public void remove(DbPermissionSegments ps);
     
 }

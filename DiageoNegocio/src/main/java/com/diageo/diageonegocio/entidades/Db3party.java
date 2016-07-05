@@ -33,10 +33,9 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = "Db3party.findAll", query = "SELECT d FROM Db3party d"),
     @NamedQuery(name = Db3party.FIND_BY_IS_PADRE, query = "SELECT d FROM Db3party d WHERE d.isFather = ?1"),
-    @NamedQuery(name = Db3party.FIND_BY_PADRE, query = "SELECT d FROM Db3party d WHERE d.db3partyIdFather.db3partyId = ?1"),    
-})
+    @NamedQuery(name = Db3party.FIND_BY_PADRE, query = "SELECT d FROM Db3party d WHERE d.db3partyIdFather.db3partyId = ?1"),})
 public class Db3party implements Serializable {
-    
+
     public static final String FIND_BY_IS_PADRE = "Db3party.findByIsFather";
     public static final String FIND_BY_PADRE = "Db3party.findByFather";
     private static final long serialVersionUID = 1L;
@@ -54,28 +53,33 @@ public class Db3party implements Serializable {
     private String isFather;
     @Column(name = "ADMIN_3PARTY")
     private String admin3party;
-    @JoinTable(name = "DB_CHAINS_3PARTY", joinColumns = {
-        @JoinColumn(name = "DB_3PARTY_ID", referencedColumnName = "DB_3PARTY_ID")}, inverseJoinColumns = {
-        @JoinColumn(name = "CHAIN_ID", referencedColumnName = "CHAIN_ID")})
-    @ManyToMany
-    private List<DbChains> dbChainsList;
+
     @JoinTable(name = "DB_OUTLETS_3PARTY", joinColumns = {
         @JoinColumn(name = "DB_3PARTY_ID", referencedColumnName = "DB_3PARTY_ID")}, inverseJoinColumns = {
         @JoinColumn(name = "OUTLET_ID", referencedColumnName = "OUTLET_ID")})
     @ManyToMany
     private List<DbOutlets> dbOutletsList;
+
     @JoinColumn(name = "DB_3PARTY_REGIONAL_ID", referencedColumnName = "DB_3PARTY_REGIONAL_ID")
     @ManyToOne(optional = false)
     private Db3partyRegional db3partyRegionalId;
+
     @OneToMany(mappedBy = "db3partyIdFather")
     private List<Db3party> db3partyList;
+
     @JoinColumn(name = "DB_3PARTY_ID_FATHER", referencedColumnName = "DB_3PARTY_ID")
     @ManyToOne
     private Db3party db3partyIdFather;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "db3partyId")
-    private List<Db3partyManagers> db3partyManagersList;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "db3partyId")
     private List<DbPermissionSegments> dbPermissionSegmentsList;
+
+    @OneToMany(mappedBy = "dbPartyId")
+    private List<DbChains> dbChainsList;
+    @Column(name = "DISTRI_1")
+    private String distri_1;
+    @Column(name = "KIERNAN")
+    private String kiernan;
 
     public Db3party() {
     }
@@ -116,14 +120,6 @@ public class Db3party implements Serializable {
         this.admin3party = admin3party;
     }
 
-    public List<DbChains> getDbChainsList() {
-        return dbChainsList;
-    }
-
-    public void setDbChainsList(List<DbChains> dbChainsList) {
-        this.dbChainsList = dbChainsList;
-    }
-
     public List<DbOutlets> getDbOutletsList() {
         return dbOutletsList;
     }
@@ -156,20 +152,36 @@ public class Db3party implements Serializable {
         this.db3partyIdFather = db3partyIdFather;
     }
 
-    public List<Db3partyManagers> getDb3partyManagersList() {
-        return db3partyManagersList;
-    }
-
-    public void setDb3partyManagersList(List<Db3partyManagers> db3partyManagersList) {
-        this.db3partyManagersList = db3partyManagersList;
-    }
-
     public List<DbPermissionSegments> getDbPermissionSegmentsList() {
         return dbPermissionSegmentsList;
     }
 
     public void setDbPermissionSegmentsList(List<DbPermissionSegments> dbPermissionSegmentsList) {
         this.dbPermissionSegmentsList = dbPermissionSegmentsList;
+    }
+
+    public List<DbChains> getDbChainsList() {
+        return dbChainsList;
+    }
+
+    public void setDbChainsList(List<DbChains> dbChainsList) {
+        this.dbChainsList = dbChainsList;
+    }
+
+    public String getDistri1() {
+        return distri_1;
+    }
+
+    public void setDistri1(String distri1) {
+        this.distri_1 = distri1;
+    }
+
+    public String getKiernan() {
+        return kiernan;
+    }
+
+    public void setKiernan(String kiernan) {
+        this.kiernan = kiernan;
     }
 
     @Override
@@ -196,5 +208,5 @@ public class Db3party implements Serializable {
     public String toString() {
         return "com.totalseguros.entidadesdiageobusiness.Db3party[ db3partyId=" + db3partyId + " ]";
     }
-    
+
 }

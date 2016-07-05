@@ -7,7 +7,6 @@ package com.diageo.diageonegocio.entidades;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +18,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -47,6 +45,8 @@ public class DbChannels implements Serializable {
     private List<DbSubChannels> dbSubChannelsList;
     @Column(name = "STATE_CHANNEL")
     private String stateChannel;
+    @Column(name = "DISTRI_1")
+    private String distri_1;
 
     public DbChannels() {
     }
@@ -85,6 +85,14 @@ public class DbChannels implements Serializable {
 
     public void setStateChannel(String stateChannel) {
         this.stateChannel = stateChannel;
+    }
+
+    public String getDistri_1() {
+        return distri_1;
+    }
+
+    public void setDistri_1(String distri_1) {
+        this.distri_1 = distri_1;
     }
 
     @Override
