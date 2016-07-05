@@ -51,7 +51,8 @@ public enum ModuleEnum {
     REPORT_PENDING("report pending"),
     QUERY_SEGMENT("query segment"),
     QUERY_SEGMENT_EDIT("query segment edit"),
-    C_CHAIN("create chain");
+    C_CHAIN("create chain"),
+    S_CHAIN("search chain");
 
     private final String description;
 

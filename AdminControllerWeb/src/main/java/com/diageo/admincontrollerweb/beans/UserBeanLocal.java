@@ -20,6 +20,8 @@ public interface UserBeanLocal {
 
     public DwUsers updateUser(DwUsers user) throws ControllerWebException;
 
+    public DwUsers updateUser(DwUsers user, List<DbPermissionSegments> per) throws ControllerWebException;
+
     public List<DwUsers> findAll() throws ControllerWebException;
 
     public DwUsers validateUserPassword(String user, String pass);

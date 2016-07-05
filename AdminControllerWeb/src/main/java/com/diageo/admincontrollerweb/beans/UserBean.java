@@ -46,6 +46,23 @@ public class UserBean extends WebTransaction<DwUsers> implements UserBeanLocal {
     }
 
     @Override
+    public DwUsers updateUser(DwUsers user, List<DbPermissionSegments> per) throws ControllerWebException {
+        try {
+            user = (DwUsers) update(user);
+            if (per != null) {
+                for (DbPermissionSegments perTemp : per) {
+                    perTemp.setUserId(user.getUserId());
+                }
+                permissionsegmentBeanLocal.createPermissionSegmentList(per);
+            }
+        } catch (Exception e) {
+            LOG.log(Level.SEVERE, e.getMessage());
+            throw new ControllerWebException(e.getMessage(), e);
+        }
+        return user;
+    }
+
+    @Override
     public DwUsers createUser(DwUsers user, List<DbPermissionSegments> per) throws ControllerWebException {
         try {
             user = (DwUsers) super.create(user);
