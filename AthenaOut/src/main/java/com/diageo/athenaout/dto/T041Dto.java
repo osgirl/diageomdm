@@ -85,7 +85,7 @@ public class T041Dto implements Serializable {
         return codParty + SEPARATOR.getSeparator() + codDiv + SEPARATOR.getSeparator()
                 + castName(codUsr1)
                 + SEPARATOR.getSeparator() + codStatus + SEPARATOR.getSeparator()
-                + castName(codUser2) + SEPARATOR.getSeparator() + castName(codUser2) + SEPARATOR.getSeparator()
+                + castName(codUser2) + SEPARATOR.getSeparator() + castName(codUser3) + SEPARATOR.getSeparator()
                 + codCustDeliv + ENTER.getSeparator();
     }
 }

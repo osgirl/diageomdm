@@ -27,7 +27,13 @@ public class FileT1110 {
 
     public List<T1110Dto> findOutlets() {
         List<T1110Dto> list = new ArrayList<>();
-        String sql = "SELECT KIERNAN_ID FROM DB_OUTLETS";
+        String sql = "SELECT OUTLET_ID FROM DIAGEO_BUSINESS.DB_OUTLETS O WHERE O.IS_FATHER='1' "
+                + "UNION ALL "
+                + "SELECT CHAIN_ID FROM DIAGEO_BUSINESS.DB_CHAINS";
+//        String sql = "SELECT OUTLET_ID "
+//                + "FROM DB_OUTLETS O "
+//                + "WHERE O.IS_FATHER='1' "
+//                + "AND O.OUTLET_ID BETWEEN 1352 AND 1453";
         Query query = em.createNativeQuery(sql);
         List listOutlet = query.getResultList();
         for (Object out : listOutlet) {
@@ -35,8 +41,8 @@ public class FileT1110 {
             dto.setCodParty(out + "");
             dto.setCodCustDeliv(out + "");
             dto.setCodDiv("C001");
-            dto.setDateFrom("1/01/2000");
-            dto.setDateTo("1/01/2050");
+            dto.setDateFrom("1/07/2016");
+            dto.setDateTo("30/06/2017");
             dto.setFlagPrimary("-1");
             dto.setFlagAnn("0");
             list.add(dto);
