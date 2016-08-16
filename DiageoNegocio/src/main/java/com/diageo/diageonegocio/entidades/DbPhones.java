@@ -20,7 +20,9 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
@@ -34,6 +36,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "DbPhones.findByPhoneId", query = "SELECT d FROM DbPhones d WHERE d.phoneId = :phoneId"),
     @NamedQuery(name = "DbPhones.findByNumberPhone", query = "SELECT d FROM DbPhones d WHERE d.numberPhone = :numberPhone")})
 public class DbPhones implements Serializable {
+
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
@@ -51,8 +54,8 @@ public class DbPhones implements Serializable {
     @JoinColumn(name = "TYPE_PHONE_ID", referencedColumnName = "TYPE_PHONE_ID")
     @ManyToOne(optional = false)
     private DbTypePhones typePhoneId;
-    @Column(name = "DISTRI_1")
-    private String distri_1;
+    @Transient
+    private boolean deleteId;
 
     public DbPhones() {
     }
@@ -101,12 +104,18 @@ public class DbPhones implements Serializable {
         this.typePhoneId = typePhoneId;
     }
 
-    public String getDistri_1() {
-        return distri_1;
+    /**
+     * @return the deleteId
+     */
+    public boolean isDeleteId() {
+        return deleteId;
     }
 
-    public void setDistri_1(String distri_1) {
-        this.distri_1 = distri_1;
+    /**
+     * @param deleteId the deleteId to set
+     */
+    public void setDeleteId(boolean deleteId) {
+        this.deleteId = deleteId;
     }
 
     @Override
@@ -123,15 +132,15 @@ public class DbPhones implements Serializable {
             return false;
         }
         DbPhones other = (DbPhones) object;
-        if ((this.phoneId == null && other.phoneId != null) || (this.phoneId != null && !this.phoneId.equals(other.phoneId))) {
+        if (this.phoneId == null || other.phoneId == null) {
             return false;
         }
-        return true;
+        return this.phoneId.equals(other.phoneId);
     }
 
     @Override
     public String toString() {
-        return "com.totalseguros.entidadesdiageobusiness.DbPhones[ phoneId=" + phoneId + " ]";
+        return "com.diageo.diageonegocio.entidades[ phoneId=" + phoneId + " ]";
     }
-    
+
 }

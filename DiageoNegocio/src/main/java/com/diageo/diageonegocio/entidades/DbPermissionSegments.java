@@ -6,6 +6,7 @@
 package com.diageo.diageonegocio.entidades;
 
 import java.io.Serializable;
+import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -206,10 +207,13 @@ public class DbPermissionSegments implements Serializable {
             return false;
         }
         DbPermissionSegments other = (DbPermissionSegments) object;
-        if ((this.permissionSegment == null && other.permissionSegment != null) || (this.permissionSegment != null && !this.permissionSegment.equals(other.permissionSegment))) {
-            return false;
-        }
-        return true;
+        boolean conditionEquals = (Objects.equals(this.permissionSegment, other.permissionSegment))
+                && (Objects.equals(this.channelId, other.channelId))
+                && (Objects.equals(this.subChannelId, other.subChannelId))
+                && (Objects.equals(this.segmentId, other.segmentId))
+                && (Objects.equals(this.subSegmentId, other.subSegmentId))
+                && (Objects.equals(this.potentialId, other.potentialId));
+        return conditionEquals;
     }
 
     @Override

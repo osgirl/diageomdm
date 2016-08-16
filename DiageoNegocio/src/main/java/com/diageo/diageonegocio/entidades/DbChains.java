@@ -7,6 +7,7 @@ package com.diageo.diageonegocio.entidades;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,6 +17,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
@@ -26,9 +29,16 @@ import javax.validation.constraints.Size;
  */
 @Entity
 @Table(name = "DB_CHAINS")
+@NamedQueries({
+    @NamedQuery(name = DbChains.FIND_BY_SEGMENT_3PARTY, query = "SELECT c FROM DbChains c WHERE c.subSegmentId.subSegmentId=?1 AND c.dbPartyId.db3partyId=?2"),
+    @NamedQuery(name = DbChains.FIND_BY_NAME_CHAIN, query = "SELECT c FROM DbChains c WHERE c.nameChain LIKE ?1")
+
+})
 public class DbChains implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static final String FIND_BY_SEGMENT_3PARTY = "DbChains.findBySegment3Party";
+    public static final String FIND_BY_NAME_CHAIN = "DbChains.findByNameChain";
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
     @GeneratedValue(generator = "SQ_DB_OUTLETS_CHAINS", strategy = GenerationType.SEQUENCE)
@@ -47,7 +57,7 @@ public class DbChains implements Serializable {
     @JoinTable(name = "DB_CHAINS_PHONES", joinColumns = {
         @JoinColumn(name = "CHAIN_ID", referencedColumnName = "CHAIN_ID")}, inverseJoinColumns = {
         @JoinColumn(name = "PHONE_ID", referencedColumnName = "PHONE_ID")})
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     private List<DbPhones> dbPhonesList;
     @JoinColumn(name = "SUB_SEGMENT_ID", referencedColumnName = "SUB_SEGMENT_ID")
     @ManyToOne(optional = false)
@@ -73,6 +83,18 @@ public class DbChains implements Serializable {
     @ManyToOne
     @JoinColumn(name = "TOWN_ID")
     private DbTowns dbTownId;
+    @Column(name = "NEIGHBORHOOD")
+    private String neighborhood;
+    @Column(name = "LATITUDE")
+    private String latitude;
+    @Column(name = "LONGITUDE")
+    private String longitude;
+    @Column(name = "BUSINESS_NAME")
+    private String businessName;
+    @Column(name = "IS_ACTIVE")
+    private String isActive;
+    @Column(name = "STATUS_CHAIN")
+    private String statusChain;
 
     public DbChains() {
     }
@@ -200,6 +222,90 @@ public class DbChains implements Serializable {
     @Override
     public String toString() {
         return "com.totalseguros.entidadesdiageobusiness.DbChains[ chainId=" + chainId + " ]";
+    }
+
+    /**
+     * @return the neighborhood
+     */
+    public String getNeighborhood() {
+        return neighborhood;
+    }
+
+    /**
+     * @param neighborhood the neighborhood to set
+     */
+    public void setNeighborhood(String neighborhood) {
+        this.neighborhood = neighborhood;
+    }
+
+    /**
+     * @return the latitude
+     */
+    public String getLatitude() {
+        return latitude;
+    }
+
+    /**
+     * @param latitude the latitude to set
+     */
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    /**
+     * @return the longitude
+     */
+    public String getLongitude() {
+        return longitude;
+    }
+
+    /**
+     * @param longitude the longitude to set
+     */
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    /**
+     * @return the businessName
+     */
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    /**
+     * @param businessName the businessName to set
+     */
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
+    /**
+     * @return the isActive
+     */
+    public String getIsActive() {
+        return isActive;
+    }
+
+    /**
+     * @param isActive the isActive to set
+     */
+    public void setIsActive(String isActive) {
+        this.isActive = isActive;
+    }
+
+    /**
+     * @return the statusChain
+     */
+    public String getStatusChain() {
+        return statusChain;
+    }
+
+    /**
+     * @param statusChain the statusChain to set
+     */
+    public void setStatusChain(String statusChain) {
+        this.statusChain = statusChain;
     }
 
 }

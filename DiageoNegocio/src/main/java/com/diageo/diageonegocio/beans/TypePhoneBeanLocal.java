@@ -5,21 +5,19 @@
  */
 package com.diageo.diageonegocio.beans;
 
-import com.diageo.diageonegocio.entidades.DbPhones;
+import com.diageo.diageonegocio.entidades.DbTypePhones;
 import java.util.List;
 import javax.ejb.Local;
 
 /**
  *
- * @author yovanoty126
+ * @author EDUARDO
  */
 @Local
-public interface PhonesBeanLocal {
+public interface TypePhoneBeanLocal {
 
-    public List<DbPhones> createPhones(List<DbPhones> phon);
+    public List<DbTypePhones> findAll();
 
-    public DbPhones createPhones(DbPhones pho);
-
-    public void deletePhoneList(List<DbPhones> list);
+    public DbTypePhones findById(Integer id);
     
 }

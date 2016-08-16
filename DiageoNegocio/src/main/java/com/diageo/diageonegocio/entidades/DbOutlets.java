@@ -34,7 +34,10 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = DbOutlets.FIND_ALL, query = "SELECT e FROM DbOutlets e"),
     @NamedQuery(name = DbOutlets.FIND_BY_NEW,
             query = "SELECT e FROM DbOutlets e WHERE e.isNewOutlet = ?1 AND e.subSegmentId.subSegmentId IN(16,22,23,24,32,33,34)"),
-    @NamedQuery(name = DbOutlets.FIND_BY_SUB_SEGMENT, query = "SELECT o FROM DbOutlets o WHERE o.subSegmentId.subSegmentId=?1")
+    @NamedQuery(name = DbOutlets.FIND_BY_SUB_SEGMENT, query = "SELECT o FROM DbOutlets o WHERE o.subSegmentId.subSegmentId=?1"),
+    @NamedQuery(name = DbOutlets.FIND_BY_SUB_SEGMENT_3PARTY, query = "SELECT o FROM DbOutlets o "
+            + "INNER JOIN o.db3partyList p "
+            + "WHERE o.subSegmentId.subSegmentId=?1 AND p.db3partyId=?2")
     //    @NamedQuery(name = DbOutlets.FIND_BY_DISTRI, query = "SELECT e FROM DbOutlets e WHERE e.idDistribuidor.idDistribuidor=?1"),
 //    @NamedQuery(name = DbOutlets.FIND_BY_DISTRI_SUBSEGMENT, query = "SELECT e FROM Outlet e WHERE e.idDistribuidor.idDistribuidor IN ?1 "
 //            + "AND e.idsubsegmento.idsubSegmento IN ?2 AND e.idStateOutlet.idSateOutlet IN ?3 AND e.isNewOutlet=?4")
@@ -45,6 +48,7 @@ public class DbOutlets implements Serializable {
     public static final String FIND_BY_DISTRI = "DbOutlets.findByDistributor";
     public static final String FIND_BY_NEW = "DbOutlets.findByNew";
     public static final String FIND_BY_SUB_SEGMENT = "DbOutlets.findBySubSegment";
+    public static final String FIND_BY_SUB_SEGMENT_3PARTY = "DbOutlets.findBySubSegment3Party";
     /**
      * search for distributor, subsegment, is new, and state outlets
      */
@@ -56,6 +60,12 @@ public class DbOutlets implements Serializable {
     @SequenceGenerator(name = "SQ_DB_OUTLETS_CHAINS", sequenceName = "SQ_DB_OUTLETS_CHAINS", allocationSize = 1)
     @Column(name = "OUTLET_ID")
     private Integer outletId;
+    @JoinColumn(name = "SUB_SEGMENT_ID", referencedColumnName = "SUB_SEGMENT_ID")
+    @ManyToOne(optional = false)
+    private DbSubSegments subSegmentId;
+    @JoinColumn(name = "POTENTIAL_ID", referencedColumnName = "POTENTIAL_ID")
+    @ManyToOne(optional = false)
+    private DbPotentials potentialId;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Size(max = 100)
     @Column(name = "EMAIL")
@@ -66,26 +76,15 @@ public class DbOutlets implements Serializable {
     @Size(max = 200)
     @Column(name = "BUSINESS_NAME")
     private String businessName;
-    @Size(max = 100)
-    @Column(name = "BUSINESS_LINE")
-    private String businessLine;
     @Size(max = 200)
     @Column(name = "OUTLET_NAME")
     private String outletName;
-    @Size(max = 100)
-    @Column(name = "ASSOCIATED_MARKET")
-    private String associatedMarket;
-    @Size(max = 20)
-    @Column(name = "EAN_CODE")
-    private String eanCode;
     @Size(max = 20)
     @Column(name = "NUMBER_PDV")
     private String numberPdv;
     @Size(max = 1)
     @Column(name = "TYPE_OUTLET")
     private String typeOutlet;
-    @Column(name = "STATE_OUTLET_ID")
-    private Integer stateOutletId;
     @Size(max = 1)
     @Column(name = "IS_NEW_OUTLET")
     private String isNewOutlet;
@@ -95,12 +94,44 @@ public class DbOutlets implements Serializable {
     @Size(max = 255)
     @Column(name = "KIERNAN_ID")
     private String kiernanId;
-    @Size(max = 1)
-    @Column(name = "RLA")
-    private String rla;
-    @Size(max = 1)
-    @Column(name = "TLA")
-    private String tla;
+    @JoinColumn(name = "OWNER_ID", referencedColumnName = "OWNER_ID")
+    @ManyToOne
+    private DbOwners ownerId;
+    @JoinColumn(name = "OCS_PRIMARY", referencedColumnName = "OCS_ID")
+    @ManyToOne
+    private DbOcs ocsPrimary;
+    @JoinColumn(name = "OCS_SECONDARY", referencedColumnName = "OCS_ID")
+    @ManyToOne
+    private DbOcs ocsSecondary;
+    @JoinColumn(name = "DB_3PARTY_SALE_ID", referencedColumnName = "DB_3PARTY_SALE_ID")
+    @ManyToOne(optional = false)
+    private Db3partySales db3partySaleId;
+    @Column(name = "WEBSITE")
+    private String website;
+    @Column(name = "VERIFICATION_NUMBER")
+    private String verificationNumber;
+    @Column(name = "ADDRESS")
+    private String address;
+    @Column(name = "NEIGHBORHOOD")
+    private String neighborhood;
+    @Column(name = "LATITUDE")
+    private Double latitude;
+    @Column(name = "LONGITUDE")
+    private Double longitude;
+    @ManyToOne
+    @JoinColumn(name = "TOWN_ID")
+    private DbTowns townId;
+    @Column(name = "JOURNEY_PLAN")
+    private String journeyPlan;
+    @Column(name = "IS_FATHER")
+    private String isFather;
+    @ManyToOne
+    @JoinColumn(name = "OUTLET_ID_FATHER")
+    private DbOutlets outletIdFather;
+    @OneToMany(mappedBy = "outletIdFather")
+    private List<DbOutlets> listOutletFather;
+    @Column(name = "STATUS_OUTLET")
+    private String statusOutlet;
     @JoinTable(name = "DB_OUTLETS_CUSTOMERS", joinColumns = {
         @JoinColumn(name = "OUTLET_ID", referencedColumnName = "OUTLET_ID")}, inverseJoinColumns = {
         @JoinColumn(name = "CUSTOMER_ID", referencedColumnName = "CUSTOMER_ID")})
@@ -113,54 +144,7 @@ public class DbOutlets implements Serializable {
         @JoinColumn(name = "PHONE_ID", referencedColumnName = "PHONE_ID")})
     @ManyToMany
     private List<DbPhones> dbPhonesList;
-    @JoinColumn(name = "DB_3PARTY_SALE_ID", referencedColumnName = "DB_3PARTY_SALE_ID")
-    @ManyToOne(optional = false)
-    private Db3partySales db3partySaleId;
-    @JoinColumn(name = "SUB_SEGMENT_ID", referencedColumnName = "SUB_SEGMENT_ID")
-    @ManyToOne(optional = false)
-    private DbSubSegments subSegmentId;
-    @JoinColumn(name = "POTENTIAL_ID", referencedColumnName = "POTENTIAL_ID")
-    @ManyToOne(optional = false)
-    private DbPotentials potentialId;
-    @JoinColumn(name = "OWNER_ID", referencedColumnName = "OWNER_ID")
-    @ManyToOne
-    private DbOwners ownerId;
-    @JoinColumn(name = "OCS_PRIMARY", referencedColumnName = "OCS_ID")
-    @ManyToOne
-    private DbOcs ocsPrimary;
-    @JoinColumn(name = "OCS_SECONDARY", referencedColumnName = "OCS_ID")
-    @ManyToOne
-    private DbOcs ocsSecondary;
-    @Column(name = "WEBSITE")
-    private String website;
-    @Column(name = "VERIFICATION_NUMBER")
-    private String verificationNumber;
-    @Column(name = "STATUS_ZRT")
-    private String statusZrt;
-    @Column(name = "ADDRESS")
-    private String address;
-    @Column(name = "NEIGHBORHOOD")
-    private String neighborhood;
-    @Column(name = "GEOGRAPHIC_LOCATION")
-    private String geographicLocation;
-    @Column(name = "LATITUDE")
-    private Double latitude;
-    @Column(name = "LONGITUDE")
-    private Double longitude;
-    @ManyToOne
-    @JoinColumn(name = "TOWN_ID")
-    private DbTowns townId;
-    @Column(name = "JOURNEY_PLAN")
-    private String journeyPlan;
-    @Column(name = "IS_FATHER")
-    private String isFather;
-    @Column(name = "STATUS_OUTLET")
-    private String statusOutlet;
-    @ManyToOne
-    @JoinColumn(name = "OUTLET_ID_FATHER")
-    private DbOutlets outletIdFather;
-    @OneToMany(mappedBy = "outletIdFather")
-    private List<DbOutlets> listOutletFather;
+    //TRANSIENT
     @Transient
     private boolean disabledButtonEdit;
     @Transient
@@ -207,36 +191,12 @@ public class DbOutlets implements Serializable {
         this.businessName = businessName;
     }
 
-    public String getBusinessLine() {
-        return businessLine;
-    }
-
-    public void setBusinessLine(String businessLine) {
-        this.businessLine = businessLine;
-    }
-
     public String getOutletName() {
         return outletName;
     }
 
     public void setOutletName(String outletName) {
         this.outletName = outletName;
-    }
-
-    public String getAssociatedMarket() {
-        return associatedMarket;
-    }
-
-    public void setAssociatedMarket(String associatedMarket) {
-        this.associatedMarket = associatedMarket;
-    }
-
-    public String getEanCode() {
-        return eanCode;
-    }
-
-    public void setEanCode(String eanCode) {
-        this.eanCode = eanCode;
     }
 
     public String getNumberPdv() {
@@ -253,14 +213,6 @@ public class DbOutlets implements Serializable {
 
     public void setTypeOutlet(String typeOutlet) {
         this.typeOutlet = typeOutlet;
-    }
-
-    public Integer getStateOutletId() {
-        return stateOutletId;
-    }
-
-    public void setStateOutletId(Integer stateOutletId) {
-        this.stateOutletId = stateOutletId;
     }
 
     public String getIsNewOutlet() {
@@ -285,22 +237,6 @@ public class DbOutlets implements Serializable {
 
     public void setKiernanId(String kiernanId) {
         this.kiernanId = kiernanId;
-    }
-
-    public String getRla() {
-        return rla;
-    }
-
-    public void setRla(String rla) {
-        this.rla = rla;
-    }
-
-    public String getTla() {
-        return tla;
-    }
-
-    public void setTla(String tla) {
-        this.tla = tla;
     }
 
     public List<DbCustomers> getDbCustomersList() {
@@ -415,14 +351,6 @@ public class DbOutlets implements Serializable {
         this.verificationNumber = verificationNumber;
     }
 
-    public String getStatusZrt() {
-        return statusZrt;
-    }
-
-    public void setStatusZrt(String statusZrt) {
-        this.statusZrt = statusZrt;
-    }
-
     public String getAddress() {
         return address;
     }
@@ -437,14 +365,6 @@ public class DbOutlets implements Serializable {
 
     public void setNeighborhood(String neighborhood) {
         this.neighborhood = neighborhood;
-    }
-
-    public String getGeographicLocation() {
-        return geographicLocation;
-    }
-
-    public void setGeographicLocation(String geographicLocation) {
-        this.geographicLocation = geographicLocation;
     }
 
     public Double getLatitude() {

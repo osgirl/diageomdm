@@ -49,7 +49,7 @@ public class PermissionsegmentBean extends BusinessTransaction<DbPermissionSegme
     @Override
     public Set<DbPermissionSegments> findByUserDistributor(Integer idUser, Integer distributor) {
         List<DbPermissionSegments> list = super.searchByNamedQuery(DbPermissionSegments.class, DbPermissionSegments.FIND_BY_USER_DISTRIBUTOR, idUser, distributor);
-        Set<DbPermissionSegments> listSet=new HashSet<>();
+        Set<DbPermissionSegments> listSet = new HashSet<>();
         for (DbPermissionSegments list1 : list) {
             listSet.add(list1);
         }

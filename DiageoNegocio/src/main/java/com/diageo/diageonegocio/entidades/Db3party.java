@@ -51,8 +51,9 @@ public class Db3party implements Serializable {
     @Size(max = 1)
     @Column(name = "IS_FATHER")
     private String isFather;
-    @Column(name = "ADMIN_3PARTY")
-    private String admin3party;
+    
+    
+    
 
     @JoinTable(name = "DB_OUTLETS_3PARTY", joinColumns = {
         @JoinColumn(name = "DB_3PARTY_ID", referencedColumnName = "DB_3PARTY_ID")}, inverseJoinColumns = {
@@ -80,6 +81,9 @@ public class Db3party implements Serializable {
     private String distri_1;
     @Column(name = "KIERNAN")
     private String kiernan;
+    @ManyToOne
+    @JoinColumn(name = "DB_3PARTY_ADMIN_ID", referencedColumnName = "DB_3PARTY_ADMIN_ID")
+    private Db3partyAdmin db3PartyAdmin;
 
     public Db3party() {
     }
@@ -110,14 +114,6 @@ public class Db3party implements Serializable {
 
     public void setIsFather(String isFather) {
         this.isFather = isFather;
-    }
-
-    public String getAdmin3party() {
-        return admin3party;
-    }
-
-    public void setAdmin3party(String admin3party) {
-        this.admin3party = admin3party;
     }
 
     public List<DbOutlets> getDbOutletsList() {
@@ -182,6 +178,22 @@ public class Db3party implements Serializable {
 
     public void setKiernan(String kiernan) {
         this.kiernan = kiernan;
+    }
+
+    public String getDistri_1() {
+        return distri_1;
+    }
+
+    public void setDistri_1(String distri_1) {
+        this.distri_1 = distri_1;
+    }
+
+    public Db3partyAdmin getDb3PartyAdmin() {
+        return db3PartyAdmin;
+    }
+
+    public void setDb3PartyAdmin(Db3partyAdmin db3PartyAdmin) {
+        this.db3PartyAdmin = db3PartyAdmin;
     }
 
     @Override

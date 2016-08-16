@@ -37,7 +37,7 @@ public class RegionalBean extends BusinessTransaction<Db3partyRegional> implemen
     @Override
     public Db3partyRegional updateRegional(Db3partyRegional entity) throws DiageoBusinessException {
         try {
-            entity = super.create(entity);
+            entity = (Db3partyRegional) super.update(entity);
             return entity;
         } catch (Exception e) {
             throw new DiageoBusinessException(e, e.getMessage());

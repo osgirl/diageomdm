@@ -21,7 +21,7 @@ import javax.ejb.Stateless;
 public class OutletBean extends BusinessTransaction<DbOutlets> implements OutletBeanLocal {
 
     @EJB
-    private CustomerBeanLocal personaBeanLocal;   
+    private CustomerBeanLocal personaBeanLocal;
     @EJB
     private PhonesBeanLocal telefonosBeanLocal;
 
@@ -91,11 +91,21 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
         }
         return list;
     }
-    
+
     @Override
-    public List<DbOutlets> findBySubSegment(Integer idSubSegment){
+    public List<DbOutlets> findBySubSegment(Integer idSubSegment) {
         List<DbOutlets> list
                 = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_SUB_SEGMENT, idSubSegment);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
+
+    @Override
+    public List<DbOutlets> findBySegmentDb3Party(Integer subSegment, Integer db3Party) {
+        List<DbOutlets> list
+                = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_SUB_SEGMENT_3PARTY, subSegment, db3Party);
         if (list == null) {
             return new ArrayList<>();
         }

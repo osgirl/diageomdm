@@ -39,6 +39,11 @@ public class BusinessTransaction<T> {
         getEntityManager().flush();
         return obj;
     }
+    
+    public Object updateWithoutFlush(Object obj){
+        obj=getEntityManager().merge(obj);
+        return obj;
+    }
 
     public T create(T entity) {
         getEntityManager().persist(entity);

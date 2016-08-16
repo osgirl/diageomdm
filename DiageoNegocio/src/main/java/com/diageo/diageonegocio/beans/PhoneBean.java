@@ -21,8 +21,22 @@ public class PhoneBean extends BusinessTransaction<DbPhones> implements PhonesBe
     @Override
     public List<DbPhones> createPhones(List<DbPhones> pho) {
         for (DbPhones phones : pho) {
-            phones=super.create(phones);            
+            phones = super.create(phones);
         }
         return pho;
+    }
+
+    @Override
+    public DbPhones createPhones(DbPhones pho) {
+        return super.create(pho);
+    }
+
+    @Override
+    public void deletePhoneList(List<DbPhones> list) {
+        for (DbPhones dbPhones : list) {
+            if (dbPhones.getPhoneId() != null) {
+                super.delete(dbPhones);
+            }
+        }
     }
 }

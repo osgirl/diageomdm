@@ -11,11 +11,12 @@ package com.diageo.diageonegocio.enums;
  */
 public enum StateOutletChain {
 
-    OUTLET_TMC(1), PENDING_APPROVAL(2), APPROVED(3), REJECTED(4);
+    OUTLET_TMC("1"), PENDING_APPROVAL("2"), APPROVED("3"), REJECTED("4"),
+    ACTIVE("A"),INACTIVE("I"),LOCKED("B");
 
-    private final int id;
+    private final String id;
 
-    public static StateOutletChain valueOf(Integer id) {
+    public static StateOutletChain value(String id) {
         for (StateOutletChain value : StateOutletChain.values()) {
             if (id.equals(value.getId())) {
                 return value;
@@ -24,11 +25,11 @@ public enum StateOutletChain {
         return null;
     }
 
-    private StateOutletChain(int id) {
+    private StateOutletChain(String id) {
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return this.id;
     }
 

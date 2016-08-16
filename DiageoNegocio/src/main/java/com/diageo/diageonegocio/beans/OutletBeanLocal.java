@@ -33,5 +33,7 @@ public interface OutletBeanLocal {
     public List<DbOutlets> findByDistributor(Set<Integer> setDistributor, Set<Integer> setSubSegment, List<Integer> listState, String isNew);
 
     public List<DbOutlets> findBySubSegment(Integer idSubSegment);
+
+    public List<DbOutlets> findBySegmentDb3Party(Integer subSegment, Integer db3Party);
     
 }

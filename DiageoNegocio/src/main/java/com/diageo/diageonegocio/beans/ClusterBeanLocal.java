@@ -5,21 +5,19 @@
  */
 package com.diageo.diageonegocio.beans;
 
-import com.diageo.diageonegocio.entidades.DbPhones;
+import com.diageo.diageonegocio.entidades.DbClusters;
 import java.util.List;
 import javax.ejb.Local;
 
 /**
  *
- * @author yovanoty126
+ * @author EDUARDO
  */
 @Local
-public interface PhonesBeanLocal {
+public interface ClusterBeanLocal {
 
-    public List<DbPhones> createPhones(List<DbPhones> phon);
-
-    public DbPhones createPhones(DbPhones pho);
-
-    public void deletePhoneList(List<DbPhones> list);
+    public List<DbClusters> findAll();
+    
+    public DbClusters findById(Integer id);
     
 }

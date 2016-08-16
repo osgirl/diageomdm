@@ -6,6 +6,7 @@
 package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.DbChains;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.List;
 import javax.ejb.Local;
 
@@ -16,12 +17,16 @@ import javax.ejb.Local;
 @Local
 public interface ChainBeanLocal {
 
-    public DbChains createChain(DbChains entity);
+    public DbChains createChain(DbChains entity) throws DiageoBusinessException;
 
-    public DbChains updateChain(DbChains entity);
+    public DbChains updateChain(DbChains entity) throws DiageoBusinessException;
 
     public List<DbChains> findAllChains();
 
     public DbChains findById(Integer id);
-    
+
+    public List<DbChains> findBySegment3Party(Integer subSegment, Integer db3Party);
+
+    public List<DbChains> findByNameChain(String nameChain);
+
 }

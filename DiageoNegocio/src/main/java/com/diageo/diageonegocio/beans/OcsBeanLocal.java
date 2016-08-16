@@ -3,23 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 package com.diageo.diageonegocio.beans;
 
-import com.diageo.diageonegocio.entidades.DbPhones;
+import com.diageo.diageonegocio.entidades.DbOcs;
 import java.util.List;
 import javax.ejb.Local;
 
 /**
  *
- * @author yovanoty126
+ * @author EDUARDO
  */
 @Local
-public interface PhonesBeanLocal {
+public interface OcsBeanLocal {
 
-    public List<DbPhones> createPhones(List<DbPhones> phon);
+    public List<DbOcs> findAll();
 
-    public DbPhones createPhones(DbPhones pho);
-
-    public void deletePhoneList(List<DbPhones> list);
+    public DbOcs findById(Integer id);
     
 }
