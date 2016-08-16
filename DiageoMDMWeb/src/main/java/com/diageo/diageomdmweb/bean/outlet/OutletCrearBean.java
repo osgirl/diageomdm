@@ -11,6 +11,7 @@ import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
 import com.diageo.diageomdmweb.constant.PatternConstant;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
+import com.diageo.diageonegocio.beans.OcsBeanLocal;
 import com.diageo.diageonegocio.beans.OutletBeanLocal;
 import com.diageo.diageonegocio.beans.PhonesBeanLocal;
 import com.diageo.diageonegocio.beans.PotentialBeanLocal;
@@ -62,10 +63,12 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     protected SubSegmentoBeanLocal subSegmentoBeanLocal;
     @EJB
     protected TypePhoneBeanLocal typePhoneBeanLocal;
-     @EJB
+    @EJB
     protected Db3PartyBeanLocal db3PartyBeanLocal;
     @EJB
     protected PhonesBeanLocal phonesBeanLocal;
+    @EJB
+    protected OcsBeanLocal ocsBeanLocal;
     private DbChannels channelSelected;
     private DbSubChannels subChannelSelected;
     private DbSegments segmentSelected;
@@ -118,15 +121,15 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         setList3Party(db3PartyBeanLocal.searchAllDistributor());
         initFields();
     }
-    
-    public void initFields(){
-        
+
+    public void initFields() {
+
     }
 
     public void saveOutlet() {
 
     }
-    
+
     public void addPhone() {
         if (getNewPhone().getNumberPhone() != null && !getNewPhone().getNumberPhone().isEmpty()) {
             if (Pattern.matches(PatternConstant.NUMBER, getNewPhone().getNumberPhone())) {
