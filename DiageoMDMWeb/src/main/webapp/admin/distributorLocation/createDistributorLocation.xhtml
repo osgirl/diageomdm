@@ -14,17 +14,19 @@
 
                 <h:form id="formDistri">
                     <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
-                        <h:panelGroup id="pgDistri" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                        <h:panelGroup id="pgDistri" style="width: 90%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
                             <h:panelGrid columns="1" style="width: 100%">
-                                <h:panelGrid columns="2" style="width: 100%">
+                                <h:panelGrid columns="4" style="width: 100%">
                                     <h:outputLabel value="#{msg.regional}"/>                                    
-                                    <p:inputText id="itNameRegional" label="#{msg.regional}" required="true"/>
+                                    <p:inputText id="itNameRegional" label="#{msg.regional}" required="true" value="#{regionalCreateBean.regionalName}" style="width: 85%"/>
+                                    <h:outputLabel value="#{msg.athena_code}"/>                                    
+                                    <p:inputText id="itAthenaCode" label="#{msg.athena_code}" required="true" value="#{regionalCreateBean.athenaCode}" style="width: 85%"/>
                                 </h:panelGrid>
                                 <br/>                                
                             </h:panelGrid>
                             <br/>                            
                             <br/>
-                            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" 
+                            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{regionalCreateBean.updateRegional()}"
                                              styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
                             <br/>
                             <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />

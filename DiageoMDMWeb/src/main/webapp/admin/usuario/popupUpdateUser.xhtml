@@ -12,7 +12,8 @@ and open the template in the editor.
 
     <h:body>
         <h:form id="formCreateUserModal">                
-            <p:dialog id="dChain" modal="true" width="50%" header="#{msg.usu_edit_detail}" widgetVar="wvChain" resizable="false">
+            <p:dialog id="dChain" modal="true" width="90%"  header="#{msg.usu_edit_detail}" widgetVar="wvChain" resizable="false"
+                      draggable="false" closable="false">
                 <h:outputStylesheet library="css" name="template.css"/>
                 <h:panelGroup id="pgSegment">
                     <h:panelGrid columns="3">
@@ -22,7 +23,7 @@ and open the template in the editor.
                                          styleClass="button" style="width: 100%" actionListener="#{consultarUsuarioBean.addPermissionDistributorList()}"/>
                     </h:panelGrid>
                     <br/><br/>
-                    <p:panelGrid columns="3" style="width: 90%">
+                    <p:panelGrid id="pgDetallePermission" columns="3" style="width: 90%">
                         <h:outputLabel value="#{msg.can_canal}"/>
                         <p:selectBooleanCheckbox value="#{consultarUsuarioBean.channelCheck}" disabled="true"/>
                         <p:selectOneMenu style="width: 80%" value="#{consultarUsuarioBean.channelSelected}" converter="channelConverter">
@@ -30,50 +31,56 @@ and open the template in the editor.
                             <p:ajax update="formCreateUserModal:pgSegment" process="@this" listener="#{consultarUsuarioBean.listenerChannel()}"/>
                         </p:selectOneMenu>
                         <h:outputLabel value="#{msg.sub_subcanal}"/>
-                        <p:selectBooleanCheckbox id="sbchSubcha" value="#{consultarUsuarioBean.subChannelCheck}"/>
+                        <p:selectBooleanCheckbox id="sbchSubcha" value="#{consultarUsuarioBean.subChannelCheck}">
+                            <p:ajax process="@this" 
+                                    update="formCreateUserModal:sbchSeg formCreateUserModal:sbchSubseg formCreateUserModal:sbchPotential"
+                                    listener="#{consultarUsuarioBean.listenerCheckSubChannel()}"/>
+                        </p:selectBooleanCheckbox>
                         <p:selectOneMenu style="width: 80%" value="#{consultarUsuarioBean.subChannelSelected}" converter="subChannelConverter">
                             <f:selectItems value="#{consultarUsuarioBean.listSubChannel}" var="subcha" itemLabel="#{subcha.nameSubChannel}"/>
                             <p:ajax update="formCreateUserModal:pgSegment" process="@this" listener="#{consultarUsuarioBean.listenerSubChannel()}"/>
                         </p:selectOneMenu>
                         <h:outputLabel value="#{msg.seg_segmento}"/>
-                        <p:selectBooleanCheckbox id="sbchSeg" value="#{consultarUsuarioBean.segmentCheck}"/>
+                        <p:selectBooleanCheckbox id="sbchSeg" value="#{consultarUsuarioBean.segmentCheck}">
+                            <p:ajax process="@this" 
+                                    update="formCreateUserModal:sbchSubcha formCreateUserModal:sbchSubseg formCreateUserModal:sbchPotential"
+                                    listener="#{consultarUsuarioBean.listenerCheckSegment()}"/>
+                        </p:selectBooleanCheckbox>
                         <p:selectOneMenu style="width: 80%" converter="segmentoConverter" value="#{consultarUsuarioBean.segmentSelected}">
                             <f:selectItems value="#{consultarUsuarioBean.listSegment}" var="seg" itemLabel="#{seg.nameSegment}"/>
                             <p:ajax update="formCreateUserModal:pgSegment" process="@this" listener="#{consultarUsuarioBean.listenerSegment()}"/>
                         </p:selectOneMenu>
                         <h:outputLabel value="#{msg.sub_seg_subsegmento}"/>
-                        <p:selectBooleanCheckbox id="sbchSubseg" value="#{consultarUsuarioBean.subSegmentCheck}"/>
+                        <p:selectBooleanCheckbox id="sbchSubseg" value="#{consultarUsuarioBean.subSegmentCheck}">
+                            <p:ajax process="@this" update="formCreateUserModal:sbchSubcha formCreateUserModal:sbchSeg formCreateUserModal:sbchPotential"
+                                    listener="#{consultarUsuarioBean.listenerCheckSubSegment()}"/>
+                        </p:selectBooleanCheckbox>
                         <p:selectOneMenu style="width: 80%" value="#{consultarUsuarioBean.subSegmentSelected}" converter="subSegmentoConverter">
                             <f:selectItems value="#{consultarUsuarioBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
                             <p:ajax update="formCreateUserModal:pgSegment" process="@this" listener="#{consultarUsuarioBean.listenerSubSegment()}"/>
                         </p:selectOneMenu>
                         <h:outputLabel value="#{msg.out_potencial}"/>
-                        <p:selectOneMenu id="somPotAuto" converter="potentialConverter" value="#{consultarUsuarioBean.potentialAutomatic}" disabled="true">
+                        <p:selectBooleanCheckbox id="sbchPotential" value="#{consultarUsuarioBean.potentialCheck}">
+                            <p:ajax process="@this" update="formCreateUserModal:sbchSubcha formCreateUserModal:sbchSeg formCreateUserModal:sbchSubseg"
+                                    listener="#{consultarUsuarioBean.listenerPotentialCheck()}"/>
+                        </p:selectBooleanCheckbox>
+                        <p:selectOneMenu id="somPotAuto" converter="potentialConverter" 
+                                         value="#{consultarUsuarioBean.potentialAutomatic}">
                             <f:selectItems value="#{consultarUsuarioBean.listaPotentialAutomatic}" var="potauto" itemLabel="#{potauto.namePotential}"/>
                         </p:selectOneMenu>
-                    </p:panelGrid>
+                    </p:panelGrid>                    
                     <br/>
                     <p:separator/>
-                    <br/>
-                    <h:outputLabel value="#{msg.out_seg_potential}"/>
-                    <br/><br/>
-                    <p:panelGrid columns="3" style="width: 90%">
-                        <h:outputLabel value="#{msg.out_potencial}"/>
-                        <p:selectBooleanCheckbox value="#{consultarUsuarioBean.potentialCheck}"/>   
-                        <p:selectOneMenu style="width: 80%" value="#{consultarUsuarioBean.potentialManual}" converter="potentialConverter">
-                            <f:selectItems value="#{consultarUsuarioBean.listPotential}" var="potman" itemLabel="#{potman.namePotential}"/>
-                        </p:selectOneMenu>
-                    </p:panelGrid>
-                    <br/>
-                    <h:panelGrid columns="4">
+                    <br/>                    
+                    <h:panelGrid columns="3">
                         <p:commandButton value="#{msg.btn_select_all}" process="@all" update="pgSegment" actionListener="#{consultarUsuarioBean.selectAllChain()}" styleClass="button" style="width: 100%"/>
                         <p:commandButton value="#{msg.btn_unselect_all}" process="@all" update="pgSegment" actionListener="#{consultarUsuarioBean.unSelectAllChain()}" styleClass="button" style="width: 100%"/>
-                        <p:commandButton value="#{msg.btn_acept}" process="@all" update="@form" actionListener="#{consultarUsuarioBean.aceptChangesChain()}" styleClass="button" style="width: 100%"/>                        
-                        <p:commandButton value="#{msg.btn_cancel}" process="@all" update="@form" actionListener="#{consultarUsuarioBean.cancelChangesChain()}" styleClass="button" style="width: 100%"/>
+                        <p:commandButton value="#{msg.btn_acept}" process="@all" update="@form" actionListener="#{consultarUsuarioBean.aceptChangesChain()}" styleClass="button" style="width: 100%"/>                                                
                     </h:panelGrid>
                     <br/>                    
                     <p:dataTable id="dtSegmentSelect" value="#{consultarUsuarioBean.distributorPermissionDtoSelected.listPermissionSegment}" var="segmentDistributor"
-                                 paginatorAlwaysVisible="false" rows="2"  paginator="true"
+                                 paginatorAlwaysVisible="false" rows="10"  paginator="true"
+                                 scrollable="true" scrollHeight="150"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
                         <p:column headerText="#{msg.can_canal}">                            
                             <p:selectBooleanCheckbox value="#{segmentDistributor.channelCheck eq '1'}" disabled="true"/>
@@ -90,14 +97,12 @@ and open the template in the editor.
                         <p:column headerText="#{msg.sub_seg_subsegmento}">
                             <p:selectBooleanCheckbox value="#{segmentDistributor.subSegmentCheck eq '1'}" disabled="true"/>
                             <h:outputLabel value="#{consultarUsuarioBean.subSegmentName(segmentDistributor.subSegmentId)}"/>                            
-                        </p:column>
-                        <p:column >
+                        </p:column>                        
+                        <p:column>
                             <p:commandLink value="#{msg.btn_remove}" style="color: blue" update="formCreateUserModal:dtSegmentSelect"
                                            process="@this" actionListener="#{consultarUsuarioBean.removePermissionFromPopup(segmentDistributor)}"/>
                         </p:column>
-                    </p:dataTable>
-                    <p:messages id="mCamPasPopup" closable="true" showDetail="true" showSummary="false" globalOnly="true" 
-                                style="width: 80%;left: 35%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"/>
+                    </p:dataTable>                    
                 </h:panelGroup>
             </p:dialog>
         </h:form>

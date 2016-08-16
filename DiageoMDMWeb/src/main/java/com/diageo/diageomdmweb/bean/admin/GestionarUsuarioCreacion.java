@@ -170,6 +170,8 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     private DbPermissionSegments permissionsegmentSelected;
     private DbPotentials potentialAutomatic;
     private DbPotentials potentialManual;
+    private Set<DbPermissionSegments> listDistributorPermissionRemove;
+    private String athenaCode;
 
     /**
      * Creates a new instance of GestionarUsuarioCreacion
@@ -189,10 +191,22 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         setListPotential(potentialBeanLocal.findAll());
         setListDistributorPermission(new HashSet<DistributorPermissionDto>());
         setListPermissionSegmentToPersist(new ArrayList<DbPermissionSegments>());
+        setListDistributorPermissionRemove(new HashSet<DbPermissionSegments>());
         //segmentation
         setListChannel(channelBeanLocal.findAllChannel());
         initList();
         setChannelCheck(Boolean.TRUE);
+        setDetailEdition(Boolean.FALSE);
+        initFields();
+    }
+
+    private void initFields() {
+        setNombres("");
+        setApellidos("");
+        setNumDoc("");
+        setCorreo("");
+        setAthenaCode("");
+        setActivo(Boolean.FALSE);
     }
 
     private void initList() {
@@ -220,10 +234,11 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
                     usu.setEmailUser(getCorreo().toUpperCase());
                     usu.setPasswordUser(DigestUtils.md5Hex(getTipoDocumento().getNameDocumentType().toLowerCase() + getNumDoc()));
                     usu.setDocumentNumber(getNumDoc().toUpperCase());
-                    usu.setCreationDate(getFechaActual());
+                    usu.setCreationDate(getCurrentDate());
                     usu.setStateUser(isActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
                     usu.setDocumentTypeId(getTipoDocumento());
                     usu.setProfileId(getPerfil());
+                    usu.setDistri1(getAthenaCode().toUpperCase());
                     usu.setFailedAttempt(0);
                     usu.setFirstEntry(UserEntryEnum.FIRST_ENTRY.getState());
                     usu.setDwModulesList(perfil.getDwModulesList());
@@ -238,6 +253,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
                         moduloBean.createUserModule(mod);
                     }
                     showInfoMessage(capturarValor("usu_creado_exito"));
+                    init();
                 } catch (ControllerWebException ex) {
                     showErrorMessage(capturarValor("usu_creado_fallo"));
                     LOG.log(Level.SEVERE, ex.getMessage());
@@ -306,14 +322,6 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      * the distributor
      */
     public void addPermissionDistributorList() {
-        if (!getDistributorPermissionDtoSelected().getListPermissionSegment().isEmpty()) {
-            for (DbPermissionSegments perSeg : getDistributorPermissionDtoSelected().getListPermissionSegment()) {
-                if (getChannelSelected().getChannelId().equals(perSeg.getChannelId())) {
-                    showWarningMessage(capturarValor("usu_msg_segment_exists"));
-                    return;
-                }
-            }
-        }
         DbPermissionSegments ps = new DbPermissionSegments();
         ps.setChannelCheck(isChannelCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
         ps.setSubChannelCheck(isSubChannelCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
@@ -322,20 +330,33 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         ps.setPotentialCheck(isPotentialCheck() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
 
         ps.setChannelId(getChannelSelected().getChannelId());
-        ps.setSubChannelId(getSubChannelSelected().getSubChannelId());
-        ps.setSegmentId(getSegmentSelected().getSegmentId());
-        ps.setSubSegmentId(getSubSegmentSelected().getSubSegmentId());
+        if (ps.getSubChannelCheck().equals(StateEnum.ACTIVE.getState())) {
+            ps.setSubChannelId(getSubChannelSelected().getSubChannelId());
+        }
+        if (ps.getSegmentCheck().equals(StateEnum.ACTIVE.getState())) {
+            ps.setSegmentId(getSegmentSelected().getSegmentId());
+        }
+        if (ps.getSubSegmentCheck().equals(StateEnum.ACTIVE.getState())) {
+            ps.setSubSegmentId(getSubSegmentSelected().getSubSegmentId());
+        }
+        if (ps.getPotentialCheck().equals(StateEnum.ACTIVE.getState())) {
+            ps.setPotentialId(getPotentialAutomatic().getPotentialId());
+        }
+        if (!getDistributorPermissionDtoSelected().getListPermissionSegment().isEmpty()) {
+            for (DbPermissionSegments perSeg : getDistributorPermissionDtoSelected().getListPermissionSegment()) {
+                if (perSeg.equals(ps)) {
+                    showWarningMessage(capturarValor("usu_msg_segment_exists"));
+                    return;
+                }
+            }
+        }
         ps.setDb3partyId(getDistributorPermissionDtoSelected().getDistributor());
         getDistributorPermissionDtoSelected().getListPermissionSegment().add(ps);
     }
 
-    public void cancelChangesChain() {
-        unSelectAllChain();
-        setChannelSelected(getListChannel().get(0));
-        setSubChannelSelected(getChannelSelected().getDbSubChannelsList().get(0));
-        setSegmentSelected(getSubChannelSelected().getDbSegmentsList().get(0));
-        setSubSegmentSelected(getSegmentSelected().getDbSubSegmentsList().get(0));
-        RequestContext.getCurrentInstance().execute("PF('wvChain').hide();");
+    public void removePermissionFromPopup(DbPermissionSegments dto) {
+        getListDistributorPermissionRemove().add(dto);
+        getDistributorPermissionDtoSelected().getListPermissionSegment().remove(dto);
     }
 
     public void listenerChannel() {
@@ -420,6 +441,38 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         }
     }
 
+    public void listenerCheckSubChannel() {
+        if (!isSubChannelCheck()) {
+            setSegmentCheck(Boolean.FALSE);
+            setSubSegmentCheck(Boolean.FALSE);
+            setPotentialCheck(Boolean.FALSE);
+        }
+    }
+
+    public void listenerCheckSegment() {
+        if (!isSegmentCheck()) {
+            setSubSegmentCheck(Boolean.FALSE);
+            setPotentialCheck(Boolean.FALSE);
+        } else {
+            setSubChannelCheck(Boolean.TRUE);
+        }
+    }
+
+    public void listenerCheckSubSegment() {
+        if (!isSubSegmentCheck()) {
+            setPotentialCheck(Boolean.FALSE);
+        } else {
+            setSegmentCheck(Boolean.TRUE);
+            setSubChannelCheck(Boolean.TRUE);
+        }
+    }
+
+    public void listenerPotentialCheck() {
+        setSubSegmentCheck(Boolean.TRUE);
+        setSegmentCheck(Boolean.TRUE);
+        setSubChannelCheck(Boolean.TRUE);
+    }
+
     /**
      * Valida por correo si existe o no el usuario
      *
@@ -443,14 +496,16 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      * @return true if some permissions list is empty false when all is fine
      */
     protected boolean validateListDistributorPermission() {
-        if (getListDistributorPermission().isEmpty()) {
-            showWarningMessage(capturarValor("usu_msg_validate_list_permission_distributor"));
-            return true;
-        }
-        for (DistributorPermissionDto dto : getListDistributorPermission()) {
-            if (dto.getListPermissionSegment().isEmpty()) {
-                showWarningMessage(capturarValor("usu_msg_validate_list_permission"));
+        if (isDetailEdition()) {
+            if (getListDistributorPermission().isEmpty()) {
+                showWarningMessage(capturarValor("usu_msg_validate_list_permission_distributor"));
                 return true;
+            }
+            for (DistributorPermissionDto dto : getListDistributorPermission()) {
+                if (dto.getListPermissionSegment().isEmpty()) {
+                    showWarningMessage(capturarValor("usu_msg_validate_list_permission"));
+                    return true;
+                }
             }
         }
         return false;
@@ -868,6 +923,35 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
 
     public void setListPermissionSegmentToPersist(List<DbPermissionSegments> listPermissionSegmentToPersist) {
         this.listPermissionSegmentToPersist = listPermissionSegmentToPersist;
+    }
+
+    /**
+     * @return the listDistributorPermissionRemove
+     */
+    public Set<DbPermissionSegments> getListDistributorPermissionRemove() {
+        return listDistributorPermissionRemove;
+    }
+
+    /**
+     * @param listDistributorPermissionRemove the
+     * listDistributorPermissionRemove to set
+     */
+    public void setListDistributorPermissionRemove(Set<DbPermissionSegments> listDistributorPermissionRemove) {
+        this.listDistributorPermissionRemove = listDistributorPermissionRemove;
+    }
+
+    /**
+     * @return the athenaCode
+     */
+    public String getAthenaCode() {
+        return athenaCode;
+    }
+
+    /**
+     * @param athenaCode the athenaCode to set
+     */
+    public void setAthenaCode(String athenaCode) {
+        this.athenaCode = athenaCode;
     }
 
 }

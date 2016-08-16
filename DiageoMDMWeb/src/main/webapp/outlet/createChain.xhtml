@@ -13,68 +13,161 @@
             <ui:define name="content">
                 <style>
                     .tamanio_letra_labels{
-                        font-size: 15px;
+                        font-size: 12px;
                     }
                     @media screen and (max-width: 1500px) {
                         .tamanio_letra_labels{
                             font-size: 11px;
+                            font-family: verdana !important;
                         }
+                    }
+                    .ui-widget-header .ui-inputfield, .ui-widget-content .ui-inputfield {
+                        width: 90% !important;
+                    }
+                    .ui-datalist {
+                        width: 300px;
                     }
 
                 </style>
                 <h:form id="formChain">
-                    <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
+                    <!--p:fieldset legend="{msg.is_father}" style="width: 95%">
                         <h:panelGrid columns="4" style="width: 100%">
-                            <h:outputLabel value="#{msg.chain_code_chain_father}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                            <p:inputText style="width: 90%"/>
-                            <h:outputLabel value="#{msg.chain_code_ean}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                            <p:inputText style="width: 90%"/>
-                            <h:outputLabel value="#{msg.chain_name}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                            <p:inputText style="width: 90%"/>
-                            <h:outputLabel value="#{msg.chain_code_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                            <p:inputText style="width: 90%"/>
-                            <h:outputLabel value="#{msg.chain_code_ean_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                            <p:inputText style="width: 90%"/>
-                            <h:outputLabel value="#{msg.chain_name_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                            <p:inputText style="width: 90%"/>
-                            <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>                            
-                            <p:inputText style="width: 90%"/>
-                            <h:outputLabel value="#{msg.chain_phone}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                            <p:inputText style="width: 90%"/>
+                            <h:outputLabel value="{msg.is_father}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:selectBooleanCheckbox />
+                            <h:outputLabel value="{msg.father}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:autoComplete id="acMinLength" minQueryLength="4" value="{createChainBean.chainFatherSelected}" label="{msg.father}"
+                                            var="chainFather" itemLabel="{chainFather.nameChain}" itemValue="{chainFather}" forceSelection="true"
+                                            completeMethod="{createChainBean.completeChainFather}" effect="fade" converter="chainConverter"
+                                            style="width: 90% !important;"/>
                         </h:panelGrid>
                     </p:fieldset>
+                    <br/-->
+                    <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
+                        <h:panelGrid columns="4" style="width: 100%">
+                            <h:outputLabel value="#{msg.out_kiernan}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:inputText value="#{createChainBean.kiernan}"/>
+                            <h:outputLabel value="#{msg.chain_name}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:inputText value="#{createChainBean.chainName}"/>
+                            <h:outputLabel value="#{msg.out_razon_social}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:inputText value="#{createChainBean.businessName}"/>
+                            <h:outputLabel value="#{msg.chain_code_ean_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:inputText value="#{createChainBean.eanCode}"/>                            
+                            <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:selectOneMenu value="#{createChainBean.db3PartySelected}" converter="db3PartyConverter" style="width: 90%">
+                                <f:selectItems value="#{createChainBean.list3Party}" var="party3" itemLabel="#{party3.name3party}"/>
+                            </p:selectOneMenu>
+                            <h:outputLabel value="#{msg.usu_activo}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:selectBooleanCheckbox value="#{createChainBean.activeChain}"/>
+                            <h:outputLabel value="#{msg.status}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:selectOneMenu value="#{createChainBean.status}" style="width: 90%">
+                                <f:selectItem itemValue="A" itemLabel="#{msg.active}"/>
+                                <f:selectItem itemValue="I" itemLabel="#{msg.inactive}"/>
+                                <f:selectItem itemValue="B" itemLabel="#{msg.locked}"/>
+                            </p:selectOneMenu>
+                        </h:panelGrid>
+                    </p:fieldset>
+                    <br/>
                     <p:fieldset legend="#{msg.out_clasificacion}" style="width: 95%">
                         <h:panelGroup id="pgSegment">
                             <h:panelGrid columns="4" style="width: 95%">
+                                <h:outputLabel value="#{msg.can_canal}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:selectOneMenu value="#{createChainBean.channelSelected}" converter="channelConverter" style="width: 90%">
+                                    <f:selectItems value="#{createChainBean.listChannel}" var="cha" itemLabel="#{cha.nameChannel}"/>
+                                    <p:ajax update="formChain:pgSegment" process="@this" listener="#{createChainBean.listenerChannel()}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="#{msg.sub_subcanal}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:selectOneMenu value="#{createChainBean.subChannelSelected}" converter="subChannelConverter" style="width: 90%">
+                                    <f:selectItems value="#{createChainBean.listSubChannel}" var="subcha" itemLabel="#{subcha.nameSubChannel}"/>
+                                    <p:ajax update="formChain:pgSegment" process="@this" listener="#{createChainBean.listenerSubChannel()}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="#{msg.seg_segmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:selectOneMenu converter="segmentoConverter" value="#{createChainBean.segmentSelected}" style="width: 90%">
+                                    <f:selectItems value="#{createChainBean.listSegment}" var="seg" itemLabel="#{seg.nameSegment}"/>
+                                    <p:ajax update="formChain:pgSegment" process="@this" listener="#{createChainBean.listenerSegment()}"/>
+                                </p:selectOneMenu>
+
                                 <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:selectOneMenu id="somSubSegmento" style="width: 90%" value="#{outletCrearBean.subSegmentoSeleccionado}" converter="subSegmentoConverter">
-                                    <f:selectItems value="#{outletCrearBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
-                                    <p:ajax process="@this" update="formChain:pgSegment" listener="#{outletCrearBean.listenerSubSegment()}"/>
+                                <p:selectOneMenu value="#{createChainBean.subSegmentSelected}" converter="subSegmentoConverter" style="width: 90%">
+                                    <f:selectItems value="#{createChainBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
+                                    <p:ajax update="formChain:pgSegment" process="@this" listener="#{createChainBean.listenerSubSegment()}"/>
                                 </p:selectOneMenu>
 
                                 <h:outputLabel value="#{msg.out_potencial}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <h:panelGroup>
-                                    <p:selectOneMenu converter="potentialConverter" value="#{outletCrearBean.potentialAutomatic}"
-                                                     rendered="#{not empty outletCrearBean.listaPotentialAutomatic}" disabled="true">
-                                        <f:selectItems value="#{outletCrearBean.listaPotentialAutomatic}" var="potAutomatic" itemLabel="#{potAutomatic.namePotential}"/>
-                                    </p:selectOneMenu>
-                                    <h:outputLabel value="#{msg.out_message_not_potential}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
-                                                   rendered="#{empty outletCrearBean.listaPotentialAutomatic}"/>
-                                </h:panelGroup>
+                                <p:selectOneMenu converter="potentialConverter" value="#{createChainBean.potentialSelected}"
+                                                 disabled="true"  style="width: 90%">
+                                    <f:selectItems value="#{createChainBean.listPotential}" var="pot" itemLabel="#{pot.namePotential}"/>
+                                </p:selectOneMenu>
+
                                 <h:outputLabel value="#{msg.chain_cluster}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:selectOneMenu>
-                                    <f:selectItem itemValue="C1" itemLabel="Cluster 1"/>
-                                    <f:selectItem itemValue="C2" itemLabel="Cluster 2"/>
-                                    <f:selectItem itemValue="C3" itemLabel="Cluster 3"/>
+                                <p:selectOneMenu value="#{createChainBean.clusterSelected}" converter="clusterConverter" style="width: 90%">
+                                    <f:selectItems value="#{createChainBean.listCluster}" var="clus" itemLabel="#{clus.nameCluster}"/>
                                 </p:selectOneMenu>
                             </h:panelGrid>
                         </h:panelGroup>
                     </p:fieldset>
-                    <br/><br/>
-                    <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{outletCrearBean.guardarOutlet()}"
-                                     styleClass="button" style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 20%"/>
                     <br/>
-                    <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />
+                    <p:fieldset legend="#{msg.out_ubicacion}" style="width: 95%">
+                        <h:panelGroup id="pgLocation">
+                            <h:panelGrid columns="4" style="width: 95%">
+                                <h:outputLabel value="#{msg.loc_depto}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:selectOneMenu value="#{createChainBean.departamentSelected}" converter="departamentoConverter"
+                                                 style="width: 90%">
+                                    <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptoout" itemLabel="#{deptoout.nameDepartament}"/>
+                                    <p:ajax process="@this" update="formChain:somMpioOut"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.chain_city}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:selectOneMenu id="somMpioOut" value="#{createChainBean.townSelected}" converter="municipioConverter"  style="width: 90%">
+                                    <f:selectItems value="#{createChainBean.departamentSelected.dbTownsList}" var="mpioout" itemLabel="#{mpioout.nameTown}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.out_barrio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:inputText value="#{createChainBean.neighborhood}"/>
+                                <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:inputText value="#{createChainBean.address}"/>
+                                <h:outputLabel value="#{msg.loc_latitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:inputText value="#{createChainBean.latitude}"/>
+                                <h:outputLabel value="#{msg.loc_longitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:inputText value="#{createChainBean.longitude}"/>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </p:fieldset>
+                    <br/>
+                    <p:fieldset legend="#{msg.out_phones}" style="width: 95%">
+                        <h:panelGrid style="width: 95%" columns="65">
+                            <h:outputLabel value="#{msg.out_type_phone}"  style="width: 100%;padding: 15%"/>
+                            <p:selectOneMenu value="#{createChainBean.typePhone}" converter="typePhoneConverter" style="width: 90%">
+                                <f:selectItems value="#{createChainBean.listTypePhone}" var="typePhone" itemLabel="#{typePhone.nameTypePhone}"/>
+                            </p:selectOneMenu>
+                            <h:outputLabel value="#{msg.out_number}"  style="width: 100%;padding: 15%"/>
+                            <p:inputText id="itPhone" value="#{createChainBean.newPhone.numberPhone}"/>
+                            <p:commandButton value="#{msg.btn_add}" process="@parent" update="formChain:dlPhones formChain:itPhone"
+                                             actionListener="#{createChainBean.addPhone()}"
+                                             styleClass="button" style="width: 80%"/>
+                        </h:panelGrid>
+                        <br/>
+                        <p:dataTable id="dlPhones" paginator="true" rows="5" styleClass="paginated" paginatorAlwaysVisible="false"
+                                     value="#{createChainBean.listPhones}" var="phone">
+                            <f:facet name="header">
+                                <h:outputLabel value="#{msg.out_phones}"/>
+                            </f:facet>
+                            <p:column>
+                                <p:commandLink actionListener="#{createChainBean.deletePhone(phone)}" update="formChain:dlPhones" process="@this">
+                                    <p:graphicImage value="/resources/images/iconos/equis.png" width="12px"/>
+                                </p:commandLink>
+                            </p:column>
+                            <p:column>
+                                <h:outputLabel value="#{phone.numberPhone}"/>
+                            </p:column>
+                            <p:column>
+                                <h:outputLabel value="#{phone.typePhoneId.nameTypePhone}"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:fieldset>
+                    <br/><br/>
+                    <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{createChainBean.saveChain()}"
+                                     styleClass="button"/>
+                    <br/>
                 </h:form>
             </ui:define>
 

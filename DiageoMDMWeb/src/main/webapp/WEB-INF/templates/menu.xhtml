@@ -9,15 +9,21 @@ and open the template in the editor.
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-    <h:body>
+    <h:body>       
         <h:form>
-            <p:menubar>                      
+            <style>
+                .ui-menu.ui-menubar .ui-menu-parent .ui-menu-child{
+                    width: 220px !important;
+                }
+            </style>
+            <p:menubar autoDisplay="false">
                 <p:submenu label="#{msg.m_outlet}" rendered="#{loginBean.renderizarMenu('OUT')}">  
                     <p:menuitem value="#{msg.m_outlet_crear}" rendered="#{loginBean.renderizarMenu('C_OUT')}" action="#{menuBean.navegar('C_OUT')}" ajax="false"/>
                     <p:menuitem value="#{msg.m_outlet_consultar}" rendered="#{loginBean.renderizarMenu('S_OUT')}" action="#{menuBean.navegar('S_OUT')}" ajax="false"/>
                     <p:menuitem value="#{msg.m_outlet_carga}" rendered="#{loginBean.renderizarMenu('LOAD_OUT')}" action="#{menuBean.navegar('LOAD_OUT')}" ajax="false"/>
                     <p:menuitem value="#{msg.m_chain_create}" rendered="#{loginBean.renderizarMenu('C_CHAIN')}" action="#{menuBean.navegar('C_CHAIN')}" ajax="false"/>
                     <p:menuitem value="#{msg.m_chain_search}" rendered="#{loginBean.renderizarMenu('S_CHAIN')}" action="#{menuBean.navegar('S_CHAIN')}" ajax="false"/>
+                    <p:menuitem value="#{msg.rel_cus}" rendered="#{loginBean.renderizarMenu('RELATION_CUSTOMER')}" action="#{menuBean.navegar('RELATION_CUSTOMER')}" ajax="false"/>
                 </p:submenu>   
 
                 <p:submenu label="#{msg.m_administrador}" rendered="#{loginBean.renderizarMenu('MAGANER')}">
@@ -53,16 +59,16 @@ and open the template in the editor.
                         <p:menuitem value="#{msg.regional_create}" rendered="#{loginBean.renderizarMenu('C_DISTRI_LOCATION')}" action="#{menuBean.navegar('C_DISTRI_LOCATION')}" ajax="false"/>
                         <p:menuitem value="#{msg.regional_search}" rendered="#{loginBean.renderizarMenu('S_DISTRI_LOCATION')}" action="#{menuBean.navegar('S_DISTRI_LOCATION')}" ajax="false"/>
                     </p:submenu>
-                    
+
                     <p:submenu label="#{msg.param}" rendered="#{loginBean.renderizarMenu('QUERY_SEGMENT')}">
                         <p:menuitem value="#{msg.param_segment_query}" rendered="#{loginBean.renderizarMenu('QUERY_SEGMENT_EDIT')}" action="#{menuBean.navegar('QUERY_SEGMENT_EDIT')}" ajax="false"/>
                     </p:submenu>
                 </p:submenu>                   
 
                 <p:submenu label="#{msg.m_report}" rendered="#{loginBean.renderizarMenu('REPORT')}"> 
-                    <p:menuitem value="#{msg.m_report_create_outlet}" rendered="#{loginBean.renderizarMenu('REPORT_OUTLET')}" action="#{menuBean.navegar('REPORT_OUTLET')}" ajax="false"/>
-                    <p:menuitem value="#{msg.m_report_create_distributor}" rendered="#{loginBean.renderizarMenu('REPORT_DISTRI')}" action="#{menuBean.navegar('REPORT_DISTRI')}" ajax="false"/>
-                    <p:menuitem value="#{msg.m_report_outlet_pendding}" rendered="#{loginBean.renderizarMenu('REPORT_PENDING')}" action="#{menuBean.navegar('REPORT_PENDING')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_report_user}" rendered="#{loginBean.renderizarMenu('REPORT_USER')}" action="#{menuBean.navegar('REPORT_USER')}" ajax="false"/>
+                    <p:menuitem value="#{msg.dis_commercial_management}" rendered="#{loginBean.renderizarMenu('REPORT_COMMERCIAL_MANAGEMENT')}" action="#{menuBean.navegar('REPORT_COMMERCIAL_MANAGEMENT')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_report_casuistry}" rendered="#{loginBean.renderizarMenu('REPORT_CASUISTRY')}" action="#{menuBean.navegar('REPORT_CASUISTRY')}" ajax="false"/>
                 </p:submenu>
 
                 <p:submenu label="#{msg.m_perfil}">                        
@@ -73,7 +79,10 @@ and open the template in the editor.
 
                 <f:facet name="options">                    
                     <p:commandButton value="#{msg.btn_logout}" icon="ui-icon-extlink" action="#{loginBean.logout()}" ajax="false" 
-                                     style="color: white;background: -webkit-linear-gradient(#0088cc, #149bdf);"/>
+                                     style="color: white;background: -webkit-linear-gradient(#0088cc, #149bdf);
+                                     background: -moz-linear-gradient(#0088cc, #149bdf);
+                                     background: -o-linear-gradient(#0088cc, #149bdf);
+                                     background: -ms-linear-gradient(#0088cc, #149bdf);"/>
                 </f:facet>
             </p:menubar> 
         </h:form>     

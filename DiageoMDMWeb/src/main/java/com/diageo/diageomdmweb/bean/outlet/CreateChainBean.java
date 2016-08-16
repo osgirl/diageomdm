@@ -5,24 +5,24 @@
  */
 package com.diageo.diageomdmweb.bean.outlet;
 
+import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
-import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
 import com.diageo.diageomdmweb.constant.PatternConstant;
+import com.diageo.diageonegocio.beans.ChainBeanLocal;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
+import com.diageo.diageonegocio.beans.ClusterBeanLocal;
 import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
-import com.diageo.diageonegocio.beans.OutletBeanLocal;
 import com.diageo.diageonegocio.beans.PhonesBeanLocal;
-import com.diageo.diageonegocio.beans.PotentialBeanLocal;
 import com.diageo.diageonegocio.beans.SegmentBeanLocal;
 import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
 import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
 import com.diageo.diageonegocio.beans.TypePhoneBeanLocal;
 import com.diageo.diageonegocio.entidades.Db3party;
+import com.diageo.diageonegocio.entidades.DbChains;
 import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbClusters;
 import com.diageo.diageonegocio.entidades.DbDepartaments;
-import com.diageo.diageonegocio.entidades.DbOcs;
 import com.diageo.diageonegocio.entidades.DbPhones;
 import com.diageo.diageonegocio.entidades.DbPotentials;
 import com.diageo.diageonegocio.entidades.DbSegments;
@@ -30,26 +30,28 @@ import com.diageo.diageonegocio.entidades.DbSubChannels;
 import com.diageo.diageonegocio.entidades.DbSubSegments;
 import com.diageo.diageonegocio.entidades.DbTowns;
 import com.diageo.diageonegocio.entidades.DbTypePhones;
+import com.diageo.diageonegocio.enums.StateOutletChain;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  *
- * @author yovanoty126
+ * @author EDUARDO
  */
-@Named(value = "outletCrearBean")
+@Named(value = "createChainBean")
 @ViewScoped
-public class OutletCrearBean extends DiageoRootBean implements Serializable {
+public class CreateChainBean extends DiageoRootBean implements Serializable {
 
-    @EJB
-    protected OutletBeanLocal outletBeanLocal;
     @Inject
     protected DiageoApplicationBean diageoApplicationBean;
     @EJB
@@ -61,19 +63,35 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     @EJB
     protected SubSegmentoBeanLocal subSegmentoBeanLocal;
     @EJB
+    protected ClusterBeanLocal clusterBeanLocal;
+    @EJB
     protected TypePhoneBeanLocal typePhoneBeanLocal;
-     @EJB
+    @EJB
+    protected ChainBeanLocal chainBeanLocal;
+    @EJB
     protected Db3PartyBeanLocal db3PartyBeanLocal;
     @EJB
     protected PhonesBeanLocal phonesBeanLocal;
+    private String kiernan;
+    private String chainName;
+    private String businessName;
+    private String eanCode;
     private DbChannels channelSelected;
     private DbSubChannels subChannelSelected;
     private DbSegments segmentSelected;
     private DbSubSegments subSegmentSelected;
     private DbPotentials potentialSelected;
+    private DbClusters clusterSelected;
     private DbDepartaments departamentSelected;
     private DbTowns townSelected;
     private Db3party db3PartySelected;
+    private String address;
+    private String neighborhood;
+    private String latitude;
+    private String longitude;
+    private String phoneAdd;
+    private String status;
+    private boolean activeChain;
     private DbPhones newPhone;
     private DbTypePhones typePhone;
     private List<DbChannels> listChannel;
@@ -81,34 +99,18 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     private List<DbSegments> listSegment;
     private List<DbSubSegments> listSubSegment;
     private List<DbPotentials> listPotential;
+    private List<DbClusters> listCluster;
     private List<DbDepartaments> listDepartament;
     private List<DbTowns> listTowns;
     private List<DbPhones> listPhones;
     private List<DbTypePhones> listTypePhone;
     private List<Db3party> list3Party;
-    private String email;
-    private String nit;
-    private String verificationNumber;
-    private String businessName;
-    private String outletName;
-    private String pointSale;
-    private String typeOutlet;
-    private String kiernanId;
-    private DbOcs ocsPrimary;
-    private DbOcs ocsSecondary;
-    private String website;
-    private String address;
-    private String neighborhood;
-    private Double latitude;
-    private Double longitude;
-    private boolean wine;
-    private boolean beer;
-    private boolean spirtis;
+    private DbChains chainFatherSelected;
 
     /**
-     * Creates a new instance of OutletVistaBean
+     * Creates a new instance of CreateChainBean
      */
-    public OutletCrearBean() {
+    public CreateChainBean() {
     }
 
     @PostConstruct
@@ -118,15 +120,65 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         setList3Party(db3PartyBeanLocal.searchAllDistributor());
         initFields();
     }
-    
-    public void initFields(){
-        
+
+    public void initFields() {
+        setNewPhone(new DbPhones());
+        setListPhones(new ArrayList<DbPhones>());
+        setDepartamentSelected(getDiageoApplicationBean().getListaDepartamento().get(0));
+        setTownSelected(getDepartamentSelected().getDbTownsList().get(0));
+        setChannelSelected(getListChannel().get(0));
+        setListSubChannel(getChannelSelected().getDbSubChannelsList());
+        setSubChannelSelected(getListSubChannel().get(0));
+        setListSegment(getSubChannelSelected().getDbSegmentsList());
+        setSegmentSelected(getListSegment().get(0));
+        setListSubSegment(getSegmentSelected().getDbSubSegmentsList());
+        setSubSegmentSelected(getListSubSegment().get(0));
+        setListPotential(getSubSegmentSelected().getDbPotentialsList());
+        setPotentialSelected(getListPotential().get(0));
+        setListCluster(clusterBeanLocal.findAll());
+        setClusterSelected(getListCluster().get(0));
+        setChainFatherSelected(new DbChains());
+        setDb3PartySelected(getList3Party().get(0));
+        setKiernan(EMPTY_FIELD);
+        setBusinessName(EMPTY_FIELD);
+        setChainName(EMPTY_FIELD);
+        setEanCode(EMPTY_FIELD);
+        setActiveChain(Boolean.FALSE);
+        setNeighborhood(EMPTY_FIELD);
+        setAddress(EMPTY_FIELD);
+        setLatitude(EMPTY_FIELD);
+        setLongitude(EMPTY_FIELD);
     }
 
-    public void saveOutlet() {
-
+    public void saveChain() {
+        try {
+            DbChains chain = new DbChains();
+            chain.setAddress(getAddress().toUpperCase());
+            chain.setBusinessName(getBusinessName().toUpperCase());
+            chain.setCodeEan(getEanCode().toUpperCase());
+            chain.setDbClusterId(getClusterSelected());
+            chain.setDbPartyId(getDb3PartySelected());
+            cleanIdPhones();
+            chain.setDbPhonesList(getListPhones());
+            chain.setDbTownId(getTownSelected());
+            chain.setIsActive(isActiveChain() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+            chain.setKiernanId(getKiernan().toUpperCase());
+            chain.setLatitude(getLatitude().toUpperCase());
+            chain.setLongitude(getLongitude().toUpperCase());
+            chain.setNameChain(getChainName().toUpperCase());
+            chain.setNeighborhood(getNeighborhood().toUpperCase());
+            chain.setPotentialId(getPotentialSelected());
+            chain.setSubSegmentId(getSubSegmentSelected());
+            chain.setStatusChain(getStatus());
+            chainBeanLocal.createChain(chain);
+            showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+            initFields();
+        } catch (DiageoBusinessException ex) {
+            Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
+        }
     }
-    
+
     public void addPhone() {
         if (getNewPhone().getNumberPhone() != null && !getNewPhone().getNumberPhone().isEmpty()) {
             if (Pattern.matches(PatternConstant.NUMBER, getNewPhone().getNumberPhone())) {
@@ -174,6 +226,78 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             setPotentialSelected(getSubSegmentSelected().getDbPotentialsList().get(0));
             setListPotential(getSubSegmentSelected().getDbPotentialsList());
         }
+    }
+
+    public List<DbChains> completeChainFather(String query) {
+        return chainBeanLocal.findByNameChain(query);
+    }
+
+    /**
+     * A cada telefono se le asigna un id temporal, para que pueda ser eliminado
+     * mientras se crea
+     */
+    protected void cleanIdPhones() {
+        for (DbPhones phone : getListPhones()) {
+            if (phone.isDeleteId()) {
+                phone.setPhoneId(null);
+            }
+        }
+    }
+
+    /**
+     * @return the kiernan
+     */
+    public String getKiernan() {
+        return kiernan;
+    }
+
+    /**
+     * @param kiernan the kiernan to set
+     */
+    public void setKiernan(String kiernan) {
+        this.kiernan = kiernan;
+    }
+
+    /**
+     * @return the chainName
+     */
+    public String getChainName() {
+        return chainName;
+    }
+
+    /**
+     * @param chainName the chainName to set
+     */
+    public void setChainName(String chainName) {
+        this.chainName = chainName;
+    }
+
+    /**
+     * @return the businessName
+     */
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    /**
+     * @param businessName the businessName to set
+     */
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
+    /**
+     * @return the eanCode
+     */
+    public String getEanCode() {
+        return eanCode;
+    }
+
+    /**
+     * @param eanCode the eanCode to set
+     */
+    public void setEanCode(String eanCode) {
+        this.eanCode = eanCode;
     }
 
     /**
@@ -247,6 +371,20 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     }
 
     /**
+     * @return the clusterSelected
+     */
+    public DbClusters getClusterSelected() {
+        return clusterSelected;
+    }
+
+    /**
+     * @param clusterSelected the clusterSelected to set
+     */
+    public void setClusterSelected(DbClusters clusterSelected) {
+        this.clusterSelected = clusterSelected;
+    }
+
+    /**
      * @return the departamentSelected
      */
     public DbDepartaments getDepartamentSelected() {
@@ -275,17 +413,73 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     }
 
     /**
-     * @return the db3PartySelected
+     * @return the address
      */
-    public Db3party getDb3PartySelected() {
-        return db3PartySelected;
+    public String getAddress() {
+        return address;
     }
 
     /**
-     * @param db3PartySelected the db3PartySelected to set
+     * @param address the address to set
      */
-    public void setDb3PartySelected(Db3party db3PartySelected) {
-        this.db3PartySelected = db3PartySelected;
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    /**
+     * @return the neighborhood
+     */
+    public String getNeighborhood() {
+        return neighborhood;
+    }
+
+    /**
+     * @param neighborhood the neighborhood to set
+     */
+    public void setNeighborhood(String neighborhood) {
+        this.neighborhood = neighborhood;
+    }
+
+    /**
+     * @return the latitude
+     */
+    public String getLatitude() {
+        return latitude;
+    }
+
+    /**
+     * @param latitude the latitude to set
+     */
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
+
+    /**
+     * @return the longitude
+     */
+    public String getLongitude() {
+        return longitude;
+    }
+
+    /**
+     * @param longitude the longitude to set
+     */
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
+
+    /**
+     * @return the phoneAdd
+     */
+    public String getPhoneAdd() {
+        return phoneAdd;
+    }
+
+    /**
+     * @param phoneAdd the phoneAdd to set
+     */
+    public void setPhoneAdd(String phoneAdd) {
+        this.phoneAdd = phoneAdd;
     }
 
     /**
@@ -387,6 +581,20 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     }
 
     /**
+     * @return the listCluster
+     */
+    public List<DbClusters> getListCluster() {
+        return listCluster;
+    }
+
+    /**
+     * @param listCluster the listCluster to set
+     */
+    public void setListCluster(List<DbClusters> listCluster) {
+        this.listCluster = listCluster;
+    }
+
+    /**
      * @return the listDepartament
      */
     public List<DbDepartaments> getListDepartament() {
@@ -429,6 +637,13 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     }
 
     /**
+     * @return the diageoApplicationBean
+     */
+    public DiageoApplicationBean getDiageoApplicationBean() {
+        return diageoApplicationBean;
+    }
+
+    /**
      * @return the listTypePhone
      */
     public List<DbTypePhones> getListTypePhone() {
@@ -440,6 +655,34 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
      */
     public void setListTypePhone(List<DbTypePhones> listTypePhone) {
         this.listTypePhone = listTypePhone;
+    }
+
+    /**
+     * @return the chainFatherSelected
+     */
+    public DbChains getChainFatherSelected() {
+        return chainFatherSelected;
+    }
+
+    /**
+     * @param chainFatherSelected the chainFatherSelected to set
+     */
+    public void setChainFatherSelected(DbChains chainFatherSelected) {
+        this.chainFatherSelected = chainFatherSelected;
+    }
+
+    /**
+     * @return the db3PartySelected
+     */
+    public Db3party getDb3PartySelected() {
+        return db3PartySelected;
+    }
+
+    /**
+     * @param db3PartySelected the db3PartySelected to set
+     */
+    public void setDb3PartySelected(Db3party db3PartySelected) {
+        this.db3PartySelected = db3PartySelected;
     }
 
     /**
@@ -457,255 +700,35 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     }
 
     /**
-     * @return the email
+     * @return the activeChain
      */
-    public String getEmail() {
-        return email;
+    public boolean isActiveChain() {
+        return activeChain;
     }
 
     /**
-     * @param email the email to set
+     * @param activeChain the activeChain to set
      */
-    public void setEmail(String email) {
-        this.email = email;
+    public void setActiveChain(boolean activeChain) {
+        this.activeChain = activeChain;
     }
 
     /**
-     * @return the nit
+     * @return the status
      */
-    public String getNit() {
-        return nit;
+    public String getStatus() {
+        return status;
     }
 
     /**
-     * @param nit the nit to set
+     * @param status the status to set
      */
-    public void setNit(String nit) {
-        this.nit = nit;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
-    /**
-     * @return the verificationNumber
-     */
-    public String getVerificationNumber() {
-        return verificationNumber;
-    }
-
-    /**
-     * @param verificationNumber the verificationNumber to set
-     */
-    public void setVerificationNumber(String verificationNumber) {
-        this.verificationNumber = verificationNumber;
-    }
-
-    /**
-     * @return the businessName
-     */
-    public String getBusinessName() {
-        return businessName;
-    }
-
-    /**
-     * @param businessName the businessName to set
-     */
-    public void setBusinessName(String businessName) {
-        this.businessName = businessName;
-    }
-
-    /**
-     * @return the outletName
-     */
-    public String getOutletName() {
-        return outletName;
-    }
-
-    /**
-     * @param outletName the outletName to set
-     */
-    public void setOutletName(String outletName) {
-        this.outletName = outletName;
-    }
-
-    /**
-     * @return the pointSale
-     */
-    public String getPointSale() {
-        return pointSale;
-    }
-
-    /**
-     * @param pointSale the pointSale to set
-     */
-    public void setPointSale(String pointSale) {
-        this.pointSale = pointSale;
-    }
-
-    /**
-     * @return the typeOutlet
-     */
-    public String getTypeOutlet() {
-        return typeOutlet;
-    }
-
-    /**
-     * @param typeOutlet the typeOutlet to set
-     */
-    public void setTypeOutlet(String typeOutlet) {
-        this.typeOutlet = typeOutlet;
-    }
-
-    /**
-     * @return the kiernanId
-     */
-    public String getKiernanId() {
-        return kiernanId;
-    }
-
-    /**
-     * @param kiernanId the kiernanId to set
-     */
-    public void setKiernanId(String kiernanId) {
-        this.kiernanId = kiernanId;
-    }
-
-    /**
-     * @return the ocsPrimary
-     */
-    public DbOcs getOcsPrimary() {
-        return ocsPrimary;
-    }
-
-    /**
-     * @param ocsPrimary the ocsPrimary to set
-     */
-    public void setOcsPrimary(DbOcs ocsPrimary) {
-        this.ocsPrimary = ocsPrimary;
-    }
-
-    /**
-     * @return the ocsSecondary
-     */
-    public DbOcs getOcsSecondary() {
-        return ocsSecondary;
-    }
-
-    /**
-     * @param ocsSecondary the ocsSecondary to set
-     */
-    public void setOcsSecondary(DbOcs ocsSecondary) {
-        this.ocsSecondary = ocsSecondary;
-    }
-
-    /**
-     * @return the website
-     */
-    public String getWebsite() {
-        return website;
-    }
-
-    /**
-     * @param website the website to set
-     */
-    public void setWebsite(String website) {
-        this.website = website;
-    }
-
-    /**
-     * @return the address
-     */
-    public String getAddress() {
-        return address;
-    }
-
-    /**
-     * @param address the address to set
-     */
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    /**
-     * @return the neighborhood
-     */
-    public String getNeighborhood() {
-        return neighborhood;
-    }
-
-    /**
-     * @param neighborhood the neighborhood to set
-     */
-    public void setNeighborhood(String neighborhood) {
-        this.neighborhood = neighborhood;
-    }
-
-    /**
-     * @return the latitude
-     */
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    /**
-     * @param latitude the latitude to set
-     */
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    /**
-     * @return the longitude
-     */
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    /**
-     * @param longitude the longitude to set
-     */
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    /**
-     * @return the wine
-     */
-    public boolean isWine() {
-        return wine;
-    }
-
-    /**
-     * @param wine the wine to set
-     */
-    public void setWine(boolean wine) {
-        this.wine = wine;
-    }
-
-    /**
-     * @return the beer
-     */
-    public boolean isBeer() {
-        return beer;
-    }
-
-    /**
-     * @param beer the beer to set
-     */
-    public void setBeer(boolean beer) {
-        this.beer = beer;
-    }
-
-    /**
-     * @return the spirtis
-     */
-    public boolean isSpirtis() {
-        return spirtis;
-    }
-
-    /**
-     * @param spirtis the spirtis to set
-     */
-    public void setSpirtis(boolean spirtis) {
-        this.spirtis = spirtis;
+    public StateOutletChain[] getEnumStateOutletChain() {
+        return StateOutletChain.values();
     }
 
 }

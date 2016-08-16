@@ -7,7 +7,6 @@ package com.diageo.diageomdmweb.bean.dto;
 
 import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 

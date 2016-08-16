@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/templates/diageoWebTemplate.xhtml">
+
+            <ui:define name="content">
+                <h:form id="formRelationCustomer">
+                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
+                        <h:panelGroup style="width: 100%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                            <h:panelGrid columns="3" style="width: 70%">
+                                <h:outputLabel value="#{msg.code}"/>
+                                <p:inputText id="itCode" label="#{msg.code}" value="#{relationCustomerBean.codeOutlet}" required="true"/>
+                                <p:selectOneRadio id="console" value="#{relationCustomerBean.typeOutlet}" style="width: 50%">
+                                    <f:selectItem itemLabel="#{msg.m_outlet}" itemValue="O"/>
+                                    <f:selectItem itemLabel="#{msg.usu_chain}" itemValue="CHA" />
+                                </p:selectOneRadio>
+                            </h:panelGrid>
+                        </h:panelGroup>
+                    </div>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

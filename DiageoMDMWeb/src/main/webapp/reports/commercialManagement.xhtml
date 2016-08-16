@@ -1,0 +1,100 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+
+        <ui:composition template="./../WEB-INF/templates/diageoWebTemplate.xhtml">
+            <ui:define name="content">
+                <h:form id="formReportCommercial">
+                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
+                        <h:panelGroup id="pgSegment" style="width: 90%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                            <h:panelGrid columns="4" style="width: 90%">
+                                <h:outputLabel value="#{msg.dis_commercial_management}"/>
+                                <p:selectOneMenu value="#{reportCommercialManagement.db3party}" converter="db3PartyConverter" style="width: 80%"> 
+                                    <f:selectItems value="#{reportCommercialManagement.listdb3party}" var="list" itemLabel="#{list.name3party}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.can_canal}"/>
+                                <p:selectOneMenu style="width: 80%" value="#{reportCommercialManagement.channelSelected}" converter="channelConverter">
+                                    <f:selectItems value="#{reportCommercialManagement.listChannel}" var="cha" itemLabel="#{cha.nameChannel}"/>
+                                    <p:ajax update="formReportCommercial:somSubChannel formReportCommercial:somSegment formReportCommercial:somSubSegment" process="@this" listener="#{reportCommercialManagement.listenerChannel()}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.sub_subcanal}"/>
+                                <p:selectOneMenu id="somSubChannel" style="width: 80%" value="#{reportCommercialManagement.subChannelSelected}" converter="subChannelConverter">
+                                    <f:selectItems value="#{reportCommercialManagement.listSubChannel}" var="subcha" itemLabel="#{subcha.nameSubChannel}"/>
+                                    <p:ajax update="formReportCommercial:somSegment formReportCommercial:somSubSegment" process="@this" listener="#{reportCommercialManagement.listenerSubChannel()}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.seg_segmento}"/>
+                                <p:selectOneMenu id="somSegment" style="width: 80%" converter="segmentoConverter" value="#{reportCommercialManagement.segmentSelected}">
+                                    <f:selectItems value="#{reportCommercialManagement.listSegment}" var="seg" itemLabel="#{seg.nameSegment}"/>
+                                    <p:ajax update="formReportCommercial:somSubSegment" process="@this" listener="#{reportCommercialManagement.listenerSegment()}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.sub_seg_subsegmento}"/>
+                                <p:selectOneMenu id="somSubSegment" style="width: 80%" value="#{reportCommercialManagement.subSegmentSelected}" converter="subSegmentoConverter">
+                                    <f:selectItems value="#{reportCommercialManagement.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+                            <br/>
+                            <p:commandButton value="#{msg.btn_acept}"  actionListener="#{reportCommercialManagement.findOutletChainsBy3PartySegment()}"
+                                             update="@form" process="@all"
+                                             styleClass="button" style="width: 15%"/>
+                            <br/><br/>
+                            <br/>
+                            <h:commandLink>
+                                <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
+                                <p:dataExporter type="xls" target="dtReport" fileName="Report" pageOnly="false" />
+                            </h:commandLink>
+
+                            <h:commandLink>
+                                <p:graphicImage name="/images/iconos/pdf.png" width="5%"/>
+                                <p:dataExporter type="pdf" target="dtReport" fileName="Report" pageOnly="false" />
+                            </h:commandLink>
+
+                            <h:commandLink>
+                                <p:graphicImage name="/images/iconos/csv.png" width="5%"/>
+                                <p:dataExporter type="csv" target="dtReport" fileName="Report" pageOnly="false" />
+                            </h:commandLink>
+                            <p:dataTable id="dtReport" value="#{reportCommercialManagement.listReportCommercial}" var="report"
+                                         style="width: 90%; word-wrap: break-word;" paginator="true" paginatorAlwaysVisible="false"
+                                         rows="20" paginatorPosition="top"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                                <p:column headerText="#{msg.out_code}">
+                                    <h:outputLabel value="#{report.outletCode}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.out_kiernan}">
+                                    <h:outputLabel value="#{report.kiernan}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.athena_code}">
+                                    <h:outputLabel value="#{report.athenaCode}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.out_nit}/#{msg.out_codigo_ean}">
+                                    <h:outputLabel value="#{report.nit}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.out_razon_social}">
+                                    <h:outputLabel value="#{report.businessName}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.can_canal}">
+                                    <h:outputLabel value="#{report.channel}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.sub_subcanal}">
+                                    <h:outputLabel value="#{report.subChannel}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.seg_segmento}">
+                                    <h:outputLabel value="#{report.segment}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.sub_seg_subsegmento}">
+                                    <h:outputLabel value="#{report.subSegment}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGroup>
+                    </div>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+
+    </h:body>
+</html>

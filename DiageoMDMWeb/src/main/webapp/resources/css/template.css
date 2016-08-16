@@ -9,18 +9,20 @@ and open the template in the editor.
 */
 
 .banner{
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 13%;
     background: black;
     left: 0px;
     top: 0px;
+    z-index: 2;
+    //overflow: hidden;
 }
 
 .menu_template{
     top:13%;
     left: 0px;
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 8%;
     z-index: 2;
@@ -39,34 +41,38 @@ and open the template in the editor.
 .barra_lateral_izquierda{
     top: 13%;
     height: 100%;
-    position: absolute;
+    position: fixed;
     z-index: 0;
-    width: 15%;
+    width: 12%;
     left: 0%;
-    border-style: outset;
     border-width: thick;
+    display:inline-block;
 }
 
 .barra_lateral_derecha{
     top: 13%;
     height: 100%;
-    position: absolute;
+    position: fixed;
     z-index: 0;
-    width: 15%;
-    left: 85%;
-    border-style: inset;
+    width: 12%;
+    left: 88%;
     border-width: thick;
 }
 
 .button{ 
     color: white !important;
-    width: 50%;
+    width: 25%;
     background: -webkit-linear-gradient(#0088cc, #149bdf) !important;
+    background: -moz-linear-gradient(#0088cc, #149bdf) !important;
+    background: -o-linear-gradient(#0088cc, #149bdf) !important;
+    background: -ms-linear-gradient(#0088cc, #149bdf) !important;
+    left:40%;
+
 }
 
 .ui-widget, .ui-widget-content{
-    font-size: 87%;
-    font-family: arial;
+    font-size: 12px !important;
+    font-family: verdana !important;
 }
 
 .ui-column-filter{
@@ -76,3 +82,30 @@ and open the template in the editor.
 .ui-fieldset, .ui-fieldset .ui-fieldset-legend {    
     width: 13%;
 }
+
+.capa_div_content{
+    -webkit-transform-origin-y: translate(-50%);   
+}
+
+footer{
+    clear: both;
+    overflow: hidden;
+    margin-top: 20px;
+    background-color: #e3e9ec;
+}
+
+.footer_div{
+    width: 100%;
+    background: black;
+    height: 4%;
+    //position: fixed;
+    overflow: hidden;
+    width: 996px;
+    margin: 0px auto;
+}
+
+label{
+    font-family: verdana !important;
+    font-size: 12px !important;
+}
+

@@ -45,20 +45,27 @@ public class RegionalSearchBean extends DiageoRootBean implements Serializable {
         setRegionalName("");
         setAthenaCode("");
         setRegionalSelected(new Db3partyRegional());
-        setDetail(Boolean.FALSE);
+        setDetail(Boolean.TRUE);
         setListRegional(regionalBeanLocal.findAll());
     }
 
     public void updateRegional() {
         try {
-            getRegionalSelected().setNameRegional(regionalName);
-            getRegionalSelected().setDistri_1(athenaCode);
+            getRegionalSelected().setNameRegional(regionalName.toUpperCase());
+            getRegionalSelected().setDistri_1(athenaCode.toUpperCase());
             regionalBeanLocal.updateRegional(getRegionalSelected());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(RegionalSearchBean.class.getName()).log(Level.SEVERE, null, ex);
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
+    }
+    
+    public void listenerDetail(Db3partyRegional selected){
+        setDetail(Boolean.FALSE);
+        setRegionalSelected(selected);
+        setRegionalName(selected.getNameRegional());
+        setAthenaCode(selected.getDistri_1());        
     }
 
     public String getRegionalName() {

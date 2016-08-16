@@ -1,0 +1,63 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
+
+            <ui:define name="content">
+                <h:form id="formReporUser">
+                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
+                        <h:panelGroup style="width: 90%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                            <h:panelGrid columns="3" style="width: 70%">
+                                <h:outputLabel value="#{msg.usu_perfil}"/>
+                                <p:selectOneMenu value="#{reportUserBean.profile}" converter="perfilConverter">
+                                    <f:selectItems value="#{reportUserBean.listProfile}" var="pro" itemLabel="#{pro.nameProfile}"/>
+                                </p:selectOneMenu>
+                                <p:commandButton value="#{msg.btn_acept}" update="formReporUser:dtUser" styleClass="button" />
+                            </h:panelGrid>
+                            <br/>
+                            <h:commandLink>
+                                <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
+                                <p:dataExporter type="xls" target="dtUser" fileName="Report" pageOnly="false" />
+                            </h:commandLink>
+
+                            <h:commandLink>
+                                <p:graphicImage name="/images/iconos/pdf.png" width="5%"/>
+                                <p:dataExporter type="pdf" target="dtUser" fileName="Report" pageOnly="false" />
+                            </h:commandLink>
+
+                            <h:commandLink>
+                                <p:graphicImage name="/images/iconos/csv.png" width="5%"/>
+                                <p:dataExporter type="csv" target="dtUser" fileName="Report" pageOnly="false" />
+                            </h:commandLink>
+                            <p:dataTable id="dtUser" value="#{reportUserBean.profile.dwUsersList}" var="user" paginatorAlwaysVisible="false" rows="15"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         style="font-size:  90% !important" paginator="true">
+                                <p:column headerText="#{msg.usu_nombres}">
+                                    <h:outputLabel value="#{user.nameUser}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.usu_apellidos}">
+                                    <h:outputLabel value="#{user.lastName}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.usu_tipo_doc}">
+                                    <h:outputLabel value="#{user.documentTypeId.nameDocumentType}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.usu_num_doc}">
+                                    <h:outputLabel value="#{user.documentNumber}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGroup>
+                    </div>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

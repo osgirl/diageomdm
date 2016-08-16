@@ -11,7 +11,12 @@ import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageomdmweb.bean.dto.DistributorPermissionDto;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
+import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
+import com.diageo.diageonegocio.entidades.DbSegments;
+import com.diageo.diageonegocio.entidades.DbSubChannels;
+import com.diageo.diageonegocio.entidades.DbSubSegments;
+import com.diageo.diageonegocio.enums.StateDiageo;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
@@ -20,8 +25,6 @@ import javax.annotation.PostConstruct;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ejb.EJB;
@@ -41,7 +44,7 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
     private boolean verDetalle;
     private DwUsers usuarioSeleccionado;
     private boolean usuarioActivo;
-    private Set<DbPermissionSegments> listDistributorPermissionRemove;
+    
     private String temporalMail;
     /**
      * Contains the records that will be removed
@@ -72,6 +75,18 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
         }
 
     }
+    
+    private void findPermissionSegment(DwUsers usu){
+        List<DbPermissionSegments> list = permissionsegmentBeanLocal.findByUser(usu.getUserId());
+        setListDistributorPermission(new HashSet<DistributorPermissionDto>());
+        for (DbPermissionSegments list1 : list) {
+            DistributorPermissionDto dto = new DistributorPermissionDto();
+            dto.setDistributor(list1.getDb3partyId());
+            Set<DbPermissionSegments> listPS = permissionsegmentBeanLocal.findByUserDistributor(getUsuarioSeleccionado().getUserId(), list1.getDb3partyId().getDb3partyId());
+            dto.setListPermissionSegment(listPS);
+            getListDistributorPermission().add(dto);
+        }
+    }
 
     public void verDetalleUsuario(DwUsers usu) {
         setVerDetalle(Boolean.FALSE);
@@ -80,6 +95,7 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
         setPerfil(usu.getProfileId());
         setTipoDocumento(new DwDocumentTypes(usu.getDocumentTypeId().getDocumentTypeId()));
         setUsuarioActivo(usu.getStateUser().equals(StateEnum.ACTIVE.getState()));
+        setAthenaCode(usu.getDistri1());
         //find permission segment
         List<DbPermissionSegments> list = permissionsegmentBeanLocal.findByUser(usu.getUserId());
         setListDistributorPermission(new HashSet<DistributorPermissionDto>());
@@ -100,11 +116,12 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
                     getUsuarioSeleccionado().setProfileId(getPerfil());
                     getUsuarioSeleccionado().setDocumentTypeId(getTipoDocumento());
                     getUsuarioSeleccionado().setStateUser(isUsuarioActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-                    getUsuarioSeleccionado().setUpdateDate(super.getFechaActual());
+                    getUsuarioSeleccionado().setUpdateDate(super.getCurrentDate());
                     getUsuarioSeleccionado().setNameUser(getUsuarioSeleccionado().getNameUser().toUpperCase());
                     getUsuarioSeleccionado().setLastName(getUsuarioSeleccionado().getLastName().toUpperCase());
                     getUsuarioSeleccionado().setEmailUser(getUsuarioSeleccionado().getEmailUser().toUpperCase());
                     getUsuarioSeleccionado().setDocumentNumber(getUsuarioSeleccionado().getDocumentNumber());
+                    getUsuarioSeleccionado().setDistri1(getAthenaCode().toUpperCase());
                     deletePermissionSegment();
                     setListPermissionSegmentToPersist(new ArrayList<DbPermissionSegments>());
                     for (DistributorPermissionDto ps : getListDistributorPermission()) {
@@ -112,6 +129,7 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
                     }
                     usuarioBean.updateUser(getUsuarioSeleccionado(), getListPermissionSegmentToPersist());
                     showInfoMessage(capturarValor("usu_mis_datos"));
+                    findPermissionSegment(usuarioSeleccionado);
                 } catch (ControllerWebException ex) {
                     LOG.log(Level.SEVERE, ex.getMessage());
                     showErrorMessage(capturarValor("usu_erro_mis_datos"));
@@ -142,17 +160,13 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
         setTipoDocumento(null);
         setUsuarioActivo(Boolean.FALSE);
         setVerDetalle(Boolean.TRUE);
-    }
-
-    public void removePermissionFromPopup(DbPermissionSegments dto) {
-        getListDistributorPermissionRemove().add(dto);
-        getDistributorPermissionDtoSelected().getListPermissionSegment().remove(dto);
-    }
+    }       
 
     public void deletePermissionSegment() {
         for (DbPermissionSegments ps : getListDistributorPermissionRemove()) {
             permissionsegmentBeanLocal.remove(ps);
         }
+        setListDistributorPermissionRemove(new HashSet<DbPermissionSegments>());
     }
 
     @Override
@@ -218,14 +232,6 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
      */
     public void setUsuarioActivo(boolean usuarioActivo) {
         this.usuarioActivo = usuarioActivo;
-    }
-
-    public Set<DbPermissionSegments> getListDistributorPermissionRemove() {
-        return listDistributorPermissionRemove;
-    }
-
-    public void setListDistributorPermissionRemove(Set<DbPermissionSegments> listDistributorPermissionRemove) {
-        this.listDistributorPermissionRemove = listDistributorPermissionRemove;
     }
 
     public List<DistributorPermissionDto> getListDistributorPermissionRemoveUser() {

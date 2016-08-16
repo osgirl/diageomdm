@@ -9,31 +9,40 @@
     <h:head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />        
         <h:outputStylesheet library="css" name="template.css"/>
-        <title>#{msg.diageo}</title>
+        <title>#{msg.tittle_app}</title>
     </h:head>
     <h:body>
-        <f:view locale="#{loginBean.localeApp.language}">
-            <div class="banner">
-                <p:graphicImage value="/resources/images/logo/logoDiageoBlanco.png" style="top: 20px;position: absolute;left: 3%"/>    
-                <h:panelGrid columns="3" width="100%" style="top: 70%;position: absolute">                    
-                    <h:outputLabel value="#{msg.ingreso_exitoso} #{loginBean.formatoFechaIngreso(loginBean.usuario.lastSuccesfulLogin)}" style="color: white;padding: 15%;position: relative;font-size: 12px;font-family: arial"/>
-                    <h:outputLabel value="#{msg.ingreso_fallido} #{loginBean.formatoFechaIngreso(loginBean.usuario.failedLoginDate)}" style="color: white;padding: 15%;position: relative;font-size: 12px;font-family: arial"/>
-                    <h:outputLabel value="#{msg.welcome} #{loginBean.usuario.nameUser} #{loginBean.usuario.lastName}" style="color: white;position: relative;font-size: 15px;left: 40%;font-size: 12px;font-family: arial"/>
-                </h:panelGrid>
-            </div>
-            <div class="menu_template">   
-                <h:form id="formMigaPan">                          
-                    <p:breadCrumb model="#{loginBean.migaPan}"/>
-                </h:form>
-                <ui:include src="menu.xhtml"/>
-            </div>        
-            <div class="barra_lateral_izquierda" style="background: #D9D9D9"/>
-            <div class="barra_lateral_derecha" style="background: #D9D9D9"/>            
-            <div class="body_content">
-                <ui:insert name="content"></ui:insert>                
-            </div>
-            <ui:include src="cambiarIdioma.xhtml"/>
-        </f:view>
+        <div id="content">
+            <f:view locale="#{loginBean.localeApp.language}">
+                <div class="banner">
+                    <p:graphicImage value="/resources/images/logo/logoDiageoBlanco.png" style="top: 20px;position: fixed;left: 3%"/>    
+                    <h:panelGrid columns="3" width="90%" style="top: 10%;position: fixed">                    
+                        <h:outputLabel value="#{msg.ingreso_exitoso} #{loginBean.formatoFechaIngreso(loginBean.usuario.lastSuccesfulLogin)}" style="color: white;left: 5%;position: fixed;font-size: 12px;font-family: arial;z-index: 2"/>
+                        <h:outputLabel value="#{msg.ingreso_fallido} #{loginBean.formatoFechaIngreso(loginBean.usuario.failedLoginDate)}" style="color: white;left: 40%;position: fixed;font-size: 12px;font-family: arial"/>
+                        <h:outputLabel value="#{msg.welcome} #{loginBean.usuario.nameUser} #{loginBean.usuario.lastName}" style="color: white;position: fixed;font-size: 15px;left: 80%;font-size: 12px;font-family: arial"/>
+                    </h:panelGrid>
+                </div>
+                <div class="menu_template">
+                    <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
+                    <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
+                        <p:graphicImage value="/resources/images/status/status.gif" width="20px"/>
+                    </p:dialog>
+                    <h:form id="formMigaPan">
+                        <p:growl id="idGrowl" showDetail="true" globalOnly="true"                             
+                                 autoUpdate="true" life="2500"/>
+                        <p:breadCrumb model="#{loginBean.migaPan}"/>
+                    </h:form>
+                    <ui:include src="menu.xhtml"/>
+                </div>        
+                <div class="barra_lateral_izquierda" style="background: #D9D9D9"/>
+                <div class="barra_lateral_derecha" style="background: #D9D9D9"/>            
+                <div class="body_content">
+                    <div class="capa_div_content">
+                        <ui:insert name="content"></ui:insert>                         
+                    </div>
+                </div>
+                <ui:include src="cambiarIdioma.xhtml"/>
+            </f:view>        
+        </div>       
     </h:body>
-
 </html>

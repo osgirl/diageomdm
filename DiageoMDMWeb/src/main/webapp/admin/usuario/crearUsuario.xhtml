@@ -15,99 +15,96 @@
         <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
             <ui:define name="content">
                 <h:form id="formCrearUsuario">                    
-                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
-                        <h:panelGroup style="width:70%">
-                            <h:panelGrid columns="4" style="width: 70%">
-                                <h:outputLabel value="#{msg.usu_nombres}"/>
-                                <h:panelGroup>
-                                    <p:inputText id="itNombres" label="#{msg.usu_nombres}" style="width: 80%" value="#{gestionarUsuarioCreacion.nombres}" required="true"/>
-                                    <p:message for="itNombres"/>
-                                </h:panelGroup>
-                                <h:outputLabel value="#{msg.usu_apellidos}"/>
-                                <h:panelGroup>
-                                    <p:inputText id="itApellidos" label="#{msg.usu_apellidos}" style="width: 80%" value="#{gestionarUsuarioCreacion.apellidos}" required="true"/>
-                                    <p:message for="itApellidos"/>
-                                </h:panelGroup>
-                                <h:outputLabel value="#{msg.usu_tipo_doc}"/>                        
-                                <p:selectOneMenu style="width: 73%" label="#{msg.usu_tipo_doc}" value="#{gestionarUsuarioCreacion.tipoDocumento}" converter="tipoDocConverter">
-                                    <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tiDoc" itemLabel="#{tiDoc.nameDocumentType}"/>
-                                </p:selectOneMenu>
-                                <h:outputLabel value="#{msg.usu_num_doc}"/>
-                                <h:panelGroup>
-                                    <p:inputText id="itNumDoc" label="#{msg.usu_num_doc}" style="width: 80%" value="#{gestionarUsuarioCreacion.numDoc}" required="true"/>
-                                    <p:message for="itNumDoc"/>
-                                </h:panelGroup>
-                                <h:outputLabel value="#{msg.usu_correo}"/>
-                                <h:panelGroup>
-                                    <p:inputText id="itCorreo" label="#{msg.usu_correo}" style="width: 80%" value="#{gestionarUsuarioCreacion.correo}" required="true"/>
-                                    <p:message for="itCorreo"/>
-                                </h:panelGroup>
-                                <h:outputLabel value="#{msg.usu_perfil}"/>                        
-                                <p:selectOneMenu style="width: 73%" label="#{msg.usu_perfil}" value="#{gestionarUsuarioCreacion.perfil}" converter="perfilConverter">
-                                    <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemLabel="#{per.nameProfile}"/>
-                                    <p:ajax update="formCrearUsuario:pgEditDetail" process="@this" listener="#{gestionarUsuarioCreacion.listenerDetailEdition()}"/>
-                                </p:selectOneMenu>
-                                <h:outputLabel value="#{msg.usu_activo}"/>           
-                                <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{gestionarUsuarioCreacion.activo}"/>
-                            </h:panelGrid>
-                            <h:panelGroup id="pgEditDetail">
-                                <h:panelGroup rendered="#{gestionarUsuarioCreacion.detailEdition}">                                    
-                                    <p:separator/>
-                                    <h:panelGroup id="pgDistri">
-                                        <h:panelGroup id="pgDistriRendered">
-                                            <h:panelGrid columns="3" width="90%">
-                                                <h:outputLabel value="#{msg.out_distribuidor}"/>
-                                                <p:selectOneMenu id="somDistriFather" value="#{gestionarUsuarioCreacion.distributorSelected}" converter="distribuidorConverter">
-                                                    <f:selectItems value="#{gestionarUsuarioCreacion.listDistributor}" var="distri" itemLabel="#{distri.name3party}"/>
-                                                </p:selectOneMenu>
-                                                <p:commandButton value="#{msg.btn_acept}" process="@this somDistriFather" actionListener="#{gestionarUsuarioCreacion.listenerFindDistributorSonByFather()}"
-                                                                 update="formCrearUsuario:tableDistributorSon"/>                                                
-                                            </h:panelGrid>
-                                            <br/><br/>
-                                            <p:dataTable id="tableDistributorSon" value="#{gestionarUsuarioCreacion.listDistributorSon}" var="tableDistriSon"
-                                                         paginatorAlwaysVisible="false" rows="10"  paginator="true"
-                                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
-                                                <p:column headerText="#{msg.out_distribuidor}">
-                                                    <h:outputLabel value="#{tableDistriSon.name3party}"/>
-                                                </p:column>
-                                                <p:column>
-                                                    <p:commandLink value="#{msg.btn_add}" actionListener="#{gestionarUsuarioCreacion.addDistributorToUser(tableDistriSon)}" 
-                                                                   style="color: blue" process="@this" update="formCrearUsuario:tableAllDistributorToEdit formCrearUsuario:mCamPas"/>
-                                                </p:column>
-                                            </p:dataTable>
-                                            <p:separator/>
-                                            <h:outputLabel value="#{msg.usu_add_to_user}"/>
-                                            <br/><br/>
-                                            <p:dataTable id="tableAllDistributorToEdit" value="#{gestionarUsuarioCreacion.listDistributorPermission}"
-                                                         var="tableDistriToSon"
-                                                         paginatorAlwaysVisible="false" rows="10"  paginator="true"
-                                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
-                                                <p:column headerText="#{msg.out_distribuidor}">
-                                                    <h:outputLabel value="#{tableDistriToSon.distributor.name3party}"/>
-                                                </p:column>
-                                                <p:column>
-                                                    <p:commandLink value="#{msg.btn_detalle}" style="color: blue" process="@this" update=":formCreateUserModal"
-                                                                   actionListener="#{gestionarUsuarioCreacion.seeDetailDistributorAddedUser(tableDistriToSon)}"/>
-                                                </p:column>
-                                                <p:column>
-                                                    <p:commandLink value="#{msg.btn_remove}" style="color: blue" update="formCrearUsuario:tableAllDistributorToEdit "
-                                                                   process="@this"
-                                                                   actionListener="#{gestionarUsuarioCreacion.removeDistributorToUser(tableDistriToSon)}"/>
-                                                </p:column>
-                                            </p:dataTable>
-                                        </h:panelGroup>
+                    <h:panelGroup style="width:100%">
+                        <h:panelGrid columns="4" style="width: 100%">
+                            <h:outputLabel value="#{msg.usu_nombres}"/>
+                            <h:panelGroup>
+                                <p:inputText id="itNombres" label="#{msg.usu_nombres}" style="width: 80%" value="#{gestionarUsuarioCreacion.nombres}" required="true"/>
+                                <p:message for="itNombres"/>
+                            </h:panelGroup>
+                            <h:outputLabel value="#{msg.usu_apellidos}"/>
+                            <h:panelGroup>
+                                <p:inputText id="itApellidos" label="#{msg.usu_apellidos}" style="width: 80%" value="#{gestionarUsuarioCreacion.apellidos}" required="true"/>
+                                <p:message for="itApellidos"/>
+                            </h:panelGroup>
+                            <h:outputLabel value="#{msg.usu_tipo_doc}"/>                        
+                            <p:selectOneMenu style="width: 73%" label="#{msg.usu_tipo_doc}" value="#{gestionarUsuarioCreacion.tipoDocumento}" converter="tipoDocConverter">
+                                <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tiDoc" itemLabel="#{tiDoc.nameDocumentType}"/>
+                            </p:selectOneMenu>
+                            <h:outputLabel value="#{msg.usu_num_doc}"/>
+                            <h:panelGroup>
+                                <p:inputText id="itNumDoc" label="#{msg.usu_num_doc}" style="width: 80%" value="#{gestionarUsuarioCreacion.numDoc}" required="true"/>
+                                <p:message for="itNumDoc"/>
+                            </h:panelGroup>
+                            <h:outputLabel value="#{msg.usu_correo}"/>
+                            <h:panelGroup>
+                                <p:inputText id="itCorreo" label="#{msg.usu_correo}" style="width: 80%" value="#{gestionarUsuarioCreacion.correo}" required="true"/>
+                                <p:message for="itCorreo"/>
+                            </h:panelGroup>
+                            <h:outputLabel value="#{msg.usu_perfil}"/>                        
+                            <p:selectOneMenu style="width: 73%" label="#{msg.usu_perfil}" value="#{gestionarUsuarioCreacion.perfil}" converter="perfilConverter">
+                                <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemLabel="#{per.nameProfile}"/>
+                                <p:ajax update="formCrearUsuario:pgEditDetail" process="@this" listener="#{gestionarUsuarioCreacion.listenerDetailEdition()}"/>
+                            </p:selectOneMenu>
+                            <h:outputLabel value="#{msg.athena_code}"/>
+                            <p:inputText style="width: 80%" value="#{gestionarUsuarioCreacion.athenaCode}"/>
+                            <h:outputLabel value="#{msg.usu_activo}"/>           
+                            <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{gestionarUsuarioCreacion.activo}"/>
+                        </h:panelGrid>
+                        <h:panelGroup id="pgEditDetail">
+                            <h:panelGroup rendered="#{gestionarUsuarioCreacion.detailEdition}">                                    
+                                <p:separator/>
+                                <h:panelGroup id="pgDistri">
+                                    <h:panelGroup id="pgDistriRendered">
+                                        <h:panelGrid columns="3" width="90%">
+                                            <h:outputLabel value="#{msg.out_distribuidor}"/>
+                                            <p:selectOneMenu id="somDistriFather" value="#{gestionarUsuarioCreacion.distributorSelected}" converter="distribuidorConverter">
+                                                <f:selectItems value="#{gestionarUsuarioCreacion.listDistributor}" var="distri" itemLabel="#{distri.name3party}"/>
+                                            </p:selectOneMenu>
+                                            <p:commandButton value="#{msg.btn_acept}" process="@this somDistriFather" actionListener="#{gestionarUsuarioCreacion.listenerFindDistributorSonByFather()}"
+                                                             update="formCrearUsuario:tableDistributorSon"/>                                                
+                                        </h:panelGrid>
+                                        <br/><br/>
+                                        <p:dataTable id="tableDistributorSon" value="#{gestionarUsuarioCreacion.listDistributorSon}" var="tableDistriSon"
+                                                     paginatorAlwaysVisible="false" rows="10"  paginator="true"
+                                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                                            <p:column headerText="#{msg.out_distribuidor}">
+                                                <h:outputLabel value="#{tableDistriSon.name3party}"/>
+                                            </p:column>
+                                            <p:column>
+                                                <p:commandLink value="#{msg.btn_add}" actionListener="#{gestionarUsuarioCreacion.addDistributorToUser(tableDistriSon)}" 
+                                                               style="color: blue" process="@this" update="formCrearUsuario:tableAllDistributorToEdit"/>
+                                            </p:column>
+                                        </p:dataTable>
+                                        <p:separator/>
+                                        <h:outputLabel value="#{msg.usu_add_to_user}"/>
+                                        <br/><br/>
+                                        <p:dataTable id="tableAllDistributorToEdit" value="#{gestionarUsuarioCreacion.listDistributorPermission}"
+                                                     var="tableDistriToSon"
+                                                     paginatorAlwaysVisible="false" rows="10"  paginator="true"
+                                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                                            <p:column headerText="#{msg.out_distribuidor}">
+                                                <h:outputLabel value="#{tableDistriToSon.distributor.name3party}"/>
+                                            </p:column>
+                                            <p:column>
+                                                <p:commandLink value="#{msg.btn_detalle}" style="color: blue" process="@this" update=":formCreateUserModal"
+                                                               actionListener="#{gestionarUsuarioCreacion.seeDetailDistributorAddedUser(tableDistriToSon)}"/>
+                                            </p:column>
+                                            <p:column>
+                                                <p:commandLink value="#{msg.btn_remove}" style="color: blue" update="formCrearUsuario:tableAllDistributorToEdit "
+                                                               process="@this"
+                                                               actionListener="#{gestionarUsuarioCreacion.removeDistributorToUser(tableDistriToSon)}"/>
+                                            </p:column>
+                                        </p:dataTable>
                                     </h:panelGroup>
                                 </h:panelGroup>
                             </h:panelGroup>
-                            <br/>                        
-                            <p:commandButton id="cbSend" value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{gestionarUsuarioCreacion.crearUsuario()}"
-                                             styleClass="button" style="width: 10%;left: 35%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"                                        
-                                             /> 
-                            <br/><br/>   
-                            <p:messages id="mCamPas" closable="true" showDetail="true" showSummary="false" globalOnly="true" 
-                                        style="width: 100%;left: 35%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"/>
                         </h:panelGroup>
-                    </div>
+                        <br/>                        
+                        <p:commandButton id="cbSend" value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{gestionarUsuarioCreacion.crearUsuario()}"
+                                         styleClass="button" 
+                                         style="width: 10%;left: 35%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"/>                             
+                    </h:panelGroup>
                 </h:form>
             </ui:define> 
         </ui:composition>

@@ -1,8 +1,10 @@
 
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,15 +27,21 @@ public class NewClass {
         boolean valido = mat.matches();
         System.out.println(valido);
     }
-    
-    public static void main(String[] args) {
-        Set<Integer> set=new HashSet<>();
-        set.add(1);
-        set.add(1);
-        set.add(1);
-        set.add(2);
-        System.out.println(set);
-        
-    }
 
+    public static void main(String[] args) throws InterruptedException {
+//        for (int i = 0; i < 10; i++) {
+//            Thread.sleep(1000);
+//            String token=org.apache.commons.codec.digest.DigestUtils.sha256Hex("jardila@latino-bi.com"+new Date());
+//            System.out.println(token);
+//        }
+        Calendar actual = Calendar.getInstance();
+        Calendar expiration = Calendar.getInstance();
+        expiration.setTime(new Date());        
+        System.out.println(expiration.getTime());
+        expiration.roll(Calendar.DATE, 3);
+        actual.setTime(expiration.getTime());
+        System.out.println(expiration.getTime());
+        int com=actual.compareTo(expiration);
+        System.out.println(com);
+    }
 }

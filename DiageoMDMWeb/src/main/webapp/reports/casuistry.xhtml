@@ -1,0 +1,75 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <body>
+
+        <ui:composition template="./../WEB-INF/templates/diageoWebTemplate.xhtml">
+
+            <ui:define name="content">
+                <h:form id="formReportCommercial">
+                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
+                        <h:panelGroup id="pgSegment" style="width: 90%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                            <h:panelGrid columns="3" style="width: 90%">
+                                <h:outputLabel value="#{msg.m_report_casuistry}"/>
+                                <p:selectOneMenu value="#{reportCasuistryBean.casuistryType}" style="width: 80%"> 
+                                    <f:selectItem itemLabel="Casuistica 1" itemValue="1"/>
+                                </p:selectOneMenu>                                
+                                <p:commandButton value="#{msg.btn_acept}"  actionListener="#{reportCasuistryBean.generateReport()}"
+                                                 update="@form" process="@all"
+                                                 styleClass="button" style="width: 50%"/>
+                            </h:panelGrid>
+                            <br/>
+                            <h:outputLabel value="#{msg.description} #{reportCasuistryBean.description}" escape="false"/>
+                            <br/>
+                            <br/>
+                            <h:commandLink>
+                                <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
+                                <p:dataExporter type="xls" target="dtReport" fileName="Report" pageOnly="false" />
+                            </h:commandLink>
+
+                            <h:commandLink>
+                                <p:graphicImage name="/images/iconos/pdf.png" width="5%"/>
+                                <p:dataExporter type="pdf" target="dtReport" fileName="Report" pageOnly="false" />
+                            </h:commandLink>
+
+                            <h:commandLink>
+                                <p:graphicImage name="/images/iconos/csv.png" width="5%"/>
+                                <p:dataExporter type="csv" target="dtReport" fileName="Report" pageOnly="false" />
+                            </h:commandLink>
+                            <p:dataTable id="dtReport" value="#{reportCasuistryBean.listReport}" var="report"
+                                         style="width: 90%; word-wrap: break-word;" paginator="true" paginatorAlwaysVisible="false"
+                                         rows="20" paginatorPosition="top"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                                <p:column headerText="#{msg.out_code}">
+                                    <h:outputLabel value="#{report.id}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.out_kiernan}">
+                                    <h:outputLabel value="#{report.kiernanId}"/>
+                                </p:column>                                
+                                <p:column headerText="#{msg.out_nit}/#{msg.out_codigo_ean}">
+                                    <h:outputLabel value="#{report.nit}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.out_razon_social}">
+                                    <h:outputLabel value="#{report.outletName}"/>
+                                </p:column>                                
+                                <p:column headerText="#{msg.sub_seg_subsegmento}">
+                                    <h:outputLabel value="#{report.subSegment}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.out_potencial}">
+                                    <h:outputLabel value="#{report.potential}"/>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGroup>
+                    </div>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </body>
+</html>

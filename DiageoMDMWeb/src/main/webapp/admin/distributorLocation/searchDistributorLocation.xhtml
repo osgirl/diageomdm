@@ -13,38 +13,36 @@
             <ui:define name="content">
                 <h:form id="formDistri">
                     <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
-                        <p:dataTable id="dtDistri" value="#{distributorLocationSearch.listDistributor}" var="dis" paginatorAlwaysVisible="false" rows="15"
+                        <p:dataTable id="dtDistri" value="#{regionalSearchBean.listRegional}" var="reg" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"                                     
-                                     rendered="#{distributorLocationSearch.seeDetail}" paginator="true"
+                                     rendered="#{regionalSearchBean.detail}" paginator="true"
                                      style="width: 60%;left: 50%;-webkit-transform: translate(-50%);position: absolute;">
-                            <p:column headerText="#{msg.dis_branch}" filterBy="#{dis.name3party}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{dis.name3party}"/>
+                            <p:column headerText="#{msg.regional}" filterBy="#{reg.nameRegional}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{reg.nameRegional}"/>
                             </p:column>
-                            <p:column headerText="#{msg.dis_commercial_management}" filterBy="#{dis.db3partyIdFather.name3party}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{dis.db3partyIdFather.name3party}"/>
+                            <p:column headerText="#{msg.athena_code}">
+                                <h:outputLabel value="#{reg.distri_1}"/>
                             </p:column>
                             <p:column>
-                                <p:commandLink value="#{msg.btn_detalle}" actionListener="#{distributorLocationSearch.detail(dis)}"
+                                <p:commandLink value="#{msg.btn_detalle}" actionListener="#{regionalSearchBean.listenerDetail(reg)}"
                                                style="color: blue" process="@this" update="@form"/>
                             </p:column>
                         </p:dataTable>                             
 
                         <h:panelGroup id="pgDistri" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
-                            <h:panelGroup id="pgDistriDetail" rendered="#{!distributorLocationSearch.seeDetail}" style="width: 100%">
-                                <h:panelGrid columns="2" style="width: 100%">
-                                    <h:outputLabel value="#{msg.dis_commercial_management}"/>
-                                    <p:selectOneMenu id="somDistri" value="#{distributorLocationSearch.selectedDistributorFather}" converter="distribuidorConverter" style="width: 100%">
-                                        <f:selectItems value="#{distributorLocationSearch.listDistributorFather}" var="distri" itemLabel="#{distri.name3party}"/>
-                                    </p:selectOneMenu>
-                                    <h:outputLabel value="#{msg.m_distri_nombre}" style="width: 30%"/>
-                                    <p:inputText id="itNombre" required="true" label="#{msg.m_distri_nombre}" style="width: 70%" value="#{distributorLocationSearch.name}"/>
+                            <h:panelGroup id="pgDistriDetail" rendered="#{!regionalSearchBean.detail}" style="width: 100%">
+                                <h:panelGrid columns="1" style="width: 100%">
+                                    <h:panelGrid columns="4" style="width: 100%">
+                                        <h:outputLabel value="#{msg.regional}"/>                                    
+                                        <p:inputText id="itNameRegional" label="#{msg.regional}" required="true" value="#{regionalSearchBean.regionalName}" style="width: 85%"/>
+                                        <h:outputLabel value="#{msg.athena_code}"/>                                    
+                                        <p:inputText id="itAthenaCode" label="#{msg.athena_code}" required="true" value="#{regionalSearchBean.athenaCode}" style="width: 85%"/>
+                                    </h:panelGrid>
+                                    <br/>                                
                                 </h:panelGrid>
+                                <br/>                            
                                 <br/>
-                                <br/>
-                                <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{distributorLocationSearch.update()}"
-                                                 styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
-                                <p:commandButton value="#{msg.btn_regresar}" process="@all" update="@form" immediate="true"
-                                                 actionListener="#{distributorLocationSearch.back()}"
+                                <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{regionalSearchBean.updateRegional()}"
                                                  styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
                                 <br/>
                                 <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />

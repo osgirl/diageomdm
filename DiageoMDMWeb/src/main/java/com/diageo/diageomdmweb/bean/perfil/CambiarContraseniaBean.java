@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.validation.constraints.Pattern;
 import org.apache.commons.codec.digest.DigestUtils;
 import com.diageo.admincontrollerweb.beans.UserBeanLocal;
+import javax.faces.bean.ManagedProperty;
 
 /**
  *
@@ -51,6 +52,10 @@ public class CambiarContraseniaBean extends DiageoRootBean implements Serializab
     }
 
     public void cambiarContrasenia() {
+        if(!getLoginBean().getUsuario().getPasswordUser().equals(DigestUtils.md5Hex(getContrasenaActual()))){
+            showWarningMessage(capturarValor("cam_pass_current_pass_dont_match"));
+            return;
+        }
         if (getContrasenaActual().equals(getContrseniaNueva())) {
             setContrasenaActual("");
             setContrseniaNueva("");

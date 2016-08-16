@@ -111,12 +111,24 @@ public class MenuBean extends DiageoRootBean {
             case REPORT_PENDING:
                 getLoginBean().armarMigaPan(capturarValor("m_report"), capturarValor("m_report_outlet_pendding"));
                 return "/reports/pendingReport?faces-redirect=true";
+            case REPORT_USER:
+                getLoginBean().armarMigaPan(capturarValor("m_report"), capturarValor("m_report_user"));
+                return "/reports/userReport?faces-redirect=true";
             case QUERY_SEGMENT_EDIT:
-                getLoginBean().armarMigaPan(capturarValor("m_administrador"), capturarValor("param"),capturarValor("param_segment_query"));
+                getLoginBean().armarMigaPan(capturarValor("m_administrador"), capturarValor("param"), capturarValor("param_segment_query"));
                 return "/admin/parameter/filterQuerySegment?faces-redirect=true";
             case S_CHAIN:
                 getLoginBean().armarMigaPan(capturarValor("m_outlet"), capturarValor("m_chain_search"));
                 return "/outlet/searchChain?faces-redirect=true";
+            case RELATION_CUSTOMER:
+                getLoginBean().armarMigaPan(capturarValor("m_outlet"), capturarValor("rel_cus"));
+                return "/outlet/relationCustomer?faces-redirect=true";
+            case REPORT_COMMERCIAL_MANAGEMENT:
+                getLoginBean().armarMigaPan(capturarValor("m_report"), capturarValor("dis_commercial_management"));
+                return "/reports/commercialManagement?faces-redirect=true";
+            case REPORT_CASUISTRY:
+                getLoginBean().armarMigaPan(capturarValor("m_report"), capturarValor("m_report_casuistry"));
+                return "/reports/casuistry?faces-redirect=true";
         }
         return null;
     }

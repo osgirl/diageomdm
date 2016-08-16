@@ -5,6 +5,7 @@
  */
 package com.diageo.diageomdmweb.bean;
 
+import com.diageo.admincontrollerweb.beans.TemporalLinkBeanLocal;
 import com.diageo.admincontrollerweb.entities.DwModules;
 import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.StateEnum;
@@ -33,11 +34,19 @@ import org.primefaces.model.menu.DefaultMenuModel;
 import org.primefaces.model.menu.MenuElement;
 import org.primefaces.model.menu.MenuModel;
 import com.diageo.admincontrollerweb.beans.UserBeanLocal;
+import com.diageo.admincontrollerweb.entities.DwTemporalLink;
+import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
+import com.diageo.diageomdmweb.mail.EMail;
 import com.diageo.diageonegocio.beans.OutletBeanLocal;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
 import com.diageo.diageonegocio.entidades.DbOutlets;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import com.diageo.diageonegocio.enums.StateOutletChain;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.servlet.ServletContext;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -53,15 +62,19 @@ public class LoginBean extends DiageoRootBean implements Serializable {
      */
     private static final String ESPANOL = "es";
     @EJB
+    private TemporalLinkBeanLocal temporalLinkBeanLocal;
+    @EJB
     private UserBeanLocal usuarioLocal;
     @EJB
     private PermissionsegmentBeanLocal permissionsegmentBeanLocal;
     @EJB
     private OutletBeanLocal outletBeanLocal;
-    @Pattern(regexp = PatternConstant.EMAIL_VALIDADOR, message = "{correo.pattern}")
     private List<DwModules> listModulos;
+    @Pattern(regexp = PatternConstant.EMAIL_VALIDADOR, message = "{correo.pattern}")
     private String user;
     private String password;
+    @Pattern(regexp = PatternConstant.EMAIL_VALIDADOR, message = "{correo.pattern}")
+    private String emailRecover;
     private DwUsers usuario;
     private boolean recordarme;
     private MenuModel migaPan;
@@ -90,12 +103,14 @@ public class LoginBean extends DiageoRootBean implements Serializable {
                 HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
                 setListModulos(getUsuario().getDwModulesList());
                 session.setAttribute(USUARIO, getUsuario());
-                setPassword(null);
+                //setPassword(null);
                 findPermissionSegment(getUsuario().getUserId());
                 if (getUsuario().getFirstEntry().equals(UserEntryEnum.FIRST_ENTRY.getState())) {
                     armarMigaPan(capturarValor("m_perfil"), capturarValor("m_cambiar_contrase"));
                     return "/perfil/cambiarContrasenia/cambiarContrasenia?faces-redirect=true";
                 }
+                System.out.println(getUsuario());
+                System.out.println(getUsuario().getProfileId());
                 if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())) {
                     armarMigaPan(capturarValor("m_administrador"), capturarValor("m_usuario"), capturarValor("m_usuario_consultar"));
                     return "/admin/usuario/consultarUsuario?faces-redirect=true";
@@ -124,7 +139,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
             List<DbOutlets> listTemp = outletBeanLocal.findByDistributor(permi.getDb3partyId().getDb3partyId());
             for (DbOutlets out : listTemp) {
                 if (permi.getSubSegmentId().equals(out.getSubSegmentId().getSubSegmentId())) {
-                    if (out.getStateOutletId().equals(StateOutletChain.PENDING_APPROVAL.getId())) {
+                    if (out.getStatusOutlet().equals(StateOutletChain.PENDING_APPROVAL.getId())) {
                         return true;
                     }
                 }
@@ -148,7 +163,14 @@ public class LoginBean extends DiageoRootBean implements Serializable {
         List<String> listaLlaves = new ArrayList<>();
         for (MenuElement element : elements) {
             DefaultMenuItem dmi = (DefaultMenuItem) element;
-            listaLlaves.add(capturarLlave(dmi.getValue().toString()));
+            String valueLabelProperties = capturarLlave(dmi.getValue().toString());
+            if (valueLabelProperties.isEmpty()) {
+                valueLabelProperties = capturarLlave(dmi.getValue().toString(), ESPANOL);
+            }
+            if (valueLabelProperties.isEmpty()) {
+                valueLabelProperties = capturarLlave(dmi.getValue().toString(), Locale.ENGLISH.getLanguage());
+            }
+            listaLlaves.add(valueLabelProperties);
         }
         FacesContext.getCurrentInstance().getViewRoot().setLocale(getLocaleApp());
         setMigaPan(new BaseMenuModel());
@@ -158,11 +180,41 @@ public class LoginBean extends DiageoRootBean implements Serializable {
         }
     }
 
+    public void recoverPassword() {
+        try {
+            usuarioLocal.findEmail(getEmailRecover());
+            String token = org.apache.commons.codec.digest.DigestUtils.sha256Hex("jardila@latino-bi.com" + getCurrentDate());
+            DwTemporalLink tl = new DwTemporalLink();
+            Calendar expiration = Calendar.getInstance();
+            expiration.setTime(getCurrentDate());
+            expiration.roll(Calendar.DATE, 3);
+            tl.setCreattionDate(getCurrentDate());
+            tl.setToken(token);
+            tl.setEmail(getEmailRecover());
+            tl.setExpiration(expiration.getTime());
+            temporalLinkBeanLocal.createTemporal(tl);
+            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
+            HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+            String ip = req.getServerName();
+            Integer port = req.getServerPort();
+            String url = "http://localhost:9090/" + req.getContextPath() + "/faces/" + "recoverPassword.xhtml?token=" + token;
+            EMail mail = new EMail();
+            String msg = "Cordial saludo, en el siguiente link podrá recuperar su contraseña\n"
+                    + url;
+            mail.send(new String[]{getEmailRecover()}, "Recuperar Contraseña", msg);
+            showInfoMessage("Se envió un link para recuperar la contraseña a su correo.");
+        } catch (ControllerWebException ex) {
+            Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
+            showWarningMessage("El correo ingresado no existe");
+        }
+    }
+
     public void changeLanguage(String idioma) {
         FacesContext.getCurrentInstance().getViewRoot().setLocale(new Locale(idioma));
     }
 
     public String logout() {
+        setLocaleApp(new Locale(ESPANOL));
         HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
         if (request.getAttribute(USUARIO) != null) {
             request.getSession().invalidate();
@@ -195,6 +247,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
 
     @PreDestroy
     public void destroy() {
+        setLocaleApp(new Locale(ESPANOL));
         eliminarObjetos();
     }
 
@@ -368,6 +421,20 @@ public class LoginBean extends DiageoRootBean implements Serializable {
      */
     public void setListPermissionSegment(List<DbPermissionSegments> listPermissionSegment) {
         this.listPermissionSegment = listPermissionSegment;
+    }
+
+    /**
+     * @return the emailRecover
+     */
+    public String getEmailRecover() {
+        return emailRecover;
+    }
+
+    /**
+     * @param emailRecover the emailRecover to set
+     */
+    public void setEmailRecover(String emailRecover) {
+        this.emailRecover = emailRecover;
     }
 
 }

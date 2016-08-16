@@ -9,14 +9,14 @@ and open the template in the editor.
       xmlns:h="http://java.sun.com/jsf/html"
       xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>TODO supply a title</title>
+        <title>#{msg.tittle_app}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         <h:outputStylesheet library="css" name="login.css"/>
     </h:head>
     <h:body>
         <h:form>
             <div class="fondo_imagen">
-                <p:graphicImage value="/resources/images/background/licores.jpg" width="90%" style="opacity: 0.4"/>
+                <p:graphicImage value="/resources/images/background/licores.jpg" width="85%" style="opacity: 0.4"/>
             </div>            
             <div class="capa_login">
                 <br/>
@@ -46,7 +46,7 @@ and open the template in the editor.
                     <p:messages id="mLogin" closable="true" showDetail="true" showSummary="false" />
                 </h:panelGrid>
             </div>
-            <div style="top:90%;width: 50%;position: fixed;left: 50%;text-align: center;transform: translate(-50%,-50%);-webkit-transform: translate(-50%,-50%);">
+            <div style="top:90%;width: 50%;position: fixed;left: 50%;text-align: center;transform: translate(-50%,-50%);">
                 <p:separator />
                 <br/>
                 <h:panelGroup>
@@ -58,17 +58,17 @@ and open the template in the editor.
             </div>            
         </h:form>
         <h:form>
-            <p:dialog header="#{msg.recover_pass}" widgetVar="dlgRecuperar" modal="true" height="130px" width="450px"
+            <p:dialog header="#{msg.recover_pass}" widgetVar="dlgRecuperar" modal="true" height="170px" width="500px"
                       closeOnEscape="true" draggable="false" resizable="false" style="padding:10px;align-content: center ">
+                <h:outputStylesheet library="css" name="template.css"/>
                 <h:panelGroup>
-                    <p:inputText id="itRecuperarMail" label="#{msg.mail}" required="true" style="width: 90%"/>
+                    <p:inputText id="itRecuperarMail" label="#{msg.mail}" required="true" style="width: 90%"
+                                 value="#{loginBean.emailRecover}"/>
                     <p:watermark for="itRecuperarMail" value="#{msg.mail}"/>
                     <br/><br/>
-                    <div style="width: 100%;text-align: center">
-                        <p:commandButton id="cbLogin" value="#{msg.btn_send}" 
+                    <p:commandButton id="cbLogin" value="#{msg.btn_send}" actionListener="#{loginBean.recoverPassword()}"
                                          process="@parent" update="mLogin"
-                                         style="color: white;width: 50%;background: -webkit-linear-gradient(#0088cc, #149bdf);"/>
-                    </div>
+                                         styleClass="button"/>                    
                     <br/>
                     <p:messages id="mLogin" closable="true" showDetail="true" showSummary="false" />
                 </h:panelGroup>

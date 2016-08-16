@@ -208,8 +208,6 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setDepartamentoOutlet(out.getTownId().getDepartamentId());
         setMunicipioOutlet(out.getTownId());
         setCorreoElectronico(out.getEmail());
-        setLineaNegocio(out.getBusinessLine());
-        setCodigoEan(out.getEanCode());
         setPuntoVenta(out.getNumberPdv());
 //        if (out.getIdPotentialManual() == null) {
 //            setPotentialManula(out.getIdPotentialManual());
@@ -223,13 +221,13 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     public void updateOutlet() {
 
         try {
-            if (outletSelect.getStateOutletId().equals(StateOutletChain.OUTLET_TMC.getId())) {
-                outletSelect.setStateOutletId(StateOutletChain.PENDING_APPROVAL.getId());
+            if (outletSelect.getStatusOutlet().equals(StateOutletChain.OUTLET_TMC.getId())) {
+                outletSelect.setStatusOutlet(StateOutletChain.PENDING_APPROVAL.getId());
             } else {
                 if (state.equals("4")) {
                     outletSelect.setRejectMessage(messageReject);
                 }
-                outletSelect.setStateOutletId(Integer.parseInt(state));
+                outletSelect.setStatusOutlet(state);
             }
             outletBeanLocal.updateOutlet(outletSelect);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
@@ -243,13 +241,13 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         for (DbOutlets listaOutlet : listaOutlets) {
             if (listaOutlet.isApprobationMassive()) {
                 if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())) {
-                    listaOutlet.setStateOutletId(StateOutletChain.OUTLET_TMC.getId());
+                    listaOutlet.setStatusOutlet(StateOutletChain.OUTLET_TMC.getId());
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
                     if (stateMasive.equals("3")) {
-                        listaOutlet.setStateOutletId(StateOutletChain.PENDING_APPROVAL.getId());
+                        listaOutlet.setStatusOutlet(StateOutletChain.PENDING_APPROVAL.getId());
                     } else {
                         listaOutlet.setRejectMessage(capturarValor("out_massive_message_reject"));
-                        listaOutlet.setStateOutletId(StateOutletChain.REJECTED.getId());
+                        listaOutlet.setStatusOutlet(StateOutletChain.REJECTED.getId());
                     }
                 }
                 try {
@@ -263,11 +261,11 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         showInfoMessage(capturarValor("sis_approbation_masive"));
     }
 
-    public String labelState(Integer id) {
+    public String labelState(String id) {
         if (id == null) {
             return "";
         }
-        return StateOutletChain.valueOf(id).name();
+        return StateOutletChain.value(id).name();
     }
 
     public void selectAll() {
