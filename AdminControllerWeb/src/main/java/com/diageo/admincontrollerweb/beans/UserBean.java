@@ -53,7 +53,7 @@ public class UserBean extends WebTransaction<DwUsers> implements UserBeanLocal {
                 for (DbPermissionSegments perTemp : per) {
                     perTemp.setUserId(user.getUserId());
                 }
-                permissionsegmentBeanLocal.createPermissionSegmentList(per);
+                permissionsegmentBeanLocal.createPermissionSegmentList(per);                
             }
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getMessage());
@@ -82,7 +82,10 @@ public class UserBean extends WebTransaction<DwUsers> implements UserBeanLocal {
 
     @Override
     public DwUsers findEmail(String correo) throws ControllerWebException {
-        List<DwUsers> listaUsuario = super.findByNamedQuery(DwUsers.class, DwUsers.FIND_MAIL, correo);
+        if(correo==null || !correo.isEmpty()){
+            return null;
+        }
+        List<DwUsers> listaUsuario = super.findByNamedQuery(DwUsers.class, DwUsers.FIND_MAIL, correo.toUpperCase());
         if (listaUsuario == null || listaUsuario.isEmpty()) {
             throw new ControllerWebException("La consulta no arroja resultados");
         }

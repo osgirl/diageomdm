@@ -52,7 +52,11 @@ public enum ModuleEnum {
     QUERY_SEGMENT("query segment"),
     QUERY_SEGMENT_EDIT("query segment edit"),
     C_CHAIN("create chain"),
-    S_CHAIN("search chain");
+    S_CHAIN("search chain"),
+    REPORT_USER("report user"),
+    RELATION_CUSTOMER("relation customer"),
+    REPORT_COMMERCIAL_MANAGEMENT("report commercial management"),
+    REPORT_CASUISTRY("casuistry");
 
     private final String description;
 

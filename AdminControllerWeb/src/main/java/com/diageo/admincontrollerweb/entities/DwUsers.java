@@ -104,6 +104,8 @@ public class DwUsers implements Serializable {
     private DwDocumentTypes documentTypeId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private List<DwPasscontainers> dwPasscontainersList;
+    @Column(name = "DISTRI_1")
+    private String distri1;
 
     public DwUsers() {
     }
@@ -292,6 +294,20 @@ public class DwUsers implements Serializable {
     @Override
     public String toString() {
         return "com.diageo.admincontrollerweb.entities.DwUsers[ userId=" + userId + " ]";
+    }
+
+    /**
+     * @return the distri1
+     */
+    public String getDistri1() {
+        return distri1;
+    }
+
+    /**
+     * @param distri1 the distri1 to set
+     */
+    public void setDistri1(String distri1) {
+        this.distri1 = distri1;
     }
 
 }
