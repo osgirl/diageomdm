@@ -5,13 +5,11 @@
  */
 package com.diageo.admincontrollerweb.beans;
 
-import com.diageo.admincontrollerweb.entities.DwModules;
 import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
@@ -82,7 +80,7 @@ public class UserBean extends WebTransaction<DwUsers> implements UserBeanLocal {
 
     @Override
     public DwUsers findEmail(String correo) throws ControllerWebException {
-        if(correo==null || !correo.isEmpty()){
+        if(correo==null || correo.isEmpty()){
             return null;
         }
         List<DwUsers> listaUsuario = super.findByNamedQuery(DwUsers.class, DwUsers.FIND_MAIL, correo.toUpperCase());
