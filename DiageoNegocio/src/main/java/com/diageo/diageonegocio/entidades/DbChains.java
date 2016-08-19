@@ -86,9 +86,9 @@ public class DbChains implements Serializable {
     @Column(name = "NEIGHBORHOOD")
     private String neighborhood;
     @Column(name = "LATITUDE")
-    private String latitude;
+    private Double latitude;
     @Column(name = "LONGITUDE")
-    private String longitude;
+    private Double longitude;
     @Column(name = "BUSINESS_NAME")
     private String businessName;
     @Column(name = "IS_ACTIVE")
@@ -241,28 +241,28 @@ public class DbChains implements Serializable {
     /**
      * @return the latitude
      */
-    public String getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
     /**
      * @param latitude the latitude to set
      */
-    public void setLatitude(String latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
     /**
      * @return the longitude
      */
-    public String getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
     /**
      * @param longitude the longitude to set
      */
-    public void setLongitude(String longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 

@@ -160,7 +160,7 @@ public class DbSubSegments implements Serializable {
 
     @Override
     public String toString() {
-        return "com.totalseguros.entidadesdiageobusiness.DbSubSegments[ subSegmentId=" + subSegmentId + " ]";
+        return "com.diageonegocio.entidades[ subSegmentId=" + subSegmentId + " ]";
     }
     
 }

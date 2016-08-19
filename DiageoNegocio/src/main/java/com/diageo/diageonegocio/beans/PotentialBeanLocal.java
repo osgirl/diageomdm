@@ -24,5 +24,7 @@ public interface PotentialBeanLocal {
     public List<DbPotentials> findAll();
 
     public List<DbPotentials> findBySubSegment(Integer id);
+
+    public DbPotentials updatePotential(DbPotentials pot) throws DiageoBusinessException;
     
 }

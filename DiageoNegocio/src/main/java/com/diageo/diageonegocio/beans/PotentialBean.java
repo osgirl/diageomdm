@@ -31,6 +31,15 @@ public class PotentialBean extends BusinessTransaction<DbPotentials> implements 
     }
 
     @Override
+    public DbPotentials updatePotential(DbPotentials pot) throws DiageoBusinessException {
+        try {
+            return (DbPotentials) super.update(pot);
+        } catch (Exception e) {
+            throw new DiageoBusinessException(e.getMessage());
+        }
+    }
+
+    @Override
     public DbPotentials findById(Integer id) {
         DbPotentials pot = (DbPotentials) super.searchById(DbPotentials.class, id);
         return pot;

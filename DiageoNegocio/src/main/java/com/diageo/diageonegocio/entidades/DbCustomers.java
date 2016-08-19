@@ -57,6 +57,10 @@ public class DbCustomers implements Serializable {
     private List<DbOutlets> dbOutletsList;
     @ManyToMany(mappedBy = "dbCustomerList")
     private List<DbChains> sbChainsList;
+    @Column(name = "NIT")
+    private String nit;
+    @Column(name = "VERIFICATION_NUMBER")
+    private String verificationNumber;
 
     public DbCustomers() {
     }
@@ -143,6 +147,22 @@ public class DbCustomers implements Serializable {
 
     public void setSbChainsList(List<DbChains> sbChainsList) {
         this.sbChainsList = sbChainsList;
+    }
+
+    public String getNit() {
+        return nit;
+    }
+
+    public void setNit(String nit) {
+        this.nit = nit;
+    }
+
+    public String getVerificationNumber() {
+        return verificationNumber;
+    }
+
+    public void setVerificationNumber(String verificationNumber) {
+        this.verificationNumber = verificationNumber;
     }
 
     @Override

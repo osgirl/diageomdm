@@ -35,10 +35,12 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = DbOutlets.FIND_BY_NEW,
             query = "SELECT e FROM DbOutlets e WHERE e.isNewOutlet = ?1 AND e.subSegmentId.subSegmentId IN(16,22,23,24,32,33,34)"),
     @NamedQuery(name = DbOutlets.FIND_BY_SUB_SEGMENT, query = "SELECT o FROM DbOutlets o WHERE o.subSegmentId.subSegmentId=?1"),
+    @NamedQuery(name = DbOutlets.FIND_BY_BUSINESS_NAME, query = "SELECT o FROM DbOutlets o WHERE o.businessName LIKE ?1 AND o.isFather = ?2"),
     @NamedQuery(name = DbOutlets.FIND_BY_SUB_SEGMENT_3PARTY, query = "SELECT o FROM DbOutlets o "
             + "INNER JOIN o.db3partyList p "
-            + "WHERE o.subSegmentId.subSegmentId=?1 AND p.db3partyId=?2")
-    //    @NamedQuery(name = DbOutlets.FIND_BY_DISTRI, query = "SELECT e FROM DbOutlets e WHERE e.idDistribuidor.idDistribuidor=?1"),
+            + "WHERE o.subSegmentId.subSegmentId=?1 AND p.db3partyId=?2"),
+    @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION, query = "SELECT o FROM DbOutlets o INNER JOIN o.db3partyList p "
+            + "WHERE p.db3partyId=?1 AND o.subSegmentId.subSegmentId IN ?2 AND o.statusMDM=?3"),
 //    @NamedQuery(name = DbOutlets.FIND_BY_DISTRI_SUBSEGMENT, query = "SELECT e FROM Outlet e WHERE e.idDistribuidor.idDistribuidor IN ?1 "
 //            + "AND e.idsubsegmento.idsubSegmento IN ?2 AND e.idStateOutlet.idSateOutlet IN ?3 AND e.isNewOutlet=?4")
 })
@@ -49,6 +51,8 @@ public class DbOutlets implements Serializable {
     public static final String FIND_BY_NEW = "DbOutlets.findByNew";
     public static final String FIND_BY_SUB_SEGMENT = "DbOutlets.findBySubSegment";
     public static final String FIND_BY_SUB_SEGMENT_3PARTY = "DbOutlets.findBySubSegment3Party";
+    public static final String FIND_BY_BUSINESS_NAME = "DbOutlets.findByBusinessName";
+    public static final String FIND_BY_3PARTY_PERMISSION = "DbOutlets.findBy3PartyPermission";
     /**
      * search for distributor, subsegment, is new, and state outlets
      */
@@ -137,13 +141,24 @@ public class DbOutlets implements Serializable {
         @JoinColumn(name = "CUSTOMER_ID", referencedColumnName = "CUSTOMER_ID")})
     @ManyToMany
     private List<DbCustomers> dbCustomersList;
-    @ManyToMany(mappedBy = "dbOutletsList")
+    @JoinTable(name = "DB_OUTLETS_3PARTY", inverseJoinColumns = {
+        @JoinColumn(name = "DB_3PARTY_ID", referencedColumnName = "DB_3PARTY_ID")}, joinColumns = {
+        @JoinColumn(name = "OUTLET_ID", referencedColumnName = "OUTLET_ID")})
+    @ManyToMany
     private List<Db3party> db3partyList;
     @JoinTable(name = "DB_OUTLETS_PHONES", joinColumns = {
         @JoinColumn(name = "OUTLET_ID", referencedColumnName = "OUTLET_ID")}, inverseJoinColumns = {
         @JoinColumn(name = "PHONE_ID", referencedColumnName = "PHONE_ID")})
     @ManyToMany
     private List<DbPhones> dbPhonesList;
+    @Column(name = "WINE")
+    private String wine;
+    @Column(name = "BEER")
+    private String beer;
+    @Column(name = "SPIRTIS")
+    private String spirtis;
+    @Column(name = "STATUS_MDM")
+    private String statusMDM;
     //TRANSIENT
     @Transient
     private boolean disabledButtonEdit;
@@ -429,6 +444,56 @@ public class DbOutlets implements Serializable {
 
     public void setListOutletFather(List<DbOutlets> listOutletFather) {
         this.listOutletFather = listOutletFather;
+    }
+
+    /**
+     * @return the wine
+     */
+    public String getWine() {
+        return wine;
+    }
+
+    /**
+     * @param wine the wine to set
+     */
+    public void setWine(String wine) {
+        this.wine = wine;
+    }
+
+    /**
+     * @return the beer
+     */
+    public String getBeer() {
+        return beer;
+    }
+
+    /**
+     * @param beer the beer to set
+     */
+    public void setBeer(String beer) {
+        this.beer = beer;
+    }
+
+    /**
+     * @return the spirtis
+     */
+    public String getSpirtis() {
+        return spirtis;
+    }
+
+    /**
+     * @param spirtis the spirtis to set
+     */
+    public void setSpirtis(String spirtis) {
+        this.spirtis = spirtis;
+    }
+
+    public String getStatusMDM() {
+        return statusMDM;
+    }
+
+    public void setStatusMDM(String statusMDM) {
+        this.statusMDM = statusMDM;
     }
 
     @Override

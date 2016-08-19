@@ -59,6 +59,8 @@ public class DbPotentials implements Serializable {
     private DbSubSegments subSegmentId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "potentialId")
     private List<DbChains> dbChainsList;
+    @Column(name = "DISTRI_1")
+    private String distri_1;
 
     public DbPotentials() {
     }
@@ -121,6 +123,14 @@ public class DbPotentials implements Serializable {
 
     public void setDbChainsList(List<DbChains> dbChainsList) {
         this.dbChainsList = dbChainsList;
+    }
+
+    public String getDistri_1() {
+        return distri_1;
+    }
+
+    public void setDistri_1(String distri_1) {
+        this.distri_1 = distri_1;
     }
 
     @Override

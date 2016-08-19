@@ -35,5 +35,9 @@ public interface OutletBeanLocal {
     public List<DbOutlets> findBySubSegment(Integer idSubSegment);
 
     public List<DbOutlets> findBySegmentDb3Party(Integer subSegment, Integer db3Party);
+
+    public List<DbOutlets> findByBusinessName(String query);
+
+    public List<DbOutlets> findBy3PartyPermissionSegment(Integer id3party, List<Integer> subSegment,String statusMDM);
     
 }

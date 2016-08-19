@@ -50,15 +50,8 @@ public class Db3party implements Serializable {
     private String name3party;
     @Size(max = 1)
     @Column(name = "IS_FATHER")
-    private String isFather;
-    
-    
-    
-
-    @JoinTable(name = "DB_OUTLETS_3PARTY", joinColumns = {
-        @JoinColumn(name = "DB_3PARTY_ID", referencedColumnName = "DB_3PARTY_ID")}, inverseJoinColumns = {
-        @JoinColumn(name = "OUTLET_ID", referencedColumnName = "OUTLET_ID")})
-    @ManyToMany
+    private String isFather;    
+    @ManyToMany(mappedBy = "db3partyList")
     private List<DbOutlets> dbOutletsList;
 
     @JoinColumn(name = "DB_3PARTY_REGIONAL_ID", referencedColumnName = "DB_3PARTY_REGIONAL_ID")

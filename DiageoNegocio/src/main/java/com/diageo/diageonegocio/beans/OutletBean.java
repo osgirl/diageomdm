@@ -60,7 +60,11 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
 
     @Override
     public List<DbOutlets> listOutletNew(String isNew) {
-        return super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_NEW, isNew);
+        List<DbOutlets> list = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_NEW, isNew);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
     }
 
     @Override
@@ -106,6 +110,25 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
     public List<DbOutlets> findBySegmentDb3Party(Integer subSegment, Integer db3Party) {
         List<DbOutlets> list
                 = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_SUB_SEGMENT_3PARTY, subSegment, db3Party);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
+
+    @Override
+    public List<DbOutlets> findByBusinessName(String query) {
+        query = query.toUpperCase();
+        List<DbOutlets> list = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_BUSINESS_NAME, "%" + query + "%", "1");
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
+
+    @Override
+    public List<DbOutlets> findBy3PartyPermissionSegment(Integer id3party, List<Integer> subSegment,String statusMDM) {
+        List<DbOutlets> list = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_3PARTY_PERMISSION, id3party, subSegment,statusMDM);
         if (list == null) {
             return new ArrayList<>();
         }
