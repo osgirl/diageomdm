@@ -87,8 +87,8 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
     private Db3party db3PartySelected;
     private String address;
     private String neighborhood;
-    private String latitude;
-    private String longitude;
+    private Double latitude;
+    private Double longitude;
     private String phoneAdd;
     private String status;
     private boolean activeChain;
@@ -146,8 +146,8 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
         setActiveChain(Boolean.FALSE);
         setNeighborhood(EMPTY_FIELD);
         setAddress(EMPTY_FIELD);
-        setLatitude(EMPTY_FIELD);
-        setLongitude(EMPTY_FIELD);
+        setLatitude(null);
+        setLongitude(null);
     }
 
     public void saveChain() {
@@ -163,8 +163,8 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
             chain.setDbTownId(getTownSelected());
             chain.setIsActive(isActiveChain() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
             chain.setKiernanId(getKiernan().toUpperCase());
-            chain.setLatitude(getLatitude().toUpperCase());
-            chain.setLongitude(getLongitude().toUpperCase());
+            chain.setLatitude(getLatitude());
+            chain.setLongitude(getLongitude());
             chain.setNameChain(getChainName().toUpperCase());
             chain.setNeighborhood(getNeighborhood().toUpperCase());
             chain.setPotentialId(getPotentialSelected());
@@ -443,28 +443,28 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
     /**
      * @return the latitude
      */
-    public String getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
     /**
      * @param latitude the latitude to set
      */
-    public void setLatitude(String latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
     /**
      * @return the longitude
      */
-    public String getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
     /**
      * @param longitude the longitude to set
      */
-    public void setLongitude(String longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 

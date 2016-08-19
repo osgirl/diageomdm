@@ -24,7 +24,7 @@ public class ReportOutletBean extends OutletConsultarBean {
     }
 
     public void filerListOutlet() {
-        setListaOutlets(outletBeanLocal.findBySubSegment(getSubSegmentoSeleccionado().getSubSegmentId()));
+        //setListaOutlets(outletBeanLocal.findBySubSegment(getSubSegmentoSeleccionado().getSubSegmentId()));
     }
 
 }

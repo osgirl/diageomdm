@@ -10,12 +10,17 @@
         <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
 
             <ui:define name="content">
+                <style>
+                    .ui-messages-error, .ui-message-error {
+                        width: 68%;
+                    }
+                </style>
                 <h:form id="formCanal">
-                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
+                    <p:fieldset legend="#{msg.m_canal}" style="width: 90%">
+                        <br/>
                         <p:dataTable id="dtChannel" value="#{consultarChannelBean.listaChannels}" var="cha" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     rendered="#{consultarChannelBean.verDetalle}" paginator="true"
-                                     style="width: 60%;left: 50%;-webkit-transform: translate(-50%);position: absolute;">
+                                     rendered="#{consultarChannelBean.verDetalle}" paginator="true">
                             <p:column headerText="#{msg.can_nombre}">
                                 <h:outputLabel value="#{cha.nameChannel}"/>
                             </p:column>
@@ -33,27 +38,31 @@
                         </p:dataTable>
 
 
-                        <h:panelGroup id="pgChannel" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">                            
+                        <h:panelGroup id="pgChannel">                            
                             <h:panelGroup id="pgChaDetalle" rendered="#{!consultarChannelBean.verDetalle}" style="width: 100%">
                                 <h:panelGrid columns="2" style="width: 100%">
                                     <h:outputLabel value="#{msg.can_nombre}" style="width: 30%"/>
-                                    <p:inputText id="itNombre" value="#{consultarChannelBean.nombreChannel}" required="true" label="#{msg.can_nombre}" style="width: 70%"/>
+                                    <h:panelGroup>
+                                        <p:inputText id="itNombre" value="#{consultarChannelBean.nombreChannel}" required="true" label="#{msg.can_nombre}" style="width: 70%"/>
+                                        <p:message for="itNombre"/>
+                                    </h:panelGroup>
                                     <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
-                                    <p:inputText id="itAthenaCode" value="#{consultarChannelBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"/>
+                                    <h:panelGroup>
+                                        <p:inputText id="itAthenaCode" value="#{consultarChannelBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"/>
+                                        <p:message for="itAthenaCode"/>
+                                    </h:panelGroup>
                                     <h:outputLabel value="#{msg.estado}"/>
                                     <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{consultarChannelBean.estado}"/>
                                 </h:panelGrid>
                                 <br/><br/>
                                 <p:commandButton value="#{msg.btn_send}" process="@this pgChannel" update="pgChannel" 
                                                  actionListener="#{consultarChannelBean.modificarChannel()}"
-                                                 styleClass="button" style="width: 30%;"/>
+                                                 styleClass="button" style="width: 20%;left: 0%"/>
                                 <p:commandButton value="#{msg.btn_regresar}" immediate="true" actionListener="#{consultarChannelBean.regresar()}" update="@form"
-                                                 styleClass="button" style="width: 30%;left: 10%"/> 
-                                <p:messages closable="true" showDetail="true" showSummary="false" globalOnly="false"/>
+                                                 styleClass="button" style="width: 20%;left: 0%"/> 
                             </h:panelGroup>                            
                         </h:panelGroup>
-
-                    </div>
+                    </p:fieldset>
                 </h:form>
             </ui:define>
 

@@ -23,8 +23,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -34,6 +37,7 @@ import javax.faces.view.ViewScoped;
 @ViewScoped
 public class ReportCommercialManagement extends DiageoRootBean implements Serializable {
 
+    
     @EJB
     private ChainBeanLocal chainBeanLocal;
     @EJB
@@ -61,7 +65,7 @@ public class ReportCommercialManagement extends DiageoRootBean implements Serial
     }
 
     @PostConstruct
-    public void init() {        
+    public void init() {
         setListdb3party(partyBeanLocal.searchAllDistributor());
         setDb3party(getListdb3party().get(0));
         setListChannel(channelBeanLocal.findAllChannel());
@@ -124,6 +128,7 @@ public class ReportCommercialManagement extends DiageoRootBean implements Serial
                 dto.setSegment(outlet.getSubSegmentId().getSegmentId().getNameSegment());
                 dto.setSubChannel(outlet.getSubSegmentId().getSegmentId().getSubChannelId().getNameSubChannel());
                 dto.setSubSegment(outlet.getSubSegmentId().getNameSubsegment());
+                dto.setSource(OUTLET);
                 outletTemp.add(dto);
             }
         }
@@ -145,10 +150,22 @@ public class ReportCommercialManagement extends DiageoRootBean implements Serial
                 dto.setSegment(chain.getSubSegmentId().getSegmentId().getNameSegment());
                 dto.setSubChannel(chain.getSubSegmentId().getSegmentId().getSubChannelId().getNameSubChannel());
                 dto.setSubSegment(chain.getSubSegmentId().getNameSubsegment());
+                dto.setSource(CHAIN);
                 chainTemp.add(dto);
             }
         }
         return chainTemp;
+    }
+
+    public String detail(CommercialManagementDto dto) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        if (dto.getSource().equals(OUTLET)) {
+            session.setAttribute(OUTLET, dto.getOutletCode());
+            return "/outlet/consultarOutlet?faces-redirect=true";
+        }
+        session.setAttribute(CHAIN, dto.getOutletCode());
+        return "/outlet/searchChain?faces-redirect=true";
     }
 
     /**

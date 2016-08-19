@@ -12,14 +12,15 @@
 
             <ui:define name="content">
                 <h:form id="formReporUser">
-                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
-                        <h:panelGroup style="width: 90%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                    <p:fieldset legend="#{msg.report}" style="width: 90%">
+                        <br/>
+                        <h:panelGroup >
                             <h:panelGrid columns="3" style="width: 70%">
                                 <h:outputLabel value="#{msg.usu_perfil}"/>
                                 <p:selectOneMenu value="#{reportUserBean.profile}" converter="perfilConverter">
                                     <f:selectItems value="#{reportUserBean.listProfile}" var="pro" itemLabel="#{pro.nameProfile}"/>
                                 </p:selectOneMenu>
-                                <p:commandButton value="#{msg.btn_acept}" update="formReporUser:dtUser" styleClass="button" />
+                                <p:commandButton value="#{msg.btn_acept}" update="formReporUser:dtUser" styleClass="button"  style="width: 60%"/>
                             </h:panelGrid>
                             <br/>
                             <h:commandLink>
@@ -53,7 +54,7 @@
                                 </p:column>
                             </p:dataTable>
                         </h:panelGroup>
-                    </div>
+                    </p:fieldset>
                 </h:form>
             </ui:define>
 

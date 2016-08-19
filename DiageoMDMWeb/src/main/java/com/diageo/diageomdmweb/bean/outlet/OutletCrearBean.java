@@ -5,6 +5,7 @@
  */
 package com.diageo.diageomdmweb.bean.outlet;
 
+import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
@@ -14,16 +15,15 @@ import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
 import com.diageo.diageonegocio.beans.OcsBeanLocal;
 import com.diageo.diageonegocio.beans.OutletBeanLocal;
 import com.diageo.diageonegocio.beans.PhonesBeanLocal;
-import com.diageo.diageonegocio.beans.PotentialBeanLocal;
 import com.diageo.diageonegocio.beans.SegmentBeanLocal;
 import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
 import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
 import com.diageo.diageonegocio.beans.TypePhoneBeanLocal;
 import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.DbChannels;
-import com.diageo.diageonegocio.entidades.DbClusters;
 import com.diageo.diageonegocio.entidades.DbDepartaments;
 import com.diageo.diageonegocio.entidades.DbOcs;
+import com.diageo.diageonegocio.entidades.DbOutlets;
 import com.diageo.diageonegocio.entidades.DbPhones;
 import com.diageo.diageonegocio.entidades.DbPotentials;
 import com.diageo.diageonegocio.entidades.DbSegments;
@@ -31,9 +31,14 @@ import com.diageo.diageonegocio.entidades.DbSubChannels;
 import com.diageo.diageonegocio.entidades.DbSubSegments;
 import com.diageo.diageonegocio.entidades.DbTowns;
 import com.diageo.diageonegocio.entidades.DbTypePhones;
+import com.diageo.diageonegocio.enums.StateDiageo;
+import com.diageo.diageonegocio.enums.StateOutletChain;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -52,7 +57,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     @EJB
     protected OutletBeanLocal outletBeanLocal;
     @Inject
-    protected DiageoApplicationBean diageoApplicationBean;
+    private DiageoApplicationBean diageoApplicationBean;
     @EJB
     protected ChannelBeanLocal channelBeanLocal;
     @EJB
@@ -89,6 +94,8 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     private List<DbPhones> listPhones;
     private List<DbTypePhones> listTypePhone;
     private List<Db3party> list3Party;
+    private List<Db3party> list3PartyToDeploy;
+    private List<DbOcs> listOcs;
     private String email;
     private String nit;
     private String verificationNumber;
@@ -107,6 +114,8 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     private boolean wine;
     private boolean beer;
     private boolean spirtis;
+    private boolean isFather;
+    private DbOutlets father;
 
     /**
      * Creates a new instance of OutletVistaBean
@@ -118,16 +127,91 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     public void init() {
         setListChannel(channelBeanLocal.findAllChannel());
         setListTypePhone(typePhoneBeanLocal.findAll());
-        setList3Party(db3PartyBeanLocal.searchAllDistributor());
+        setList3PartyToDeploy(db3PartyBeanLocal.searchAllDistributor());
+        setListOcs(ocsBeanLocal.findAll());
         initFields();
     }
 
     public void initFields() {
-
+        setNewPhone(new DbPhones());
+        setListPhones(new ArrayList<DbPhones>());
+        setDepartamentSelected(getDiageoApplicationBean().getListaDepartamento().get(0));
+        setTownSelected(getDepartamentSelected().getDbTownsList().get(0));
+        setChannelSelected(getListChannel().get(0));
+        setListSubChannel(getChannelSelected().getDbSubChannelsList());
+        setSubChannelSelected(getListSubChannel().get(0));
+        setListSegment(getSubChannelSelected().getDbSegmentsList());
+        setSegmentSelected(getListSegment().get(0));
+        setListSubSegment(getSegmentSelected().getDbSubSegmentsList());
+        setSubSegmentSelected(getListSubSegment().get(0));
+        setListPotential(getSubSegmentSelected().getDbPotentialsList());
+        setPotentialSelected(getListPotential().get(0));
+        setDb3PartySelected(getList3PartyToDeploy().get(0));
+        setFather(new DbOutlets());
+        setList3Party(new ArrayList<Db3party>());
+        setAddress(EMPTY_FIELD);
+        setBeer(Boolean.FALSE);
+        setBusinessName(EMPTY_FIELD);
+        setEmail(EMPTY_FIELD);
+        setIsFather(Boolean.FALSE);
+        setKiernanId(EMPTY_FIELD);
+        setLatitude(null);
+        setLongitude(null);
+        setNeighborhood(EMPTY_FIELD);
+        setNit(EMPTY_FIELD);
+        setOutletName(EMPTY_FIELD);
+        setPointSale(EMPTY_FIELD);
+        setSpirtis(Boolean.FALSE);
+        setVerificationNumber(EMPTY_FIELD);
+        setWebsite(EMPTY_FIELD);
+        setWine(Boolean.FALSE);
     }
 
     public void saveOutlet() {
+        try {
+            DbOutlets outlet = new DbOutlets();
+            outlet.setAddress(getAddress().toUpperCase());
+            outlet.setBusinessName(getBusinessName().toUpperCase());
+            outlet.setDb3partyList(getList3Party());
+            cleanIdPhones();
+            outlet.setDbPhonesList(getListPhones());
+            outlet.setEmail(getEmail().toUpperCase());
+            outlet.setIsFather(isIsFather() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+            //outlet.setIsNewOutlet(StateDiageo.ACTIVO.getId());
+            outlet.setKiernanId(getKiernanId().toUpperCase());
+            outlet.setLatitude(getLatitude());
+            outlet.setLongitude(getLongitude());
+            outlet.setNeighborhood(getNeighborhood().toUpperCase());
+            outlet.setNit(getNit().toUpperCase());
+            outlet.setNumberPdv(getPointSale().toUpperCase());
+            outlet.setOcsPrimary(getOcsPrimary());
+            outlet.setOcsSecondary(getOcsSecondary());
+            if (getFather() != null && getFather().getOutletId() != null) {
+                outlet.setOutletIdFather(getFather());
+            }
+            outlet.setOutletName(getOutletName().toUpperCase());
+            outlet.setPotentialId(getPotentialSelected());
+            outlet.setSubSegmentId(getSubSegmentSelected());
+            outlet.setTownId(getTownSelected());
+            outlet.setTypeOutlet(getTypeOutlet().toUpperCase());
+            outlet.setVerificationNumber(getVerificationNumber());
+            outlet.setWebsite(getWebsite().toUpperCase());
+            outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+            outlet.setStatusOutlet(StateOutletChain.ACTIVE.getId());
+            outletBeanLocal.createOutlet(outlet);
+            showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+            initFields();
+        } catch (DiageoBusinessException ex) {
+            Logger.getLogger(OutletCrearBean.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
+        }
 
+    }
+
+    public List<DbOutlets> completeChainFather(String query) {
+        return outletBeanLocal.findByBusinessName(query);
     }
 
     public void addPhone() {
@@ -148,8 +232,34 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         }
     }
 
+    public void add3Party() {
+        for (Db3party par : getList3Party()) {
+            if (par.equals(getDb3PartySelected())) {
+                showWarningMessage(capturarValor("out_msg_3party_exist"));
+                return;
+            }
+        }
+        getList3Party().add(getDb3PartySelected());
+    }
+
+    /**
+     * A cada telefono se le asigna un id temporal, para que pueda ser eliminado
+     * mientras se crea
+     */
+    protected void cleanIdPhones() {
+        for (DbPhones phone : getListPhones()) {
+            if (phone.isDeleteId()) {
+                phone.setPhoneId(null);
+            }
+        }
+    }
+
     public void deletePhone(DbPhones phone) {
         getListPhones().remove(phone);
+    }
+
+    public void delete3Pary(Db3party party) {
+        getList3Party().remove(party);
     }
 
     public void listenerChannel() {
@@ -709,6 +819,69 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
      */
     public void setSpirtis(boolean spirtis) {
         this.spirtis = spirtis;
+    }
+
+    /**
+     * @return the listOcs
+     */
+    public List<DbOcs> getListOcs() {
+        return listOcs;
+    }
+
+    /**
+     * @param listOcs the listOcs to set
+     */
+    public void setListOcs(List<DbOcs> listOcs) {
+        this.listOcs = listOcs;
+    }
+
+    /**
+     * @return the diageoApplicationBean
+     */
+    public DiageoApplicationBean getDiageoApplicationBean() {
+        return diageoApplicationBean;
+    }
+
+    /**
+     * @return the isFather
+     */
+    public boolean isIsFather() {
+        return isFather;
+    }
+
+    /**
+     * @param isFather the isFather to set
+     */
+    public void setIsFather(boolean isFather) {
+        this.isFather = isFather;
+    }
+
+    /**
+     * @return the father
+     */
+    public DbOutlets getFather() {
+        return father;
+    }
+
+    /**
+     * @param father the father to set
+     */
+    public void setFather(DbOutlets father) {
+        this.father = father;
+    }
+
+    /**
+     * @return the list3PartyToDeploy
+     */
+    public List<Db3party> getList3PartyToDeploy() {
+        return list3PartyToDeploy;
+    }
+
+    /**
+     * @param list3PartyToDeploy the list3PartyToDeploy to set
+     */
+    public void setList3PartyToDeploy(List<Db3party> list3PartyToDeploy) {
+        this.list3PartyToDeploy = list3PartyToDeploy;
     }
 
 }

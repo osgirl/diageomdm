@@ -12,17 +12,18 @@
 
             <ui:define name="content">
                 <h:form id="formCanal">
-                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
-                        <h:panelGroup id="pgChaDetalle" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                    <p:fieldset legend="#{msg.m_canal_sub}" style="width: 90%">
+                        <br/>
+                        <h:panelGroup id="pgChaDetalle" >
                             <h:panelGrid columns="2" style="width: 100%">
                                 <h:outputLabel value="#{msg.sub_can_nombre}" style="width: 30%"/>
                                 <p:inputText id="itNombre" value="#{subChannelCrear.nombreSubChannel}" required="true" label="#{msg.sub_can_nombre}" style="width: 70%"/>                             
-                                
+
                                 <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
                                 <p:inputText id="itAthenaCode" value="#{subChannelCrear.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"/>                             
-                                
+
                                 <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
-                                <p:selectOneMenu value="#{subChannelCrear.channel}" converter="channelConverter">
+                                <p:selectOneMenu value="#{subChannelCrear.channel}" converter="channelConverter" style="width: 67%">
                                     <f:selectItems value="#{subChannelCrear.listaChannel}" var="cha" itemLabel="#{cha.nameChannel}"/>
                                 </p:selectOneMenu>
                                 <h:outputLabel value="#{msg.estado}"/>
@@ -31,12 +32,10 @@
                             <br/>
                             <br/>
                             <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" 
-                                             actionListener="#{subChannelCrear.guardarSubCanal()}"
-                                             styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
+                                             actionListener="#{subChannelCrear.guardarSubCanal()}" styleClass="button"/>
                             <br/>
-                            <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />
                         </h:panelGroup>
-                    </div>
+                    </p:fieldset>
                 </h:form>
             </ui:define>
 

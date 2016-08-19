@@ -7,7 +7,6 @@ package com.diageo.diageomdmweb.bean.outlet;
 
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
-import com.diageo.diageonegocio.beans.PhonesBeanLocal;
 import com.diageo.diageonegocio.entidades.DbChains;
 import com.diageo.diageonegocio.entidades.DbPhones;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
@@ -17,9 +16,10 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -46,6 +46,15 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         setSeeDetail(Boolean.TRUE);
         super.init();
         setChainsList(chainBeanLocal.findAllChains());
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        Object obj = session.getAttribute(CHAIN);
+        if (obj != null) {
+            setSeeDetail(Boolean.FALSE);
+            Integer id = Integer.parseInt(obj + "");
+            DbChains chain = chainBeanLocal.findById(id);
+            detailChain(chain);
+        }
     }
 
     public void detailChain(DbChains chain) {
@@ -92,8 +101,8 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             chain.setDbTownId(getTownSelected());
             chain.setIsActive(isActiveChain() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
             chain.setKiernanId(getKiernan().toUpperCase());
-            chain.setLatitude(getLatitude().toUpperCase());
-            chain.setLongitude(getLongitude().toUpperCase());
+            chain.setLatitude(getLatitude());
+            chain.setLongitude(getLongitude());
             chain.setNameChain(getChainName().toUpperCase());
             chain.setNeighborhood(getNeighborhood().toUpperCase());
             chain.setPotentialId(getPotentialSelected());

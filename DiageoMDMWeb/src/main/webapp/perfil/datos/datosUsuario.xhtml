@@ -10,21 +10,22 @@
             <ui:define name="content">
                 <h:form id="formMisDatos">
                     <p:fieldset legend="#{msg.fs_account}" style="width: 90%">
+                        <br/>
                         <h:panelGrid columns="4" style="width: 90%">
 
                             <h:outputLabel value="#{msg.usu_tipo_doc}" style="width: 20%"/>
-                            <h:outputLabel value="#{myDataBean.tipoDocumento}" style="width: 75%"/>                            
+                            <h:outputLabel value="&lt;b&gt;#{myDataBean.tipoDocumento}&lt;/b&gt;" style="width: 75%" escape="false"/>                            
 
 
                             <h:outputLabel value="#{msg.usu_num_doc}" style="width: 20%"/>
-                            <h:outputLabel value="#{myDataBean.numDocumento}" style="width: 75%"/>
+                            <h:outputLabel value="#{myDataBean.numDocumento}" style="width: 75%" escape="false"/>
 
 
                             <h:outputLabel value="#{msg.usu_correo}" style="width: 25%"/>
-                            <h:outputLabel value="#{myDataBean.correo}" style="width: 75%"/>
+                            <h:outputLabel value="#{myDataBean.correo}" style="width: 75%" escape="false"/>
 
                             <h:outputLabel value="#{msg.usu_perfil}" style="width: 25%"/>
-                            <h:outputLabel value="#{myDataBean.perfil}" style="width: 75%"/>
+                            <h:outputLabel value="#{myDataBean.perfil}" style="width: 75%" escape="false"/>
 
                             <h:outputLabel value="#{msg.usu_nombres}" style="width: 25%"/>
                             <h:panelGroup>

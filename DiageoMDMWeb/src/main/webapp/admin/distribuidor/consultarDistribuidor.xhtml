@@ -12,11 +12,11 @@
 
             <ui:define name="content">
                 <h:form id="formDistri">
-                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
+                    <p:fieldset legend="#{msg.out_distribuidor}" style="width: 90%">
+                        <br/>
                         <p:dataTable id="dtDistri" value="#{distributorSearch.listDistributor}" var="dis" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"                                     
-                                     rendered="#{distributorSearch.seeDetail}" paginator="true"
-                                     style="width: 60%;left: 50%;-webkit-transform: translate(-50%);position: absolute;">
+                                     rendered="#{distributorSearch.seeDetail}" paginator="true">
                             <p:column headerText="#{msg.m_distri_nombre}" filterBy="#{dis.name3party}" filterMatchMode="startsWith">
                                 <h:outputLabel value="#{dis.name3party}"/>
                             </p:column>
@@ -26,16 +26,15 @@
                             </p:column>
                         </p:dataTable>                             
 
-                        <h:panelGroup id="pgDistri" style="width: 90%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                        <h:panelGroup id="pgDistri">
                             <h:panelGroup id="pgDistriDetail" rendered="#{!distributorSearch.seeDetail}" style="width: 100%">
                                 <h:panelGrid columns="4" style="width: 100%">
                                     <h:outputLabel value="#{msg.m_distri_nombre}" style="width: 30%"/>
-                                    <p:inputText id="itNombre" required="true" value="#{distributorSearch.name}" 
-                                                 label="#{msg.m_distri_nombre}" style="width: 90%"/>
-
-                                    <h:outputLabel value="#{msg.admin}" style="width: 30%"/>
-                                    <p:inputText id="itNombreAdmin" required="false" value="#{distributorSearch.nameAdmin}"
-                                                 label="#{msg.admin}" style="width: 90%"/>
+                                    <h:panelGroup>
+                                        <p:inputText id="itNombre" required="true" value="#{distributorSearch.name}" 
+                                                     label="#{msg.m_distri_nombre}" style="width: 90%"/>
+                                        <p:message for="itNombre"/>
+                                    </h:panelGroup>
 
                                     <h:outputLabel value="#{msg.regional}" style="width: 30%"/>
                                     <p:selectOneMenu id="somRegional" value="#{distributorSearch.db3partyRegionalSelected}" converter="regionalConverter" label="#{msg.regional}"
@@ -45,8 +44,11 @@
                                     </p:selectOneMenu>
 
                                     <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
-                                    <p:inputText id="itAthenaCode" required="true" value="#{distributorSearch.athenaCode}"
-                                                 label="#{msg.athena_code}" style="width: 90%"/>
+                                    <h:panelGroup>
+                                        <p:inputText id="itAthenaCode" required="true" value="#{distributorSearch.athenaCode}"
+                                                     label="#{msg.athena_code}" style="width: 90%"/>
+                                        <p:message for="itAthenaCode"/>
+                                    </h:panelGroup>
 
                                     <h:outputLabel value="#{msg.is_father}" style="width: 30%"/>
                                     <p:selectBooleanCheckbox value="#{distributorSearch.isFather}"/>
@@ -69,19 +71,16 @@
                                 <br/>
                                 <br/>
                                 <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{distributorSearch.update()}"
-                                                 styleClass="button" style="width: 40%;"/>
+                                                 styleClass="button" style="left: 0%;"/>
                                 <p:commandButton value="#{msg.btn_regresar}" process="@all" update="@form" immediate="true"
                                                  actionListener="#{distributorSearch.back()}"
-                                                 styleClass="button" style="width: 40%;"/>
-                                <br/>
-                                <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />
+                                                 styleClass="button" style="left: 0%;"/>
+                                <br/>                            
                             </h:panelGroup>
                         </h:panelGroup>
-                    </div>
+                    </p:fieldset>
                 </h:form>
             </ui:define>
-
         </ui:composition>
-
     </body>
 </html>

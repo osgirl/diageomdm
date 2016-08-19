@@ -33,22 +33,21 @@ import javax.faces.view.ViewScoped;
 @ViewScoped
 public class PotentialCreateBean extends DiageoRootBean implements Serializable {
 
-    private static final String NEW_CLIENT = "N";
     @EJB
-    private ChannelBeanLocal channelBeanLocal;
+    protected ChannelBeanLocal channelBeanLocal;
     @EJB
-    private PotentialBeanLocal potentialBeanLocal;
+    protected PotentialBeanLocal potentialBeanLocal;
     private DbChannels channel;
     private DbSubChannels subChannel;
     private DbSegments segment;
     private DbSubSegments subSegmento;
     private String name;
     private Integer valueDefineSegment;
-    private String clientType;
     private List<DbChannels> listChannel;
     private List<DbSubChannels> listSubChannel;
     private List<DbSegments> listSegment;
     private List<DbSubSegments> listSubSegment;
+    private String athenaCode;
 
     /**
      * Creates a new instance of PotentialCreateBean
@@ -63,9 +62,8 @@ public class PotentialCreateBean extends DiageoRootBean implements Serializable 
     }
 
     protected void initFields() {
-        setName("");
+        setName(EMPTY_FIELD);
         setValueDefineSegment(null);
-        setClientType("");
         setListChannel(channelBeanLocal.findAllChannel());
         setChannel(getListChannel().get(0));
         setSubChannel(getChannel().getDbSubChannelsList().get(0));
@@ -79,9 +77,9 @@ public class PotentialCreateBean extends DiageoRootBean implements Serializable 
     public void createPotential() {
         try {
             DbPotentials pot = new DbPotentials();
-            pot.setNamePotential(getName());
+            pot.setNamePotential(getName().toUpperCase());
             pot.setSubSegmentId(getSubSegmento());
-            pot.setNewClient(getClientType().equals(NEW_CLIENT) ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+            pot.setDistri_1(getAthenaCode().toUpperCase());
             potentialBeanLocal.createPotential(pot);
             initFields();
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
@@ -214,20 +212,6 @@ public class PotentialCreateBean extends DiageoRootBean implements Serializable 
     }
 
     /**
-     * @return the clientType
-     */
-    public String getClientType() {
-        return clientType;
-    }
-
-    /**
-     * @param clientType the clientType to set
-     */
-    public void setClientType(String clientType) {
-        this.clientType = clientType;
-    }
-
-    /**
      * @return the listChannel
      */
     public List<DbChannels> getListChannel() {
@@ -281,6 +265,20 @@ public class PotentialCreateBean extends DiageoRootBean implements Serializable 
      */
     public void setListSubSegment(List<DbSubSegments> listSubSegment) {
         this.listSubSegment = listSubSegment;
+    }
+
+    /**
+     * @return the athenaCode
+     */
+    public String getAthenaCode() {
+        return athenaCode;
+    }
+
+    /**
+     * @param athenaCode the athenaCode to set
+     */
+    public void setAthenaCode(String athenaCode) {
+        this.athenaCode = athenaCode;
     }
 
 }

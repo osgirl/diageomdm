@@ -7,52 +7,60 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <h:body>
-
         <ui:composition template="./../../WEB-INF/templates/diageoWebTemplate.xhtml">
-
             <ui:define name="content">
+                <style>
+                    .ui-messages-error, .ui-message-error {
+                        width: 68%;
+                    }
+                    fieldset .ui-fieldset-legend {
+                        width: 17% !important;
+                    }
+                </style>
                 <h:form id="form">
-                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
-                        <h:panelGroup id="pgChaDetalle" style="width: 40%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                    <p:fieldset legend="#{msg.m_segmento_sub}" style="width: 90%">
+                        <h:panelGroup id="pgChaDetalle">
                             <h:panelGrid columns="2" style="width: 100%">
-                                    <h:outputLabel value="#{msg.sub_seg_nombre}" style="width: 30%"/>
+                                <h:outputLabel value="#{msg.sub_seg_nombre}" style="width: 30%"/>
+                                <h:panelGroup>
                                     <p:inputText id="itNombre" value="#{subSegmentoCrearBean.nombre}" required="true" label="#{msg.sub_seg_nombre}" style="width: 70%"/>
-                                    
-                                    <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
+                                    <p:message for="itNombre"/>
+                                </h:panelGroup>
+                                <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
+                                <h:panelGroup>
                                     <p:inputText id="itAthenaCode" value="#{subSegmentoCrearBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"/>
+                                    <p:message for="itAthenaCode"/>
+                                </h:panelGroup>
+                                <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
+                                <p:selectOneMenu value="#{subSegmentoCrearBean.canal}" converter="channelConverter" required="true" label="#{msg.can_canal}" style="width: 67%">
+                                    <f:selectItems value="#{subSegmentoCrearBean.listaCanales}" var="cha" itemLabel="#{cha.nameChannel}"/>
+                                    <p:ajax listener="#{subSegmentoCrearBean.listenerListaSubCanales()}" process="@this" update="somSubCanal somSegmento"/>
+                                </p:selectOneMenu>
 
-                                    <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
-                                    <p:selectOneMenu value="#{subSegmentoCrearBean.canal}" converter="channelConverter" required="true" label="#{msg.can_canal}">
-                                        <f:selectItems value="#{subSegmentoCrearBean.listaCanales}" var="cha" itemLabel="#{cha.nameChannel}"/>
-                                        <p:ajax listener="#{subSegmentoCrearBean.listenerListaSubCanales()}" process="@this" update="somSubCanal somSegmento"/>
-                                    </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.sub_subcanal}" style="width: 30%"/>
+                                <p:selectOneMenu id="somSubCanal" value="#{subSegmentoCrearBean.subCanal}" converter="subChannelConverter" required="true" label="#{msg.sub_subcanal}" style="width: 67%">
+                                    <f:selectItems value="#{subSegmentoCrearBean.listaSubCanales}" var="subcha" itemLabel="#{subcha.nameSubChannel}"/>
+                                    <p:ajax listener="#{subSegmentoCrearBean.listenerSegmento()}" process="@this" update="somSegmento"/>
+                                </p:selectOneMenu>
 
-                                    <h:outputLabel value="#{msg.sub_subcanal}" style="width: 30%"/>
-                                    <p:selectOneMenu id="somSubCanal" value="#{subSegmentoCrearBean.subCanal}" converter="subChannelConverter" required="true" label="#{msg.sub_subcanal}">
-                                        <f:selectItems value="#{subSegmentoCrearBean.listaSubCanales}" var="subcha" itemLabel="#{subcha.nameSubChannel}"/>
-                                        <p:ajax listener="#{subSegmentoCrearBean.listenerSegmento()}" process="@this" update="somSegmento"/>
-                                    </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.seg_segmento}" style="width: 30%"/>
+                                <p:selectOneMenu id="somSegmento" value="#{subSegmentoCrearBean.segmento}" converter="segmentoConverter" required="true" label="#{msg.seg_segmento}" style="width: 67%">
+                                    <f:selectItems value="#{subSegmentoCrearBean.listaSegmento}" var="subseg" itemLabel="#{subseg.nameSegment}"/>
+                                </p:selectOneMenu>
 
-                                    <h:outputLabel value="#{msg.seg_segmento}" style="width: 30%"/>
-                                    <p:selectOneMenu id="somSegmento" value="#{subSegmentoCrearBean.segmento}" converter="segmentoConverter" required="true" label="#{msg.seg_segmento}">
-                                        <f:selectItems value="#{subSegmentoCrearBean.listaSegmento}" var="subseg" itemLabel="#{subseg.nameSegment}"/>
-                                    </p:selectOneMenu>
-
-                                    <h:outputLabel value="#{msg.estado}"/>
-                                    <p:selectBooleanCheckbox value="#{subSegmentoCrearBean.estado}"/>
-                                </h:panelGrid>
+                                <h:outputLabel value="#{msg.estado}"/>
+                                <p:selectBooleanCheckbox value="#{subSegmentoCrearBean.estado}"/>
+                            </h:panelGrid>
                             <br/>
                             <br/>
                             <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" 
                                              actionListener="#{subSegmentoCrearBean.guardarCambios()}"
-                                             styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
+                                             styleClass="button"/>
                             <br/>
-                            <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />
                         </h:panelGroup>
-                    </div>
+                    </p:fieldset>
                 </h:form>
             </ui:define>
-
         </ui:composition>
 
     </h:body>

@@ -37,6 +37,7 @@ import com.diageo.admincontrollerweb.beans.UserBeanLocal;
 import com.diageo.admincontrollerweb.entities.DwTemporalLink;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageomdmweb.mail.EMail;
+import com.diageo.diageomdmweb.mail.templates.VelocityTemplate;
 import com.diageo.diageonegocio.beans.OutletBeanLocal;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
 import com.diageo.diageonegocio.entidades.DbOutlets;
@@ -197,10 +198,11 @@ public class LoginBean extends DiageoRootBean implements Serializable {
             HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
             String ip = req.getServerName();
             Integer port = req.getServerPort();
-            String url = "http://localhost:9090/" + req.getContextPath() + "/faces/" + "recoverPassword.xhtml?token=" + token;
+            String url = "http://localhost:9090" + req.getContextPath() + "/faces/" + "recoverPassword.xhtml?token=" + token;
             EMail mail = new EMail();
             String msg = "Cordial saludo, en el siguiente link podrá recuperar su contraseña\n"
-                    + url;
+                    + "<a href=\""+url+"\">"+url+"</a>";
+            msg=VelocityTemplate.recoverPassword(url);
             mail.send(new String[]{getEmailRecover()}, "Recuperar Contraseña", msg);
             showInfoMessage("Se envió un link para recuperar la contraseña a su correo.");
         } catch (ControllerWebException ex) {
@@ -281,9 +283,10 @@ public class LoginBean extends DiageoRootBean implements Serializable {
             cookieMail = new Cookie(COOKIE_MAIL, null);
             cookieRecordarme = new Cookie(COOKIE_REMEMBER, isRecordarme() + "");
         }
-        cookieMail.setMaxAge(HOUR_SECOND);
+        int day=HOUR_SECOND*24;
+        cookieMail.setMaxAge(day);
         cookieMail.setPath(((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath());
-        cookieRecordarme.setMaxAge(HOUR_SECOND);
+        cookieRecordarme.setMaxAge(day);
         cookieRecordarme.setPath(((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath());
         response.addCookie(cookieMail);
         response.addCookie(cookieRecordarme);

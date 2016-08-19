@@ -112,7 +112,6 @@ public class EMail {
             contentPart.addBodyPart(bodyContent);
             //
             simpleMessage.setContent(contentPart);
-            System.out.println("Transport.send(simpleMessage);");
             Transport.send(simpleMessage);
         } catch (MessagingException ex) {
             Logger.getLogger(EMail.class.getName()).log(Level.SEVERE, ex.getLocalizedMessage(), ex);

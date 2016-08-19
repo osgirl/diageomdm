@@ -11,8 +11,9 @@
         <ui:composition template="./../WEB-INF/templates/diageoWebTemplate.xhtml">
             <ui:define name="content">
                 <h:form id="formReportCommercial">
-                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
-                        <h:panelGroup id="pgSegment" style="width: 90%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                    <p:fieldset legend="#{msg.report}" style="width: 90%">
+                        <br/>
+                        <h:panelGroup id="pgSegment">
                             <h:panelGrid columns="4" style="width: 90%">
                                 <h:outputLabel value="#{msg.dis_commercial_management}"/>
                                 <p:selectOneMenu value="#{reportCommercialManagement.db3party}" converter="db3PartyConverter" style="width: 80%"> 
@@ -89,9 +90,12 @@
                                 <p:column headerText="#{msg.sub_seg_subsegmento}">
                                     <h:outputLabel value="#{report.subSegment}"/>
                                 </p:column>
+                                <p:column exportable="false">
+                                    <h:commandLink value="#{msg.btn_detalle}" style="color: blue" action="#{reportCommercialManagement.detail(report)}"/>
+                                </p:column>
                             </p:dataTable>
                         </h:panelGroup>
-                    </div>
+                    </p:fieldset>
                 </h:form>
             </ui:define>
         </ui:composition>

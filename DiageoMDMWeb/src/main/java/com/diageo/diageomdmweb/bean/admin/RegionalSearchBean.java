@@ -67,6 +67,10 @@ public class RegionalSearchBean extends DiageoRootBean implements Serializable {
         setRegionalName(selected.getNameRegional());
         setAthenaCode(selected.getDistri_1());        
     }
+    
+    public void back(){
+        setDetail(Boolean.TRUE);
+    }
 
     public String getRegionalName() {
         return regionalName;

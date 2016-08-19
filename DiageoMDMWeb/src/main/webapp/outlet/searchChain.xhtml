@@ -27,6 +27,12 @@
                                 font-size: 11px;
                             }
                         }
+                        .ui-widget-header .ui-inputfield, .ui-widget-content .ui-inputfield {
+                            width: 90% !important;
+                        }
+                        .ui-datalist {
+                            width: 300px;
+                        }
                     </style>
                     <p:dataTable id="dtOutlet" paginatorAlwaysVisible="false" rows="15"
                                  value="#{chainSearchBean.chainsList}" var="chain"
@@ -50,7 +56,7 @@
                         </p:column>
                     </p:dataTable>
 
-                    <h:panelGroup id="pgChain" style="width: 100%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                    <h:panelGroup id="pgChain">
                         <h:panelGroup id="pgChaDetalle" rendered="#{!chainSearchBean.seeDetail}" style="width: 100%">
                             <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
                                 <h:panelGrid columns="4" style="width: 100%">
@@ -136,9 +142,15 @@
                                         <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                         <p:inputText value="#{chainSearchBean.address}"/>
                                         <h:outputLabel value="#{msg.loc_latitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText value="#{chainSearchBean.latitude}"/>
+                                        <h:panelGroup>
+                                            <p:inputText id="itLatitude" value="#{chainSearchBean.latitude}" converter="javax.faces.Double"/>
+                                            <p:message for="itLatitude"/>
+                                        </h:panelGroup>
                                         <h:outputLabel value="#{msg.loc_longitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText value="#{chainSearchBean.longitude}"/>
+                                        <h:panelGroup>
+                                            <p:inputText id="itLongitude" value="#{chainSearchBean.longitude}" converter="javax.faces.Double"/>
+                                            <p:message for="itLongitude"/>
+                                        </h:panelGroup>
                                     </h:panelGrid>
                                 </h:panelGroup>
                             </p:fieldset>

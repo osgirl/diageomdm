@@ -10,8 +10,14 @@
         <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
 
             <ui:define name="content">
+                <style>
+                    fieldset .ui-fieldset-legend {
+                        width: 15% !important;
+                    }
+                </style>
                 <h:form id="formCambiarContra"> 
-                    <div style="left: 50%;-webkit-transform: translate(-50%);text-align: center;position: absolute;width: 100%">
+                    <p:fieldset legend="#{msg.m_cambiar_contrase}" style="width: 90%">
+                        <br/>
                         <h:panelGrid id="pgContra" columns="1" style="width: 100%;text-align: center">
                             <h:outputLabel rendered="#{loginBean.usuario.firstEntry eq '1'}" value="#{msg.cam_pass_primer_ingreso}"/>
                             <br/>
@@ -32,12 +38,12 @@
                             <p:watermark for="pwd2" value="#{msg.cam_pass_repetir_contra}"/>
                             <br/>
                             <p:commandButton value="#{msg.btn_send}" process="@all" update="formCambiarContra:mCamPas" actionListener="#{cambiarContraseniaBean.cambiarContrasenia()}"
-                                             styleClass="button" style="width: 10%"/>                                                                                                                     
+                                             styleClass="button" style="width: 10%;left: 0%"/>                                                                                                                     
                             <br/>   
                             <p:messages id="mCamPas" closable="true" showDetail="true" showSummary="false"
                                         style="width: 25%;left: 50%;-webkit-transform: translate(-50%);text-align: center;position: absolute;"/>
                         </h:panelGrid>
-                    </div>
+                    </p:fieldset>
                 </h:form>
             </ui:define>
         </ui:composition>

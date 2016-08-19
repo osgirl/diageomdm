@@ -126,15 +126,21 @@
                                 <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                 <p:inputText value="#{createChainBean.address}"/>
                                 <h:outputLabel value="#{msg.loc_latitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:inputText value="#{createChainBean.latitude}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itLatitude" value="#{createChainBean.latitude}" converter="javax.faces.Double"/>
+                                    <p:message for="itLatitude"/>
+                                </h:panelGroup>
                                 <h:outputLabel value="#{msg.loc_longitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:inputText value="#{createChainBean.longitude}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itLongitude" value="#{createChainBean.longitude}" converter="javax.faces.Double"/>
+                                    <p:message for="itLongitude"/>
+                                </h:panelGroup>
                             </h:panelGrid>
                         </h:panelGroup>
                     </p:fieldset>
                     <br/>
                     <p:fieldset legend="#{msg.out_phones}" style="width: 95%">
-                        <h:panelGrid style="width: 95%" columns="65">
+                        <h:panelGrid style="width: 95%" columns="5">
                             <h:outputLabel value="#{msg.out_type_phone}"  style="width: 100%;padding: 15%"/>
                             <p:selectOneMenu value="#{createChainBean.typePhone}" converter="typePhoneConverter" style="width: 90%">
                                 <f:selectItems value="#{createChainBean.listTypePhone}" var="typePhone" itemLabel="#{typePhone.nameTypePhone}"/>

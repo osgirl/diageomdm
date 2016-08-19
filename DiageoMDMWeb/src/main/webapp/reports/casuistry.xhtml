@@ -12,8 +12,9 @@
 
             <ui:define name="content">
                 <h:form id="formReportCommercial">
-                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 90%">
-                        <h:panelGroup id="pgSegment" style="width: 90%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                    <p:fieldset legend="#{msg.report}" style="width: 90%">
+                        <br/>
+                        <h:panelGroup id="pgSegment">
                             <h:panelGrid columns="3" style="width: 90%">
                                 <h:outputLabel value="#{msg.m_report_casuistry}"/>
                                 <p:selectOneMenu value="#{reportCasuistryBean.casuistryType}" style="width: 80%"> 
@@ -65,10 +66,9 @@
                                 </p:column>
                             </p:dataTable>
                         </h:panelGroup>
-                    </div>
+                    </p:fieldset>
                 </h:form>
             </ui:define>
-
         </ui:composition>
 
     </body>

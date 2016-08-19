@@ -70,6 +70,10 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
         setNameAdmin(distri.getDb3PartyAdmin() != null ? distri.getDb3PartyAdmin().getAdminName() : "");
         setIsFather(distri.getIsFather().equals(FatherDistributorEnum.FATHER.getIsPadre()));
         setFather(distri.getDb3partyIdFather() != null);
+        setDb3partyRegionalSelected(distri.getDb3partyRegionalId());
+        if(isFather()){
+            setPartyFatherSelected(distri.getDb3partyIdFather());
+        }
         setAthenaCode(distri.getDistri1());
         if (father) {
             setPartyFatherSelected(distri.getDb3partyIdFather());
@@ -80,7 +84,6 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
     public void update() {
         try {
             getSelectedDistributor().setName3party(getName().toUpperCase());
-            //getSelectedDistributor().setAdmin3party(getNameAdmin().toUpperCase());
             getSelectedDistributor().setDistri1(getAthenaCode().toUpperCase());
             getSelectedDistributor().setDb3partyRegionalId(db3partyRegionalSelected);
             getSelectedDistributor().setIsFather(isFather ? FatherDistributorEnum.FATHER.getIsPadre() : FatherDistributorEnum.NOT_FATHER.getIsPadre());

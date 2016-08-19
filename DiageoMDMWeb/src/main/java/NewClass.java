@@ -28,7 +28,7 @@ public class NewClass {
         System.out.println(valido);
     }
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main2(String[] args) throws InterruptedException {
 //        for (int i = 0; i < 10; i++) {
 //            Thread.sleep(1000);
 //            String token=org.apache.commons.codec.digest.DigestUtils.sha256Hex("jardila@latino-bi.com"+new Date());
@@ -43,5 +43,14 @@ public class NewClass {
         System.out.println(expiration.getTime());
         int com=actual.compareTo(expiration);
         System.out.println(com);
+    }
+    
+    public static void main(String[] args) {
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 5; j++) {
+                break;
+            }
+            System.out.println(i);
+        }
     }
 }

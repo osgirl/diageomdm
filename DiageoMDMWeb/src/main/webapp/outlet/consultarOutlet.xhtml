@@ -35,75 +35,38 @@
                             width: 300px;
                         }
 
-                    </style>
-                    <h:panelGroup rendered="#{outletConsultarBean.verDetalle}">
-                        <h:outputLabel value="#{msg.out_management_new}" style="font-family: arial;color:blue;font-weight: bolder" />
-                        <br/>
-                    </h:panelGroup>
-                    <p:dataTable id="dtOutlet" value="#{outletConsultarBean.listaOutlets}" var="outdt" paginatorAlwaysVisible="false" rows="15"
+                    </style>                    
+                    <p:dataTable id="dtOutletNew" value="#{outletConsultarBean.listaOutletsOld}" var="outdtNew" paginatorAlwaysVisible="false" rows="15"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  style="font-size:  90%" rendered="#{outletConsultarBean.verDetalle}" paginator="true"> 
                         <p:column headerText="#{msg.out_approbation_massive}">
-                            <p:selectBooleanCheckbox value="#{outdt.approbationMassive}" rendered="#{outdt.renderedApprobationMassive}"/>
+                            <p:selectBooleanCheckbox value="#{outdtNew.approbationMassive}"/>
                         </p:column>
-                        <p:column headerText="#{msg.out_razon_social}" filterBy="#{outdt.businessName}" filterMatchMode="startsWith">
-                            <h:outputLabel value="#{outdt.businessName}"/>
+                        <p:column headerText="#{msg.out_razon_social}" filterBy="#{outdtNew.businessName}" filterMatchMode="startsWith">
+                            <h:outputLabel value="#{outdtNew.businessName}"/>
                         </p:column>
-                        <p:column headerText="#{msg.out_nit}" filterBy="#{outdt.nit}" filterMatchMode="startsWith">
-                            <h:outputLabel value="#{outdt.nit}"/>
+                        <p:column headerText="#{msg.out_nit}" filterBy="#{outdtNew.nit}" filterMatchMode="startsWith">
+                            <h:outputLabel value="#{outdtNew.nit}"/>
                         </p:column>
 
 
-                        <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{outdt.subSegmentId.nameSubsegment}" filterMatchMode="startsWith">
-                            <h:outputLabel value="#{outdt.subSegmentId.nameSubsegment}"/>
+                        <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{outdtNew.subSegmentId.nameSubsegment}" filterMatchMode="startsWith">
+                            <h:outputLabel value="#{outdtNew.subSegmentId.nameSubsegment}"/>
                         </p:column>                            
 
-                        <p:column headerText="#{msg.estado}" filterBy="#{outdt.statusOutlet}" filterMatchMode="startsWith">
-                            <h:outputLabel value="#{outletConsultarBean.labelState(outdt.statusOutlet)}"/>
-                        </p:column>                                
+                        <p:column headerText="#{msg.estado}" filterBy="#{outdtNew.statusOutlet}" filterMatchMode="startsWith">
+                            <h:outputLabel value="#{outletConsultarBean.labelState(outdtNew.statusOutlet)}"/>
+                        </p:column> 
+                        <p:column headerText="#{msg.out_kiernan}" filterBy="#{outdtNew.kiernanId}" filterMatchMode="startsWith">
+                            <h:outputLabel value="#{outdtNew.kiernanId}"/>
+                        </p:column>    
                         <p:column>
                             <p:commandLink value="#{msg.btn_edit}" style="color: blue" process="@all" update="@form"
-                                           actionListener="#{outletConsultarBean.detalle(outdt)}" disabled="#{outdt.disabledButtonEdit}"/>
+                                           actionListener="#{outletConsultarBean.seeDetail(outdtNew)}" disabled="#{outdtNew.disabledButtonEdit}"/>
                             <br/><br/>
                             <h:panelGroup rendered="#{outdt.statusOutlet eq '4'}">
                                 <h:outputLabel id="labelRe" value="Detalle Rechazo" style="color: blue"/>
-                                <p:tooltip for="labelRe" value="#{outdt.rejectMessage}"/>
-                            </h:panelGroup>
-                        </p:column>
-                    </p:dataTable>
-                    <h:panelGroup rendered="#{outletConsultarBean.verDetalle}">
-                        <br/>
-                        <h:outputLabel value="#{msg.out_management_old}" style="font-family: arial;color:blue;font-weight: bolder" />
-                        <br/>
-                    </h:panelGroup>
-                    <p:dataTable id="dtOutletNew" value="#{outletConsultarBean.listaOutletsOld}" var="outdt" paginatorAlwaysVisible="false" rows="15"
-                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 style="font-size:  90%" rendered="#{outletConsultarBean.verDetalle}" paginator="true"> 
-                        <p:column headerText="#{msg.out_approbation_massive}">
-                            <p:selectBooleanCheckbox value="#{outdt.approbationMassive}" rendered="#{outdt.renderedApprobationMassive}"/>
-                        </p:column>
-                        <p:column headerText="#{msg.out_razon_social}" filterBy="#{outdt.businessName}" filterMatchMode="startsWith">
-                            <h:outputLabel value="#{outdt.businessName}"/>
-                        </p:column>
-                        <p:column headerText="#{msg.out_nit}" filterBy="#{outdt.nit}" filterMatchMode="startsWith">
-                            <h:outputLabel value="#{outdt.nit}"/>
-                        </p:column>
-
-
-                        <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{outdt.subSegmentId.nameSubsegment}" filterMatchMode="startsWith">
-                            <h:outputLabel value="#{outdt.subSegmentId.nameSubsegment}"/>
-                        </p:column>                            
-
-                        <p:column headerText="#{msg.estado}" filterBy="#{outdt.statusOutlet}" filterMatchMode="startsWith">
-                            <h:outputLabel value="#{outletConsultarBean.labelState(outdt.statusOutlet)}"/>
-                        </p:column>                                
-                        <p:column>
-                            <p:commandLink value="#{msg.btn_edit}" style="color: blue" process="@all" update="@form"
-                                           actionListener="#{outletConsultarBean.detalle(outdt)}" disabled="#{outdt.disabledButtonEdit}"/>
-                            <br/><br/>
-                            <h:panelGroup rendered="#{outdt.statusOutlet eq '4'}">
-                                <h:outputLabel id="labelRe" value="Detalle Rechazo" style="color: blue"/>
-                                <p:tooltip for="labelRe" value="#{outdt.rejectMessage}"/>
+                                <p:tooltip for="labelRe" value="#{outdtNew.rejectMessage}"/>
                             </h:panelGroup>
                         </p:column>
                     </p:dataTable>                        
@@ -116,155 +79,204 @@
                         </p:selectOneMenu>
                         <p:commandButton value="#{msg.btn_select_all}" styleClass="button" process="@all" update="@form"
                                          actionListener="#{outletConsultarBean.selectAll()}" rendered="#{outletConsultarBean.verDetalle}"
-                                         style="width: 100%"/>
+                                         style="width: 100%;left: 0%"/>
                         <p:commandButton value="#{msg.btn_send}" styleClass="button" process="@all" update="@form"
                                          actionListener="#{outletConsultarBean.approbatrionMasive()}" rendered="#{outletConsultarBean.verDetalle}"
-                                         style="width: 100%"/>
+                                         style="width: 100%;left: 0%"/>
                     </h:panelGrid>
 
                     <h:panelGroup id="pgCOnsultarOut">
                         <h:panelGroup id="pgCOnsultarOutHijo" rendered="#{!outletConsultarBean.verDetalle}">
-                            <h:outputLabel value="Aprobar" style="font-family: arial;color:blue;" rendered="#{loginBean.usuario.profileId.nameProfile eq '4'}"/>
-                            <p:selectOneMenu id="somState" value="#{outletConsultarBean.state}" 
-                                             rendered="#{loginBean.usuario.profileId.nameProfile eq '4'}" 
-                                             style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 80%">
-
-                                <f:selectItem itemLabel="Aprobado" itemValue="3"/>
-                                <f:selectItem itemLabel="Rechazado" itemValue="4"/>
-                                <p:ajax process="@this" listener="#{outletConsultarBean.listenerReject()}"/>
-                            </p:selectOneMenu>
-                            <br/><br/>
+                            <p:fieldset legend="#{msg.is_father}" style="width: 95%">
+                                <h:panelGrid columns="4" style="width: 100%">
+                                    <h:outputLabel value="#{msg.is_father}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:selectBooleanCheckbox value="#{outletConsultarBean.isFather}"/>
+                                    <h:outputLabel value="#{msg.father}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:autoComplete id="acMinLength" minQueryLength="4" value="#{outletConsultarBean.father}" label="#{msg.father}"
+                                                    var="outletFather" itemLabel="#{outletFather.businessName}" itemValue="#{outletFather}" forceSelection="true"
+                                                    completeMethod="#{outletConsultarBean.completeChainFather}" effect="fade" converter="outletConverter"
+                                                    style="width: 90% !important;"/>
+                                </h:panelGrid>
+                            </p:fieldset>
+                            <br/>
                             <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
                                 <h:panelGrid columns="1" style="width: 95%">
                                     <h:panelGrid columns="4" style="width: 100%">
-                                        <h:outputLabel value="#{msg.out_kiernan}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText style="width: 90%" disabled="true"/>                                
-                                        <h:outputLabel value="#{msg.out_cod_cliente_distri}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText style="width: 90%" disabled="true"/>         
-                                        <h:outputLabel value="#{msg.out_razon_social}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText style="width: 90%" value="#{outletConsultarBean.razonSocial}" disabled="true"/>                                
-                                        <h:outputLabel value="#{msg.out_tipo_outlet}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu style="width: 90%" value="#{outletConsultarBean.tipoOutlet}" disabled="true">
+                                        <h:outputLabel value="#{msg.out_kiernan}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:inputText value="#{outletConsultarBean.kiernanId}"/>
+                                        <h:outputLabel value="#{msg.chain_business_name}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:inputText value="#{outletConsultarBean.businessName}"/>
+                                        <h:outputLabel value="#{msg.out_nit}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:inputText value="#{outletConsultarBean.nit}"/>
+                                        <h:outputLabel value="#{msg.out_verification_number}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:inputText value="#{outletConsultarBean.verificationNumber}"/>
+                                        <h:outputLabel value="#{msg.out_nombre}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:inputText value="#{outletConsultarBean.outletName}"/>
+                                        <h:outputLabel value="#{msg.out_punto_venta}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:inputText value="#{outletConsultarBean.pointSale}"/>
+                                        <h:outputLabel value="#{msg.out_tipo_outlet}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:selectOneMenu value="#{outletConsultarBean.typeOutlet}" style="width: 90%">
                                             <f:selectItem itemValue="N" itemLabel="#{msg.out_tipo_natural}"/>
                                             <f:selectItem itemValue="J" itemLabel="#{msg.out_tipo_juri}"/>
                                         </p:selectOneMenu>
-
-                                        <h:outputLabel value="#{msg.out_nombre}" style="width: 100%;" styleClass="tamanio_letra_labels" />
-                                        <p:inputText style="width: 90%" value="#{outletConsultarBean.nombreOutlet}" disabled="true"/>  
-                                        <h:outputLabel value="#{msg.out_nit}" style="width: 100%;" styleClass="tamanio_letra_labels" />
-                                        <p:inputText style="width: 90%" value="#{outletConsultarBean.nit}" disabled="true"/>  
-
-                                        <h:outputLabel value="#{msg.out_nombre_propietario}" style="width: 100%;" styleClass="tamanio_letra_labels" />
-                                        <p:inputText style="width: 90%" value="#{outletConsultarBean.nombresPropietarios}" disabled="true"/>  
-                                        <h:outputLabel value="#{msg.out_apellidos_propietario}" style="width: 100%;" styleClass="tamanio_letra_labels" />
-                                        <p:inputText style="width: 90%" value="#{outletConsultarBean.apellidosPropietario}" disabled="true"/> 
-
-                                        <h:outputLabel value="#{msg.usu_num_doc}" style="width: 100%;" styleClass="tamanio_letra_labels" />
-                                        <p:inputText style="width: 90%" value="#{outletConsultarBean.numeroDocumento}" disabled="true"/> 
-                                        <h:outputLabel value="#{msg.usu_tipo_doc}" style="width: 100%;" styleClass="tamanio_letra_labels" />
-                                        <p:selectOneMenu style="width: 90%" value="#{outletConsultarBean.tipoDocumento}" converter="tipoDocConverter" 
-                                                         disabled="true">
-                                            <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tipoDoc" itemLabel="#{tipoDoc.nameDocumentType}"/>
-                                        </p:selectOneMenu>
+                                        <h:outputLabel value="#{msg.out_website}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:inputText value="#{outletConsultarBean.website}"/>
+                                    </h:panelGrid>
+                                    <br/>
+                                    <h:panelGrid columns="6" style="width: 80%">
+                                        <h:outputLabel value="#{msg.out_wine}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:selectBooleanCheckbox value="#{outletConsultarBean.wine}"/>
+                                        <h:outputLabel value="#{msg.out_beer}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:selectBooleanCheckbox value="#{outletConsultarBean.beer}"/>
+                                        <h:outputLabel value="#{msg.out_spirtis}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:selectBooleanCheckbox value="#{outletConsultarBean.spirtis}"/>
                                     </h:panelGrid>
                                 </h:panelGrid>
                             </p:fieldset>
+                            <br/>
                             <p:fieldset legend="#{msg.out_clasificacion}" style="width: 95%">
                                 <h:panelGroup id="pgSegment">
-                                    <h:panelGrid columns="1" style="width: 95%">
-                                        <h:panelGrid columns="4" style="width: 100%">
-                                            <h:outputLabel value="#{msg.can_canal}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                            <p:inputText id="itChannel" readonly="true" value="#{outletConsultarBean.channelLabel}"/>
+                                    <h:panelGrid columns="4" style="width: 95%">
+                                        <h:outputLabel value="#{msg.can_canal}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
+                                        <p:selectOneMenu value="#{outletConsultarBean.channelSelected}" converter="channelConverter" style="width: 90%">
+                                            <f:selectItems value="#{outletConsultarBean.listChannel}" var="cha" itemLabel="#{cha.nameChannel}"/>
+                                            <p:ajax update="formConsultarOutlet:pgSegment" process="@this" listener="#{outletConsultarBean.listenerChannel()}"/>
+                                        </p:selectOneMenu>
 
-                                            <h:outputLabel value="#{msg.sub_subcanal}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                            <p:inputText id="itSubChannel" readonly="true" value="#{outletConsultarBean.subChannelLabel}"/>
+                                        <h:outputLabel value="#{msg.sub_subcanal}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
+                                        <p:selectOneMenu value="#{outletConsultarBean.subChannelSelected}" converter="subChannelConverter" style="width: 90%">
+                                            <f:selectItems value="#{outletConsultarBean.listSubChannel}" var="subcha" itemLabel="#{subcha.nameSubChannel}"/>
+                                            <p:ajax update="formConsultarOutlet:pgSegment" process="@this" listener="#{outletConsultarBean.listenerSubChannel()}"/>
+                                        </p:selectOneMenu>
 
-                                            <h:outputLabel value="#{msg.seg_segmento}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                            <p:inputText id="itSegment" readonly="true" value="#{outletConsultarBean.segmentLabel}"/>
+                                        <h:outputLabel value="#{msg.seg_segmento}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
+                                        <p:selectOneMenu converter="segmentoConverter" value="#{outletConsultarBean.segmentSelected}" style="width: 90%">
+                                            <f:selectItems value="#{outletConsultarBean.listSegment}" var="seg" itemLabel="#{seg.nameSegment}"/>
+                                            <p:ajax update="formConsultarOutlet:pgSegment" process="@this" listener="#{outletConsultarBean.listenerSegment()}"/>
+                                        </p:selectOneMenu>
 
-                                            <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                            <p:selectOneMenu id="somSubSegmento" style="width: 90%" value="#{outletConsultarBean.subSegmentoSeleccionado}" converter="subSegmentoConverter"
-                                                             disabled="#{loginBean.usuario.profileId.profileId eq '4'}">
-                                                <f:selectItems value="#{outletConsultarBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
-                                                <p:ajax process="@this" update="formConsultarOutlet:pgSegment" listener="#{outletConsultarBean.listenerSubSegment()}"/>
-                                            </p:selectOneMenu>
+                                        <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
+                                        <p:selectOneMenu value="#{outletConsultarBean.subSegmentSelected}" converter="subSegmentoConverter" style="width: 90%">
+                                            <f:selectItems value="#{outletConsultarBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
+                                            <p:ajax update="formConsultarOutlet:pgSegment" process="@this" listener="#{outletConsultarBean.listenerSubSegment()}"/>
+                                        </p:selectOneMenu>
 
-                                            <h:outputLabel value="#{msg.out_potencial}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                            <h:panelGroup>
-                                                <p:selectOneMenu converter="potentialConverter" value="#{outletConsultarBean.potentialAutomatic}"
-                                                                 rendered="#{not empty outletConsultarBean.listaPotentialAutomatic}" disabled="true">
-                                                    <f:selectItems value="#{outletConsultarBean.listaPotentialAutomatic}" var="potAutomatic" itemLabel="#{potAutomatic.namePotential}"/>
-                                                </p:selectOneMenu>
-                                                <h:outputLabel value="#{msg.out_message_not_potential}" style="width: 100%;" styleClass="tamanio_letra_labels"
-                                                               rendered="#{empty outletConsultarBean.listaPotentialAutomatic}"/>
-                                            </h:panelGroup>                                               
+                                        <h:outputLabel value="#{msg.out_potencial}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
+                                        <p:selectOneMenu converter="potentialConverter" value="#{outletConsultarBean.potentialSelected}"
+                                                         disabled="true"  style="width: 90%">
+                                            <f:selectItems value="#{outletConsultarBean.listPotential}" var="pot" itemLabel="#{pot.namePotential}"/>
+                                        </p:selectOneMenu>
 
-                                            <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                            <p:selectOneMenu id="somDistri" style="width: 90%" value="#{outletConsultarBean.distribuidorSeleccionado}" converter="distribuidorConverter"
-                                                             disabled="true">
-                                                <f:selectItems value="#{outletConsultarBean.listaDistribuidor}" var="dis" itemLabel="#{dis.name3party}"/>
-                                            </p:selectOneMenu>
+                                        <h:outputLabel value="#{msg.out_ocs_1}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
+                                        <p:selectOneMenu converter="ocsConverter" value="#{outletConsultarBean.ocsPrimary}" style="width: 90%">
+                                            <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
+                                            <f:selectItems value="#{outletConsultarBean.listOcs}" var="ocs" itemLabel="#{ocs.nameOcs}"/>
+                                        </p:selectOneMenu>                               
 
-                                        </h:panelGrid>
+                                        <h:outputLabel value="#{msg.out_ocs_2}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
+                                        <p:selectOneMenu converter="ocsConverter" value="#{outletConsultarBean.ocsSecondary}" style="width: 90%">
+                                            <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
+                                            <f:selectItems value="#{outletConsultarBean.listOcs}" var="ocs" itemLabel="#{ocs.nameOcs}"/>
+                                        </p:selectOneMenu>
+
                                     </h:panelGrid>
                                 </h:panelGroup>
                             </p:fieldset>
+                            <br/>
+                            <p:fieldset legend="#{msg.m_distribuidor}" style="width: 95%">
+                                <h:panelGrid style="width: 95%" columns="3">
+                                    <h:outputLabel value="#{msg.m_distribuidor}"  style="width: 100%;"/>
+                                    <p:selectOneMenu value="#{outletConsultarBean.db3PartySelected}" converter="db3PartyConverter">
+                                        <f:selectItems value="#{outletConsultarBean.list3PartyToDeploy}" var="par" itemLabel="#{par.name3party}"/>
+                                    </p:selectOneMenu>
+                                    <p:commandButton value="#{msg.btn_add}" process="@parent" update="formConsultarOutlet:dt3pary"
+                                                     actionListener="#{outletConsultarBean.add3Party()}"
+                                                     styleClass="button" style="width: 80%"/>                            
+                                </h:panelGrid>
+                                <br/>
+                                <p:dataTable id="dt3pary" paginator="true" rows="5" styleClass="paginated" paginatorAlwaysVisible="false"
+                                             value="#{outletConsultarBean.list3Party}" var="party">
+                                    <f:facet name="header">
+                                        <h:outputLabel value="#{msg.m_distribuidor}"/>
+                                    </f:facet>
+                                    <p:column>
+                                        <p:commandLink actionListener="#{outletConsultarBean.delete3Pary(party)}" update="formConsultarOutlet:dt3pary" process="@this">
+                                            <p:graphicImage value="/resources/images/iconos/equis.png" width="12px"/>
+                                        </p:commandLink>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputLabel value="#{party.name3party}"/>
+                                    </p:column>
+                                </p:dataTable>                        
+                            </p:fieldset>
+                            <br/>
                             <p:fieldset legend="#{msg.out_ubicacion}" style="width: 95%">
-                                <h:panelGrid columns="1" style="width: 95%">
-                                    <h:panelGrid columns="4" style="width: 100%">
-                                        <h:outputLabel value="#{msg.out_out_depto}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu id="somDeptoOut" style="width: 90%" value="#{outletConsultarBean.departamentoOutlet}" converter="departamentoConverter"
-                                                         disabled="true">
+                                <h:panelGroup id="pgLocation">
+                                    <h:panelGrid columns="4" style="width: 95%">
+                                        <h:outputLabel value="#{msg.loc_depto}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                        <p:selectOneMenu value="#{outletConsultarBean.departamentSelected}" converter="departamentoConverter"
+                                                         style="width: 90%">
                                             <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptoout" itemLabel="#{deptoout.nameDepartament}"/>
-                                            <p:ajax process="@this" update="somMpioOut"/>
+                                            <p:ajax process="@this" update="formConsultarOutlet:somMpioOut"/>
                                         </p:selectOneMenu>
-
-                                        <h:outputLabel value="#{msg.out_out_mpio}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu id="somMpioOut" style="width: 90%" value="#{outletConsultarBean.municipioOutlet}" converter="municipioConverter"
-                                                         disabled="true">
-                                            <f:selectItems value="#{outletConsultarBean.departamentoOutlet.dbTownsList}" var="mpioout" itemLabel="#{mpioout.nameTown}"/>
+                                        <h:outputLabel value="#{msg.chain_city}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                        <p:selectOneMenu id="somMpioOut" value="#{outletConsultarBean.townSelected}" converter="municipioConverter"  style="width: 90%">
+                                            <f:selectItems value="#{outletConsultarBean.departamentSelected.dbTownsList}" var="mpioout" itemLabel="#{mpioout.nameTown}"/>
                                         </p:selectOneMenu>
-
-                                        <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText style="width: 90%" value="#{outletConsultarBean.direccion}" disabled="true"/>  
-
-                                        <h:outputLabel value="#{msg.out_barrio}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText style="width: 90%" value="#{outletConsultarBean.barrio}" disabled="true"/>  
-                                    </h:panelGrid>                                
-                                </h:panelGrid>
+                                        <h:outputLabel value="#{msg.out_barrio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                        <p:inputText value="#{outletConsultarBean.neighborhood}"/>
+                                        <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                        <p:inputText value="#{outletConsultarBean.address}"/>
+                                        <h:outputLabel value="#{msg.loc_latitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                        <h:panelGroup>
+                                            <p:inputText id="itLatitude" value="#{outletConsultarBean.latitude}" converter="javax.faces.Double"/>
+                                            <p:message for="itLatitude"/>
+                                        </h:panelGroup>
+                                        <h:outputLabel value="#{msg.loc_longitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                        <h:panelGroup>
+                                            <p:inputText id="itLongitude" value="#{outletConsultarBean.longitude}" converter="javax.faces.Double"/>
+                                            <p:message for="itLongitude"/>
+                                        </h:panelGroup>
+                                    </h:panelGrid>
+                                </h:panelGroup>
                             </p:fieldset>
-                            <p:fieldset legend="#{msg.out_datos_contacto}" style="width: 95%">
-                                <h:panelGrid columns="1" style="width: 95%">
-                                    <h:panelGrid columns="4" style="width: 100%">
-                                        <h:outputLabel value="#{msg.mail}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText style="width: 90%" value="#{outletConsultarBean.correoElectronico}" disabled="true"/>
-
-                                        <h:outputLabel value="#{msg.out_celular}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText style="width: 90%" value="#{outletConsultarBean.celular}" disabled="true"/>
-
-                                        <h:outputLabel value="#{msg.out_tel_uno}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText style="width: 90%" value="#{outletConsultarBean.telefonoUno}" disabled="true"/>
-
-                                        <h:outputLabel value="#{msg.out_tel_dos}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText style="width: 90%" value="#{outletConsultarBean.telefonoDos}" disabled="true"/>
-                                    </h:panelGrid>                                
+                            <br/>
+                            <p:fieldset legend="#{msg.out_phones}" style="width: 95%">
+                                <h:panelGrid style="width: 95%" columns="5">
+                                    <h:outputLabel value="#{msg.out_type_phone}"  style="width: 100%;"/>
+                                    <p:selectOneMenu value="#{outletConsultarBean.typePhone}" converter="typePhoneConverter" style="width: 90%">
+                                        <f:selectItems value="#{outletConsultarBean.listTypePhone}" var="typePhone" itemLabel="#{typePhone.nameTypePhone}"/>
+                                    </p:selectOneMenu>
+                                    <h:outputLabel value="#{msg.out_number}"  style="width: 100%;padding: 5%"/>
+                                    <p:inputText id="itPhone" value="#{outletConsultarBean.newPhone.numberPhone}"/>
+                                    <p:commandButton value="#{msg.btn_add}" process="@parent" update="formConsultarOutlet:dlPhones formConsultarOutlet:itPhone"
+                                                     actionListener="#{outletConsultarBean.addPhone()}"
+                                                     styleClass="button" style="width: 80%"/>
                                 </h:panelGrid>
-                            </p:fieldset>
-                            <p:fieldset legend="#{msg.out_otros_datos}" style="width: 95%">
-                                <h:panelGrid columns="1" style="width: 95%">
-                                    <h:panelGrid columns="2" style="width: 100%">                                      
-                                        <h:outputLabel value="#{msg.out_punto_venta}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText style="width: 90%" value="#{outletConsultarBean.puntoVenta}" disabled="true"/>
-                                    </h:panelGrid>                                
-                                </h:panelGrid>
+                                <br/>
+                                <p:dataTable id="dlPhones" paginator="true" rows="5" styleClass="paginated" paginatorAlwaysVisible="false"
+                                             value="#{outletConsultarBean.listPhones}" var="phone">
+                                    <f:facet name="header">
+                                        <h:outputLabel value="#{msg.out_phones}"/>
+                                    </f:facet>
+                                    <p:column>
+                                        <p:commandLink actionListener="#{outletConsultarBean.deletePhone(phone)}" update="formConsultarOutlet:dlPhones" process="@this">
+                                            <p:graphicImage value="/resources/images/iconos/equis.png" width="12px"/>
+                                        </p:commandLink>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputLabel value="#{phone.numberPhone}"/>
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputLabel value="#{phone.typePhoneId.nameTypePhone}"/>
+                                    </p:column>
+                                </p:dataTable>
                             </p:fieldset>
                             <br/><br/>
-                            <p:commandButton value="#{msg.btn_send}" styleClass="button" process="@all" update="@form"
-                                             actionListener="#{outletConsultarBean.updateOutlet()}"
-                                             style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 20%"/>
+                            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{outletConsultarBean.saveOutlet()}"
+                                             styleClass="button"/>
+                            <br/>
                         </h:panelGroup>
-                        <br/>
-
                     </h:panelGroup>
                     <p:dialog id="dChain" modal="false" width="60%" header="Motivo rechazo" widgetVar="xvReject" resizable="false">
                         <p:inputTextarea style="width: 100%" value="#{outletConsultarBean.messageReject}"/>

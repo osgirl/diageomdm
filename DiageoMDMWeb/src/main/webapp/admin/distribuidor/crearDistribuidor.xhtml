@@ -12,42 +12,45 @@
 
             <ui:define name="content">
                 <h:form id="formDistri">
-                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width: 100%">
-                        <h:panelGroup id="pgDistri" style="width: 85%;left: 50%;-webkit-transform: translate(-50%);position: absolute">
+                    <p:fieldset legend="#{msg.out_distribuidor}" style="width: 90%">
+                        <br/>
+                        <h:panelGroup id="pgDistri">
                             <h:panelGrid columns="4" style="width: 100%">
-                                <h:outputLabel value="#{msg.m_distri_nombre}" style="width: 30%"/>
-                                <p:inputText id="itNombre" required="true" value="#{distributorCreate.name}" 
-                                             label="#{msg.m_distri_nombre}" style="width: 90%"/>
-
-                                <h:outputLabel value="#{msg.admin}" style="width: 30%"/>
-                                <p:inputText id="itNombreAdmin" required="false" value="#{distributorCreate.nameAdmin}"
-                                             label="#{msg.admin}" style="width: 90%"/>
-
-                                <h:outputLabel value="#{msg.regional}" style="width: 30%"/>
+                                <h:outputLabel value="#{msg.m_distri_nombre}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itNombre" required="true" value="#{distributorCreate.name}" 
+                                                 label="#{msg.m_distri_nombre}" style="width: 90%"/>
+                                    <p:message for="itNombre"/>
+                                </h:panelGroup>
+                              
+                                <h:outputLabel value="#{msg.regional}"/>
                                 <p:selectOneMenu id="somRegional" value="#{distributorCreate.db3partyRegionalSelected}" converter="regionalConverter" label="#{msg.regional}"
-                                                 style="width: 90%">
+                                                 style="width: 84%">
                                     <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}"/>
                                     <f:selectItems value="#{distributorCreate.listRegional}" var="reg" itemLabel="#{reg.nameRegional}"/>
                                 </p:selectOneMenu>
 
-                                <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
-                                <p:inputText id="itAthenaCode" required="true" value="#{distributorCreate.athenaCode}"
-                                             label="#{msg.athena_code}" style="width: 90%"/>
+                                <h:outputLabel value="#{msg.athena_code}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itAthenaCode" required="true" value="#{distributorCreate.athenaCode}"
+                                                 label="#{msg.athena_code}" style="width: 90%"/>
+                                    <p:message for="itAthenaCode"/>
+                                </h:panelGroup>
 
-                                <h:outputLabel value="#{msg.is_father}" style="width: 30%"/>
+                                <h:outputLabel value="#{msg.is_father}"/>
                                 <p:selectBooleanCheckbox value="#{distributorCreate.isFather}"/>
 
-                                <h:outputLabel value="#{msg.father}" style="width: 30%"/>
+                                <h:outputLabel value="#{msg.father}"/>
                                 <p:selectBooleanCheckbox value="#{distributorCreate.father}">
                                     <p:ajax process="@this" update="formDistri:ol3partyFather formDistri:sompartyFather"/>
                                 </p:selectBooleanCheckbox>
 
                                 <h:panelGroup id="ol3partyFather">
-                                    <h:outputLabel value="#{msg.distri_father}" style="width: 30%" rendered="#{distributorCreate.father}"/>
+                                    <h:outputLabel value="#{msg.distri_father}" rendered="#{distributorCreate.father}"/>
                                 </h:panelGroup>
                                 <h:panelGroup id="sompartyFather">
                                     <p:selectOneMenu value="#{distributorCreate.partyFatherSelected}" converter="distribuidorConverter" label="#{msg.distri_father}"
-                                                     rendered="#{distributorCreate.father}" style="width: 90%">
+                                                     rendered="#{distributorCreate.father}" style="width: 84%">
                                         <f:selectItems value="#{distributorCreate.listDistributorFather}" var="reg" itemLabel="#{reg.name3party}"/>
                                     </p:selectOneMenu>
                                 </h:panelGroup>
@@ -55,11 +58,10 @@
                             <br/>
                             <br/>
                             <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{distributorCreate.create()}"
-                                             styleClass="button" style="width: 40%;left: 50%;-webkit-transform: translate(-50%)"/>
+                                             styleClass="button"/>
                             <br/>
-                            <p:messages id="msg" closable="true" showDetail="true" showSummary="false" globalOnly="false" />
                         </h:panelGroup>
-                    </div>
+                    </p:fieldset>
                 </h:form>
             </ui:define>
 

@@ -12,7 +12,7 @@
 
             <ui:define name="content">
                 <h:form id="formQuerySegment">
-                    <div style="left: 50%;-webkit-transform: translate(-50%);position: absolute;width:80%">
+                    <p:fieldset legend="#{msg.param}" style="width: 90%">
                         <h:panelGroup id="pgSegment" style="width: 100%">
                             <h:panelGrid columns="4" style="width: 100%">
                                 <h:outputLabel value="#{msg.can_canal}"/>
@@ -37,13 +37,12 @@
                             </h:panelGrid>
                         </h:panelGroup>
                         <br/>
-                        <p:commandButton value="#{msg.btn_add}" styleClass="button" style="width: 20%" process="@all" update="@form"
+                        <p:commandButton value="#{msg.btn_add}" styleClass="button" style="left: 0%" process="@all" update="@form"
                                          actionListener="#{segmentParametersBean.addSubSegment()}"/>
-                        <p:commandButton value="#{msg.btn_send}" styleClass="button" style="width: 20%" actionListener="#{segmentParametersBean.createParameter()}" 
+                        <p:commandButton value="#{msg.btn_send}" styleClass="button" style="left: 0%" actionListener="#{segmentParametersBean.createParameter()}" 
                                          update="@form" process="@this"/>
                         <br/><br/>
-                        <p:messages closable="true" showDetail="true" showSummary="false" globalOnly="false"/>
-                        <p:dataTable id="dtQuerySegment" style="width: 90%" value="#{segmentParametersBean.listSubSegmentFiler}" var="paramSeg"
+                        <p:dataTable id="dtQuerySegment" style="width: 98%" value="#{segmentParametersBean.listSubSegmentFiler}" var="paramSeg"
                                      paginatorAlwaysVisible="false" paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      paginator="true" rows="10">
                             <p:column headerText="#{msg.can_canal}">
@@ -63,7 +62,7 @@
                                                update="formQuerySegment:dtQuerySegment" style="color: blue"/>
                             </p:column>
                         </p:dataTable>
-                    </div>
+                    </p:fieldset>
                 </h:form>
             </ui:define>
 

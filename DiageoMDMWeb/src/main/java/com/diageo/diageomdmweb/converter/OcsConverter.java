@@ -5,11 +5,7 @@
  */
 package com.diageo.diageomdmweb.converter;
 
-import com.diageo.diageonegocio.beans.ChainBeanLocal;
-import com.diageo.diageonegocio.beans.ClusterBeanLocal;
 import com.diageo.diageonegocio.beans.OcsBeanLocal;
-import com.diageo.diageonegocio.entidades.DbChains;
-import com.diageo.diageonegocio.entidades.DbClusters;
 import com.diageo.diageonegocio.entidades.DbOcs;
 import javax.ejb.EJB;
 import javax.faces.component.UIComponent;

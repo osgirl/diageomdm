@@ -61,7 +61,8 @@ public class SubSegmentoConsultarBean extends SegementoConsultarBean implements 
         }
     }
 
-    public void detalle(DbSubSegments subSegmento) {
+    
+    public void detalleSub(DbSubSegments subSegmento) {
         setSubSegmentoSeleccionado(subSegmento);
         super.setVerDetalle(Boolean.FALSE);
         super.setNombre(subSegmento.getNameSubsegment());

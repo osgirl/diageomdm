@@ -5,29 +5,26 @@
  */
 package com.diageo.diageomdmweb.bean.outlet;
 
-import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
+import com.diageo.admincontrollerweb.beans.ParameterBeanLocal;
+import com.diageo.admincontrollerweb.entities.DwParameters;
+import com.diageo.admincontrollerweb.enums.ParameterKeyEnum;
 import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.admincontrollerweb.enums.StateEnum;
+import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import com.diageo.diageomdmweb.bean.LoginBean;
-import com.diageo.diageomdmweb.bean.dto.StateOutletDto;
-import com.diageo.diageonegocio.beans.ChannelBeanLocal;
-import com.diageo.diageonegocio.beans.OutletBeanLocal;
-import com.diageo.diageonegocio.beans.PotentialBeanLocal;
-import com.diageo.diageonegocio.beans.SegmentBeanLocal;
-import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
-import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
+import com.diageo.diageonegocio.entidades.DbChains;
 import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbOutlets;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
-import com.diageo.diageonegocio.entidades.DbPotentials;
+import com.diageo.diageonegocio.entidades.DbPhones;
 import com.diageo.diageonegocio.entidades.DbSegments;
 import com.diageo.diageonegocio.entidades.DbSubChannels;
 import com.diageo.diageonegocio.entidades.DbSubSegments;
+import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.enums.StateOutletChain;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,9 +32,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -49,32 +48,19 @@ import org.primefaces.context.RequestContext;
 public class OutletConsultarBean extends OutletCrearBean implements Serializable {
 
     @EJB
-    private SegmentBeanLocal segmentoBeanLocal;
-    @EJB
-    private SubSegmentoBeanLocal subSegmentoBean;
-    @EJB
-    protected OutletBeanLocal outletBeanLocal;
-    @EJB
-    private SubChannelBeanLocal subChannelBeanLocal;
-    @EJB
-    private ChannelBeanLocal channelBeanLocal;
+    private ParameterBeanLocal parameterBeanLocal;
     @Inject
     private LoginBean loginBean;
     private List<DbOutlets> listaOutlets;
     private List<DbOutlets> listaOutletsOld;
     private List<DbPermissionSegments> listPermi;
-    private List<DbSubSegments> listSubSegment;
     private boolean verDetalle;
-    private boolean disabledSegmentChannel;
-    private boolean disabledSubChannel;
-    private boolean disabledSegment;
-    private boolean disabledSubSegment;
-    private boolean desabledPotential;
     private DbOutlets outletSelect;
     private String state;
     private String stateMasive;
-    private List<StateOutletDto> listStateOutlet;
     private String messageReject;
+    private List<DbPhones> phonesDelete;
+    private Integer idOutlet;
 
     /**
      * Creates a new instance of OutletConsultarBean
@@ -85,151 +71,197 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     @PostConstruct
     @Override
     public void init() {
-        listStateOutlet = new ArrayList<>();
-        listStateOutlet.add(new StateOutletDto(3, "Aprobado"));
-        listStateOutlet.add(new StateOutletDto(4, "Rechazado"));
-        setPotentialAutomatic(new DbPotentials());
-        setPotentialManula(new DbPotentials());
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
-            listaOutlets = outletBeanLocal.listOutletNew("1");
-            listaOutletsOld = outletBeanLocal.listOutletNew("0");
-            //setListaOutlets(outletBeanLocal.listOutletNew("1"));
-            //setListaOutletsOld(outletBeanLocal.listOutletNew("0"));
-            if (listaOutlets == null) {
-                listaOutlets = new ArrayList<>();
-            }
-            if (listaOutletsOld == null) {
-                listaOutletsOld = new ArrayList<>();
-            }
+//            setListaOutlets(outletBeanLocal.listOutletNew("1"));
+            setListaOutletsOld(outletBeanLocal.listOutletNew("0"));
+//            setListaOutletsOld(outletBeanLocal.findAllOutlets());            
         } else {
-            setListaOutlets(new ArrayList<DbOutlets>());
+            String statusMDM = EMPTY_FIELD;
+            if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())) {
+                statusMDM = StatusSystemMDM.PENDING_TMC.name();
+            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
+                statusMDM = StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name();
+            }
             setListaOutletsOld(new ArrayList<DbOutlets>());
-            listPermi = getLoginBean().getListPermissionSegment();
+            //Segmentos que puede ver el sistema
+            List<DwParameters> parametersQuerySegment = parameterBeanLocal.findByKey(ParameterKeyEnum.QUERY_SUB_SEGMENT.name());
+            //Carga los permisos del usuario logueado
+            setListPermi(getLoginBean().getListPermissionSegment());
+            //Carga los distribuidores '3party' que tiene asignado el usuario
             Set<Integer> listDistributor = new HashSet<>();
-            Set<Integer> listSubSegment = new HashSet<>();
-            for (DbPermissionSegments permi : listPermi) {
+            for (DbPermissionSegments permi : getListPermi()) {
                 listDistributor.add(permi.getDb3partyId().getDb3partyId());
             }
-            System.out.println(listDistributor);
-            for (DbPermissionSegments permi : listPermi) {
-                if (permi.getSubSegmentCheck().equals(StateEnum.ACTIVE.getState())) {
-                    listSubSegment.add(permi.getSubSegmentId());
-                } else if (permi.getSegmentCheck().equals(StateEnum.ACTIVE.getState())) {
-                    try {
-                        DbSegments listSegment = segmentoBeanLocal.findById(permi.getSegmentId());
-                        for (DbSubSegments subSegtem : listSegment.getDbSubSegmentsList()) {
-                            listSubSegment.add(subSegtem.getSubSegmentId());
-                        }
-                    } catch (DiageoBusinessException ex) {
-                        Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else if (permi.getSubChannelCheck().equals(StateEnum.ACTIVE.getState())) {
-                    try {
-                        DbSubChannels subChaTemp = subChannelBeanLocal.consultarId(permi.getSubChannelId());
-                        for (DbSegments seg : subChaTemp.getDbSegmentsList()) {
-                            for (DbSubSegments subSeg : seg.getDbSubSegmentsList()) {
-                                listSubSegment.add(subSeg.getSubSegmentId());
-                            }
-                        }
-                    } catch (DiageoBusinessException ex) {
-                        Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                } else if (permi.getChannelCheck().equals(StateEnum.ACTIVE.getState())) {
-                    try {
-                        DbChannels channelTemp = channelBeanLocal.findById(permi.getChannelId());
-                        for (DbSubChannels subCha : channelTemp.getDbSubChannelsList()) {
-                            for (DbSegments seg : subCha.getDbSegmentsList()) {
-                                for (DbSubSegments subSeg : seg.getDbSubSegmentsList()) {
-                                    listSubSegment.add(subSeg.getSubSegmentId());
+            for (Integer id3party : listDistributor) {
+                Set<Integer> listSubSegment = new HashSet<>();
+                for (DbPermissionSegments permi : getListPermi()) {
+                    if (permi.getDb3partyId().getDb3partyId().equals(id3party)) {
+                        if (permi.getSubSegmentCheck().equals(StateEnum.ACTIVE.getState())) {
+                            listSubSegment.add(permi.getSubSegmentId());
+                        } else if (permi.getSegmentCheck().equals(StateEnum.ACTIVE.getState())) {
+                            try {
+                                DbSegments listSegment = segmentoBeanLocal.findById(permi.getSegmentId());
+                                for (DbSubSegments subSegtem : listSegment.getDbSubSegmentsList()) {
+                                    listSubSegment.add(subSegtem.getSubSegmentId());
                                 }
+                            } catch (DiageoBusinessException ex) {
+                                Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } else if (permi.getSubChannelCheck().equals(StateEnum.ACTIVE.getState())) {
+                            try {
+                                DbSubChannels subChaTemp = subChannelBeanLocal.consultarId(permi.getSubChannelId());
+                                for (DbSegments seg : subChaTemp.getDbSegmentsList()) {
+                                    for (DbSubSegments subSeg : seg.getDbSubSegmentsList()) {
+                                        listSubSegment.add(subSeg.getSubSegmentId());
+                                    }
+                                }
+                            } catch (DiageoBusinessException ex) {
+                                Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
+                            }
+                        } else if (permi.getChannelCheck().equals(StateEnum.ACTIVE.getState())) {
+                            try {
+                                DbChannels channelTemp = channelBeanLocal.findById(permi.getChannelId());
+                                for (DbSubChannels subCha : channelTemp.getDbSubChannelsList()) {
+                                    for (DbSegments seg : subCha.getDbSegmentsList()) {
+                                        for (DbSubSegments subSeg : seg.getDbSubSegmentsList()) {
+                                            listSubSegment.add(subSeg.getSubSegmentId());
+                                        }
+                                    }
+                                }
+                            } catch (DiageoBusinessException ex) {
+                                Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
                             }
                         }
-                    } catch (DiageoBusinessException ex) {
-                        Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+                //Mirar cuales segmentos tiene permiso el sistema para ver, y esos se dejan para la consulta
+                List<Integer> listSegmentQuery = new ArrayList<>();
+                for (DwParameters param : parametersQuerySegment) {
+                    Integer id = Integer.parseInt(param.getParameterValue());
+                    for (Integer seg : listSubSegment) {
+                        if (id.equals(seg)) {
+                            listSegmentQuery.add(id);
+                            break;
+                        }
+                    }
+                }
+                //Consultar los outlets
+                List<DbOutlets> listOutTem = outletBeanLocal.findBy3PartyPermissionSegment(id3party, listSegmentQuery, statusMDM);
+                getListaOutletsOld().addAll(listOutTem);
             }
-            System.out.println(listSubSegment);
-            if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
-                List<Integer> stateOutlet = new ArrayList<>();
-                stateOutlet.add(2);
-                stateOutlet.add(3);
-                stateOutlet.add(4);
-                setListaOutlets(outletBeanLocal.findByDistributor(listDistributor, listSubSegment, stateOutlet, "1"));
-                setListaOutletsOld(outletBeanLocal.findByDistributor(listDistributor, listSubSegment, stateOutlet, "0"));
-            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())) {
-                List<Integer> stateOutlet = new ArrayList<>();
-                stateOutlet.add(1);
-                stateOutlet.add(4);
-                setListaOutlets(outletBeanLocal.findByDistributor(listDistributor, listSubSegment, stateOutlet, "1"));
-                setListaOutletsOld(outletBeanLocal.findByDistributor(listDistributor, listSubSegment, stateOutlet, "0"));
-            }
+            System.out.println("tamaño de lista de outlets: " + getListaOutletsOld().size());
         }
         setVerDetalle(Boolean.TRUE);
         super.init();
-    }
-
-    public void regresar() {
-        setVerDetalle(Boolean.TRUE);
-    }
-
-    public void detalle(DbOutlets out) {
-        if (!getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
-                && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
-            for (DbPermissionSegments ps : listPermi) {
-                //arreglar, los distribuidores ahora son una lista
-//                if (ps.getDb3partyId().equals(out.getIdDistribuidor().getIdDistribuidor())) {
-//                    if (ps.getChannelCheck().equals(StateEnum.ACTIVE.getState())) {
-//                        setDisabledSegmentChannel(Boolean.TRUE);
-//                    }
-//                    if (ps.getPotentialCheck().equals(StateEnum.ACTIVE.getState())) {
-//                        setDesabledPotential(Boolean.TRUE);
-//                    }
-//                }
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        Object obj = session.getAttribute(OUTLET);
+        if (obj != null) {
+            try {
+                setVerDetalle(Boolean.FALSE);
+                Integer id = Integer.parseInt(obj + "");
+                DbOutlets outlets = outletBeanLocal.findById(id);
+                seeDetail(outlets);
+                session.setAttribute(OUTLET, null);
+            } catch (DiageoBusinessException ex) {
+                Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        setVerDetalle(Boolean.FALSE);
-        setRazonSocial(out.getBusinessName());
-        setTipoOutlet(out.getTypeOutlet());
-        setNombreOutlet(out.getOutletName());
-        setNit(out.getNit());
-//        setNombresPropietarios(out.getPropietario().getNombres());
-//        setApellidosPropietario(out.getPropietario().getApellidos());
-//        setNumeroDocumento(out.getPropietario().getNumDoc());
-//        setTipoDocumento(new DwDocumentTypes(out.getPropietario().getTipodoc().getIdtipoDocumento()));
-        setChannelLabel(out.getSubSegmentId().getSegmentId().getSubChannelId().getChannelId().getNameChannel());
-        setSubChannelLabel(out.getSubSegmentId().getSegmentId().getSubChannelId().getNameSubChannel());
-        setSegmentLabel(out.getSubSegmentId().getSegmentId().getNameSegment());
-        setSubSegmentoSeleccionado(out.getSubSegmentId());
+    }
 
-        setDireccion(out.getAddress());
-        setBarrio(out.getNeighborhood());
-        setDepartamentoOutlet(out.getTownId().getDepartamentId());
-        setMunicipioOutlet(out.getTownId());
-        setCorreoElectronico(out.getEmail());
-        setPuntoVenta(out.getNumberPdv());
-//        if (out.getIdPotentialManual() == null) {
-//            setPotentialManula(out.getIdPotentialManual());
-//        } else {
-//            setPotentialManula(getListaPotentialManual().get(0));
-//        }
-        listenerSubSegment();
-        outletSelect = out;
+    public void seeDetail(DbOutlets out) {
+        setIdOutlet(out.getOutletId());
+        setIsFather(out.getIsFather().equals(StateDiageo.ACTIVO.getId()));
+        setFather(out.getOutletIdFather());
+        setKiernanId(out.getKiernanId());
+        setBusinessName(out.getBusinessName());
+        setNit(out.getNit());
+        setVerificationNumber(out.getVerificationNumber());
+        setOutletName(out.getOutletName());
+        setPointSale(out.getNumberPdv());
+        setTypeOutlet(out.getTypeOutlet());
+        setWebsite(out.getWebsite());
+        setWine(out.getWine() != null ? out.getWine().equals(StateDiageo.ACTIVO.getId()) : false);
+        setBeer(out.getBeer() != null ? out.getBeer().equals(StateDiageo.ACTIVO.getId()) : false);
+        setSpirtis(out.getSpirtis() != null ? out.getSpirtis().equals(StateDiageo.ACTIVO.getId()) : false);
+        setOcsPrimary(out.getOcsPrimary());
+        setOcsSecondary(out.getOcsSecondary());
+        setPotentialSelected(out.getPotentialId());
+        setSubSegmentSelected(out.getSubSegmentId());
+        setSegmentSelected(getSubSegmentSelected().getSegmentId());
+        setSubChannelSelected(getSegmentSelected().getSubChannelId());
+        setChannelSelected(getSubChannelSelected().getChannelId());
+        setListSubChannel(getChannelSelected().getDbSubChannelsList());
+        setListSegment(getSubChannelSelected().getDbSegmentsList());
+        setListSubSegment(getSegmentSelected().getDbSubSegmentsList());
+        setListPotential(getSubSegmentSelected().getDbPotentialsList());
+        setList3Party(out.getDb3partyList());
+        setListPhones(out.getDbPhonesList());
+        setNeighborhood(out.getNeighborhood());
+        setAddress(out.getAddress());
+        setLongitude(out.getLongitude());
+        setLatitude(out.getLatitude());
+        setDepartamentSelected(out.getTownId().getDepartamentId());
+        setTownSelected(out.getTownId());
+        setPhonesDelete(new ArrayList<DbPhones>());
+        setVerDetalle(Boolean.FALSE);
+    }
+
+    @Override
+    public void saveOutlet() {
+        try {
+            DbOutlets outlet = outletBeanLocal.findById(getIdOutlet());
+            outlet.setAddress(getAddress().toUpperCase());
+            outlet.setBusinessName(getBusinessName().toUpperCase());
+            outlet.setDb3partyList(getList3Party());
+            cleanIdPhones();
+            outlet.setDbPhonesList(getListPhones());
+            outlet.setEmail(getEmail().toUpperCase());
+            outlet.setIsFather(isIsFather() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+            //outlet.setIsNewOutlet(StateDiageo.ACTIVO.getId());
+            outlet.setKiernanId(getKiernanId().toUpperCase());
+            outlet.setLatitude(getLatitude());
+            outlet.setLongitude(getLongitude());
+            outlet.setNeighborhood(getNeighborhood().toUpperCase());
+            outlet.setNit(getNit().toUpperCase());
+            outlet.setNumberPdv(getPointSale().toUpperCase());
+            outlet.setOcsPrimary(getOcsPrimary());
+            outlet.setOcsSecondary(getOcsSecondary());
+            if (getFather() != null && getFather().getOutletId() != null) {
+                outlet.setOutletIdFather(getFather());
+            }
+            outlet.setOutletName(getOutletName().toUpperCase());
+            outlet.setPotentialId(getPotentialSelected());
+            outlet.setSubSegmentId(getSubSegmentSelected());
+            outlet.setTownId(getTownSelected());
+            outlet.setTypeOutlet(getTypeOutlet().toUpperCase());
+            outlet.setVerificationNumber(getVerificationNumber());
+            outlet.setWebsite(getWebsite().toUpperCase());
+            outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+            outlet.setStatusOutlet(StateOutletChain.ACTIVE.getId());
+            outletBeanLocal.updateOutlet(outlet);
+            showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+        } catch (DiageoBusinessException ex) {
+            Logger.getLogger(OutletCrearBean.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
+        }
+
     }
 
     public void updateOutlet() {
-
         try {
-            if (outletSelect.getStatusOutlet().equals(StateOutletChain.OUTLET_TMC.getId())) {
-                outletSelect.setStatusOutlet(StateOutletChain.PENDING_APPROVAL.getId());
+            if (getOutletSelect().getStatusOutlet().equals(StateOutletChain.OUTLET_TMC.getId())) {
+                getOutletSelect().setStatusOutlet(StateOutletChain.PENDING_APPROVAL.getId());
             } else {
-                if (state.equals("4")) {
-                    outletSelect.setRejectMessage(messageReject);
+                if (getState().equals("4")) {
+                    getOutletSelect().setRejectMessage(getMessageReject());
                 }
-                outletSelect.setStatusOutlet(state);
+                getOutletSelect().setStatusOutlet(getState());
             }
-            outletBeanLocal.updateOutlet(outletSelect);
+            outletBeanLocal.updateOutlet(getOutletSelect());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -238,17 +270,12 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     }
 
     public void approbatrionMasive() {
-        for (DbOutlets listaOutlet : listaOutlets) {
+        for (DbOutlets listaOutlet : getListaOutletsOld()) {
             if (listaOutlet.isApprobationMassive()) {
                 if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())) {
-                    listaOutlet.setStatusOutlet(StateOutletChain.OUTLET_TMC.getId());
+                    listaOutlet.setStatusMDM(StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name());
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
-                    if (stateMasive.equals("3")) {
-                        listaOutlet.setStatusOutlet(StateOutletChain.PENDING_APPROVAL.getId());
-                    } else {
-                        listaOutlet.setRejectMessage(capturarValor("out_massive_message_reject"));
-                        listaOutlet.setStatusOutlet(StateOutletChain.REJECTED.getId());
-                    }
+                    listaOutlet.setStatusOutlet(StatusSystemMDM.APPROVED.name());
                 }
                 try {
                     outletBeanLocal.updateOutlet(listaOutlet);
@@ -262,125 +289,169 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     }
 
     public String labelState(String id) {
-        if (id == null) {
+        if (id == null || id.isEmpty()) {
             return "";
         }
         return StateOutletChain.value(id).name();
     }
 
     public void selectAll() {
-        for (DbOutlets listaOutlet : listaOutlets) {
+        for (DbOutlets listaOutlet : getListaOutletsOld()) {
             listaOutlet.setApprobationMassive(Boolean.TRUE);
         }
     }
 
     public void listenerReject() {
-        if (state.equals("4")) {
+        if (getState().equals("4")) {
             RequestContext.getCurrentInstance().execute("PF('xvReject').show();");
         }
     }
 
-    public List<DbOutlets> getListaOutlets() {
-        return listaOutlets;
-    }
-
-    public void setListaOutlets(List<DbOutlets> listaOutlets) {
-        this.listaOutlets = listaOutlets;
-    }
-
-    public boolean isVerDetalle() {
-        return verDetalle;
-    }
-
-    public void setVerDetalle(boolean verDetalle) {
-        this.verDetalle = verDetalle;
-    }
-
+    /**
+     * @return the loginBean
+     */
     public LoginBean getLoginBean() {
         return loginBean;
     }
 
-    public void setLoginBean(LoginBean loginBean) {
-        this.loginBean = loginBean;
+    /**
+     * @return the listaOutlets
+     */
+    public List<DbOutlets> getListaOutlets() {
+        return listaOutlets;
     }
 
-    public boolean isDisabledSegmentChannel() {
-        return disabledSegmentChannel;
+    /**
+     * @param listaOutlets the listaOutlets to set
+     */
+    public void setListaOutlets(List<DbOutlets> listaOutlets) {
+        this.listaOutlets = listaOutlets;
     }
 
-    public void setDisabledSegmentChannel(boolean disabledSegmentChannel) {
-        this.disabledSegmentChannel = disabledSegmentChannel;
-    }
-
-    public boolean isDisabledSubChannel() {
-        return disabledSubChannel;
-    }
-
-    public void setDisabledSubChannel(boolean disabledSubChannel) {
-        this.disabledSubChannel = disabledSubChannel;
-    }
-
-    public boolean isDisabledSegment() {
-        return disabledSegment;
-    }
-
-    public void setDisabledSegment(boolean disabledSegment) {
-        this.disabledSegment = disabledSegment;
-    }
-
-    public boolean isDisabledSubSegment() {
-        return disabledSubSegment;
-    }
-
-    public void setDisabledSubSegment(boolean disabledSubSegment) {
-        this.disabledSubSegment = disabledSubSegment;
-    }
-
-    public boolean isDesabledPotential() {
-        return desabledPotential;
-    }
-
-    public void setDesabledPotential(boolean desabledPotential) {
-        this.desabledPotential = desabledPotential;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public List<StateOutletDto> getListStateOutlet() {
-        return listStateOutlet;
-    }
-
-    public void setListStateOutlet(List<StateOutletDto> listStateOutlet) {
-        this.listStateOutlet = listStateOutlet;
-    }
-
-    public String getMessageReject() {
-        return messageReject;
-    }
-
-    public void setMessageReject(String messageReject) {
-        this.messageReject = messageReject;
-    }
-
-    public String getStateMasive() {
-        return stateMasive;
-    }
-
-    public void setStateMasive(String stateMasive) {
-        this.stateMasive = stateMasive;
-    }
-
+    /**
+     * @return the listaOutletsOld
+     */
     public List<DbOutlets> getListaOutletsOld() {
         return listaOutletsOld;
     }
 
+    /**
+     * @param listaOutletsOld the listaOutletsOld to set
+     */
     public void setListaOutletsOld(List<DbOutlets> listaOutletsOld) {
         this.listaOutletsOld = listaOutletsOld;
     }
+
+    /**
+     * @return the listPermi
+     */
+    public List<DbPermissionSegments> getListPermi() {
+        return listPermi;
+    }
+
+    /**
+     * @param listPermi the listPermi to set
+     */
+    public void setListPermi(List<DbPermissionSegments> listPermi) {
+        this.listPermi = listPermi;
+    }
+
+    /**
+     * @return the verDetalle
+     */
+    public boolean isVerDetalle() {
+        return verDetalle;
+    }
+
+    /**
+     * @param verDetalle the verDetalle to set
+     */
+    public void setVerDetalle(boolean verDetalle) {
+        this.verDetalle = verDetalle;
+    }
+
+    /**
+     * @return the outletSelect
+     */
+    public DbOutlets getOutletSelect() {
+        return outletSelect;
+    }
+
+    /**
+     * @param outletSelect the outletSelect to set
+     */
+    public void setOutletSelect(DbOutlets outletSelect) {
+        this.outletSelect = outletSelect;
+    }
+
+    /**
+     * @return the state
+     */
+    public String getState() {
+        return state;
+    }
+
+    /**
+     * @param state the state to set
+     */
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    /**
+     * @return the stateMasive
+     */
+    public String getStateMasive() {
+        return stateMasive;
+    }
+
+    /**
+     * @param stateMasive the stateMasive to set
+     */
+    public void setStateMasive(String stateMasive) {
+        this.stateMasive = stateMasive;
+    }
+
+    /**
+     * @return the messageReject
+     */
+    public String getMessageReject() {
+        return messageReject;
+    }
+
+    /**
+     * @param messageReject the messageReject to set
+     */
+    public void setMessageReject(String messageReject) {
+        this.messageReject = messageReject;
+    }
+
+    /**
+     * @return the phonesDelete
+     */
+    public List<DbPhones> getPhonesDelete() {
+        return phonesDelete;
+    }
+
+    /**
+     * @param phonesDelete the phonesDelete to set
+     */
+    public void setPhonesDelete(List<DbPhones> phonesDelete) {
+        this.phonesDelete = phonesDelete;
+    }
+
+    /**
+     * @return the idOutlet
+     */
+    public Integer getIdOutlet() {
+        return idOutlet;
+    }
+
+    /**
+     * @param idOutlet the idOutlet to set
+     */
+    public void setIdOutlet(Integer idOutlet) {
+        this.idOutlet = idOutlet;
+    }
+
 }

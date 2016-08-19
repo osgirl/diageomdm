@@ -50,10 +50,10 @@ public class MyDataBean extends DiageoRootBean implements Serializable {
     public void init() {
         setApellidos(getLoginBean().getUsuario().getLastName());
         setNombres(getLoginBean().getUsuario().getNameUser());
-        setCorreo(getLoginBean().getUsuario().getEmailUser());
-        setNumDocumento(getLoginBean().getUsuario().getDocumentNumber());
+        setCorreo("<b>" + getLoginBean().getUsuario().getEmailUser() + "</b>");
+        setNumDocumento("<b>" + getLoginBean().getUsuario().getDocumentNumber() + "</b>");
         setTipoDoc(getLoginBean().getUsuario().getDocumentTypeId().getDocumentTypeId());
-        setPerfil(getLoginBean().getUsuario().getProfileId().getNameProfile());
+        setPerfil("<b>" + getLoginBean().getUsuario().getProfileId().getNameProfile() + "</b>");
     }
 
     public String getTipoDocumento() {
@@ -65,7 +65,7 @@ public class MyDataBean extends DiageoRootBean implements Serializable {
             DwUsers usuario = getLoginBean().getUsuario();
             usuario.setNameUser(getNombres());
             usuario.setLastName(getApellidos());
-            usuario=usuarioBeanLocal.updateUser(usuario);
+            usuario = usuarioBeanLocal.updateUser(usuario);
             getLoginBean().setUsuario(usuario);
             super.showInfoMessage(capturarValor("usu_mis_datos"));
         } catch (ControllerWebException ex) {
