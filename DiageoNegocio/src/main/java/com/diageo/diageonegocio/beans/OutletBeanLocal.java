@@ -38,6 +38,6 @@ public interface OutletBeanLocal {
 
     public List<DbOutlets> findByBusinessName(String query);
 
-    public List<DbOutlets> findBy3PartyPermissionSegment(Integer id3party, List<Integer> subSegment,String statusMDM);
+    public List<DbOutlets> findBy3PartyPermissionSegment(Integer id3party, List<Integer> subSegment,List<String> statusMDM);
     
 }

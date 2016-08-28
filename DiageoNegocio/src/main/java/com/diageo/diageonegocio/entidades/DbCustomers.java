@@ -16,6 +16,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
@@ -25,8 +27,12 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "DB_CUSTOMERS")
+@NamedQueries({
+    @NamedQuery(name = DbCustomers.FIND_BY_NAME, query = "SELECT c FROM DbCustomers c WHERE c.customerName LIKE ?1")
+})
 public class DbCustomers implements Serializable {
 
+    public static final String FIND_BY_NAME = "DbCustomers.findByName";
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id

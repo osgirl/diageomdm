@@ -40,7 +40,7 @@ import javax.validation.constraints.Size;
             + "INNER JOIN o.db3partyList p "
             + "WHERE o.subSegmentId.subSegmentId=?1 AND p.db3partyId=?2"),
     @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION, query = "SELECT o FROM DbOutlets o INNER JOIN o.db3partyList p "
-            + "WHERE p.db3partyId=?1 AND o.subSegmentId.subSegmentId IN ?2 AND o.statusMDM=?3"),
+            + "WHERE p.db3partyId=?1 AND o.subSegmentId.subSegmentId IN ?2 AND o.statusMDM  IN ?3"),
 //    @NamedQuery(name = DbOutlets.FIND_BY_DISTRI_SUBSEGMENT, query = "SELECT e FROM Outlet e WHERE e.idDistribuidor.idDistribuidor IN ?1 "
 //            + "AND e.idsubsegmento.idsubSegmento IN ?2 AND e.idStateOutlet.idSateOutlet IN ?3 AND e.isNewOutlet=?4")
 })

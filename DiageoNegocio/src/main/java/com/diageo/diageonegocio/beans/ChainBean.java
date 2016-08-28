@@ -67,4 +67,14 @@ public class ChainBean extends BusinessTransaction<DbChains> implements ChainBea
         return list;
     }
 
+    @Override
+    public List<DbChains> findBy3PartyPermissionSegment(Integer id3party, List<Integer> subSegment, List<String> statusMDM) {
+        List<DbChains> list = super.searchByNamedQuery(DbChains.class, DbChains.FIND_BY_3PARTY_PERMISSION, id3party, subSegment, statusMDM);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+
+    }
+
 }

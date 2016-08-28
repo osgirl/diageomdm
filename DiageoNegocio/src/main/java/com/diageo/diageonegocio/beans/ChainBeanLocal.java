@@ -29,4 +29,6 @@ public interface ChainBeanLocal {
 
     public List<DbChains> findByNameChain(String nameChain);
 
+    public List<DbChains> findBy3PartyPermissionSegment(Integer id3party, List<Integer> subSegment, List<String> statusMDM);
+
 }

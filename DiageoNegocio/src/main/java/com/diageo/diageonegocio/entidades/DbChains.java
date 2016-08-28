@@ -21,6 +21,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 /**
@@ -31,7 +32,9 @@ import javax.validation.constraints.Size;
 @Table(name = "DB_CHAINS")
 @NamedQueries({
     @NamedQuery(name = DbChains.FIND_BY_SEGMENT_3PARTY, query = "SELECT c FROM DbChains c WHERE c.subSegmentId.subSegmentId=?1 AND c.dbPartyId.db3partyId=?2"),
-    @NamedQuery(name = DbChains.FIND_BY_NAME_CHAIN, query = "SELECT c FROM DbChains c WHERE c.nameChain LIKE ?1")
+    @NamedQuery(name = DbChains.FIND_BY_NAME_CHAIN, query = "SELECT c FROM DbChains c WHERE c.nameChain LIKE ?1"),
+    @NamedQuery(name = DbChains.FIND_BY_3PARTY_PERMISSION, query = "SELECT c FROM DbChains c WHERE c.dbPartyId.db3partyId = ?1 AND "
+            + "c.subSegmentId.subSegmentId IN ?2 AND c.statusMDM IN ?3")
 
 })
 public class DbChains implements Serializable {
@@ -39,6 +42,7 @@ public class DbChains implements Serializable {
     private static final long serialVersionUID = 1L;
     public static final String FIND_BY_SEGMENT_3PARTY = "DbChains.findBySegment3Party";
     public static final String FIND_BY_NAME_CHAIN = "DbChains.findByNameChain";
+    public static final String FIND_BY_3PARTY_PERMISSION = "DbChains.findBy3PartyPermission";
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
     @GeneratedValue(generator = "SQ_DB_OUTLETS_CHAINS", strategy = GenerationType.SEQUENCE)
@@ -57,7 +61,7 @@ public class DbChains implements Serializable {
     @JoinTable(name = "DB_CHAINS_PHONES", joinColumns = {
         @JoinColumn(name = "CHAIN_ID", referencedColumnName = "CHAIN_ID")}, inverseJoinColumns = {
         @JoinColumn(name = "PHONE_ID", referencedColumnName = "PHONE_ID")})
-    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<DbPhones> dbPhonesList;
     @JoinColumn(name = "SUB_SEGMENT_ID", referencedColumnName = "SUB_SEGMENT_ID")
     @ManyToOne(optional = false)
@@ -95,6 +99,10 @@ public class DbChains implements Serializable {
     private String isActive;
     @Column(name = "STATUS_CHAIN")
     private String statusChain;
+    @Column(name = "STATUS_MDM")
+    private String statusMDM;
+    @Transient
+    private boolean approbationMassive;
 
     public DbChains() {
     }
@@ -199,31 +207,6 @@ public class DbChains implements Serializable {
         this.address = address;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (chainId != null ? chainId.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof DbChains)) {
-            return false;
-        }
-        DbChains other = (DbChains) object;
-        if ((this.chainId == null && other.chainId != null) || (this.chainId != null && !this.chainId.equals(other.chainId))) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return "com.totalseguros.entidadesdiageobusiness.DbChains[ chainId=" + chainId + " ]";
-    }
-
     /**
      * @return the neighborhood
      */
@@ -306,6 +289,47 @@ public class DbChains implements Serializable {
      */
     public void setStatusChain(String statusChain) {
         this.statusChain = statusChain;
+    }
+
+    public boolean isApprobationMassive() {
+        return approbationMassive;
+    }
+
+    public void setApprobationMassive(boolean approbationMassive) {
+        this.approbationMassive = approbationMassive;
+    }
+
+    public String getStatusMDM() {
+        return statusMDM;
+    }
+
+    public void setStatusMDM(String statusMDM) {
+        this.statusMDM = statusMDM;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 0;
+        hash += (chainId != null ? chainId.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        // TODO: Warning - this method won't work in the case the id fields are not set
+        if (!(object instanceof DbChains)) {
+            return false;
+        }
+        DbChains other = (DbChains) object;
+        if ((this.chainId == null && other.chainId != null) || (this.chainId != null && !this.chainId.equals(other.chainId))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+        return "com.totalseguros.entidadesdiageobusiness.DbChains[ chainId=" + chainId + " ]";
     }
 
 }

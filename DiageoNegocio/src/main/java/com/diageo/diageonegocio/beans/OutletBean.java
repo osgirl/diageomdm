@@ -127,7 +127,7 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
     }
 
     @Override
-    public List<DbOutlets> findBy3PartyPermissionSegment(Integer id3party, List<Integer> subSegment,String statusMDM) {
+    public List<DbOutlets> findBy3PartyPermissionSegment(Integer id3party, List<Integer> subSegment,List<String> statusMDM) {
         List<DbOutlets> list = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_3PARTY_PERMISSION, id3party, subSegment,statusMDM);
         if (list == null) {
             return new ArrayList<>();

@@ -7,6 +7,7 @@ package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.DbCustomers;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
+import java.util.List;
 import javax.ejb.Local;
 
 /**
@@ -17,5 +18,9 @@ import javax.ejb.Local;
 public interface CustomerBeanLocal {
 
     public DbCustomers createCustomer(DbCustomers per) throws DiageoBusinessException;
+
+    public List<DbCustomers> findByNameCustomer(String query);
+
+    public DbCustomers findById(Integer id);
     
 }
