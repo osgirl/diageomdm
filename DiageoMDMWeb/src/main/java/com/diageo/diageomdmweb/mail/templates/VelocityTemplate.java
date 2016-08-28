@@ -5,13 +5,16 @@
  */
 package com.diageo.diageomdmweb.mail.templates;
 
-import java.io.IOException;
+import com.diageo.admincontrollerweb.beans.ParameterBeanLocal;
+import com.diageo.admincontrollerweb.entities.DwParameters;
+import com.diageo.admincontrollerweb.enums.ParameterKeyEnum;
+import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import java.io.StringWriter;
+import java.util.List;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.ResourceBundle;
+import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
-import javax.servlet.ServletContext;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
@@ -20,26 +23,46 @@ import org.apache.velocity.app.VelocityEngine;
  *
  * @author EDUARDO
  */
-public class VelocityTemplate {
+public class VelocityTemplate extends DiageoRootBean {
 
-    public static String recoverPassword(String link) {
+    public static String capturarValor(String key) {
+        FacesContext context = FacesContext.getCurrentInstance();
+        ResourceBundle bundle = ResourceBundle.getBundle("com.diageo.diageomdmweb.properties.propertiesMDM", getLocale(context));
+        return bundle.getString(key);
+    }
+
+    private static Properties loadProperties() {
         Properties props = new Properties();
-//        props.setProperty("resource.loader", "webapp");
-//        props.setProperty("webapp.resource.loader.class", "org.apache.velocity.tools.view.WebappResourceLoader");
-//        
-//        props.setProperty("webapp.resource.loader.path", "/WEB-INF/mailtemplates/");
         props.setProperty("resource.loader", "file");
         props.setProperty("webapp.resource.loader.class", "org.apache.velocity.runtime.resource.loader.FileResourceLoader");
-        props.setProperty("file.resource.loader.path", "C:\\Users\\EDUARDO\\Documents\\JHOVANY\\LATINOBI\\DIAGEO\\SOFTWARE\\diageomdm\\DiageoMDMWeb\\src\\main\\java\\com\\diageo\\diageomdmweb\\mail\\templates");
+        props.setProperty("file.resource.loader.path", capturarValor("template_mail_path"));
+        return props;
+    }
+
+    public static String recoverPassword(String link) {
+        Properties props = loadProperties();
         VelocityEngine ve = new VelocityEngine();
-//        ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
-//        ve.setApplicationAttribute("javax.servlet.ServletContext", servletContext);
         ve.init(props);
-        Template t = ve.getTemplate("RecoverPassword.vm","UTF-8");
+        Template t = ve.getTemplate("RecoverPassword.vm", "UTF-8");
         VelocityContext context = new VelocityContext();
         context.put("link", link);
         StringWriter writer = new StringWriter();
         t.merge(context, writer);
         return writer.toString();
     }
+
+    public static String userCreation(String link, String mail, String pass) {
+        Properties props = loadProperties();
+        VelocityEngine ve = new VelocityEngine();
+        ve.init(props);
+        Template t = ve.getTemplate("UserCreation.vm", "UTF-8");
+        VelocityContext context = new VelocityContext();
+        context.put("link", link);
+        context.put("mail", mail);
+        context.put("password", pass);
+        StringWriter writer = new StringWriter();
+        t.merge(context, writer);
+        return writer.toString();
+    }
+
 }

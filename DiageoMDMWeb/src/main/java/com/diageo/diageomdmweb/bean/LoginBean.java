@@ -43,11 +43,11 @@ import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
 import com.diageo.diageonegocio.entidades.DbOutlets;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import com.diageo.diageonegocio.enums.StateOutletChain;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.servlet.ServletContext;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -116,12 +116,12 @@ public class LoginBean extends DiageoRootBean implements Serializable {
                     armarMigaPan(capturarValor("m_administrador"), capturarValor("m_usuario"), capturarValor("m_usuario_consultar"));
                     return "/admin/usuario/consultarUsuario?faces-redirect=true";
                 } else {
-                    if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
-                        if (revisarOutletsPendientesRevision()) {
-                            System.out.println("entro aprobacionoo");
-                            RequestContext.getCurrentInstance().execute("PF('dlgPendiente').show();");
-                        }
-                    }
+//                    if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
+//                        if (revisarOutletsPendientesRevision()) {
+//                            System.out.println("entro aprobacionoo");
+//                            RequestContext.getCurrentInstance().execute("PF('dlgPendiente').show();");
+//                        }
+//                    }
                     armarMigaPan(capturarValor("m_outlet"), capturarValor("m_outlet_consultar"));
                     return "/outlet/consultarOutlet?faces-redirect=true";
                 }
@@ -194,20 +194,17 @@ public class LoginBean extends DiageoRootBean implements Serializable {
             tl.setEmail(getEmailRecover());
             tl.setExpiration(expiration.getTime());
             temporalLinkBeanLocal.createTemporal(tl);
-            ServletContext servletContext = (ServletContext) FacesContext.getCurrentInstance().getExternalContext().getContext();
             HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            String ip = req.getServerName();
-            Integer port = req.getServerPort();
-            String url = "http://localhost:9090" + req.getContextPath() + "/faces/" + "recoverPassword.xhtml?token=" + token;
+            String url = "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + req.getServerPort() + req.getContextPath() + req.getServletPath() + "/recoverPassword.xhtml?"+TOKEN+"=" + token;
             EMail mail = new EMail();
-            String msg = "Cordial saludo, en el siguiente link podrá recuperar su contraseña\n"
-                    + "<a href=\""+url+"\">"+url+"</a>";
-            msg=VelocityTemplate.recoverPassword(url);
-            mail.send(new String[]{getEmailRecover()}, "Recuperar Contraseña", msg);
-            showInfoMessage("Se envió un link para recuperar la contraseña a su correo.");
+            String msg = VelocityTemplate.recoverPassword(url);
+            mail.send(new String[]{getEmailRecover()}, capturarValor("mail_recover_pass"), msg);
+            showInfoMessage(capturarValor("msg_mail_send_recover_password"));
         } catch (ControllerWebException ex) {
             Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
             showWarningMessage("El correo ingresado no existe");
+        } catch (UnknownHostException ex) {
+            Logger.getLogger(LoginBean.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -283,7 +280,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
             cookieMail = new Cookie(COOKIE_MAIL, null);
             cookieRecordarme = new Cookie(COOKIE_REMEMBER, isRecordarme() + "");
         }
-        int day=HOUR_SECOND*24;
+        int day = HOUR_SECOND * 24;
         cookieMail.setMaxAge(day);
         cookieMail.setPath(((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath());
         cookieRecordarme.setMaxAge(day);

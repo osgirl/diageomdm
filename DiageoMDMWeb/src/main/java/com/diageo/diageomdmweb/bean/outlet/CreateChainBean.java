@@ -6,12 +6,14 @@
 package com.diageo.diageomdmweb.bean.outlet;
 
 import com.diageo.admincontrollerweb.enums.StateEnum;
+import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import com.diageo.diageomdmweb.constant.PatternConstant;
 import com.diageo.diageonegocio.beans.ChainBeanLocal;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.ClusterBeanLocal;
+import com.diageo.diageonegocio.beans.CustomerBeanLocal;
 import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
 import com.diageo.diageonegocio.beans.PhonesBeanLocal;
 import com.diageo.diageonegocio.beans.SegmentBeanLocal;
@@ -22,6 +24,7 @@ import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.DbChains;
 import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbClusters;
+import com.diageo.diageonegocio.entidades.DbCustomers;
 import com.diageo.diageonegocio.entidades.DbDepartaments;
 import com.diageo.diageonegocio.entidades.DbPhones;
 import com.diageo.diageonegocio.entidades.DbPotentials;
@@ -72,6 +75,8 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
     protected Db3PartyBeanLocal db3PartyBeanLocal;
     @EJB
     protected PhonesBeanLocal phonesBeanLocal;
+    @EJB
+    protected CustomerBeanLocal customerBeanLocal;
     private String kiernan;
     private String chainName;
     private String businessName;
@@ -105,7 +110,8 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
     private List<DbPhones> listPhones;
     private List<DbTypePhones> listTypePhone;
     private List<Db3party> list3Party;
-    private DbChains chainFatherSelected;
+    private List<DbCustomers> listCustomers;
+    private DbCustomers customer;
 
     /**
      * Creates a new instance of CreateChainBean
@@ -137,8 +143,9 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
         setPotentialSelected(getListPotential().get(0));
         setListCluster(clusterBeanLocal.findAll());
         setClusterSelected(getListCluster().get(0));
-        setChainFatherSelected(new DbChains());
         setDb3PartySelected(getList3Party().get(0));
+        setCustomer(new DbCustomers());
+        setListCustomers(new ArrayList<DbCustomers>());
         setKiernan(EMPTY_FIELD);
         setBusinessName(EMPTY_FIELD);
         setChainName(EMPTY_FIELD);
@@ -153,23 +160,24 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
     public void saveChain() {
         try {
             DbChains chain = new DbChains();
-            chain.setAddress(getAddress().toUpperCase());
-            chain.setBusinessName(getBusinessName().toUpperCase());
-            chain.setCodeEan(getEanCode().toUpperCase());
+            chain.setAddress(getAddress() != null ? getAddress().toUpperCase() : "");
+            chain.setBusinessName(getBusinessName() != null ? getBusinessName().toUpperCase() : "");
+            chain.setCodeEan(getEanCode() != null ? getEanCode().toUpperCase() : "");
             chain.setDbClusterId(getClusterSelected());
             chain.setDbPartyId(getDb3PartySelected());
             cleanIdPhones();
             chain.setDbPhonesList(getListPhones());
             chain.setDbTownId(getTownSelected());
             chain.setIsActive(isActiveChain() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-            chain.setKiernanId(getKiernan().toUpperCase());
+            chain.setKiernanId(getKiernan() != null ? getKiernan().toUpperCase() : "");
             chain.setLatitude(getLatitude());
             chain.setLongitude(getLongitude());
-            chain.setNameChain(getChainName().toUpperCase());
-            chain.setNeighborhood(getNeighborhood().toUpperCase());
+            chain.setNameChain(getChainName() != null ? getChainName().toUpperCase() : "");
+            chain.setNeighborhood(getNeighborhood() != null ? getNeighborhood().toUpperCase() : "");
             chain.setPotentialId(getPotentialSelected());
             chain.setSubSegmentId(getSubSegmentSelected());
             chain.setStatusChain(getStatus());
+            chain.setStatusMDM(StatusSystemMDM.PENDING_KAM.name());
             chainBeanLocal.createChain(chain);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
             initFields();
@@ -197,8 +205,27 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
         }
     }
 
+    public void addCustomer() {
+        if (getCustomer().getCustomerName() != null && !getCustomer().getCustomerName().isEmpty()) {
+            for (DbCustomers cus : getListCustomers()) {
+                if (cus.equals(getCustomer())) {
+                    showWarningMessage(capturarValor("customer_msg_equal"));
+                    return;
+                }
+            }
+            getListCustomers().add(getCustomer());
+            setCustomer(new DbCustomers());
+        } else {
+            showWarningMessage(capturarValor("chain_msg_customer_empty"));
+        }
+    }
+
     public void deletePhone(DbPhones phone) {
         getListPhones().remove(phone);
+    }
+    
+    public void deleteCustomer(DbCustomers custo) {
+        getListCustomers().remove(custo);
     }
 
     public void listenerChannel() {
@@ -230,6 +257,10 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
 
     public List<DbChains> completeChainFather(String query) {
         return chainBeanLocal.findByNameChain(query);
+    }
+
+    public List<DbCustomers> completeCustomer(String query) {
+        return customerBeanLocal.findByNameCustomer(query);
     }
 
     /**
@@ -658,20 +689,6 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
     }
 
     /**
-     * @return the chainFatherSelected
-     */
-    public DbChains getChainFatherSelected() {
-        return chainFatherSelected;
-    }
-
-    /**
-     * @param chainFatherSelected the chainFatherSelected to set
-     */
-    public void setChainFatherSelected(DbChains chainFatherSelected) {
-        this.chainFatherSelected = chainFatherSelected;
-    }
-
-    /**
      * @return the db3PartySelected
      */
     public Db3party getDb3PartySelected() {
@@ -729,6 +746,34 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
 
     public StateOutletChain[] getEnumStateOutletChain() {
         return StateOutletChain.values();
+    }
+
+    /**
+     * @return the customer
+     */
+    public DbCustomers getCustomer() {
+        return customer;
+    }
+
+    /**
+     * @param customer the customer to set
+     */
+    public void setCustomer(DbCustomers customer) {
+        this.customer = customer;
+    }
+
+    /**
+     * @return the listCustomers
+     */
+    public List<DbCustomers> getListCustomers() {
+        return listCustomers;
+    }
+
+    /**
+     * @param listCustomers the listCustomers to set
+     */
+    public void setListCustomers(List<DbCustomers> listCustomers) {
+        this.listCustomers = listCustomers;
     }
 
 }

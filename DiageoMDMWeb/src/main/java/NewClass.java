@@ -1,5 +1,10 @@
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -36,21 +41,32 @@ public class NewClass {
 //        }
         Calendar actual = Calendar.getInstance();
         Calendar expiration = Calendar.getInstance();
-        expiration.setTime(new Date());        
+        expiration.setTime(new Date());
         System.out.println(expiration.getTime());
         expiration.roll(Calendar.DATE, 3);
         actual.setTime(expiration.getTime());
         System.out.println(expiration.getTime());
-        int com=actual.compareTo(expiration);
+        int com = actual.compareTo(expiration);
         System.out.println(com);
     }
-    
+
     public static void main(String[] args) {
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 5; j++) {
-                break;
-            }
-            System.out.println(i);
+        String publicIP = null;
+        try {
+            URL tempURL = new URL("http://www.whatismyip.org/");
+            HttpURLConnection tempConn = (HttpURLConnection) tempURL.openConnection();
+            InputStream tempInStream = tempConn.getInputStream();
+            InputStreamReader tempIsr = new InputStreamReader(tempInStream);
+            BufferedReader tempBr = new BufferedReader(tempIsr);
+            publicIP = tempBr.readLine();
+
+            tempBr.close();
+            tempInStream.close();
+
+        } catch (Exception ex) {
+            publicIP = "<No es posible resolver la direccion IP>";
         }
+
+        System.out.println("Mi IP Publica es " + publicIP);
     }
 }

@@ -37,11 +37,9 @@
                                         goodLabel="#{msg.cam_pass_good}" weakLabel="#{msg.cam_pass_weak}" strongLabel="#{msg.cam_pass_strong}" promptLabel="#{msg.cam_pass_promt}"/>
                             <p:watermark for="pwd2" value="#{msg.cam_pass_repetir_contra}"/>
                             <br/>
-                            <p:commandButton value="#{msg.btn_send}" process="@all" update="formCambiarContra:mCamPas" actionListener="#{cambiarContraseniaBean.cambiarContrasenia()}"
+                            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{cambiarContraseniaBean.cambiarContrasenia()}"
                                              styleClass="button" style="width: 10%;left: 0%"/>                                                                                                                     
-                            <br/>   
-                            <p:messages id="mCamPas" closable="true" showDetail="true" showSummary="false"
-                                        style="width: 25%;left: 50%;-webkit-transform: translate(-50%);text-align: center;position: absolute;"/>
+                            <br/>                               
                         </h:panelGrid>
                     </p:fieldset>
                 </h:form>

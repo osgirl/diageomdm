@@ -27,6 +27,8 @@ import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.admincontrollerweb.enums.UserEntryEnum;
 import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageomdmweb.bean.dto.DistributorPermissionDto;
+import com.diageo.diageomdmweb.mail.EMail;
+import com.diageo.diageomdmweb.mail.templates.VelocityTemplate;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
 import com.diageo.diageonegocio.beans.PotentialBeanLocal;
@@ -42,11 +44,17 @@ import com.diageo.diageonegocio.entidades.DbSubChannels;
 import com.diageo.diageonegocio.entidades.DbSubSegments;
 import com.diageo.diageonegocio.enums.FatherDistributorEnum;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
+import com.diageo.utilsdiageomdm.mail.MailBean;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.primefaces.context.RequestContext;
 
@@ -252,11 +260,18 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
                         mod.getDwUsersList().add(usu);
                         moduloBean.createUserModule(mod);
                     }
+                    EMail email = new EMail();
+                    HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+                    String url = "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + req.getServerPort() + req.getContextPath();
+                    String msg = VelocityTemplate.userCreation(url, usu.getEmailUser(), (getTipoDocumento().getNameDocumentType().toLowerCase() + getNumDoc()));
+                    email.send(new String[]{usu.getEmailUser()}, capturarValor("mail_user_creation"), msg);
                     showInfoMessage(capturarValor("usu_creado_exito"));
                     init();
                 } catch (ControllerWebException ex) {
                     showErrorMessage(capturarValor("usu_creado_fallo"));
                     LOG.log(Level.SEVERE, ex.getMessage());
+                } catch (UnknownHostException ex) {
+                    Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }

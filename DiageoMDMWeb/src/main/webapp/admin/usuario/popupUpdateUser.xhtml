@@ -73,9 +73,9 @@ and open the template in the editor.
                     <p:separator/>
                     <br/>                    
                     <h:panelGrid columns="3">
-                        <p:commandButton value="#{msg.btn_select_all}" process="@all" update="pgSegment" actionListener="#{consultarUsuarioBean.selectAllChain()}" styleClass="button" style="width: 100%"/>
-                        <p:commandButton value="#{msg.btn_unselect_all}" process="@all" update="pgSegment" actionListener="#{consultarUsuarioBean.unSelectAllChain()}" styleClass="button" style="width: 100%"/>
-                        <p:commandButton value="#{msg.btn_acept}" process="@all" update="@form" actionListener="#{consultarUsuarioBean.aceptChangesChain()}" styleClass="button" style="width: 100%"/>                                                
+                        <p:commandButton value="#{msg.btn_select_all}" process="@all" update="pgSegment" actionListener="#{consultarUsuarioBean.selectAllChain()}" styleClass="button" style="width: 100%;left: 0%"/>
+                        <p:commandButton value="#{msg.btn_unselect_all}" process="@all" update="pgSegment" actionListener="#{consultarUsuarioBean.unSelectAllChain()}" styleClass="button" style="width: 100%;left: 0%"/>
+                        <p:commandButton value="#{msg.btn_acept}" process="@all" update="@form" actionListener="#{consultarUsuarioBean.aceptChangesChain()}" styleClass="button" style="width: 100%;left: 0%"/>
                     </h:panelGrid>
                     <br/>                    
                     <p:dataTable id="dtSegmentSelect" value="#{consultarUsuarioBean.distributorPermissionDtoSelected.listPermissionSegment}" var="segmentDistributor"

@@ -6,6 +6,7 @@
 package com.diageo.diageomdmweb.bean.outlet;
 
 import com.diageo.admincontrollerweb.enums.StateEnum;
+import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
@@ -170,36 +171,37 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     public void saveOutlet() {
         try {
             DbOutlets outlet = new DbOutlets();
-            outlet.setAddress(getAddress().toUpperCase());
-            outlet.setBusinessName(getBusinessName().toUpperCase());
+            outlet.setAddress(getAddress() != null ? getAddress().toUpperCase() : "");
+            outlet.setBusinessName(getBusinessName() != null ? getBusinessName().toUpperCase() : "");
             outlet.setDb3partyList(getList3Party());
             cleanIdPhones();
             outlet.setDbPhonesList(getListPhones());
-            outlet.setEmail(getEmail().toUpperCase());
+            outlet.setEmail(getEmail() != null ? getEmail().toUpperCase() : "");
             outlet.setIsFather(isIsFather() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
             //outlet.setIsNewOutlet(StateDiageo.ACTIVO.getId());
-            outlet.setKiernanId(getKiernanId().toUpperCase());
+            outlet.setKiernanId(getKiernanId() != null ? getKiernanId().toUpperCase() : "");
             outlet.setLatitude(getLatitude());
             outlet.setLongitude(getLongitude());
-            outlet.setNeighborhood(getNeighborhood().toUpperCase());
-            outlet.setNit(getNit().toUpperCase());
-            outlet.setNumberPdv(getPointSale().toUpperCase());
+            outlet.setNeighborhood(getNeighborhood() != null ? getNeighborhood().toUpperCase() : "");
+            outlet.setNit(getNit() != null ? getNit().toUpperCase() : "");
+            outlet.setNumberPdv(getPointSale() != null ? getPointSale().toUpperCase() : "");
             outlet.setOcsPrimary(getOcsPrimary());
             outlet.setOcsSecondary(getOcsSecondary());
             if (getFather() != null && getFather().getOutletId() != null) {
                 outlet.setOutletIdFather(getFather());
             }
-            outlet.setOutletName(getOutletName().toUpperCase());
+            outlet.setOutletName(getOutletName() != null ? getOutletName().toUpperCase() : "");
             outlet.setPotentialId(getPotentialSelected());
             outlet.setSubSegmentId(getSubSegmentSelected());
             outlet.setTownId(getTownSelected());
-            outlet.setTypeOutlet(getTypeOutlet().toUpperCase());
+            outlet.setTypeOutlet(getTypeOutlet() != null ? getTypeOutlet().toUpperCase() : "");
             outlet.setVerificationNumber(getVerificationNumber());
-            outlet.setWebsite(getWebsite().toUpperCase());
+            outlet.setWebsite(getWebsite() != null ? getWebsite().toUpperCase() : "");
             outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             outlet.setStatusOutlet(StateOutletChain.ACTIVE.getId());
+            outlet.setStatusMDM(StatusSystemMDM.PENDING_TMC.name());
             outletBeanLocal.createOutlet(outlet);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
             initFields();

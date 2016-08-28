@@ -12,7 +12,6 @@ import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import com.diageo.diageomdmweb.bean.LoginBean;
-import com.diageo.diageonegocio.entidades.DbChains;
 import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbOutlets;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
@@ -51,8 +50,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     private ParameterBeanLocal parameterBeanLocal;
     @Inject
     private LoginBean loginBean;
-    private List<DbOutlets> listaOutlets;
-    private List<DbOutlets> listaOutletsOld;
+    private List<DbOutlets> listOutlets;
     private List<DbPermissionSegments> listPermi;
     private boolean verDetalle;
     private DbOutlets outletSelect;
@@ -61,6 +59,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     private String messageReject;
     private List<DbPhones> phonesDelete;
     private Integer idOutlet;
+    private boolean renderMassiveApproval;
+    private boolean disabledFields;
 
     /**
      * Creates a new instance of OutletConsultarBean
@@ -72,18 +72,23 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     @Override
     public void init() {
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
-                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
-//            setListaOutlets(outletBeanLocal.listOutletNew("1"));
-            setListaOutletsOld(outletBeanLocal.listOutletNew("0"));
-//            setListaOutletsOld(outletBeanLocal.findAllOutlets());            
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())) {
+            setListOutlets(outletBeanLocal.listOutletNew("0"));
+            setRenderMassiveApproval(Boolean.FALSE);
+            setDisabledFields(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId()));
         } else {
-            String statusMDM = EMPTY_FIELD;
+            setDisabledFields(Boolean.TRUE);
+            setRenderMassiveApproval(Boolean.TRUE);
+            List<String> statusMDM = new ArrayList<>();
             if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())) {
-                statusMDM = StatusSystemMDM.PENDING_TMC.name();
+                statusMDM.add(StatusSystemMDM.PENDING_TMC.name());
+                statusMDM.add(StatusSystemMDM.PENDING_TMC_POTENTIAL.name());
+                statusMDM.add(StatusSystemMDM.REJECT.name());
             } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
-                statusMDM = StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name();
+                statusMDM.add(StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name());
             }
-            setListaOutletsOld(new ArrayList<DbOutlets>());
+            setListOutlets(new ArrayList<DbOutlets>());
             //Segmentos que puede ver el sistema
             List<DwParameters> parametersQuerySegment = parameterBeanLocal.findByKey(ParameterKeyEnum.QUERY_SUB_SEGMENT.name());
             //Carga los permisos del usuario logueado
@@ -148,9 +153,9 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                 }
                 //Consultar los outlets
                 List<DbOutlets> listOutTem = outletBeanLocal.findBy3PartyPermissionSegment(id3party, listSegmentQuery, statusMDM);
-                getListaOutletsOld().addAll(listOutTem);
+                getListOutlets().addAll(listOutTem);
             }
-            System.out.println("tamaño de lista de outlets: " + getListaOutletsOld().size());
+            System.out.println("tamaño de lista de outlets: " + getListOutlets().size());
         }
         setVerDetalle(Boolean.TRUE);
         super.init();
@@ -212,36 +217,40 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     public void saveOutlet() {
         try {
             DbOutlets outlet = outletBeanLocal.findById(getIdOutlet());
-            outlet.setAddress(getAddress().toUpperCase());
-            outlet.setBusinessName(getBusinessName().toUpperCase());
+            outlet.setAddress(getAddress() != null ? getAddress().toUpperCase() : "");
+            outlet.setBusinessName(getBusinessName() != null ? getBusinessName().toUpperCase() : "");
             outlet.setDb3partyList(getList3Party());
             cleanIdPhones();
             outlet.setDbPhonesList(getListPhones());
-            outlet.setEmail(getEmail().toUpperCase());
+            outlet.setEmail(getEmail() != null ? getEmail().toUpperCase() : "");
             outlet.setIsFather(isIsFather() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
             //outlet.setIsNewOutlet(StateDiageo.ACTIVO.getId());
-            outlet.setKiernanId(getKiernanId().toUpperCase());
+            outlet.setKiernanId(getKiernanId() != null ? getKiernanId().toUpperCase() : "");
             outlet.setLatitude(getLatitude());
             outlet.setLongitude(getLongitude());
-            outlet.setNeighborhood(getNeighborhood().toUpperCase());
-            outlet.setNit(getNit().toUpperCase());
-            outlet.setNumberPdv(getPointSale().toUpperCase());
+            outlet.setNeighborhood(getNeighborhood() != null ? getNeighborhood().toUpperCase() : "");
+            outlet.setNit(getNit() != null ? getNit().toUpperCase() : "");
+            outlet.setNumberPdv(getPointSale() != null ? getPointSale().toUpperCase() : "");
             outlet.setOcsPrimary(getOcsPrimary());
             outlet.setOcsSecondary(getOcsSecondary());
             if (getFather() != null && getFather().getOutletId() != null) {
                 outlet.setOutletIdFather(getFather());
             }
-            outlet.setOutletName(getOutletName().toUpperCase());
+            outlet.setOutletName(getOutletName() != null ? getOutletName().toUpperCase() : "");
             outlet.setPotentialId(getPotentialSelected());
             outlet.setSubSegmentId(getSubSegmentSelected());
             outlet.setTownId(getTownSelected());
-            outlet.setTypeOutlet(getTypeOutlet().toUpperCase());
+            outlet.setTypeOutlet(getTypeOutlet() != null ? getTypeOutlet().toUpperCase() : "");
             outlet.setVerificationNumber(getVerificationNumber());
-            outlet.setWebsite(getWebsite().toUpperCase());
+            outlet.setWebsite(getWebsite() != null ? getWebsite().toUpperCase() : "");
             outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             outlet.setStatusOutlet(StateOutletChain.ACTIVE.getId());
+            if (!getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                    && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
+                outlet.setStatusMDM(StatusSystemMDM.statusEngine(StatusSystemMDM.APPROVED, getLoginBean().getUsuario().getProfileId().getProfileId()).name());
+            }
             outletBeanLocal.updateOutlet(outlet);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
@@ -250,7 +259,20 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         }
 
     }
+    
+    public void rejectOutlet(){
+        try {
+            DbOutlets outlet = outletBeanLocal.findById(getIdOutlet());
+            outlet.setStatusMDM(StatusSystemMDM.statusEngine(StatusSystemMDM.REJECT, getLoginBean().getUsuario().getProfileId().getProfileId()).name());
+            outletBeanLocal.updateOutlet(outlet);
+            showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+        } catch (DiageoBusinessException ex) {
+            Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
+            showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
+        }
+    }
 
+    @Deprecated
     public void updateOutlet() {
         try {
             if (getOutletSelect().getStatusOutlet().equals(StateOutletChain.OUTLET_TMC.getId())) {
@@ -270,12 +292,12 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     }
 
     public void approbatrionMasive() {
-        for (DbOutlets listaOutlet : getListaOutletsOld()) {
+        for (DbOutlets listaOutlet : getListOutlets()) {
             if (listaOutlet.isApprobationMassive()) {
                 if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())) {
                     listaOutlet.setStatusMDM(StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name());
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
-                    listaOutlet.setStatusOutlet(StatusSystemMDM.APPROVED.name());
+                    listaOutlet.setStatusMDM(StatusSystemMDM.APPROVED.name());
                 }
                 try {
                     outletBeanLocal.updateOutlet(listaOutlet);
@@ -296,8 +318,14 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     }
 
     public void selectAll() {
-        for (DbOutlets listaOutlet : getListaOutletsOld()) {
+        for (DbOutlets listaOutlet : getListOutlets()) {
             listaOutlet.setApprobationMassive(Boolean.TRUE);
+        }
+    }
+
+    public void unSelectAll() {
+        for (DbOutlets listaOutlet : getListOutlets()) {
+            listaOutlet.setApprobationMassive(Boolean.FALSE);
         }
     }
 
@@ -305,6 +333,10 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         if (getState().equals("4")) {
             RequestContext.getCurrentInstance().execute("PF('xvReject').show();");
         }
+    }
+
+    public boolean isRenderButtonReject() {
+        return getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId());
     }
 
     /**
@@ -315,31 +347,17 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     }
 
     /**
-     * @return the listaOutlets
+     * @return the listOutlets
      */
-    public List<DbOutlets> getListaOutlets() {
-        return listaOutlets;
+    public List<DbOutlets> getListOutlets() {
+        return listOutlets;
     }
 
     /**
-     * @param listaOutlets the listaOutlets to set
+     * @param listOutlets the listOutlets to set
      */
-    public void setListaOutlets(List<DbOutlets> listaOutlets) {
-        this.listaOutlets = listaOutlets;
-    }
-
-    /**
-     * @return the listaOutletsOld
-     */
-    public List<DbOutlets> getListaOutletsOld() {
-        return listaOutletsOld;
-    }
-
-    /**
-     * @param listaOutletsOld the listaOutletsOld to set
-     */
-    public void setListaOutletsOld(List<DbOutlets> listaOutletsOld) {
-        this.listaOutletsOld = listaOutletsOld;
+    public void setListOutlets(List<DbOutlets> listOutlets) {
+        this.listOutlets = listOutlets;
     }
 
     /**
@@ -452,6 +470,34 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
      */
     public void setIdOutlet(Integer idOutlet) {
         this.idOutlet = idOutlet;
+    }
+
+    /**
+     * @return the renderMassiveApproval
+     */
+    public boolean isRenderMassiveApproval() {
+        return renderMassiveApproval;
+    }
+
+    /**
+     * @param renderMassiveApproval the renderMassiveApproval to set
+     */
+    public void setRenderMassiveApproval(boolean renderMassiveApproval) {
+        this.renderMassiveApproval = renderMassiveApproval;
+    }
+
+    /**
+     * @return the disabledFields
+     */
+    public boolean isDisabledFields() {
+        return disabledFields;
+    }
+
+    /**
+     * @param disabledFields the disabledFields to set
+     */
+    public void setDisabledFields(boolean disabledFields) {
+        this.disabledFields = disabledFields;
     }
 
 }

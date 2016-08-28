@@ -23,6 +23,7 @@ import javax.faces.context.FacesContext;
 @ManagedBean
 public abstract class DiageoRootBean {
 
+    protected static final String TOKEN = "token";
     protected static final String OUTLET = "outlet";
     protected static final String CHAIN = "chain";
     protected final static String EMPTY_FIELD = "";
@@ -43,6 +44,7 @@ public abstract class DiageoRootBean {
      * Constante con el parámetro user
      */
     public final static String USUARIO = "user";
+    
 
     protected Date getCurrentDate() {
         return Calendar.getInstance().getTime();

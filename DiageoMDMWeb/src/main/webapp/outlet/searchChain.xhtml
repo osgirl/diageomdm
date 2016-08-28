@@ -20,7 +20,7 @@
                             font-size: 90%;
                         }
                         .tamanio_letra_labels{
-                            font-size: 15px;
+                            font-size: 11px;
                         }
                         @media screen and (max-width: 1500px) {
                             .tamanio_letra_labels{
@@ -38,6 +38,13 @@
                                  value="#{chainSearchBean.chainsList}" var="chain"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  style="font-size:  90%" paginator="true" rendered="#{chainSearchBean.seeDetail}">
+                        <p:column headerText="#{msg.status}">
+                            <p:graphicImage value="/resources/images/iconos/equis.png" width="20px" rendered="#{chain.statusMDM eq 'REJECT'}"/>
+                            <p:graphicImage value="/resources/images/iconos/chulo.png" width="20px" rendered="#{chain.statusMDM ne 'REJECT'}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.out_approbation_massive}" rendered="#{chainSearchBean.renderMassiveApproval}">
+                            <p:selectBooleanCheckbox value="#{chain.approbationMassive}"/>
+                        </p:column>
                         <p:column headerText="#{msg.chain_id}" filterBy="#{chain.chainId}">
                             <h:outputLabel value="#{chain.chainId}"/>
                         </p:column>
@@ -55,27 +62,40 @@
                                            actionListener="#{chainSearchBean.detailChain(chain)}"/>
                         </p:column>
                     </p:dataTable>
+                    <br/>
+                    <h:panelGrid columns="3">
+                        <p:commandButton value="#{msg.btn_select_all}" styleClass="button" process="@all" update="@form"
+                                         actionListener="#{chainSearchBean.selectAll()}" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"
+                                         style="width: 100%;left: 0%"/>
+                        <p:commandButton value="#{msg.btn_unselect_all}" styleClass="button" process="@all" update="@form"
+                                         actionListener="#{chainSearchBean.unSelectAll()}" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"
+                                         style="width: 100%;left: 0%"/>
+                        <p:commandButton value="#{msg.btn_send}" styleClass="button" process="@all" update="@form"
+                                         actionListener="#{chainSearchBean.approbatrionMasive()}" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"
+                                         style="width: 100%;left: 0%"/>
+                    </h:panelGrid>
 
                     <h:panelGroup id="pgChain">
                         <h:panelGroup id="pgChaDetalle" rendered="#{!chainSearchBean.seeDetail}" style="width: 100%">
                             <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
                                 <h:panelGrid columns="4" style="width: 100%">
                                     <h:outputLabel value="#{msg.out_kiernan}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:inputText value="#{chainSearchBean.kiernan}"/>
+                                    <p:inputText value="#{chainSearchBean.kiernan}" disabled="#{chainSearchBean.disabledFields}"/>
                                     <h:outputLabel value="#{msg.chain_name}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:inputText value="#{chainSearchBean.chainName}"/>
+                                    <p:inputText value="#{chainSearchBean.chainName}" disabled="#{chainSearchBean.disabledFields}"/>
                                     <h:outputLabel value="#{msg.out_razon_social}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:inputText value="#{chainSearchBean.businessName}"/>
+                                    <p:inputText value="#{chainSearchBean.businessName}" disabled="#{chainSearchBean.disabledFields}"/>
                                     <h:outputLabel value="#{msg.chain_code_ean_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:inputText value="#{chainSearchBean.eanCode}"/>                            
+                                    <p:inputText value="#{chainSearchBean.eanCode}" disabled="#{chainSearchBean.disabledFields}"/>
                                     <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:selectOneMenu value="#{chainSearchBean.db3PartySelected}" converter="db3PartyConverter" style="width: 90%">
+                                    <p:selectOneMenu value="#{chainSearchBean.db3PartySelected}" converter="db3PartyConverter" style="width: 90%"
+                                                     disabled="#{chainSearchBean.disabledFields}">
                                         <f:selectItems value="#{chainSearchBean.list3Party}" var="party3" itemLabel="#{party3.name3party}"/>
                                     </p:selectOneMenu>
                                     <h:outputLabel value="#{msg.usu_activo}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:selectBooleanCheckbox value="#{chainSearchBean.activeChain}"/>
+                                    <p:selectBooleanCheckbox value="#{chainSearchBean.activeChain}" disabled="#{chainSearchBean.disabledFields}"/>
                                     <h:outputLabel value="#{msg.status}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:selectOneMenu value="#{chainSearchBean.status}" style="width: 90%">
+                                    <p:selectOneMenu value="#{chainSearchBean.status}" style="width: 90%" disabled="#{chainSearchBean.disabledFields}">
                                         <f:selectItem itemValue="A" itemLabel="#{msg.active}"/>
                                         <f:selectItem itemValue="I" itemLabel="#{msg.inactive}"/>
                                         <f:selectItem itemValue="B" itemLabel="#{msg.locked}"/>
@@ -117,7 +137,8 @@
                                         </p:selectOneMenu>
 
                                         <h:outputLabel value="#{msg.chain_cluster}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu value="#{chainSearchBean.clusterSelected}" converter="clusterConverter" style="width: 90%">
+                                        <p:selectOneMenu value="#{chainSearchBean.clusterSelected}" converter="clusterConverter" style="width: 90%"
+                                                         disabled="#{chainSearchBean.disabledFields}">
                                             <f:selectItems value="#{chainSearchBean.listCluster}" var="clus" itemLabel="#{clus.nameCluster}"/>
                                         </p:selectOneMenu>
                                     </h:panelGrid>
@@ -129,26 +150,27 @@
                                     <h:panelGrid columns="4" style="width: 95%">
                                         <h:outputLabel value="#{msg.loc_depto}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                         <p:selectOneMenu value="#{chainSearchBean.departamentSelected}" converter="departamentoConverter"
-                                                         style="width: 90%">
+                                                         style="width: 90%" disabled="#{chainSearchBean.disabledFields}">
                                             <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptoout" itemLabel="#{deptoout.nameDepartament}"/>
                                             <p:ajax process="@this" update="formChainSearch:somMpioOut"/>
                                         </p:selectOneMenu>
                                         <h:outputLabel value="#{msg.chain_city}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu id="somMpioOut" value="#{chainSearchBean.townSelected}" converter="municipioConverter"  style="width: 90%">
+                                        <p:selectOneMenu id="somMpioOut" value="#{chainSearchBean.townSelected}" converter="municipioConverter"  style="width: 90%"
+                                                         disabled="#{chainSearchBean.disabledFields}">
                                             <f:selectItems value="#{chainSearchBean.departamentSelected.dbTownsList}" var="mpioout" itemLabel="#{mpioout.nameTown}"/>
                                         </p:selectOneMenu>
                                         <h:outputLabel value="#{msg.out_barrio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText value="#{chainSearchBean.neighborhood}"/>
+                                        <p:inputText value="#{chainSearchBean.neighborhood}" disabled="#{chainSearchBean.disabledFields}"/>
                                         <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText value="#{chainSearchBean.address}"/>
+                                        <p:inputText value="#{chainSearchBean.address}" disabled="#{chainSearchBean.disabledFields}"/>
                                         <h:outputLabel value="#{msg.loc_latitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                         <h:panelGroup>
-                                            <p:inputText id="itLatitude" value="#{chainSearchBean.latitude}" converter="javax.faces.Double"/>
+                                            <p:inputText id="itLatitude" value="#{chainSearchBean.latitude}" converter="javax.faces.Double" disabled="#{chainSearchBean.disabledFields}"/>
                                             <p:message for="itLatitude"/>
                                         </h:panelGroup>
                                         <h:outputLabel value="#{msg.loc_longitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                         <h:panelGroup>
-                                            <p:inputText id="itLongitude" value="#{chainSearchBean.longitude}" converter="javax.faces.Double"/>
+                                            <p:inputText id="itLongitude" value="#{chainSearchBean.longitude}" converter="javax.faces.Double" disabled="#{chainSearchBean.disabledFields}"/>
                                             <p:message for="itLongitude"/>
                                         </h:panelGroup>
                                     </h:panelGrid>
@@ -158,14 +180,14 @@
                             <p:fieldset legend="#{msg.out_phones}" style="width: 95%">
                                 <h:panelGrid style="width: 95%" columns="65">
                                     <h:outputLabel value="#{msg.out_type_phone}"  style="width: 100%;padding: 15%"/>
-                                    <p:selectOneMenu value="#{chainSearchBean.typePhone}" converter="typePhoneConverter" style="width: 90%">
+                                    <p:selectOneMenu value="#{chainSearchBean.typePhone}" converter="typePhoneConverter" style="width: 90%" disabled="#{chainSearchBean.disabledFields}">
                                         <f:selectItems value="#{chainSearchBean.listTypePhone}" var="typePhone" itemLabel="#{typePhone.nameTypePhone}"/>
                                     </p:selectOneMenu>
                                     <h:outputLabel value="#{msg.out_number}"  style="width: 100%;padding: 15%"/>
-                                    <p:inputText id="itPhone" value="#{chainSearchBean.newPhone.numberPhone}"/>
+                                    <p:inputText id="itPhone" value="#{chainSearchBean.newPhone.numberPhone}" disabled="#{chainSearchBean.disabledFields}"/>
                                     <p:commandButton value="#{msg.btn_add}" process="@parent" update="formChainSearch:dlPhones formChainSearch:itPhone"
                                                      actionListener="#{chainSearchBean.addPhone()}"
-                                                     styleClass="button" style="width: 80%"/>
+                                                     styleClass="button" style="width: 80%" disabled="#{chainSearchBean.disabledFields}"/>
                                 </h:panelGrid>
                                 <br/>
                                 <p:dataTable id="dlPhones" paginator="true" rows="5" styleClass="paginated" paginatorAlwaysVisible="false"
@@ -174,7 +196,8 @@
                                         <h:outputLabel value="#{msg.out_phones}"/>
                                     </f:facet>
                                     <p:column>
-                                        <p:commandLink actionListener="#{chainSearchBean.deletePhone(phone)}" update="formChainSearch:dlPhones" process="@this">
+                                        <p:commandLink actionListener="#{chainSearchBean.deletePhone(phone)}" update="formChainSearch:dlPhones" process="@this"
+                                                       disabled="#{chainSearchBean.disabledFields}">
                                             <p:graphicImage value="/resources/images/iconos/equis.png" width="12px"/>
                                         </p:commandLink>
                                     </p:column>
@@ -188,7 +211,9 @@
                             </p:fieldset>
                             <br/><br/>
                             <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{chainSearchBean.saveChain()}"
-                                             styleClass="button"/>
+                                             styleClass="button" style="left: 0%"/>
+                            <p:commandButton value="#{msg.btn_reject}" process="@all" update="@form" actionListener="#{chainSearchBean.rejectChain()}"                                             
+                                             styleClass="button_reject" style="left: 0%" rendered="#{chainSearchBean.renderButtonReject}"/>
                             <br/>
                         </h:panelGroup>
                     </h:panelGroup>

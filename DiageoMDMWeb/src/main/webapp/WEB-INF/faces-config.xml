@@ -11,7 +11,11 @@
         <message-bundle>com.diageo.diageomdmweb.message.Messages</message-bundle>
         <resource-bundle>
             <base-name>com.diageo.diageomdmweb.label.Labels</base-name>
-            <var>msg</var>
+            <var>msg</var>            
+        </resource-bundle>
+        <resource-bundle>
+            <base-name>com.diageo.diageomdmweb.properties.propertiesMDM</base-name>
+            <var>prop</var>            
         </resource-bundle>
     </application>    
 </faces-config>

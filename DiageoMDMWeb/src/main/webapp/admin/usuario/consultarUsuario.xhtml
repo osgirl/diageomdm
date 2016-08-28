@@ -13,140 +13,149 @@
                 <style>
                     label{
                         font-family: verdana !important;
-                        font-size: 12px !important;
+                        font-size: 11px !important;
                     }
                     .ui-selectonemenu{
-                        width:70% !important;
+                        width:75% !important;
                     }
 
                 </style>
                 <h:form id="formDetalleUsuario">
-                    <p:dataTable id="dtUsuarios" value="#{consultarUsuarioBean.listaUsuariosSistema}" var="usu"
-                                 widgetVar="wvUsu" style="width: 90%; word-wrap: break-word;font-size: 11px !important" rendered="#{consultarUsuarioBean.verDetalle}"
-                                 paginatorAlwaysVisible="false" rows="12"  paginator="true" 
-                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 reflow="true">
-                        <p:column headerText="#{msg.usu_num_doc}" filterBy="#{usu.documentNumber}" filterMatchMode="startsWith">
-                            <h:outputLabel value="#{usu.documentNumber.toUpperCase()}"/>
-                        </p:column>                        
-                        <p:column headerText="#{msg.usu_nombres}" filterBy="#{usu.nameUser}" filterMatchMode="startsWith" sortBy="#{usu.nameUser}">
-                            <h:outputLabel value="#{usu.nameUser}"/>
-                        </p:column>
-                        <p:column headerText="#{msg.usu_apellidos}" filterBy="#{usu.lastName}" filterMatchMode="startsWith" sortBy="#{usu.lastName}">
-                            <h:outputLabel value="#{usu.lastName}"/>
-                        </p:column>
-                        <p:column headerText="#{msg.mail}" filterBy="#{usu.emailUser}" filterMatchMode="startsWith" width="23%">
-                            <h:outputLabel value="#{usu.emailUser.toLowerCase()}"/>
-                        </p:column>
-                        <p:column headerText="#{msg.usu_perfil}" filterMatchMode="exact" filterBy="#{usu.profileId.nameProfile}" width="20%">
-                            <f:facet name="filter">
-                                <p:selectOneMenu onchange="PF('wvUsu').filter()" >
-                                    <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}" noSelectionOption="true"/>
-                                    <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemValue="#{per.nameProfile}" itemLabel="#{per.nameProfile}"/>
-                                </p:selectOneMenu>
-                            </f:facet>
-                            <h:outputLabel value="#{usu.profileId.nameProfile.toUpperCase()}"/>
-                        </p:column>
-                        <p:column headerText="#{msg.usu_activo}" style="text-align: center;width: 10%">
-                            <p:graphicImage value="/resources/images/iconos/equis.png" width="20px" rendered="#{usu.stateUser eq '0'}"/>
-                            <p:graphicImage value="/resources/images/iconos/chulo.png" width="20px" rendered="#{usu.stateUser eq '1'}"/>
-                        </p:column>
-                        <p:column style="width: 10%">
-                            <p:commandLink value="#{msg.btn_detalle}" actionListener="#{consultarUsuarioBean.verDetalleUsuario(usu)}" style="color: blue" process="@this" update="@form"/>
-                        </p:column>
-                    </p:dataTable>
+                    <p:fieldset legend="#{msg.m_usuario}" style="width: 90%" rendered="#{consultarUsuarioBean.verDetalle}">
+                        <p:dataTable id="dtUsuarios" value="#{consultarUsuarioBean.listaUsuariosSistema}" var="usu"
+                                     widgetVar="wvUsu" style="width: 98%; word-wrap: break-word;font-size: 11px !important" rendered="#{consultarUsuarioBean.verDetalle}"
+                                     paginatorAlwaysVisible="false" rows="12"  paginator="true" 
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     reflow="true">
+                            <p:column headerText="#{msg.usu_num_doc}" filterBy="#{usu.documentNumber}" filterMatchMode="startsWith">
+                                <h:outputLabel value="#{usu.documentNumber.toUpperCase()}"/>
+                            </p:column>                        
+                            <p:column headerText="#{msg.usu_nombres}" filterBy="#{usu.nameUser}" filterMatchMode="startsWith" sortBy="#{usu.nameUser}">
+                                <h:outputLabel value="#{usu.nameUser}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.usu_apellidos}" filterBy="#{usu.lastName}" filterMatchMode="startsWith" sortBy="#{usu.lastName}">
+                                <h:outputLabel value="#{usu.lastName}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.mail}" filterBy="#{usu.emailUser}" filterMatchMode="startsWith" width="23%">
+                                <h:outputLabel value="#{usu.emailUser.toLowerCase()}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.usu_perfil}" filterMatchMode="exact" filterBy="#{usu.profileId.nameProfile}" width="20%">
+                                <f:facet name="filter">
+                                    <p:selectOneMenu onchange="PF('wvUsu').filter()" >
+                                        <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}" noSelectionOption="true"/>
+                                        <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemValue="#{per.nameProfile}" itemLabel="#{per.nameProfile}"/>
+                                    </p:selectOneMenu>
+                                </f:facet>
+                                <h:outputLabel value="#{usu.profileId.nameProfile.toUpperCase()}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.usu_activo}" style="text-align: center;width: 10%">
+                                <p:graphicImage value="/resources/images/iconos/equis.png" width="20px" rendered="#{usu.stateUser eq '0'}"/>
+                                <p:graphicImage value="/resources/images/iconos/chulo.png" width="20px" rendered="#{usu.stateUser eq '1'}"/>
+                            </p:column>
+                            <p:column style="width: 10%">
+                                <p:commandLink value="#{msg.btn_detalle}" actionListener="#{consultarUsuarioBean.verDetalleUsuario(usu)}" style="color: blue" process="@this" update="@form"/>
+                            </p:column>
+                        </p:dataTable>
+                    </p:fieldset>
                     <h:panelGroup id="pgVerDetalle" style="width: 100%">
-                        <h:panelGrid columns="4" style="width: 100%" rendered="#{!consultarUsuarioBean.verDetalle}">
-                            <h:outputLabel value="#{msg.usu_nombres}"/>
-                            <h:panelGroup>
-                                <p:inputText id="itNombres" label="#{msg.usu_nombres}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.nameUser}" required="true"/>
-                                <p:message for="itNombres"/>
-                            </h:panelGroup>
-                            <h:outputLabel value="#{msg.usu_apellidos}"/>
-                            <h:panelGroup>
-                                <p:inputText id="itApellidos" label="#{msg.usu_apellidos}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.lastName}" required="true"/>
-                                <p:message for="itApellidos"/>
-                            </h:panelGroup>
-                            <h:outputLabel value="#{msg.usu_tipo_doc}"/>                        
-                            <p:selectOneMenu style="width: 73%" label="#{msg.usu_tipo_doc}" value="#{consultarUsuarioBean.tipoDocumento}" converter="tipoDocConverter">
-                                <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tiDoc" itemLabel="#{tiDoc.nameDocumentType}"/>
-                            </p:selectOneMenu>
-                            <h:outputLabel value="#{msg.usu_num_doc}"/>
-                            <h:panelGroup>
-                                <p:inputText id="itNumDoc" label="#{msg.usu_num_doc}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.documentNumber}" required="true"/>
-                                <p:message for="itNumDoc"/>
-                            </h:panelGroup>
-                            <h:outputLabel value="#{msg.usu_correo}"/>
-                            <h:panelGroup>
-                                <p:inputText id="itCorreo" label="#{msg.usu_correo}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.emailUser}" required="true"/>
-                                <p:message for="itCorreo"/>
-                            </h:panelGroup>
-                            <h:outputLabel value="#{msg.usu_perfil}"/>                        
-                            <p:selectOneMenu style="width: 73%" label="#{msg.usu_perfil}" value="#{consultarUsuarioBean.perfil}" converter="perfilConverter">
-                                <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemLabel="#{per.nameProfile}"/>
-                                <p:ajax update="formDetalleUsuario:pgEditDetail" process="@this" listener="#{consultarUsuarioBean.listenerDetailEdition()}"/>
-                            </p:selectOneMenu>
-                            <h:outputLabel value="#{msg.athena_code}"/>
-                            <p:inputText style="width: 80%" value="#{consultarUsuarioBean.athenaCode}"/>
-                            <h:outputLabel value="#{msg.usu_activo}"/>           
-                            <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{consultarUsuarioBean.usuarioActivo}"/>                               
-                        </h:panelGrid>
+                        <p:fieldset legend="#{msg.m_usuario}" style="width: 90%" rendered="#{!consultarUsuarioBean.verDetalle}">
+                            <h:panelGrid columns="4" style="width: 100%" rendered="#{!consultarUsuarioBean.verDetalle}">
+                                <h:outputLabel value="#{msg.usu_nombres}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itNombres" label="#{msg.usu_nombres}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.nameUser}" required="true"/>
+                                    <p:message for="itNombres"/>
+                                </h:panelGroup>
+                                <h:outputLabel value="#{msg.usu_apellidos}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itApellidos" label="#{msg.usu_apellidos}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.lastName}" required="true"/>
+                                    <p:message for="itApellidos"/>
+                                </h:panelGroup>
+                                <h:outputLabel value="#{msg.usu_tipo_doc}"/>                        
+                                <p:selectOneMenu style="width: 73%" label="#{msg.usu_tipo_doc}" value="#{consultarUsuarioBean.tipoDocumento}" converter="tipoDocConverter">
+                                    <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tiDoc" itemLabel="#{tiDoc.nameDocumentType}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.usu_num_doc}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itNumDoc" label="#{msg.usu_num_doc}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.documentNumber}" required="true"/>
+                                    <p:message for="itNumDoc"/>
+                                </h:panelGroup>
+                                <h:outputLabel value="#{msg.usu_correo}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itCorreo" label="#{msg.usu_correo}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.emailUser}" required="true"/>
+                                    <p:message for="itCorreo"/>
+                                </h:panelGroup>
+                                <h:outputLabel value="#{msg.usu_perfil}"/>                        
+                                <p:selectOneMenu style="width: 73%" label="#{msg.usu_perfil}" value="#{consultarUsuarioBean.perfil}" converter="perfilConverter">
+                                    <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemLabel="#{per.nameProfile}"/>
+                                    <p:ajax update="formDetalleUsuario:pgEditDetail" process="@this" listener="#{consultarUsuarioBean.listenerDetailEdition()}"/>
+                                </p:selectOneMenu>
+                                <h:outputLabel value="#{msg.athena_code}"/>
+                                <p:inputText style="width: 80%" value="#{consultarUsuarioBean.athenaCode}"/>
+                                <h:outputLabel value="#{msg.usu_activo}"/>           
+                                <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{consultarUsuarioBean.usuarioActivo}"/>                               
+                            </h:panelGrid>
+                        </p:fieldset>
+                        <br/>
                         <h:panelGroup id="pgEditDetail">
-                            <h:panelGroup rendered="#{consultarUsuarioBean.detailEdition}">                                    
-                                <p:separator/>
-                                <h:panelGroup id="pgDistri">
-                                    <h:panelGroup id="pgDistriRendered">
-                                        <h:panelGrid columns="3" width="90%">
-                                            <h:outputLabel value="#{msg.out_distribuidor}"/>
-                                            <p:selectOneMenu id="somDistriFather" value="#{consultarUsuarioBean.distributorSelected}" converter="distribuidorConverter">
-                                                <f:selectItems value="#{consultarUsuarioBean.listDistributor}" var="distri" itemLabel="#{distri.name3party}"/>
-                                            </p:selectOneMenu>
-                                            <p:commandButton value="#{msg.btn_acept}" process="@this somDistriFather" actionListener="#{consultarUsuarioBean.listenerFindDistributorSonByFather()}"
-                                                             update="formDetalleUsuario:tableDistributorSon"/>                                                
-                                        </h:panelGrid>
-                                        <br/><br/>
-                                        <p:dataTable id="tableDistributorSon" value="#{consultarUsuarioBean.listDistributorSon}" var="tableDistriSon"
-                                                     paginatorAlwaysVisible="false" rows="10"  paginator="true"
-                                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
-                                            <p:column headerText="#{msg.out_distribuidor}">
-                                                <h:outputLabel value="#{tableDistriSon.name3party}"/>
-                                            </p:column>
-                                            <p:column>
-                                                <p:commandLink value="#{msg.btn_add}" actionListener="#{consultarUsuarioBean.addDistributorToUser(tableDistriSon)}" 
-                                                               style="color: blue" process="@this" update="formDetalleUsuario:tableAllDistributorToEdit"/>
-                                            </p:column>
-                                        </p:dataTable>
-                                        <p:separator/>
-                                        <h:outputLabel value="#{msg.usu_add_to_user}"/>
-                                        <br/><br/>
-                                        <p:dataTable id="tableAllDistributorToEdit" value="#{consultarUsuarioBean.listDistributorPermission}"
-                                                     var="tableDistriToSon"
-                                                     paginatorAlwaysVisible="false" rows="10"  paginator="true"
-                                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
-                                            <p:column headerText="#{msg.out_distribuidor}">
-                                                <h:outputLabel value="#{tableDistriToSon.distributor.name3party}"/>
-                                            </p:column>
-                                            <p:column>
-                                                <p:commandLink value="#{msg.btn_detalle}" style="color: blue" process="@this" update=":formCreateUserModal"
-                                                               actionListener="#{consultarUsuarioBean.seeDetailDistributorAddedUser(tableDistriToSon)}"/>
-                                            </p:column>
-                                            <p:column>
-                                                <p:commandLink value="#{msg.btn_remove}" style="color: blue" update="formDetalleUsuario:tableAllDistributorToEdit "
-                                                               process="@this"
-                                                               actionListener="#{consultarUsuarioBean.removeDistributorToUser(tableDistriToSon)}"/>
-                                            </p:column>
-                                        </p:dataTable>
+                            <p:fieldset legend="#{msg.usu_permission}" style="width: 90%" rendered="#{consultarUsuarioBean.detailEdition}">
+                                <br/>
+                                <h:panelGroup rendered="#{consultarUsuarioBean.detailEdition}">
+                                    <h:panelGroup id="pgDistri">
+                                        <h:panelGroup id="pgDistriRendered">
+                                            <h:panelGrid columns="3" width="90%">
+                                                <h:outputLabel value="#{msg.out_distribuidor}"/>
+                                                <p:selectOneMenu id="somDistriFather" value="#{consultarUsuarioBean.distributorSelected}" converter="distribuidorConverter">
+                                                    <f:selectItems value="#{consultarUsuarioBean.listDistributor}" var="distri" itemLabel="#{distri.name3party}"/>
+                                                </p:selectOneMenu>
+                                                <p:commandButton value="#{msg.btn_acept}" process="@this somDistriFather" actionListener="#{consultarUsuarioBean.listenerFindDistributorSonByFather()}"
+                                                                 update="formDetalleUsuario:tableDistributorSon"/>                                                
+                                            </h:panelGrid>
+                                            <br/><br/>
+                                            <p:dataTable id="tableDistributorSon" value="#{consultarUsuarioBean.listDistributorSon}" var="tableDistriSon"
+                                                         paginatorAlwaysVisible="false" rows="10"  paginator="true"
+                                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                                                <p:column headerText="#{msg.out_distribuidor}">
+                                                    <h:outputLabel value="#{tableDistriSon.name3party}"/>
+                                                </p:column>
+                                                <p:column>
+                                                    <p:commandLink value="#{msg.btn_add}" actionListener="#{consultarUsuarioBean.addDistributorToUser(tableDistriSon)}" 
+                                                                   style="color: blue" process="@this" update="formDetalleUsuario:tableAllDistributorToEdit"/>
+                                                </p:column>
+                                            </p:dataTable>
+                                            <br/>
+                                            <b>
+                                                <h:outputLabel value="#{msg.usu_add_to_user}" style="font-size: 15px !important"/>
+                                            </b>
+                                            <br/><br/>
+                                            <p:dataTable id="tableAllDistributorToEdit" value="#{consultarUsuarioBean.listDistributorPermission}"
+                                                         var="tableDistriToSon"
+                                                         paginatorAlwaysVisible="false" rows="10"  paginator="true"
+                                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
+                                                <p:column headerText="#{msg.out_distribuidor}">
+                                                    <h:outputLabel value="#{tableDistriToSon.distributor.name3party}"/>
+                                                </p:column>
+                                                <p:column>
+                                                    <p:commandLink value="#{msg.btn_detalle}" style="color: blue" process="@this" update=":formCreateUserModal"
+                                                                   actionListener="#{consultarUsuarioBean.seeDetailDistributorAddedUser(tableDistriToSon)}"/>
+                                                </p:column>
+                                                <p:column>
+                                                    <p:commandLink value="#{msg.btn_remove}" style="color: blue" update="formDetalleUsuario:tableAllDistributorToEdit "
+                                                                   process="@this"
+                                                                   actionListener="#{consultarUsuarioBean.removeDistributorToUser(tableDistriToSon)}"/>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </h:panelGroup>
                                     </h:panelGroup>
                                 </h:panelGroup>
-                            </h:panelGroup>
+                            </p:fieldset>
                         </h:panelGroup>
                         <br/>
-                        <h:panelGrid columns="2" rendered="#{!consultarUsuarioBean.verDetalle}">
-                            <p:commandButton value="#{msg.btn_send}" process="@this pgVerDetalle" update="pgVerDetalle" actionListener="#{consultarUsuarioBean.guardarCambiosUsuario()}"
-                                             styleClass="button" style="width: 10%;left: 35%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"/> 
-                            <p:commandButton value="#{msg.btn_regresar}" immediate="true" actionListener="#{consultarUsuarioBean.regresar()}" update="@form"
-                                             styleClass="button" style="width: 10%;left: 55%;-webkit-transform: translate(-35%);text-align: center;position: absolute;"/> 
-                        </h:panelGrid>                            
+                        <p:commandButton value="#{msg.btn_send}" process="@this pgVerDetalle" update="pgVerDetalle" actionListener="#{consultarUsuarioBean.guardarCambiosUsuario()}"
+                                         rendered="#{!consultarUsuarioBean.verDetalle}"
+                                         styleClass="button" style="left: 0%"/> 
+                        <p:commandButton value="#{msg.btn_regresar}" immediate="true" actionListener="#{consultarUsuarioBean.regresar()}" update="@form"
+                                         rendered="#{!consultarUsuarioBean.verDetalle}"
+                                         styleClass="button" style="left: 0%"/> 
                     </h:panelGroup>
                 </h:form>
             </ui:define>         

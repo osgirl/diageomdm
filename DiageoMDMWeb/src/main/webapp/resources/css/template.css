@@ -70,8 +70,19 @@ and open the template in the editor.
 
 }
 
+.button_reject{ 
+    color: white !important;
+    width: 25%;
+    background: -webkit-linear-gradient(#750707, #b94a48) !important;
+    background: -moz-linear-gradient(#750707, #b94a48) !important;
+    background: -o-linear-gradient(#750707, #b94a48) !important;
+    background: -ms-linear-gradient(#750707, #b94a48) !important;
+    left:40%;
+
+}
+
 .ui-widget, .ui-widget-content{
-    font-size: 12px !important;
+    font-size: 11px !important;
     font-family: verdana !important;
 }
 
@@ -106,6 +117,6 @@ footer{
 
 label{
     font-family: verdana !important;
-    font-size: 12px !important;
+    font-size: 11px !important;
 }
 

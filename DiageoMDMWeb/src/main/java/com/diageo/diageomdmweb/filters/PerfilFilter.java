@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.diageo.diageomdmweb.filtros;
+package com.diageo.diageomdmweb.filters;
 
 import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.UserEntryEnum;

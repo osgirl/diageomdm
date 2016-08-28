@@ -56,7 +56,7 @@ public class RecoverPasswordBean extends DiageoRootBean implements Serializable 
     @PostConstruct
     public void init() {
         HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        String token = req.getParameter("token");
+        String token = req.getParameter(TOKEN);
         if (token != null && !token.isEmpty()) {
             DwTemporalLink tl = temporalLinkBeanLocal.findByToken(token);
             if (tl == null) {
