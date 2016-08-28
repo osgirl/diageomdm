@@ -10,7 +10,7 @@ package com.diageo.admincontrollerweb.enums;
  * @author yovanoty126
  */
 public enum ParameterKeyEnum {
-    
+
     QUERY_SUB_SEGMENT;
-    
+
 }

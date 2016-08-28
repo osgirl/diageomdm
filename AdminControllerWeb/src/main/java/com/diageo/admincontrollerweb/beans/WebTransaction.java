@@ -30,9 +30,9 @@ public class WebTransaction<T> {
         Object o = getEntityManager().find(t, id);
         return o;
     }
-    
-    public Object update(Object obj){
-        obj=getEntityManager().merge(obj);
+
+    public Object update(Object obj) {
+        obj = getEntityManager().merge(obj);
         getEntityManager().flush();
         return obj;
     }
@@ -44,14 +44,16 @@ public class WebTransaction<T> {
     }
 
     public void delete(T entity) {
-        entity=getEntityManager().merge(entity);
+        entity = getEntityManager().merge(entity);
         getEntityManager().remove(entity);
     }
 
     public List<T> findByNamedQuery(Class type, String namedQuery, Object... parameter) {
         Query query = getEntityManager().createNamedQuery(namedQuery, type);
-        for (int i = 0; i < parameter.length; i++) {
-            query.setParameter(i + 1, parameter[i]);
+        if (parameter != null) {
+            for (int i = 0; i < parameter.length; i++) {
+                query.setParameter(i + 1, parameter[i]);
+            }
         }
         return query.getResultList();
     }

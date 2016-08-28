@@ -6,6 +6,7 @@
 package com.diageo.admincontrollerweb.beans;
 
 import com.diageo.admincontrollerweb.entities.DwProfiles;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 
@@ -27,5 +28,14 @@ public class ProfileBean extends WebTransaction<DwProfiles> implements ProfileBe
     public DwProfiles findById(Integer id) {
         return (DwProfiles) findById(DwProfiles.class, id);
     }
- 
+
+    @Override
+    public List<DwProfiles> findBySystem() {
+        List<DwProfiles> list = super.findByNamedQuery(DwProfiles.class, DwProfiles.FIND_BY_SYSTEM, null);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
+
 }

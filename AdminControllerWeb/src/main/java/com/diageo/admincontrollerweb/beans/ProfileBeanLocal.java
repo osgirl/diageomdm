@@ -19,5 +19,7 @@ public interface ProfileBeanLocal {
     public List<DwProfiles> findAll();
 
     public DwProfiles findById(Integer id);
+
+    public List<DwProfiles> findBySystem();
     
 }

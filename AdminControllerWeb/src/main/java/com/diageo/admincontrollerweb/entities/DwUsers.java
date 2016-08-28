@@ -85,15 +85,15 @@ public class DwUsers implements Serializable {
     @Column(name = "LAST_SUCCESFUL_LOGIN")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastSuccesfulLogin;
-    @Column(name = "CREATION_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date creationDate;
-    @Column(name = "UPDATE_DATE")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date updateDate;
-    @Size(max = 120)
-    @Column(name = "AUDIT_USER")
-    private String auditUser;
+//    @Column(name = "CREATION_DATE")
+//    @Temporal(TemporalType.TIMESTAMP)
+//    private Date creationDate;
+//    @Column(name = "UPDATE_DATE")
+//    @Temporal(TemporalType.TIMESTAMP)
+//    private Date updateDate;
+//    @Size(max = 120)
+//    @Column(name = "AUDIT_USER")
+//    private String auditUser;
     @ManyToMany(mappedBy = "dwUsersList")
     private List<DwModules> dwModulesList;
     @JoinColumn(name = "PROFILE_ID", referencedColumnName = "PROFILE_ID")
@@ -162,21 +162,21 @@ public class DwUsers implements Serializable {
         this.passwordUser = passwordUser;
     }
 
-    public Date getCreationDate() {
-        return creationDate;
-    }
-
-    public void setCreationDate(Date creationDate) {
-        this.creationDate = creationDate;
-    }
-
-    public Date getUpdateDate() {
-        return updateDate;
-    }
-
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
-    }
+//    public Date getCreationDate() {
+//        return creationDate;
+//    }
+//
+//    public void setCreationDate(Date creationDate) {
+//        this.creationDate = creationDate;
+//    }
+//
+//    public Date getUpdateDate() {
+//        return updateDate;
+//    }
+//
+//    public void setUpdateDate(Date updateDate) {
+//        this.updateDate = updateDate;
+//    }
 
     public String getDocumentNumber() {
         return documentNumber;
@@ -266,13 +266,13 @@ public class DwUsers implements Serializable {
         this.distributorId = distributorId;
     }
 
-    public String getAuditUser() {
-        return auditUser;
-    }
-
-    public void setAuditUser(String auditUser) {
-        this.auditUser = auditUser;
-    }
+//    public String getAuditUser() {
+//        return auditUser;
+//    }
+//
+//    public void setAuditUser(String auditUser) {
+//        this.auditUser = auditUser;
+//    }
 
     @Override
     public int hashCode() {

@@ -30,9 +30,12 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DW_PROFILES")
 @NamedQueries({
-    @NamedQuery(name = "DwProfiles.findAll", query = "SELECT p FROM DwProfiles p")})
+    @NamedQuery(name = "DwProfiles.findAll", query = "SELECT p FROM DwProfiles p"),
+    @NamedQuery(name = DwProfiles.FIND_BY_SYSTEM, query = "SELECT p FROM DwProfiles p WHERE p.systemMDM = 1")
+})
 public class DwProfiles implements Serializable {
 
+    public static final String FIND_BY_SYSTEM = "DwProfiles.findBySystem";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(generator = "SQ_DW_PROFILES", strategy = GenerationType.SEQUENCE)
@@ -50,6 +53,8 @@ public class DwProfiles implements Serializable {
     private List<DwModules> dwModulesList;
     @OneToMany(mappedBy = "profileId")
     private List<DwUsers> dwUsersList;
+    @Column(name = "SYSTEM_MDM")
+    private String systemMDM;
 
     public DwProfiles() {
     }
@@ -96,6 +101,14 @@ public class DwProfiles implements Serializable {
 
     public void setAttempt(Integer attempt) {
         this.attempt = attempt;
+    }
+
+    public String getSystemMDM() {
+        return systemMDM;
+    }
+
+    public void setSystemMDM(String systemMDM) {
+        this.systemMDM = systemMDM;
     }
 
     @Override
