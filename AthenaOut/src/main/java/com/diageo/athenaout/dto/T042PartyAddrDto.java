@@ -15,7 +15,7 @@ import static com.diageo.athenaout.enums.SeparatorEnum.ENTER;
  */
 public class T042PartyAddrDto implements Serializable {
 
-    private String codParty;    
+    private String codParty;
     private String desAddre_1;
     private String desLoc_1;
     private String numPhone_1;
@@ -23,7 +23,9 @@ public class T042PartyAddrDto implements Serializable {
     private String codZone;
     private String codNation;
     private String email_1;
-    private String website_1;   
+    private String website_1;
+    private Double vLatitude;
+    private Double vLongitude;
 
     public T042PartyAddrDto() {
     }
@@ -98,7 +100,35 @@ public class T042PartyAddrDto implements Serializable {
 
     public void setWebsite_1(String website_1) {
         this.website_1 = website_1;
-    }   
+    }
+
+    /**
+     * @return the vLatitude
+     */
+    public Double getvLatitude() {
+        return vLatitude;
+    }
+
+    /**
+     * @param vLatitude the vLatitude to set
+     */
+    public void setvLatitude(Double vLatitude) {
+        this.vLatitude = vLatitude;
+    }
+
+    /**
+     * @return the vLongitude
+     */
+    public Double getvLongitude() {
+        return vLongitude;
+    }
+
+    /**
+     * @param vLongitude the vLongitude to set
+     */
+    public void setvLongitude(Double vLongitude) {
+        this.vLongitude = vLongitude;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -121,10 +151,10 @@ public class T042PartyAddrDto implements Serializable {
 
     @Override
     public String toString() {
-        return codParty+SEPARATOR.getSeparator()+desAddre_1+SEPARATOR.getSeparator()
-                +desLoc_1+SEPARATOR.getSeparator()+numPhone_1+SEPARATOR.getSeparator()
-                +codArea+SEPARATOR.getSeparator()+codZone
-                +SEPARATOR.getSeparator()+codNation+ENTER.getSeparator();
+        return codParty + SEPARATOR.getSeparator() + desAddre_1 + SEPARATOR.getSeparator()
+                + desLoc_1 + SEPARATOR.getSeparator() + numPhone_1 + SEPARATOR.getSeparator()
+                + codArea + SEPARATOR.getSeparator() + codZone
+                + SEPARATOR.getSeparator() + codNation + ENTER.getSeparator();
     }
 
 }

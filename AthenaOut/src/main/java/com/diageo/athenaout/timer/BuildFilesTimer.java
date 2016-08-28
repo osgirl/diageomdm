@@ -44,7 +44,7 @@ public class BuildFilesTimer implements IBuildFIlesTimer {
     @EJB
     private FileT1110 fileT1110;
 
-    @Schedule(dayOfMonth = "*", dayOfWeek = "*", hour = "*", minute = "49", month = "*", year = "*", second = "0")
+    @Schedule(dayOfMonth = "*", dayOfWeek = "*", hour = "*", minute = "*", month = "*", year = "*", second = "30")
     @Override
     public void execute(Timer t) {
         File directory = new File("C:\\ejemplos\\" + Calendar.getInstance().getTimeInMillis());
