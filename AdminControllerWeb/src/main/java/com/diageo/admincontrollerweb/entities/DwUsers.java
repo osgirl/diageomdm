@@ -11,6 +11,7 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -85,15 +86,6 @@ public class DwUsers implements Serializable {
     @Column(name = "LAST_SUCCESFUL_LOGIN")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastSuccesfulLogin;
-//    @Column(name = "CREATION_DATE")
-//    @Temporal(TemporalType.TIMESTAMP)
-//    private Date creationDate;
-//    @Column(name = "UPDATE_DATE")
-//    @Temporal(TemporalType.TIMESTAMP)
-//    private Date updateDate;
-//    @Size(max = 120)
-//    @Column(name = "AUDIT_USER")
-//    private String auditUser;
     @ManyToMany(mappedBy = "dwUsersList")
     private List<DwModules> dwModulesList;
     @JoinColumn(name = "PROFILE_ID", referencedColumnName = "PROFILE_ID")
@@ -106,6 +98,8 @@ public class DwUsers implements Serializable {
     private List<DwPasscontainers> dwPasscontainersList;
     @Column(name = "DISTRI_1")
     private String distri1;
+    @Embedded    
+    private Audit audit;
 
     public DwUsers() {
     }
@@ -161,22 +155,6 @@ public class DwUsers implements Serializable {
     public void setPasswordUser(String passwordUser) {
         this.passwordUser = passwordUser;
     }
-
-//    public Date getCreationDate() {
-//        return creationDate;
-//    }
-//
-//    public void setCreationDate(Date creationDate) {
-//        this.creationDate = creationDate;
-//    }
-//
-//    public Date getUpdateDate() {
-//        return updateDate;
-//    }
-//
-//    public void setUpdateDate(Date updateDate) {
-//        this.updateDate = updateDate;
-//    }
 
     public String getDocumentNumber() {
         return documentNumber;
@@ -266,13 +244,27 @@ public class DwUsers implements Serializable {
         this.distributorId = distributorId;
     }
 
-//    public String getAuditUser() {
-//        return auditUser;
-//    }
-//
-//    public void setAuditUser(String auditUser) {
-//        this.auditUser = auditUser;
-//    }
+    public Audit getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
+    }
+
+    /**
+     * @return the distri1
+     */
+    public String getDistri1() {
+        return distri1;
+    }
+
+    /**
+     * @param distri1 the distri1 to set
+     */
+    public void setDistri1(String distri1) {
+        this.distri1 = distri1;
+    }
 
     @Override
     public int hashCode() {
@@ -294,20 +286,6 @@ public class DwUsers implements Serializable {
     @Override
     public String toString() {
         return "com.diageo.admincontrollerweb.entities.DwUsers[ userId=" + userId + " ]";
-    }
-
-    /**
-     * @return the distri1
-     */
-    public String getDistri1() {
-        return distri1;
-    }
-
-    /**
-     * @param distri1 the distri1 to set
-     */
-    public void setDistri1(String distri1) {
-        this.distri1 = distri1;
     }
 
 }
