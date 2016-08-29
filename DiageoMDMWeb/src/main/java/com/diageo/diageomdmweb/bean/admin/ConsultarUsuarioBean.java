@@ -5,6 +5,7 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
+import com.diageo.admincontrollerweb.entities.Audit;
 import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
 import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.StateEnum;
@@ -44,7 +45,7 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
     private boolean verDetalle;
     private DwUsers usuarioSeleccionado;
     private boolean usuarioActivo;
-    
+
     private String temporalMail;
     /**
      * Contains the records that will be removed
@@ -75,8 +76,8 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
         }
 
     }
-    
-    private void findPermissionSegment(DwUsers usu){
+
+    private void findPermissionSegment(DwUsers usu) {
         List<DbPermissionSegments> list = permissionsegmentBeanLocal.findByUser(usu.getUserId());
         setListDistributorPermission(new HashSet<DistributorPermissionDto>());
         for (DbPermissionSegments list1 : list) {
@@ -116,7 +117,10 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
                     getUsuarioSeleccionado().setProfileId(getPerfil());
                     getUsuarioSeleccionado().setDocumentTypeId(getTipoDocumento());
                     getUsuarioSeleccionado().setStateUser(isUsuarioActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-                    getUsuarioSeleccionado().setUpdateDate(super.getCurrentDate());
+                    Audit audit = new Audit();
+                    audit.setModificationDate(super.getCurrentDate());
+                    audit.setModificationUser(super.getLoginBean().getUsuario().getEmailUser());
+                    getUsuarioSeleccionado().setAudit(audit);
                     getUsuarioSeleccionado().setNameUser(getUsuarioSeleccionado().getNameUser().toUpperCase());
                     getUsuarioSeleccionado().setLastName(getUsuarioSeleccionado().getLastName().toUpperCase());
                     getUsuarioSeleccionado().setEmailUser(getUsuarioSeleccionado().getEmailUser().toUpperCase());
@@ -160,7 +164,7 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
         setTipoDocumento(null);
         setUsuarioActivo(Boolean.FALSE);
         setVerDetalle(Boolean.TRUE);
-    }       
+    }
 
     public void deletePermissionSegment() {
         for (DbPermissionSegments ps : getListDistributorPermissionRemove()) {
