@@ -7,9 +7,9 @@ package com.diageo.diageonegocio.entidades;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -21,7 +21,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
@@ -61,6 +60,8 @@ public class DbPotentials implements Serializable {
     private List<DbChains> dbChainsList;
     @Column(name = "DISTRI_1")
     private String distri_1;
+    @Embedded
+    private Audit audit;
 
     public DbPotentials() {
     }
@@ -131,6 +132,14 @@ public class DbPotentials implements Serializable {
 
     public void setDistri_1(String distri_1) {
         this.distri_1 = distri_1;
+    }
+
+    public Audit getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
     }
 
     @Override

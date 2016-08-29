@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -77,6 +78,8 @@ public class Db3party implements Serializable {
     @ManyToOne
     @JoinColumn(name = "DB_3PARTY_ADMIN_ID", referencedColumnName = "DB_3PARTY_ADMIN_ID")
     private Db3partyAdmin db3PartyAdmin;
+    @Embedded
+    private Audit audit;
 
     public Db3party() {
     }
@@ -187,6 +190,14 @@ public class Db3party implements Serializable {
 
     public void setDb3PartyAdmin(Db3partyAdmin db3PartyAdmin) {
         this.db3PartyAdmin = db3PartyAdmin;
+    }
+
+    public Audit getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
     }
 
     @Override

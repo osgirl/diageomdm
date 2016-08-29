@@ -10,6 +10,7 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -55,6 +56,8 @@ public class DbSubChannels implements Serializable {
     private String stateSubChannel;
     @Column(name = "DISTRI_1")
     private String distri_1;
+    @Embedded
+    private Audit audit;
 
     public DbSubChannels() {
     }
@@ -109,6 +112,14 @@ public class DbSubChannels implements Serializable {
 
     public void setDistri_1(String distri_1) {
         this.distri_1 = distri_1;
+    }
+
+    public Audit getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
     }
 
     @Override

@@ -8,6 +8,7 @@ package com.diageo.diageonegocio.entidades;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -166,6 +167,8 @@ public class DbOutlets implements Serializable {
     private boolean approbationMassive;
     @Transient
     private boolean renderedApprobationMassive;
+    @Embedded
+    private Audit audit;
 
     public DbOutlets() {
     }
@@ -494,6 +497,14 @@ public class DbOutlets implements Serializable {
 
     public void setStatusMDM(String statusMDM) {
         this.statusMDM = statusMDM;
+    }
+
+    public Audit getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
     }
 
     @Override

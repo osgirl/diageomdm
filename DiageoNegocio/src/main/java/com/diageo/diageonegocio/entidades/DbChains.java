@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -103,6 +104,8 @@ public class DbChains implements Serializable {
     private String statusMDM;
     @Transient
     private boolean approbationMassive;
+    @Embedded
+    private Audit audit;
 
     public DbChains() {
     }
@@ -305,6 +308,14 @@ public class DbChains implements Serializable {
 
     public void setStatusMDM(String statusMDM) {
         this.statusMDM = statusMDM;
+    }
+
+    public Audit getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
     }
 
     @Override

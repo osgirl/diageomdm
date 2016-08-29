@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Objects;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -76,6 +77,8 @@ public class DbPermissionSegments implements Serializable {
     @JoinColumn(name = "DB_3PARTY_ID", referencedColumnName = "DB_3PARTY_ID")
     @ManyToOne(optional = false)
     private Db3party db3partyId;
+    @Embedded
+    private Audit audit;
 
     public DbPermissionSegments() {
     }
@@ -191,6 +194,14 @@ public class DbPermissionSegments implements Serializable {
 
     public void setDb3partyId(Db3party db3partyId) {
         this.db3partyId = db3partyId;
+    }
+
+    public Audit getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
     }
 
     @Override

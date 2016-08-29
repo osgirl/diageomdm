@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -56,6 +57,8 @@ public class DbPhones implements Serializable {
     private DbTypePhones typePhoneId;
     @Transient
     private boolean deleteId;
+    @Embedded
+    private Audit audit;
 
     public DbPhones() {
     }
@@ -116,6 +119,14 @@ public class DbPhones implements Serializable {
      */
     public void setDeleteId(boolean deleteId) {
         this.deleteId = deleteId;
+    }
+
+    public Audit getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
     }
 
     @Override
