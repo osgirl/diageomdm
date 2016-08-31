@@ -8,7 +8,6 @@ package com.diageo.diageonegocio.beans;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
