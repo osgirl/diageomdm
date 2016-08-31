@@ -218,7 +218,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         setActivo(Boolean.FALSE);
     }
 
-    private void initList() {
+    protected void initList() {
         setChannelSelected(getListChannel().get(0));
         setSubChannelSelected(getChannelSelected().getDbSubChannelsList().get(0));
         setSegmentSelected(getSubChannelSelected().getDbSegmentsList().get(0));
@@ -329,6 +329,10 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
 
     public void aceptChangesChain() {
         for (DbPermissionSegments ps : getDistributorPermissionDtoSelected().getListPermissionSegment()) {
+            com.diageo.diageonegocio.entidades.Audit audit = new com.diageo.diageonegocio.entidades.Audit();
+            audit.setCreationDate(super.getCurrentDate());
+            audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
+            ps.setAudit(audit);
             getListPermissionSegmentToPersist().add(ps);
         }
         initList();

@@ -10,6 +10,7 @@ import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
+import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageomdmweb.constant.PatternConstant;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
@@ -20,6 +21,7 @@ import com.diageo.diageonegocio.beans.SegmentBeanLocal;
 import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
 import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
 import com.diageo.diageonegocio.beans.TypePhoneBeanLocal;
+import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbDepartaments;
@@ -55,6 +57,8 @@ import javax.inject.Inject;
 @ViewScoped
 public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
+    @Inject
+    private LoginBean loginBean;
     @EJB
     protected OutletBeanLocal outletBeanLocal;
     @Inject
@@ -178,7 +182,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             outlet.setDbPhonesList(getListPhones());
             outlet.setEmail(getEmail() != null ? getEmail().toUpperCase() : "");
             outlet.setIsFather(isIsFather() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-            //outlet.setIsNewOutlet(StateDiageo.ACTIVO.getId());
+            outlet.setIsNewOutlet(StateDiageo.INACTIVO.getId());
             outlet.setKiernanId(getKiernanId() != null ? getKiernanId().toUpperCase() : "");
             outlet.setLatitude(getLatitude());
             outlet.setLongitude(getLongitude());
@@ -202,6 +206,10 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             outlet.setStatusOutlet(StateOutletChain.ACTIVE.getId());
             outlet.setStatusMDM(StatusSystemMDM.PENDING_TMC.name());
+            Audit audit=new Audit();
+            audit.setCreationDate(super.getCurrentDate());
+            audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
+            outlet.setAudit(audit);
             outletBeanLocal.createOutlet(outlet);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
             initFields();
@@ -224,6 +232,10 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
                     getNewPhone().setPhoneId(getListPhones().size() + 1);
                     getNewPhone().setDeleteId(Boolean.TRUE);
                 }
+                Audit audit=new Audit();
+                audit.setCreationDate(super.getCurrentDate());
+                audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
+                getNewPhone().setAudit(audit);
                 getListPhones().add(getNewPhone());
                 setNewPhone(new DbPhones());
             } else {
@@ -884,6 +896,13 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
      */
     public void setList3PartyToDeploy(List<Db3party> list3PartyToDeploy) {
         this.list3PartyToDeploy = list3PartyToDeploy;
+    }
+
+    /**
+     * @return the loginBean
+     */
+    public LoginBean getLoginBean() {
+        return loginBean;
     }
 
 }

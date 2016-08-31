@@ -52,7 +52,10 @@
                                 <h:outputLabel value="#{msg.out_nit}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                 <p:inputText value="#{outletCrearBean.nit}"/>
                                 <h:outputLabel value="#{msg.out_verification_number}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
-                                <p:inputText value="#{outletCrearBean.verificationNumber}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itVerificationNumber" value="#{outletCrearBean.verificationNumber}" maxlength="1"/>
+                                    <p:message for="itVerificationNumber"/>
+                                </h:panelGroup>
                                 <h:outputLabel value="#{msg.out_nombre}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                 <p:inputText value="#{outletCrearBean.outletName}"/>
                                 <h:outputLabel value="#{msg.out_punto_venta}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>

@@ -7,8 +7,10 @@ package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
+import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
+import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
@@ -19,6 +21,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.validation.constraints.Size;
 
 /**
@@ -30,6 +33,8 @@ import javax.validation.constraints.Size;
 public class ConsultarChannelBean extends DiageoRootBean implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(ConsultarChannelBean.class.getName());
+    @Inject
+    private LoginBean loginBean;
     @EJB
     private ChannelBeanLocal channelBeanLocal;
     private List<DbChannels> listaChannels;
@@ -38,7 +43,7 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
     private String nombreChannel;
     private String athenaCode;
     private boolean verDetalle;
-    private boolean estado;    
+    private boolean estado;
 
     /**
      * Creates a new instance of ConsultarChannelBean
@@ -70,6 +75,12 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
             getChannelSeleccionado().setStateChannel(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             getChannelSeleccionado().setNameChannel(getNombreChannel().toUpperCase());
             getChannelSeleccionado().setDistri_1(getAthenaCode().toUpperCase());
+            Audit audit = new Audit();
+            audit.setCreationDate(getChannelSeleccionado().getAudit()!=null?getChannelSeleccionado().getAudit().getCreationDate():null);
+            audit.setCreationUser(getChannelSeleccionado().getAudit()!=null?getChannelSeleccionado().getAudit().getCreationUser():null);
+            audit.setModificationDate(super.getCurrentDate());
+            audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+            getChannelSeleccionado().setAudit(audit);
             channelBeanLocal.updateChannel(getChannelSeleccionado());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
@@ -148,6 +159,13 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
 
     public void setAthenaCode(String athenaCode) {
         this.athenaCode = athenaCode;
+    }
+
+    /**
+     * @return the loginBean
+     */
+    public LoginBean getLoginBean() {
+        return loginBean;
     }
 
 }

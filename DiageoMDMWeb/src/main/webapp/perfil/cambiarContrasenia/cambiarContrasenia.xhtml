@@ -14,6 +14,11 @@
                     fieldset .ui-fieldset-legend {
                         width: 15% !important;
                     }
+                    .ui-messages-error, .ui-message-error {
+                        width: 19%;
+                        left: 40%;
+                        position: fixed;
+                    }
                 </style>
                 <h:form id="formCambiarContra"> 
                     <p:fieldset legend="#{msg.m_cambiar_contrase}" style="width: 90%">
@@ -29,13 +34,19 @@
                                             value="#{cambiarContraseniaBean.contrseniaNueva}" 
                                             goodLabel="#{msg.cam_pass_good}" weakLabel="#{msg.cam_pass_weak}" strongLabel="#{msg.cam_pass_strong}" promptLabel="#{msg.cam_pass_promt}"/>
                                 <p:commandButton icon="fa fa-warning" style="width: 2%" type="button" onclick="PF('wvHelp').show();"/>
+                                <p:message for="pwd1"/>
+                                <p:watermark for="pwd1" value="#{msg.cam_pass_nueva_contra}"/>
                             </h:panelGroup>
-                            <p:watermark for="pwd1" value="#{msg.cam_pass_nueva_contra}"/>
+                            
                             <br/>
-                            <p:password id="pwd2" label="#{msg.cam_pass_repetir_contra}" required="true" feedback="true" style="width: 25%" 
-                                        value="#{cambiarContraseniaBean.contrseniaNueva}" 
-                                        goodLabel="#{msg.cam_pass_good}" weakLabel="#{msg.cam_pass_weak}" strongLabel="#{msg.cam_pass_strong}" promptLabel="#{msg.cam_pass_promt}"/>
-                            <p:watermark for="pwd2" value="#{msg.cam_pass_repetir_contra}"/>
+                            <h:panelGroup style="width: 100%">
+                                <p:password id="pwd2" label="#{msg.cam_pass_repetir_contra}" required="true" feedback="true" style="width: 25%" 
+                                            value="#{cambiarContraseniaBean.contrseniaNueva}" 
+                                            goodLabel="#{msg.cam_pass_good}" weakLabel="#{msg.cam_pass_weak}" strongLabel="#{msg.cam_pass_strong}" promptLabel="#{msg.cam_pass_promt}"/>
+                                <p:message for="pwd2"/>
+                                <p:watermark for="pwd2" value="#{msg.cam_pass_repetir_contra}"/>
+                                <br/><br/>
+                            </h:panelGroup>
                             <br/>
                             <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{cambiarContraseniaBean.cambiarContrasenia()}"
                                              styleClass="button" style="width: 10%;left: 0%"/>                                                                                                                     

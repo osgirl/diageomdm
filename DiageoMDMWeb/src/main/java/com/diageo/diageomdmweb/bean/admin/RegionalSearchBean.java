@@ -6,7 +6,9 @@
 package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
+import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageonegocio.beans.RegionalBeanLocal;
+import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.Db3partyRegional;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
@@ -17,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 
 /**
  *
@@ -26,6 +29,8 @@ import javax.faces.view.ViewScoped;
 @ViewScoped
 public class RegionalSearchBean extends DiageoRootBean implements Serializable {
 
+    @Inject
+    protected LoginBean loginBean;
     @EJB
     protected RegionalBeanLocal regionalBeanLocal;
     private String regionalName;
@@ -53,6 +58,12 @@ public class RegionalSearchBean extends DiageoRootBean implements Serializable {
         try {
             getRegionalSelected().setNameRegional(regionalName.toUpperCase());
             getRegionalSelected().setDistri_1(athenaCode.toUpperCase());
+            Audit audit = new Audit();
+            audit.setModificationDate(super.getCurrentDate());
+            audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+            audit.setCreationDate(getRegionalSelected().getAudit() != null ? getRegionalSelected().getAudit().getCreationDate() : null);
+            audit.setCreationUser(getRegionalSelected().getAudit() != null ? getRegionalSelected().getAudit().getCreationUser() : null);
+            getRegionalSelected().setAudit(audit);
             regionalBeanLocal.updateRegional(getRegionalSelected());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
@@ -60,15 +71,15 @@ public class RegionalSearchBean extends DiageoRootBean implements Serializable {
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
     }
-    
-    public void listenerDetail(Db3partyRegional selected){
+
+    public void listenerDetail(Db3partyRegional selected) {
         setDetail(Boolean.FALSE);
         setRegionalSelected(selected);
         setRegionalName(selected.getNameRegional());
-        setAthenaCode(selected.getDistri_1());        
+        setAthenaCode(selected.getDistri_1());
     }
-    
-    public void back(){
+
+    public void back() {
         setDetail(Boolean.TRUE);
     }
 
@@ -110,6 +121,10 @@ public class RegionalSearchBean extends DiageoRootBean implements Serializable {
 
     public void setAthenaCode(String athenaCode) {
         this.athenaCode = athenaCode;
+    }
+
+    public LoginBean getLoginBean() {
+        return loginBean;
     }
 
 }

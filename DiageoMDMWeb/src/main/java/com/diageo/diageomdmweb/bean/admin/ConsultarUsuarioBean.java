@@ -12,12 +12,7 @@ import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageomdmweb.bean.dto.DistributorPermissionDto;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
-import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
-import com.diageo.diageonegocio.entidades.DbSegments;
-import com.diageo.diageonegocio.entidades.DbSubChannels;
-import com.diageo.diageonegocio.entidades.DbSubSegments;
-import com.diageo.diageonegocio.enums.StateDiageo;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Level;
@@ -29,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import javax.ejb.EJB;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -118,6 +114,8 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
                     getUsuarioSeleccionado().setDocumentTypeId(getTipoDocumento());
                     getUsuarioSeleccionado().setStateUser(isUsuarioActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
                     Audit audit = new Audit();
+                    audit.setCreationDate(getUsuarioSeleccionado().getAudit() != null ? getUsuarioSeleccionado().getAudit().getCreationDate() : null);
+                    audit.setCreationUser(getUsuarioSeleccionado().getAudit() != null ? getUsuarioSeleccionado().getAudit().getCreationUser() : null);
                     audit.setModificationDate(super.getCurrentDate());
                     audit.setModificationUser(super.getLoginBean().getUsuario().getEmailUser());
                     getUsuarioSeleccionado().setAudit(audit);
@@ -155,6 +153,25 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
             LOG.log(Level.SEVERE, ex.getMessage());
             return false;
         }
+    }
+
+    @Override
+    public void aceptChangesChain() {
+        for (DbPermissionSegments ps : getDistributorPermissionDtoSelected().getListPermissionSegment()) {
+            com.diageo.diageonegocio.entidades.Audit audit = new com.diageo.diageonegocio.entidades.Audit();
+            if (ps.getAudit() != null && ps.getAudit().getCreationDate() == null) {
+                audit.setCreationDate(super.getCurrentDate());
+                audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
+            } else {
+                audit.setModificationDate(super.getCurrentDate());
+                audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+            }
+            ps.setAudit(audit);
+            getListPermissionSegmentToPersist().add(ps);
+        }
+        super.initList();
+        unSelectAllChain();
+        RequestContext.getCurrentInstance().execute("PF('wvChain').hide();");
     }
 
     public void regresar() {

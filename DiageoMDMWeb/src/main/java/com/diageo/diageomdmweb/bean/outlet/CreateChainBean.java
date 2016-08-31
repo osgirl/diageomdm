@@ -9,6 +9,7 @@ import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
+import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageomdmweb.constant.PatternConstant;
 import com.diageo.diageonegocio.beans.ChainBeanLocal;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
@@ -20,6 +21,7 @@ import com.diageo.diageonegocio.beans.SegmentBeanLocal;
 import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
 import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
 import com.diageo.diageonegocio.beans.TypePhoneBeanLocal;
+import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.DbChains;
 import com.diageo.diageonegocio.entidades.DbChannels;
@@ -55,6 +57,8 @@ import javax.inject.Named;
 @ViewScoped
 public class CreateChainBean extends DiageoRootBean implements Serializable {
 
+    @Inject
+    private LoginBean loginBean;
     @Inject
     protected DiageoApplicationBean diageoApplicationBean;
     @EJB
@@ -178,6 +182,10 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
             chain.setSubSegmentId(getSubSegmentSelected());
             chain.setStatusChain(getStatus());
             chain.setStatusMDM(StatusSystemMDM.PENDING_KAM.name());
+            Audit audit=new Audit();
+            audit.setCreationDate(super.getCurrentDate());
+            audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
+            chain.setAudit(audit);
             chainBeanLocal.createChain(chain);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
             initFields();
@@ -774,6 +782,13 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
      */
     public void setListCustomers(List<DbCustomers> listCustomers) {
         this.listCustomers = listCustomers;
+    }
+
+    /**
+     * @return the loginBean
+     */
+    public LoginBean getLoginBean() {
+        return loginBean;
     }
 
 }

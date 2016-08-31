@@ -13,6 +13,7 @@ import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
 import com.diageo.diageomdmweb.bean.LoginBean;
+import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.DbChains;
 import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
@@ -217,6 +218,12 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             chain.setPotentialId(getPotentialSelected());
             chain.setSubSegmentId(getSubSegmentSelected());
             chain.setStatusChain(getStatus());
+            Audit audit = new Audit();
+            audit.setCreationDate(chain.getAudit() != null ? chain.getAudit().getCreationDate() : null);
+            audit.setCreationUser(chain.getAudit() != null ? chain.getAudit().getCreationUser() : null);
+            audit.setModificationDate(super.getCurrentDate());
+            audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+            chain.setAudit(audit);
             this.deletePhone();
             if (!getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                     && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
@@ -229,8 +236,8 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
     }
-    
-    public void rejectChain(){
+
+    public void rejectChain() {
         try {
             DbChains chain = chainBeanLocal.findById(getIdChain());
             chain.setStatusMDM(StatusSystemMDM.statusEngine(StatusSystemMDM.REJECT, getLoginBean().getUsuario().getProfileId().getProfileId()).name());
@@ -278,7 +285,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         getListPhones().remove(phone);
         getPhonesDelete().add(phone);
     }
-    
+
     public boolean isRenderButtonReject() {
         return getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId());
     }

@@ -12,6 +12,7 @@ import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import com.diageo.diageomdmweb.bean.LoginBean;
+import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbOutlets;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
@@ -251,6 +252,12 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                     && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
                 outlet.setStatusMDM(StatusSystemMDM.statusEngine(StatusSystemMDM.APPROVED, getLoginBean().getUsuario().getProfileId().getProfileId()).name());
             }
+            Audit audit = new Audit();
+            audit.setCreationDate(outlet.getAudit() != null ? outlet.getAudit().getCreationDate() : null);
+            audit.setCreationUser(outlet.getAudit() != null ? outlet.getAudit().getCreationUser() : null);
+            audit.setModificationDate(super.getCurrentDate());
+            audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+            outlet.setAudit(audit);
             outletBeanLocal.updateOutlet(outlet);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
@@ -259,8 +266,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         }
 
     }
-    
-    public void rejectOutlet(){
+
+    public void rejectOutlet() {
         try {
             DbOutlets outlet = outletBeanLocal.findById(getIdOutlet());
             outlet.setStatusMDM(StatusSystemMDM.statusEngine(StatusSystemMDM.REJECT, getLoginBean().getUsuario().getProfileId().getProfileId()).name());

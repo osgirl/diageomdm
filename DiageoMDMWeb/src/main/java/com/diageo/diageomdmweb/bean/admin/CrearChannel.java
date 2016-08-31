@@ -6,8 +6,10 @@
 package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
+import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
+import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
@@ -17,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.validation.constraints.Size;
 
 /**
@@ -28,6 +31,8 @@ import javax.validation.constraints.Size;
 public class CrearChannel extends DiageoRootBean implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(CrearChannel.class.getName());
+    @Inject
+    private LoginBean loginBean;
     @EJB
     private ChannelBeanLocal channelBeanLocal;
     @Size(max = 100, message = "{size.invalido}")
@@ -54,6 +59,10 @@ public class CrearChannel extends DiageoRootBean implements Serializable {
             channel.setNameChannel(getNombreChannel().toUpperCase());
             channel.setDistri_1(getAthenaCode().toUpperCase());
             channel.setStateChannel(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+            Audit audit = new Audit();
+            audit.setCreationDate(super.getCurrentDate());
+            audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
+            channel.setAudit(audit);
             channelBeanLocal.createChannel(channel);
             init();
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
@@ -103,6 +112,13 @@ public class CrearChannel extends DiageoRootBean implements Serializable {
      */
     public void setAthenaCode(String athenaCode) {
         this.athenaCode = athenaCode;
+    }
+
+    /**
+     * @return the loginBean
+     */
+    public LoginBean getLoginBean() {
+        return loginBean;
     }
 
 }
