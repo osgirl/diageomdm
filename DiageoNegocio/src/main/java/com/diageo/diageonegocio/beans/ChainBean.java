@@ -74,7 +74,10 @@ public class ChainBean extends BusinessTransaction<DbChains> implements ChainBea
             return new ArrayList<>();
         }
         return list;
-
+    }
+    
+    public void deleteCustomerChain(){
+        String sql="DELETE FROM DIAGEO_BUSINESS.DB_CUSTOMERS_CHAINS WHERE CUSTOMER_ID=? AND CHAIN_ID=?";
     }
 
 }

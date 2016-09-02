@@ -35,7 +35,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = DbChains.FIND_BY_SEGMENT_3PARTY, query = "SELECT c FROM DbChains c WHERE c.subSegmentId.subSegmentId=?1 AND c.dbPartyId.db3partyId=?2"),
     @NamedQuery(name = DbChains.FIND_BY_NAME_CHAIN, query = "SELECT c FROM DbChains c WHERE c.nameChain LIKE ?1"),
     @NamedQuery(name = DbChains.FIND_BY_3PARTY_PERMISSION, query = "SELECT c FROM DbChains c WHERE c.dbPartyId.db3partyId = ?1 AND "
-            + "c.subSegmentId.subSegmentId IN ?2 AND c.statusMDM IN ?3")
+            + "c.subSegmentId.subSegmentId IN ?2 AND c.statusMDM IN ?3")   
 
 })
 public class DbChains implements Serializable {
