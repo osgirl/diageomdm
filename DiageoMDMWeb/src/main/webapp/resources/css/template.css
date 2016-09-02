@@ -16,7 +16,7 @@ and open the template in the editor.
     left: 0px;
     top: 0px;
     z-index: 2;
-    //overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 .menu_template{
@@ -109,7 +109,7 @@ footer{
     width: 100%;
     background: black;
     height: 4%;
-    //position: fixed;
+    /*position: fixed;*/
     overflow: hidden;
     width: 996px;
     margin: 0px auto;
