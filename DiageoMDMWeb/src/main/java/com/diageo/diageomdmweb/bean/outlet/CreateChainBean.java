@@ -182,7 +182,12 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
             chain.setSubSegmentId(getSubSegmentSelected());
             chain.setStatusChain(getStatus());
             chain.setStatusMDM(StatusSystemMDM.PENDING_KAM.name());
-            Audit audit=new Audit();
+            DbCustomers custo = saveCustomer();
+            if (custo != null) {
+                getListCustomers().add(custo);
+            }
+            chain.setDbCustomerList(getListCustomers());
+            Audit audit = new Audit();
             audit.setCreationDate(super.getCurrentDate());
             audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
             chain.setAudit(audit);
@@ -192,6 +197,22 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
+        }
+    }
+
+    public DbCustomers saveCustomer() {
+        try {
+            DbCustomers customer = new DbCustomers();
+            customer.setAddress(getAddress() != null ? getAddress().toUpperCase() : null);
+            customer.setCustomerName(getBusinessName() != null ? getBusinessName().toUpperCase() : null);
+            customer.setKiernanId(getKiernan());
+            customer.setNumberPdv(getEanCode());
+            customer.setStatusCustomer(getStatus());
+            customer.setTownId(getTownSelected());
+            return customerBeanLocal.createCustomer(customer);
+        } catch (DiageoBusinessException ex) {
+            Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
     }
 
@@ -231,7 +252,7 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
     public void deletePhone(DbPhones phone) {
         getListPhones().remove(phone);
     }
-    
+
     public void deleteCustomer(DbCustomers custo) {
         getListCustomers().remove(custo);
     }

@@ -33,13 +33,25 @@
                     <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
                         <h:panelGrid columns="4" style="width: 100%">
                             <h:outputLabel value="#{msg.out_kiernan}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                            <p:inputText value="#{createChainBean.kiernan}"/>
+                            <h:panelGroup>
+                                <p:inputText id="itKiernan" value="#{createChainBean.kiernan}" required="true" label="#{msg.out_kiernan}"/>
+                                <p:message for="itKiernan"/>
+                            </h:panelGroup>
                             <h:outputLabel value="#{msg.chain_name}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                            <p:inputText value="#{createChainBean.chainName}"/>
+                            <h:panelGroup>
+                                <p:inputText id="itChainName" value="#{createChainBean.chainName}" required="true" label="#{msg.chain_name}"/>
+                                <p:message for="itChainName"/>
+                            </h:panelGroup>
                             <h:outputLabel value="#{msg.out_razon_social}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                            <p:inputText value="#{createChainBean.businessName}"/>
+                            <h:panelGroup>
+                                <p:inputText id="itBusinessName" value="#{createChainBean.businessName}" required="true" label="#{msg.out_razon_social}"/>
+                                <p:message for="itBusinessName"/>
+                            </h:panelGroup>
                             <h:outputLabel value="#{msg.chain_code_ean_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                            <p:inputText value="#{createChainBean.eanCode}"/>                            
+                            <h:panelGroup>
+                                <p:inputText id="itEancode" value="#{createChainBean.eanCode}" required="true" label="#{msg.chain_code_ean_pdv}"/>
+                                <p:message for="itEancode"/>
+                            </h:panelGroup>
                             <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                             <p:selectOneMenu value="#{createChainBean.db3PartySelected}" converter="db3PartyConverter" style="width: 90%">
                                 <f:selectItems value="#{createChainBean.list3Party}" var="party3" itemLabel="#{party3.name3party}"/>
@@ -140,9 +152,15 @@
                                     <f:selectItems value="#{createChainBean.departamentSelected.dbTownsList}" var="mpioout" itemLabel="#{mpioout.nameTown}"/>
                                 </p:selectOneMenu>
                                 <h:outputLabel value="#{msg.out_barrio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:inputText value="#{createChainBean.neighborhood}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itNeighborhood" value="#{createChainBean.neighborhood}" required="true" label="#{msg.out_barrio}"/>
+                                    <p:message for="itNeighborhood"/>
+                                </h:panelGroup>
                                 <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:inputText value="#{createChainBean.address}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itAddress" value="#{createChainBean.address}" required="true" label="#{msg.out_direccion}"/>
+                                    <p:message for="itAddress"/>
+                                </h:panelGroup>
                                 <h:outputLabel value="#{msg.loc_latitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                 <h:panelGroup>
                                     <p:inputText id="itLatitude" value="#{createChainBean.latitude}" converter="javax.faces.Double"/>

@@ -80,13 +80,29 @@
                             <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
                                 <h:panelGrid columns="4" style="width: 100%">
                                     <h:outputLabel value="#{msg.out_kiernan}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:inputText value="#{chainSearchBean.kiernan}" disabled="#{chainSearchBean.disabledFields}"/>
+                                    <h:panelGroup>
+                                        <p:inputText id="itKiernan" value="#{chainSearchBean.kiernan}" disabled="#{chainSearchBean.disabledFields}" required="true"
+                                                     label="#{msg.out_kiernan}"/>
+                                        <p:message for="itKiernan"/>
+                                    </h:panelGroup>
                                     <h:outputLabel value="#{msg.chain_name}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:inputText value="#{chainSearchBean.chainName}" disabled="#{chainSearchBean.disabledFields}"/>
+                                    <h:panelGroup>
+                                        <p:inputText id="itChainName" value="#{chainSearchBean.chainName}" disabled="#{chainSearchBean.disabledFields}" required="true"
+                                                     label="#{msg.chain_name}"/>
+                                        <p:message for="itChainName"/>
+                                    </h:panelGroup>
                                     <h:outputLabel value="#{msg.out_razon_social}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:inputText value="#{chainSearchBean.businessName}" disabled="#{chainSearchBean.disabledFields}"/>
+                                    <h:panelGroup>
+                                        <p:inputText id="itBusinessName" value="#{chainSearchBean.businessName}" disabled="#{chainSearchBean.disabledFields}" required="true"
+                                                     label="#{msg.out_razon_social}"/>
+                                        <p:message for="itBusinessName"/>
+                                    </h:panelGroup>
                                     <h:outputLabel value="#{msg.chain_code_ean_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:inputText value="#{chainSearchBean.eanCode}" disabled="#{chainSearchBean.disabledFields}"/>
+                                    <h:panelGroup>                                    
+                                        <p:inputText id="itEancode" value="#{chainSearchBean.eanCode}" disabled="#{chainSearchBean.disabledFields}" required="true"
+                                                     label="#{msg.chain_code_ean_pdv}"/>
+                                        <p:message for="itEancode"/>
+                                    </h:panelGroup>
                                     <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <p:selectOneMenu value="#{chainSearchBean.db3PartySelected}" converter="db3PartyConverter" style="width: 90%"
                                                      disabled="#{chainSearchBean.disabledFields}">
@@ -145,6 +161,36 @@
                                 </h:panelGroup>
                             </p:fieldset>
                             <br/>
+                            <p:fieldset legend="#{msg.customer}" style="width: 95%">
+                                <h:panelGroup id="pgCustomer">
+                                    <h:panelGrid columns="3" style="width: 95%">
+                                        <h:outputLabel value="#{msg.customer}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                        <p:autoComplete id="acCustomer" minQueryLength="4" value="#{chainSearchBean.customer}" label="#{msg.customer}"
+                                                        var="cus" itemLabel="#{cus.customerName}" itemValue="#{cus}" forceSelection="true"
+                                                        completeMethod="#{chainSearchBean.completeCustomer}" effect="fade" converter="customerConverter"
+                                                        style="width: 90% !important;"/>
+                                        <p:commandButton value="#{msg.btn_add}" process="@parent" update="formChainSearch:pgCustomer formChainSearch:acCustomer"     
+                                                         actionListener="#{chainSearchBean.addCustomer()}"
+                                                         styleClass="button" style="width: 80%"/>
+                                    </h:panelGrid>
+                                    <br/>
+                                    <p:dataTable id="dtCustomer" styleClass="paginated" paginatorAlwaysVisible="false" paginator="true" rows="5"
+                                                 value="#{chainSearchBean.listCustomers}" var="custo">
+                                        <p:column headerText="#{msg.customer}">
+                                            <h:outputLabel value="#{custo.customerName}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg.out_kiernan}">
+                                            <h:outputLabel value="#{custo.kiernanId}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <p:commandLink actionListener="#{chainSearchBean.deleteCustomer(custo)}" update="formChainSearch:dtCustomer" process="@this">
+                                                <p:graphicImage value="/resources/images/iconos/equis.png" width="12px"/>
+                                            </p:commandLink>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGroup>
+                            </p:fieldset>
+                            <br/>
                             <p:fieldset legend="#{msg.out_ubicacion}" style="width: 95%">
                                 <h:panelGroup id="pgLocation">
                                     <h:panelGrid columns="4" style="width: 95%">
@@ -160,9 +206,17 @@
                                             <f:selectItems value="#{chainSearchBean.departamentSelected.dbTownsList}" var="mpioout" itemLabel="#{mpioout.nameTown}"/>
                                         </p:selectOneMenu>
                                         <h:outputLabel value="#{msg.out_barrio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText value="#{chainSearchBean.neighborhood}" disabled="#{chainSearchBean.disabledFields}"/>
+                                        <h:panelGroup>
+                                            <p:inputText id="itNeighborhood" value="#{chainSearchBean.neighborhood}" disabled="#{chainSearchBean.disabledFields}" 
+                                                         required="true" label="#{msg.out_barrio}"/>
+                                            <p:message for="itNeighborhood"/>
+                                        </h:panelGroup>
                                         <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                        <p:inputText value="#{chainSearchBean.address}" disabled="#{chainSearchBean.disabledFields}"/>
+                                        <h:panelGroup>
+                                            <p:inputText id="itAddress" value="#{chainSearchBean.address}" disabled="#{chainSearchBean.disabledFields}" 
+                                                         required="true" label="#{msg.out_direccion}"/>
+                                            <p:message for="itAddress"/>
+                                        </h:panelGroup>
                                         <h:outputLabel value="#{msg.loc_latitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                         <h:panelGroup>
                                             <p:inputText id="itLatitude" value="#{chainSearchBean.latitude}" converter="javax.faces.Double" disabled="#{chainSearchBean.disabledFields}"/>

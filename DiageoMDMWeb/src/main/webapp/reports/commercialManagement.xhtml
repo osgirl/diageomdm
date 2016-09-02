@@ -11,7 +11,7 @@
         <ui:composition template="./../WEB-INF/templates/diageoWebTemplate.xhtml">
             <ui:define name="content">
                 <h:form id="formReportCommercial">
-                    <p:fieldset legend="#{msg.report}" style="width: 90%">
+                    <p:fieldset legend="#{msg.report}" style="width: 98%">
                         <br/>
                         <h:panelGroup id="pgSegment">
                             <h:panelGrid columns="4" style="width: 90%">
@@ -60,7 +60,7 @@
                                 <p:dataExporter type="csv" target="dtReport" fileName="Report" pageOnly="false" />
                             </h:commandLink>
                             <p:dataTable id="dtReport" value="#{reportCommercialManagement.listReportCommercial}" var="report"
-                                         style="width: 90%; word-wrap: break-word;" paginator="true" paginatorAlwaysVisible="false"
+                                         style="width: 98%; word-wrap: break-word;font-size: 9px !important" paginator="true" paginatorAlwaysVisible="false"
                                          rows="20" paginatorPosition="top"
                                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
                                 <p:column headerText="#{msg.out_code}">

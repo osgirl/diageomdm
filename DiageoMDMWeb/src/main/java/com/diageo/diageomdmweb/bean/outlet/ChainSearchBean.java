@@ -16,6 +16,7 @@ import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.DbChains;
 import com.diageo.diageonegocio.entidades.DbChannels;
+import com.diageo.diageonegocio.entidades.DbCustomers;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import com.diageo.diageonegocio.entidades.DbPhones;
 import com.diageo.diageonegocio.entidades.DbSegments;
@@ -52,6 +53,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     private List<DbChains> chainsList;
     private List<DbPhones> phonesDelete;
     private List<DbPermissionSegments> listPermi;
+    private List<DbCustomers> listCustomerDelete;
     private boolean seeDetail;
     private Integer idChain;
     private boolean renderMassiveApproval;
@@ -194,7 +196,12 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         setListSubSegment(getSegmentSelected().getDbSubSegmentsList());
         setListPotential(getSubSegmentSelected().getDbPotentialsList());
         setPhonesDelete(new ArrayList<DbPhones>());
+        setListCustomers(chain.getDbCustomerList());
         setSeeDetail(Boolean.FALSE);
+    }
+    
+    public void deletCustomerChain(DbChains chain){
+        chain.getDbCustomerList().remove(chain);
     }
 
     @Override
@@ -397,6 +404,20 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
      */
     public void setDisabledFields(boolean disabledFields) {
         this.disabledFields = disabledFields;
+    }
+
+    /**
+     * @return the listCustomerDelete
+     */
+    public List<DbCustomers> getListCustomerDelete() {
+        return listCustomerDelete;
+    }
+
+    /**
+     * @param listCustomerDelete the listCustomerDelete to set
+     */
+    public void setListCustomerDelete(List<DbCustomers> listCustomerDelete) {
+        this.listCustomerDelete = listCustomerDelete;
     }
 
 }

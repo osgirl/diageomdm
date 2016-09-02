@@ -6,14 +6,15 @@
 package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
+import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.PotentialBeanLocal;
+import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbPotentials;
 import com.diageo.diageonegocio.entidades.DbSegments;
 import com.diageo.diageonegocio.entidades.DbSubChannels;
 import com.diageo.diageonegocio.entidades.DbSubSegments;
-import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 
 /**
  *
@@ -33,6 +35,8 @@ import javax.faces.view.ViewScoped;
 @ViewScoped
 public class PotentialCreateBean extends DiageoRootBean implements Serializable {
 
+    @Inject
+    private LoginBean loginBean;
     @EJB
     protected ChannelBeanLocal channelBeanLocal;
     @EJB
@@ -80,6 +84,10 @@ public class PotentialCreateBean extends DiageoRootBean implements Serializable 
             pot.setNamePotential(getName().toUpperCase());
             pot.setSubSegmentId(getSubSegmento());
             pot.setDistri_1(getAthenaCode().toUpperCase());
+            Audit audit = new Audit();
+            audit.setCreationDate(super.getCurrentDate());
+            audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
+            pot.setAudit(audit);
             potentialBeanLocal.createPotential(pot);
             initFields();
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
@@ -279,6 +287,13 @@ public class PotentialCreateBean extends DiageoRootBean implements Serializable 
      */
     public void setAthenaCode(String athenaCode) {
         this.athenaCode = athenaCode;
+    }
+
+    /**
+     * @return the loginBean
+     */
+    public LoginBean getLoginBean() {
+        return loginBean;
     }
 
 }

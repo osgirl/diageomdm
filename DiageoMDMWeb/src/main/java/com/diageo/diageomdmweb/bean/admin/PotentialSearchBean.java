@@ -6,6 +6,7 @@
 package com.diageo.diageomdmweb.bean.admin;
 
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
+import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.DbPotentials;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
@@ -64,6 +65,12 @@ public class PotentialSearchBean extends PotentialCreateBean implements Serializ
             pot.setNamePotential(getName().toUpperCase());
             pot.setSubSegmentId(getSubSegmento());
             pot.setDistri_1(getAthenaCode().toUpperCase());
+            Audit audit = new Audit();
+            audit.setCreationDate(pot.getAudit() != null ? pot.getAudit().getCreationDate() : null);
+            audit.setCreationUser(pot.getAudit() != null ? pot.getAudit().getCreationUser() : null);
+            audit.setModificationDate(super.getCurrentDate());
+            audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+            pot.setAudit(audit);
             potentialBeanLocal.updatePotential(pot);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
@@ -71,8 +78,8 @@ public class PotentialSearchBean extends PotentialCreateBean implements Serializ
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
     }
-    
-    public void back(){
+
+    public void back() {
         setSeeDetail(Boolean.TRUE);
     }
 

@@ -6,10 +6,12 @@
 package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
+import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.SegmentBeanLocal;
 import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
+import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbSegments;
 import com.diageo.diageonegocio.entidades.DbSubChannels;
@@ -23,6 +25,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.validation.constraints.Size;
 
 /**
@@ -34,6 +37,8 @@ import javax.validation.constraints.Size;
 public class SegementoConsultarBean extends DiageoRootBean implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(SegementoConsultarBean.class.getName());
+    @Inject
+    private LoginBean loginBean;
     @EJB
     protected SegmentBeanLocal segmentoBeanLocal;
     @EJB
@@ -88,6 +93,12 @@ public class SegementoConsultarBean extends DiageoRootBean implements Serializab
             getSegmentoSeleccionado().setStateSegment(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             getSegmentoSeleccionado().setSubChannelId(getSubCanal());
             getSegmentoSeleccionado().setDistri_1(getAthenaCode().toUpperCase());
+            Audit audit = new Audit();
+            audit.setModificationDate(super.getCurrentDate());
+            audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+            audit.setCreationDate(getSegmentoSeleccionado().getAudit()!=null?getSegmentoSeleccionado().getAudit().getCreationDate():null);
+            audit.setCreationUser(getSegmentoSeleccionado().getAudit()!=null?getSegmentoSeleccionado().getAudit().getCreationUser():null);
+            getSegmentoSeleccionado().setAudit(audit);
             segmentoBeanLocal.updateSegment(getSegmentoSeleccionado());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
@@ -252,6 +263,13 @@ public class SegementoConsultarBean extends DiageoRootBean implements Serializab
      */
     public void setAthenaCode(String athenaCode) {
         this.athenaCode = athenaCode;
+    }
+
+    /**
+     * @return the loginBean
+     */
+    public LoginBean getLoginBean() {
+        return loginBean;
     }
 
 }
