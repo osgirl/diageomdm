@@ -16,7 +16,9 @@ import javax.ejb.EJB;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import com.diageo.admincontrollerweb.beans.DocumentTypeBeanLocal;
+import com.diageo.admincontrollerweb.beans.ParameterBeanLocal;
 import com.diageo.admincontrollerweb.beans.ProfileBeanLocal;
+import com.diageo.admincontrollerweb.enums.ParameterKeyEnum;
 
 /**
  *
@@ -26,6 +28,8 @@ import com.diageo.admincontrollerweb.beans.ProfileBeanLocal;
 @Named
 public class DiageoApplicationBean extends DiageoRootBean implements Serializable {
 
+    @EJB
+    private ParameterBeanLocal parameterBeanLocal;
     /**
      * Ejb DocumentTypeBeanLocal
      */
@@ -53,6 +57,10 @@ public class DiageoApplicationBean extends DiageoRootBean implements Serializabl
      * Lista departamentos
      */
     private List<DbDepartaments> listaDepartamento;
+    /**
+     * Path mail template
+     */
+    private String pathMailTemplate;
 
     /**
      * Creates a new instance of DiageoApplicationBean
@@ -63,8 +71,9 @@ public class DiageoApplicationBean extends DiageoRootBean implements Serializabl
     @PostConstruct
     public void init() {
         setListaTipoDocumento((List<DwDocumentTypes>) tipoDocBean.findAll());
-        setListaPerfiles((List<DwProfiles>) perfilBean.findBySystem());     
+        setListaPerfiles((List<DwProfiles>) perfilBean.findBySystem());
         setListaDepartamento(departamentoBeanLocal.findAllDepartament());
+        setPathMailTemplate(parameterBeanLocal.findByKey(ParameterKeyEnum.PATH_MAIL_TEMPLATE.name()).get(0).getParameterValue());
     }
 
     /**
@@ -107,6 +116,20 @@ public class DiageoApplicationBean extends DiageoRootBean implements Serializabl
      */
     public void setListaDepartamento(List<DbDepartaments> listaDepartamento) {
         this.listaDepartamento = listaDepartamento;
+    }
+
+    /**
+     * @return the pathMailTemplate
+     */
+    public String getPathMailTemplate() {
+        return pathMailTemplate;
+    }
+
+    /**
+     * @param pathMailTemplate the pathMailTemplate to set
+     */
+    public void setPathMailTemplate(String pathMailTemplate) {
+        this.pathMailTemplate = pathMailTemplate;
     }
 
 }

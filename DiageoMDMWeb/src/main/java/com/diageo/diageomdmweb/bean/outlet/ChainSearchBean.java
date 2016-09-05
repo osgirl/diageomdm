@@ -58,6 +58,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     private Integer idChain;
     private boolean renderMassiveApproval;
     private boolean disabledFields;
+    private boolean disabledSegmentation;
 
     /**
      * Creates a new instance of ChainSearchBean
@@ -70,6 +71,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     public void init() {
         setSeeDetail(Boolean.TRUE);
         super.init();
+        setDisabledSegmentation(Boolean.FALSE);
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())) {
@@ -87,6 +89,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                 statusMDM.add(StatusSystemMDM.REJECT.name());
             } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
                 statusMDM.add(StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name());
+                setDisabledSegmentation(Boolean.TRUE);
             }
             setChainsList(new ArrayList<DbChains>());
             //Segmentos que puede ver el sistema
@@ -157,7 +160,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             }
 
         }
-
+        setListCustomerDelete(new ArrayList<DbCustomers>());
         FacesContext context = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
         Object obj = session.getAttribute(CHAIN);
@@ -199,9 +202,13 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         setListCustomers(chain.getDbCustomerList());
         setSeeDetail(Boolean.FALSE);
     }
-    
-    public void deletCustomerChain(DbChains chain){
-        chain.getDbCustomerList().remove(chain);
+
+    private void deletCustomerChain() {
+        if (!getListCustomerDelete().isEmpty()) {
+            for (DbCustomers dbCusto : getListCustomerDelete()) {
+                chainBeanLocal.deleteCustomerChain(dbCusto.getCustomerId(), getIdChain());
+            }
+        }
     }
 
     @Override
@@ -225,6 +232,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             chain.setPotentialId(getPotentialSelected());
             chain.setSubSegmentId(getSubSegmentSelected());
             chain.setStatusChain(getStatus());
+            chain.setDbCustomerList(getListCustomers());
             Audit audit = new Audit();
             audit.setCreationDate(chain.getAudit() != null ? chain.getAudit().getCreationDate() : null);
             audit.setCreationUser(chain.getAudit() != null ? chain.getAudit().getCreationUser() : null);
@@ -236,6 +244,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                     && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
                 chain.setStatusMDM(StatusSystemMDM.statusEngine(StatusSystemMDM.APPROVED, getLoginBean().getUsuario().getProfileId().getProfileId()).name());
             }
+            deletCustomerChain();
             chainBeanLocal.updateChain(chain);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
@@ -291,6 +300,13 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     public void deletePhone(DbPhones phone) {
         getListPhones().remove(phone);
         getPhonesDelete().add(phone);
+    }
+
+    @Override
+    public void deleteCustomer(DbCustomers custo) {
+        getListCustomers().remove(custo);
+        getListCustomerDelete().add(custo);
+
     }
 
     public boolean isRenderButtonReject() {
@@ -418,6 +434,20 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
      */
     public void setListCustomerDelete(List<DbCustomers> listCustomerDelete) {
         this.listCustomerDelete = listCustomerDelete;
+    }
+
+    /**
+     * @return the disabledSegmentation
+     */
+    public boolean isDisabledSegmentation() {
+        return disabledSegmentation;
+    }
+
+    /**
+     * @param disabledSegmentation the disabledSegmentation to set
+     */
+    public void setDisabledSegmentation(boolean disabledSegmentation) {
+        this.disabledSegmentation = disabledSegmentation;
     }
 
 }

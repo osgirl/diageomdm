@@ -48,6 +48,7 @@ import java.net.UnknownHostException;
 import java.util.Calendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 import org.primefaces.context.RequestContext;
 
 /**
@@ -62,6 +63,8 @@ public class LoginBean extends DiageoRootBean implements Serializable {
      * Constante que indica la sigla del idioma español
      */
     private static final String ESPANOL = "es";
+    @Inject
+    private DiageoApplicationBean diageoApplicationBean;
     @EJB
     private TemporalLinkBeanLocal temporalLinkBeanLocal;
     @EJB
@@ -197,7 +200,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
             HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
             String url = "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + req.getServerPort() + req.getContextPath() + req.getServletPath() + "/recoverPassword.xhtml?"+TOKEN+"=" + token;
             EMail mail = new EMail();
-            String msg = VelocityTemplate.recoverPassword(url);
+            String msg = VelocityTemplate.recoverPassword(url,getDiageoApplicationBean().getPathMailTemplate());
             mail.send(new String[]{getEmailRecover()}, capturarValor("mail_recover_pass"), msg);
             showInfoMessage(capturarValor("msg_mail_send_recover_password"));
         } catch (ControllerWebException ex) {
@@ -435,6 +438,13 @@ public class LoginBean extends DiageoRootBean implements Serializable {
      */
     public void setEmailRecover(String emailRecover) {
         this.emailRecover = emailRecover;
+    }
+
+    /**
+     * @return the diageoApplicationBean
+     */
+    public DiageoApplicationBean getDiageoApplicationBean() {
+        return diageoApplicationBean;
     }
 
 }

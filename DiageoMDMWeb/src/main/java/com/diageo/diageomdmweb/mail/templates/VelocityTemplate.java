@@ -31,16 +31,17 @@ public class VelocityTemplate extends DiageoRootBean {
         return bundle.getString(key);
     }
 
-    private static Properties loadProperties() {
+    private static Properties loadProperties(String pathMail) {
         Properties props = new Properties();
         props.setProperty("resource.loader", "file");
         props.setProperty("webapp.resource.loader.class", "org.apache.velocity.runtime.resource.loader.FileResourceLoader");
-        props.setProperty("file.resource.loader.path", capturarValor("template_mail_path"));
+        //props.setProperty("file.resource.loader.path", capturarValor("template_mail_path"));
+        props.setProperty("file.resource.loader.path", pathMail);
         return props;
     }
 
-    public static String recoverPassword(String link) {
-        Properties props = loadProperties();
+    public static String recoverPassword(String link,String pathMail) {
+        Properties props = loadProperties(pathMail);
         VelocityEngine ve = new VelocityEngine();
         ve.init(props);
         Template t = ve.getTemplate("RecoverPassword.vm", "UTF-8");
@@ -51,8 +52,8 @@ public class VelocityTemplate extends DiageoRootBean {
         return writer.toString();
     }
 
-    public static String userCreation(String link, String mail, String pass) {
-        Properties props = loadProperties();
+    public static String userCreation(String link, String mail, String pass,String pathMail) {
+        Properties props = loadProperties(pathMail);
         VelocityEngine ve = new VelocityEngine();
         ve.init(props);
         Template t = ve.getTemplate("UserCreation.vm", "UTF-8");

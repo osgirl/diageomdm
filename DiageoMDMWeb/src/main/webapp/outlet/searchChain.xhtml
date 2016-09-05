@@ -37,10 +37,21 @@
                     <p:dataTable id="dtOutlet" paginatorAlwaysVisible="false" rows="15"
                                  value="#{chainSearchBean.chainsList}" var="chain"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 style="font-size:  90%" paginator="true" rendered="#{chainSearchBean.seeDetail}">
-                        <p:column headerText="#{msg.status}">
-                            <p:graphicImage value="/resources/images/iconos/equis.png" width="20px" rendered="#{chain.statusMDM eq 'REJECT'}"/>
-                            <p:graphicImage value="/resources/images/iconos/chulo.png" width="20px" rendered="#{chain.statusMDM ne 'REJECT'}"/>
+                                 style="font-size:  90%" paginator="true" rendered="#{chainSearchBean.seeDetail}">                       
+                        <p:column headerText="#{msg.status}" filterMatchMode="exact" filterBy="#{chain.statusMDM}">
+                            <f:facet name="filter">
+                                <p:selectOneMenu onchange="PF('dtOutletSearch').filter()" style="width: 80%">
+                                    <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}" noSelectionOption="true"/>
+                                    <f:selectItem itemValue="PENDING_KAM" itemLabel="#{msg.sta_pending_kam}"/>
+                                    <f:selectItem itemValue="REJECT" itemLabel="#{msg.sta_reject}"/>
+                                    <f:selectItem itemValue="PENDING_COMMERCIAL_MANAGER" itemLabel="#{msg.sta_pending_commercial_manager}"/>
+                                    <f:selectItem itemValue="APPROVED" itemLabel="#{msg.sta_approval}"/>
+                                </p:selectOneMenu>
+                            </f:facet>
+                            <h:outputLabel value="&lt;b&gt;#{msg.sta_reject}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'REJECT'}" style="color: red" escape="false"/>
+                            <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_tmc}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'PENDING_TMC'}" style="color: blue" escape="false"/>
+                            <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_commercial_manager}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'PENDING_COMMERCIAL_MANAGER'}" style="color: sienna" escape="false"/>
+                            <h:outputLabel value="&lt;b&gt;#{msg.sta_approval}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'APPROVED'}" style="color: greenyellow" escape="false"/>
                         </p:column>
                         <p:column headerText="#{msg.out_approbation_massive}" rendered="#{chainSearchBean.renderMassiveApproval}">
                             <p:selectBooleanCheckbox value="#{chain.approbationMassive}"/>
@@ -123,25 +134,25 @@
                                 <h:panelGroup id="pgSegment">
                                     <h:panelGrid columns="4" style="width: 95%">
                                         <h:outputLabel value="#{msg.can_canal}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu value="#{chainSearchBean.channelSelected}" converter="channelConverter" style="width: 90%">
+                                        <p:selectOneMenu value="#{chainSearchBean.channelSelected}" converter="channelConverter" style="width: 90%" disabled="#{chainSearchBean.disabledSegmentation}">
                                             <f:selectItems value="#{chainSearchBean.listChannel}" var="cha" itemLabel="#{cha.nameChannel}"/>
                                             <p:ajax update="formChainSearch:pgSegment" process="@this" listener="#{chainSearchBean.listenerChannel()}"/>
                                         </p:selectOneMenu>
 
                                         <h:outputLabel value="#{msg.sub_subcanal}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu value="#{chainSearchBean.subChannelSelected}" converter="subChannelConverter" style="width: 90%">
+                                        <p:selectOneMenu value="#{chainSearchBean.subChannelSelected}" converter="subChannelConverter" style="width: 90%" disabled="#{chainSearchBean.disabledSegmentation}">
                                             <f:selectItems value="#{chainSearchBean.listSubChannel}" var="subcha" itemLabel="#{subcha.nameSubChannel}"/>
                                             <p:ajax update="formChainSearch:pgSegment" process="@this" listener="#{chainSearchBean.listenerSubChannel()}"/>
                                         </p:selectOneMenu>
 
                                         <h:outputLabel value="#{msg.seg_segmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu converter="segmentoConverter" value="#{chainSearchBean.segmentSelected}" style="width: 90%">
+                                        <p:selectOneMenu converter="segmentoConverter" value="#{chainSearchBean.segmentSelected}" style="width: 90%" disabled="#{chainSearchBean.disabledSegmentation}">
                                             <f:selectItems value="#{chainSearchBean.listSegment}" var="seg" itemLabel="#{seg.nameSegment}"/>
                                             <p:ajax update="formChainSearch:pgSegment" process="@this" listener="#{chainSearchBean.listenerSegment()}"/>
                                         </p:selectOneMenu>
 
                                         <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu value="#{chainSearchBean.subSegmentSelected}" converter="subSegmentoConverter" style="width: 90%">
+                                        <p:selectOneMenu value="#{chainSearchBean.subSegmentSelected}" converter="subSegmentoConverter" style="width: 90%" disabled="#{chainSearchBean.disabledSegmentation}">
                                             <f:selectItems value="#{chainSearchBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
                                             <p:ajax update="formChainSearch:pgSegment" process="@this" listener="#{chainSearchBean.listenerSubSegment()}"/>
                                         </p:selectOneMenu>
@@ -154,7 +165,7 @@
 
                                         <h:outputLabel value="#{msg.chain_cluster}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                         <p:selectOneMenu value="#{chainSearchBean.clusterSelected}" converter="clusterConverter" style="width: 90%"
-                                                         disabled="#{chainSearchBean.disabledFields}">
+                                                         disabled="#{chainSearchBean.disabledSegmentation}">
                                             <f:selectItems value="#{chainSearchBean.listCluster}" var="clus" itemLabel="#{clus.nameCluster}"/>
                                         </p:selectOneMenu>
                                     </h:panelGrid>
@@ -170,7 +181,7 @@
                                                         completeMethod="#{chainSearchBean.completeCustomer}" effect="fade" converter="customerConverter"
                                                         style="width: 90% !important;"/>
                                         <p:commandButton value="#{msg.btn_add}" process="@parent" update="formChainSearch:pgCustomer formChainSearch:acCustomer"     
-                                                         actionListener="#{chainSearchBean.addCustomer()}"
+                                                         actionListener="#{chainSearchBean.addCustomer()}" disabled="#{chainSearchBean.disabledFields}"
                                                          styleClass="button" style="width: 80%"/>
                                     </h:panelGrid>
                                     <br/>
@@ -183,7 +194,7 @@
                                             <h:outputLabel value="#{custo.kiernanId}"/>
                                         </p:column>
                                         <p:column>
-                                            <p:commandLink actionListener="#{chainSearchBean.deleteCustomer(custo)}" update="formChainSearch:dtCustomer" process="@this">
+                                            <p:commandLink actionListener="#{chainSearchBean.deleteCustomer(custo)}" update="formChainSearch:dtCustomer" process="@this" disabled="#{chainSearchBean.disabledFields}">
                                                 <p:graphicImage value="/resources/images/iconos/equis.png" width="12px"/>
                                             </p:commandLink>
                                         </p:column>

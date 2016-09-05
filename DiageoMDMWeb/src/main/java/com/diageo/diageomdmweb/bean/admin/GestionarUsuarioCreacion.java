@@ -267,7 +267,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
                     EMail email = new EMail();
                     HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
                     String url = "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + req.getServerPort() + req.getContextPath();
-                    String msg = VelocityTemplate.userCreation(url, usu.getEmailUser(), (getTipoDocumento().getNameDocumentType().toLowerCase() + getNumDoc()));
+                    String msg = VelocityTemplate.userCreation(url, usu.getEmailUser(), (getTipoDocumento().getNameDocumentType().toLowerCase() + getNumDoc()),getLoginBean().getDiageoApplicationBean().getPathMailTemplate());
                     email.send(new String[]{usu.getEmailUser()}, capturarValor("mail_user_creation"), msg);
                     showInfoMessage(capturarValor("usu_creado_exito"));
                     init();
