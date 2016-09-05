@@ -31,4 +31,6 @@ public interface ChainBeanLocal {
 
     public List<DbChains> findBy3PartyPermissionSegment(Integer id3party, List<Integer> subSegment, List<String> statusMDM);
 
+    public void deleteCustomerChain(Integer customerId, Integer chainId);
+
 }
