@@ -4,7 +4,8 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <h:body>
 
@@ -45,10 +46,18 @@
                             <f:facet name="filter">
                                 <p:selectOneMenu onchange="PF('dtOutletSearch').filter()" style="width: 80%">
                                     <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}" noSelectionOption="true"/>
-                                    <f:selectItem itemValue="PENDING_TMC" itemLabel="#{msg.sta_pending_tmc}"/>
-                                    <f:selectItem itemValue="REJECT" itemLabel="#{msg.sta_reject}"/>
-                                    <f:selectItem itemValue="PENDING_COMMERCIAL_MANAGER" itemLabel="#{msg.sta_pending_commercial_manager}"/>
-                                    <f:selectItem itemValue="APPROVED" itemLabel="#{msg.sta_approval}"/>
+                                    <c:if test="#{outletConsultarBean.renderPendingTMCRejectStatus}">
+                                        <f:selectItem itemValue="PENDING_TMC" itemLabel="#{msg.sta_pending_tmc}" />
+                                    </c:if>
+                                    <c:if test="#{outletConsultarBean.renderPendingTMCRejectStatus}">
+                                        <f:selectItem itemValue="REJECT" itemLabel="#{msg.sta_reject}"/>
+                                    </c:if>
+                                    <c:if test="#{outletConsultarBean.renderPendingCMStatus}">
+                                        <f:selectItem itemValue="PENDING_COMMERCIAL_MANAGER" itemLabel="#{msg.sta_pending_commercial_manager}"/>
+                                    </c:if>
+                                    <c:if test="#{outletConsultarBean.renderApprovedStatus}">
+                                        <f:selectItem itemValue="APPROVED" itemLabel="#{msg.sta_approval}"/>
+                                    </c:if>
                                 </p:selectOneMenu>
                             </f:facet>
                             <h:outputLabel value="&lt;b&gt;#{msg.sta_reject}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'REJECT'}" style="color: red" escape="false"/>
@@ -291,7 +300,7 @@
                                 </p:dataTable>
                             </p:fieldset>
                             <br/><br/>
-                            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{outletConsultarBean.saveOutlet()}"
+                            <p:commandButton value="#{outletConsultarBean.buttonNameCommit}" process="@all" update="@form" actionListener="#{outletConsultarBean.saveOutlet()}"
                                              styleClass="button" style="left: 0%"/>
                             <p:commandButton value="#{msg.btn_reject}" process="@all" update="@form" actionListener="#{outletConsultarBean.rejectOutlet()}"                                             
                                              styleClass="button_reject" style="left: 0%" rendered="#{outletConsultarBean.renderButtonReject}"/>

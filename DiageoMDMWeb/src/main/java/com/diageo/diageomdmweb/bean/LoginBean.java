@@ -125,6 +125,14 @@ public class LoginBean extends DiageoRootBean implements Serializable {
 //                            RequestContext.getCurrentInstance().execute("PF('dlgPendiente').show();");
 //                        }
 //                    }
+                    if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
+                        armarMigaPan(capturarValor("m_outlet"), capturarValor("m_chain_search"));
+                        return "/outlet/searchChain?faces-redirect=true";
+                    }
+                    if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())) {
+                        armarMigaPan(capturarValor("m_outlet"), capturarValor("m_outlet_consultar"));
+                        return "/outlet/consultarOutlet?faces-redirect=true";
+                    }
                     armarMigaPan(capturarValor("m_outlet"), capturarValor("m_outlet_consultar"));
                     return "/outlet/consultarOutlet?faces-redirect=true";
                 }
@@ -198,9 +206,9 @@ public class LoginBean extends DiageoRootBean implements Serializable {
             tl.setExpiration(expiration.getTime());
             temporalLinkBeanLocal.createTemporal(tl);
             HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            String url = "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + req.getServerPort() + req.getContextPath() + req.getServletPath() + "/recoverPassword.xhtml?"+TOKEN+"=" + token;
+            String url = "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + req.getServerPort() + req.getContextPath() + req.getServletPath() + "/recoverPassword.xhtml?" + TOKEN + "=" + token;
             EMail mail = new EMail();
-            String msg = VelocityTemplate.recoverPassword(url,getDiageoApplicationBean().getPathMailTemplate());
+            String msg = VelocityTemplate.recoverPassword(url, getDiageoApplicationBean().getPathMailTemplate());
             mail.send(new String[]{getEmailRecover()}, capturarValor("mail_recover_pass"), msg);
             showInfoMessage(capturarValor("msg_mail_send_recover_password"));
         } catch (ControllerWebException ex) {

@@ -59,6 +59,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     private boolean renderMassiveApproval;
     private boolean disabledFields;
     private boolean disabledSegmentation;
+    private String buttonNameCommit;
 
     /**
      * Creates a new instance of ChainSearchBean
@@ -78,7 +79,9 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             setChainsList(chainBeanLocal.findAllChains());
             setRenderMassiveApproval(Boolean.FALSE);
             setDisabledFields(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId()));
+            setButtonNameCommit(capturarValor("btn_send"));
         } else {
+            setButtonNameCommit(capturarValor("btn_approved"));
             setDisabledFields(Boolean.TRUE);
             setRenderMassiveApproval(Boolean.TRUE);
             List<String> statusMDM = new ArrayList<>();
@@ -314,6 +317,35 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     public boolean isRenderButtonReject() {
         return getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId());
     }
+    
+     public boolean isRenderPendingTMCRejectStatus(){
+        if(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())||
+                getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())||
+                getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())||
+                getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())){
+            return true;
+        }else if(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())){
+            return false;
+        }
+        return false;
+    }
+    
+    public boolean isRenderPendingCMStatus(){
+        if(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())||
+                getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())||
+                getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())||
+                getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())){
+            return true;
+        }else if(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())||
+                getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())){
+            return false;
+        }
+        return false;
+    }
+    
+    public boolean isRenderApprovedStatus(){
+        return getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId());
+    }
 
     private void deletePhone() {
         phonesBeanLocal.deletePhoneList(getPhonesDelete());
@@ -450,6 +482,20 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
      */
     public void setDisabledSegmentation(boolean disabledSegmentation) {
         this.disabledSegmentation = disabledSegmentation;
+    }
+
+    /**
+     * @return the buttonNameCommit
+     */
+    public String getButtonNameCommit() {
+        return buttonNameCommit;
+    }
+
+    /**
+     * @param buttonNameCommit the buttonNameCommit to set
+     */
+    public void setButtonNameCommit(String buttonNameCommit) {
+        this.buttonNameCommit = buttonNameCommit;
     }
 
 }

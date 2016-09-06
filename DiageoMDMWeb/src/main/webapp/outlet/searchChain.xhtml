@@ -4,7 +4,8 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
 
     <body>
 
@@ -35,18 +36,27 @@
                         }
                     </style>
                     <p:dataTable id="dtOutlet" paginatorAlwaysVisible="false" rows="15"
+                                 widgetVar="dtChainSearch"
                                  value="#{chainSearchBean.chainsList}" var="chain"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  style="font-size:  90%" paginator="true" rendered="#{chainSearchBean.seeDetail}"
                                  emptyMessage="#{msg.out_msg_not_record}">
                         <p:column headerText="#{msg.status}" filterMatchMode="exact" filterBy="#{chain.statusMDM}">
                             <f:facet name="filter">
-                                <p:selectOneMenu onchange="PF('dtOutletSearch').filter()" style="width: 80%">
+                                <p:selectOneMenu onchange="PF('dtChainSearch').filter()" style="width: 80%">
                                     <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}" noSelectionOption="true"/>
-                                    <f:selectItem itemValue="PENDING_KAM" itemLabel="#{msg.sta_pending_kam}"/>
-                                    <f:selectItem itemValue="REJECT" itemLabel="#{msg.sta_reject}"/>
-                                    <f:selectItem itemValue="PENDING_COMMERCIAL_MANAGER" itemLabel="#{msg.sta_pending_commercial_manager}"/>
-                                    <f:selectItem itemValue="APPROVED" itemLabel="#{msg.sta_approval}"/>
+                                    <c:if test="#{chainSearchBean.renderPendingTMCRejectStatus}">
+                                        <f:selectItem itemValue="PENDING_KAM" itemLabel="#{msg.sta_pending_kam}"/>
+                                    </c:if>
+                                    <c:if test="#{chainSearchBean.renderPendingTMCRejectStatus}">
+                                        <f:selectItem itemValue="REJECT" itemLabel="#{msg.sta_reject}"/>
+                                    </c:if>
+                                    <c:if test="#{chainSearchBean.renderPendingCMStatus}">
+                                        <f:selectItem itemValue="PENDING_COMMERCIAL_MANAGER" itemLabel="#{msg.sta_pending_commercial_manager}"/>
+                                    </c:if>
+                                    <c:if test="#{chainSearchBean.renderApprovedStatus}">
+                                        <f:selectItem itemValue="APPROVED" itemLabel="#{msg.sta_approval}"/>
+                                    </c:if>
                                 </p:selectOneMenu>
                             </f:facet>
                             <h:outputLabel value="&lt;b&gt;#{msg.sta_reject}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'REJECT'}" style="color: red" escape="false"/>
@@ -276,7 +286,7 @@
                                 </p:dataTable>
                             </p:fieldset>
                             <br/><br/>
-                            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{chainSearchBean.saveChain()}"
+                            <p:commandButton value="#{chainSearchBean.buttonNameCommit}" process="@all" update="@form" actionListener="#{chainSearchBean.saveChain()}"
                                              styleClass="button" style="left: 0%"/>
                             <p:commandButton value="#{msg.btn_reject}" process="@all" update="@form" actionListener="#{chainSearchBean.rejectChain()}"                                             
                                              styleClass="button_reject" style="left: 0%" rendered="#{chainSearchBean.renderButtonReject}"/>
