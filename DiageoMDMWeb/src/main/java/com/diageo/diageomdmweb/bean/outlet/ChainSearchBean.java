@@ -155,8 +155,10 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                     }
                 }
                 //Consultar cadenas
-                List<DbChains> listChainTem = chainBeanLocal.findBy3PartyPermissionSegment(id3party, listSegmentQuery, statusMDM);
-                getChainsList().addAll(listChainTem);
+                if (!listSegmentQuery.isEmpty()) {
+                    List<DbChains> listChainTem = chainBeanLocal.findBy3PartyPermissionSegment(id3party, listSegmentQuery, statusMDM);
+                    getChainsList().addAll(listChainTem);
+                }
             }
 
         }

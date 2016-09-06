@@ -51,10 +51,10 @@ public class CambiarContraseniaBean extends DiageoRootBean implements Serializab
         setListPassContainer(passContainerBeanLocal.findPassContainerByUser(getLoginBean().getUsuario().getUserId()));
     }
 
-    public void cambiarContrasenia() {
+    public String cambiarContrasenia() {
         if(!getLoginBean().getUsuario().getPasswordUser().equals(DigestUtils.md5Hex(getContrasenaActual()))){
             showWarningMessage(capturarValor("cam_pass_current_pass_dont_match"));
-            return;
+            return null;
         }
         if (getContrasenaActual().equals(getContrseniaNueva())) {
             setContrasenaActual("");
@@ -66,7 +66,7 @@ public class CambiarContraseniaBean extends DiageoRootBean implements Serializab
                     for (DwPasscontainers pc : getListPassContainer()) {
                         if (pc.getPasswordUser().equals(DigestUtils.md5Hex(getContrseniaNueva()))) {
                             showWarningMessage(capturarValor("cam_pass_used"));
-                            return;
+                            return null;
                         }
                     }
                 }
@@ -82,12 +82,14 @@ public class CambiarContraseniaBean extends DiageoRootBean implements Serializab
                 }
                 DwPasscontainers pc = passContainerBeanLocal.createPassContainer(getLoginBean().getUsuario(), DigestUtils.md5Hex(getContrseniaNueva()));
                 getListPassContainer().add(pc);
-                showInfoMessage(capturarValor("cam_pass_cambio_exitoso"));
+                //showInfoMessage(capturarValor("cam_pass_cambio_exitoso"));
+                return "/login?faces-redirect=true";
             } catch (ControllerWebException ex) {
                 LOG.log(Level.SEVERE, ex.getMessage());
                 showErrorMessage(capturarValor("cam_pass_cambio_fallo"));
             }
         }
+        return null;
     }
 
     /**

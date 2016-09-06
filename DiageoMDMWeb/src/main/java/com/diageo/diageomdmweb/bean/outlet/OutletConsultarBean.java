@@ -153,8 +153,10 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                     }
                 }
                 //Consultar los outlets
-                List<DbOutlets> listOutTem = outletBeanLocal.findBy3PartyPermissionSegment(id3party, listSegmentQuery, statusMDM);
-                getListOutlets().addAll(listOutTem);
+                if (!listSegmentQuery.isEmpty()) {
+                    List<DbOutlets> listOutTem = outletBeanLocal.findBy3PartyPermissionSegment(id3party, listSegmentQuery, statusMDM);
+                    getListOutlets().addAll(listOutTem);
+                }
             }
             System.out.println("tamaño de lista de outlets: " + getListOutlets().size());
         }

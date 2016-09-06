@@ -37,7 +37,8 @@
                     <p:dataTable id="dtOutlet" paginatorAlwaysVisible="false" rows="15"
                                  value="#{chainSearchBean.chainsList}" var="chain"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 style="font-size:  90%" paginator="true" rendered="#{chainSearchBean.seeDetail}">                       
+                                 style="font-size:  90%" paginator="true" rendered="#{chainSearchBean.seeDetail}"
+                                 emptyMessage="#{msg.out_msg_not_record}">
                         <p:column headerText="#{msg.status}" filterMatchMode="exact" filterBy="#{chain.statusMDM}">
                             <f:facet name="filter">
                                 <p:selectOneMenu onchange="PF('dtOutletSearch').filter()" style="width: 80%">
