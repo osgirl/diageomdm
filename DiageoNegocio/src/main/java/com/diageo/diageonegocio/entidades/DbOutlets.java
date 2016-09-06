@@ -137,7 +137,7 @@ public class DbOutlets implements Serializable {
     private List<DbOutlets> listOutletFather;
     @Column(name = "STATUS_OUTLET")
     private String statusOutlet;
-    @JoinTable(name = "DB_OUTLETS_CUSTOMERS", joinColumns = {
+    @JoinTable(name = "DB_CUSTOMERS_OUTLETS", joinColumns = {
         @JoinColumn(name = "OUTLET_ID", referencedColumnName = "OUTLET_ID")}, inverseJoinColumns = {
         @JoinColumn(name = "CUSTOMER_ID", referencedColumnName = "CUSTOMER_ID")})
     @ManyToMany
