@@ -129,6 +129,7 @@ public class ReportCommercialManagement extends DiageoRootBean implements Serial
                 dto.setSubChannel(outlet.getSubSegmentId().getSegmentId().getSubChannelId().getNameSubChannel());
                 dto.setSubSegment(outlet.getSubSegmentId().getNameSubsegment());
                 dto.setSource(OUTLET);
+                dto.setPos(outlet.getNumberPdv());
                 outletTemp.add(dto);
             }
         }
@@ -151,6 +152,7 @@ public class ReportCommercialManagement extends DiageoRootBean implements Serial
                 dto.setSubChannel(chain.getSubSegmentId().getSegmentId().getSubChannelId().getNameSubChannel());
                 dto.setSubSegment(chain.getSubSegmentId().getNameSubsegment());
                 dto.setSource(CHAIN);
+                dto.setPos(chain.getCodeEan());
                 chainTemp.add(dto);
             }
         }

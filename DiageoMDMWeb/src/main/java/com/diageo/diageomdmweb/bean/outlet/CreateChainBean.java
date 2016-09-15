@@ -279,7 +279,13 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
         if (getSubSegmentSelected().getDbPotentialsList() == null || getSubSegmentSelected().getDbPotentialsList().isEmpty()) {
             setListPotential(new ArrayList<DbPotentials>());
         } else {
-            setPotentialSelected(getSubSegmentSelected().getDbPotentialsList().get(0));
+            for (DbPotentials po : getSubSegmentSelected().getDbPotentialsList()) {
+                if (po.getLowPotential().equals(StateEnum.ACTIVE.getState())) {
+                    setPotentialSelected(po);
+                    break;
+                }
+            }
+
             setListPotential(getSubSegmentSelected().getDbPotentialsList());
         }
     }

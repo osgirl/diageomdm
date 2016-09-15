@@ -36,9 +36,7 @@ public class MyDataBean extends DiageoRootBean implements Serializable {
     private String nombres;
     private String apellidos;
     private String correo;
-    private String numDocumento;
     private String perfil;
-    private Integer tipoDoc;
 
     /**
      * Creates a new instance of MisDatosBean
@@ -51,20 +49,14 @@ public class MyDataBean extends DiageoRootBean implements Serializable {
         setApellidos(getLoginBean().getUsuario().getLastName());
         setNombres(getLoginBean().getUsuario().getNameUser());
         setCorreo("<b>" + getLoginBean().getUsuario().getEmailUser() + "</b>");
-        setNumDocumento("<b>" + getLoginBean().getUsuario().getDocumentNumber() + "</b>");
-        setTipoDoc(getLoginBean().getUsuario().getDocumentTypeId().getDocumentTypeId());
         setPerfil("<b>" + getLoginBean().getUsuario().getProfileId().getNameProfile() + "</b>");
-    }
-
-    public String getTipoDocumento() {
-        return DocumentTypeEnum.valueOf(getTipoDoc()).name();
-    }
+    }    
 
     public void modificarDatos() {
         try {
             DwUsers usuario = getLoginBean().getUsuario();
-            usuario.setNameUser(getNombres());
-            usuario.setLastName(getApellidos());
+            usuario.setNameUser(getNombres().toUpperCase());
+            usuario.setLastName(getApellidos().toUpperCase());
             usuario = usuarioBeanLocal.updateUser(usuario);
             getLoginBean().setUsuario(usuario);
             super.showInfoMessage(capturarValor("usu_mis_datos"));
@@ -128,34 +120,6 @@ public class MyDataBean extends DiageoRootBean implements Serializable {
      */
     public void setCorreo(String correo) {
         this.correo = correo;
-    }
-
-    /**
-     * @return the numDocumento
-     */
-    public String getNumDocumento() {
-        return numDocumento;
-    }
-
-    /**
-     * @param numDocumento the numDocumento to set
-     */
-    public void setNumDocumento(String numDocumento) {
-        this.numDocumento = numDocumento;
-    }
-
-    /**
-     * @return the tipoDoc
-     */
-    public Integer getTipoDoc() {
-        return tipoDoc;
-    }
-
-    /**
-     * @param tipoDoc the tipoDoc to set
-     */
-    public void setTipoDoc(Integer tipoDoc) {
-        this.tipoDoc = tipoDoc;
     }
 
     /**

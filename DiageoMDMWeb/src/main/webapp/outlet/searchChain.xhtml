@@ -59,10 +59,10 @@
                                     </c:if>
                                 </p:selectOneMenu>
                             </f:facet>
-                            <h:outputLabel value="&lt;b&gt;#{msg.sta_reject}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'REJECT'}" style="color: red" escape="false"/>
-                            <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_tmc}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'PENDING_TMC'}" style="color: blue" escape="false"/>
-                            <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_commercial_manager}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'PENDING_COMMERCIAL_MANAGER'}" style="color: sienna" escape="false"/>
-                            <h:outputLabel value="&lt;b&gt;#{msg.sta_approval}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'APPROVED'}" style="color: greenyellow" escape="false"/>
+                            <h:outputLabel value="&lt;b&gt;#{msg.sta_reject}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'REJECT'}" style="color: red" escape="false"/>
+                            <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_kam}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'PENDING_KAM'}" style="color: blue" escape="false"/>
+                            <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_commercial_manager}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'PENDING_COMMERCIAL_MANAGER'}" style="color: sienna" escape="false"/>
+                            <h:outputLabel value="&lt;b&gt;#{msg.sta_approval}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'APPROVED'}" style="color: greenyellow" escape="false"/>
                         </p:column>
                         <p:column headerText="#{msg.out_approbation_massive}" rendered="#{chainSearchBean.renderMassiveApproval}">
                             <p:selectBooleanCheckbox value="#{chain.approbationMassive}"/>
@@ -78,6 +78,9 @@
                         </p:column>
                         <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{chain.subSegmentId.nameSubsegment}">
                             <h:outputLabel  value="#{chain.subSegmentId.nameSubsegment}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.out_codigo_ean}" filterBy="#{chain.subSegmentId.nameSubsegment}">
+                            <h:outputLabel  value="#{chain.codeEan}"/>
                         </p:column>
                         <p:column>
                             <p:commandLink value="#{msg.btn_detalle}" style="color: blue" process="@this" update="@form"
@@ -103,7 +106,7 @@
                                 <h:panelGrid columns="4" style="width: 100%">
                                     <h:outputLabel value="#{msg.out_kiernan}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <h:panelGroup>
-                                        <p:inputText id="itKiernan" value="#{chainSearchBean.kiernan}" disabled="#{chainSearchBean.disabledFields}" required="true"
+                                        <p:inputText id="itKiernan" value="#{chainSearchBean.kiernan}" disabled="#{chainSearchBean.disabledFields}" required="false"
                                                      label="#{msg.out_kiernan}"/>
                                         <p:message for="itKiernan"/>
                                     </h:panelGroup>
@@ -190,9 +193,10 @@
                                         <p:autoComplete id="acCustomer" minQueryLength="4" value="#{chainSearchBean.customer}" label="#{msg.customer}"
                                                         var="cus" itemLabel="#{cus.customerName}" itemValue="#{cus}" forceSelection="true"
                                                         completeMethod="#{chainSearchBean.completeCustomer}" effect="fade" converter="customerConverter"
-                                                        style="width: 90% !important;"/>
+                                                        style="width: 90% !important;"
+                                                        disabled="#{chainSearchBean.disabledFields and chainSearchBean.disabledFieldsTmc}"/>
                                         <p:commandButton value="#{msg.btn_add}" process="@parent" update="formChainSearch:pgCustomer formChainSearch:acCustomer"     
-                                                         actionListener="#{chainSearchBean.addCustomer()}" disabled="#{chainSearchBean.disabledFields}"
+                                                         actionListener="#{chainSearchBean.addCustomer()}" disabled="#{chainSearchBean.disabledFields and chainSearchBean.disabledFieldsTmc}"
                                                          styleClass="button" style="width: 80%"/>
                                     </h:panelGrid>
                                     <br/>
@@ -205,7 +209,8 @@
                                             <h:outputLabel value="#{custo.kiernanId}"/>
                                         </p:column>
                                         <p:column>
-                                            <p:commandLink actionListener="#{chainSearchBean.deleteCustomer(custo)}" update="formChainSearch:dtCustomer" process="@this" disabled="#{chainSearchBean.disabledFields}">
+                                            <p:commandLink actionListener="#{chainSearchBean.deleteCustomer(custo)}" update="formChainSearch:dtCustomer"
+                                                           process="@this" disabled="#{chainSearchBean.disabledFields and chainSearchBean.disabledFieldsTmc}">
                                                 <p:graphicImage value="/resources/images/iconos/equis.png" width="12px"/>
                                             </p:commandLink>
                                         </p:column>

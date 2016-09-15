@@ -114,14 +114,6 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     @Pattern(regexp = PatternConstant.EMAIL_VALIDADOR, message = "{correo.pattern}")
     private String correo;
     /**
-     * Numero de documento
-     */
-    private String numDoc;
-    /**
-     * Tipo de documentl
-     */
-    private DwDocumentTypes tipoDocumento;
-    /**
      * DwProfiles que se le asignará al usuario creado
      */
     private DwProfiles perfil;
@@ -194,7 +186,6 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     @PostConstruct
     public void init() {
         setPerfil(new DwProfiles());
-        setTipoDocumento(new DwDocumentTypes());
         setListDistributor(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsPadre()));
         setListDistributorSon(distributorBeanLocal.searchDistributorByFather(getListDistributor().get(0).getDb3partyId()));
         setListPotential(potentialBeanLocal.findAll());
@@ -212,7 +203,6 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     private void initFields() {
         setNombres("");
         setApellidos("");
-        setNumDoc("");
         setCorreo("");
         setAthenaCode("");
         setActivo(Boolean.FALSE);
@@ -241,14 +231,12 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
                     usu.setNameUser(getNombres().toUpperCase());
                     usu.setLastName(getApellidos().toUpperCase());
                     usu.setEmailUser(getCorreo().toUpperCase());
-                    usu.setPasswordUser(DigestUtils.md5Hex(getTipoDocumento().getNameDocumentType().toLowerCase() + getNumDoc()));
-                    usu.setDocumentNumber(getNumDoc().toUpperCase());
+                    usu.setPasswordUser(DigestUtils.md5Hex("123"));
                     Audit audit = new Audit();
                     audit.setCreationDate(super.getCurrentDate());
                     audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
                     usu.setAudit(audit);
                     usu.setStateUser(isActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-                    usu.setDocumentTypeId(getTipoDocumento());
                     usu.setProfileId(getPerfil());
                     usu.setDistri1(getAthenaCode().toUpperCase());
                     usu.setFailedAttempt(0);
@@ -267,7 +255,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
                     EMail email = new EMail();
                     HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
                     String url = "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + req.getServerPort() + req.getContextPath();
-                    String msg = VelocityTemplate.userCreation(url, usu.getEmailUser(), (getTipoDocumento().getNameDocumentType().toLowerCase() + getNumDoc()),getLoginBean().getDiageoApplicationBean().getPathMailTemplate());
+                    String msg = VelocityTemplate.userCreation(url, usu.getEmailUser(), "123", getLoginBean().getDiageoApplicationBean().getPathMailTemplate());
                     email.send(new String[]{usu.getEmailUser()}, capturarValor("mail_user_creation"), msg);
                     showInfoMessage(capturarValor("usu_creado_exito"));
                     init();
@@ -574,34 +562,6 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      */
     public void setCorreo(String correo) {
         this.correo = correo;
-    }
-
-    /**
-     * @return the numDoc
-     */
-    public String getNumDoc() {
-        return numDoc;
-    }
-
-    /**
-     * @param numDoc the numDoc to set
-     */
-    public void setNumDoc(String numDoc) {
-        this.numDoc = numDoc;
-    }
-
-    /**
-     * @return the tipoDocumento
-     */
-    public DwDocumentTypes getTipoDocumento() {
-        return tipoDocumento;
-    }
-
-    /**
-     * @param tipoDocumento the tipoDocumento to set
-     */
-    public void setTipoDocumento(DwDocumentTypes tipoDocumento) {
-        this.tipoDocumento = tipoDocumento;
     }
 
     /**

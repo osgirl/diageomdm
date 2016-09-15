@@ -19,13 +19,13 @@
                     <h:panelGrid columns="3" width="90%" style="top: 10%;position: fixed">                    
                         <h:outputLabel value="#{msg.ingreso_exitoso} #{loginBean.formatoFechaIngreso(loginBean.usuario.lastSuccesfulLogin)}" style="color: white;left: 5%;position: fixed;font-size: 12px;font-family: arial;z-index: 2"/>
                         <h:outputLabel value="#{msg.ingreso_fallido} #{loginBean.formatoFechaIngreso(loginBean.usuario.failedLoginDate)}" style="color: white;left: 40%;position: fixed;font-size: 12px;font-family: arial"/>
-                        <h:outputLabel value="#{msg.welcome} #{loginBean.usuario.nameUser} #{loginBean.usuario.lastName}" style="color: white;position: fixed;font-size: 15px;left: 80%;font-size: 12px;font-family: arial"/>
+                        <h:outputLabel value="#{msg.welcome} #{loginBean.usuario.nameUser} #{loginBean.usuario.lastName}" style="color: white;position: fixed;font-size: 15px;left: 75%;font-size: 12px;font-family: arial"/>
                     </h:panelGrid>
                 </div>
                 <div class="menu_template">
                     <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()" />
                     <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false">
-                        <p:graphicImage value="/resources/images/status/status.gif" width="20px"/>
+                        <p:graphicImage value="/resources/images/status/ajax-loader.gif" width="100px"/>
                     </p:dialog>
                     <h:form id="formMigaPan">
                         <p:growl id="idGrowl" showDetail="true" globalOnly="true"                             

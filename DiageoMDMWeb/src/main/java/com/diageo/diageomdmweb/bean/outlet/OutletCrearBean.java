@@ -13,6 +13,7 @@ import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
 import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageomdmweb.constant.PatternConstant;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
+import com.diageo.diageonegocio.beans.CustomerBeanLocal;
 import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
 import com.diageo.diageonegocio.beans.OcsBeanLocal;
 import com.diageo.diageonegocio.beans.OutletBeanLocal;
@@ -24,6 +25,7 @@ import com.diageo.diageonegocio.beans.TypePhoneBeanLocal;
 import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.DbChannels;
+import com.diageo.diageonegocio.entidades.DbCustomers;
 import com.diageo.diageonegocio.entidades.DbDepartaments;
 import com.diageo.diageonegocio.entidades.DbOcs;
 import com.diageo.diageonegocio.entidades.DbOutlets;
@@ -79,6 +81,8 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     protected PhonesBeanLocal phonesBeanLocal;
     @EJB
     protected OcsBeanLocal ocsBeanLocal;
+    @EJB
+    protected CustomerBeanLocal customerBeanLocal;
     private DbChannels channelSelected;
     private DbSubChannels subChannelSelected;
     private DbSegments segmentSelected;
@@ -121,6 +125,8 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     private boolean spirtis;
     private boolean isFather;
     private DbOutlets father;
+    private List<DbCustomers> listCustomers;
+    private DbCustomers customer;
 
     /**
      * Creates a new instance of OutletVistaBean
@@ -154,6 +160,8 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         setDb3PartySelected(getList3PartyToDeploy().get(0));
         setFather(new DbOutlets());
         setList3Party(new ArrayList<Db3party>());
+        setCustomer(new DbCustomers());
+        setListCustomers(new ArrayList<DbCustomers>());
         setAddress(EMPTY_FIELD);
         setBeer(Boolean.FALSE);
         setBusinessName(EMPTY_FIELD);
@@ -182,15 +190,19 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             outlet.setDbPhonesList(getListPhones());
             outlet.setEmail(getEmail() != null ? getEmail().toUpperCase() : "");
             outlet.setIsFather(isIsFather() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-            outlet.setIsNewOutlet(StateDiageo.INACTIVO.getId());
+            outlet.setIsNewOutlet(StateDiageo.ACTIVO.getId());
             outlet.setKiernanId(getKiernanId() != null ? getKiernanId().toUpperCase() : "");
             outlet.setLatitude(getLatitude());
             outlet.setLongitude(getLongitude());
             outlet.setNeighborhood(getNeighborhood() != null ? getNeighborhood().toUpperCase() : "");
             outlet.setNit(getNit() != null ? getNit().toUpperCase() : "");
             outlet.setNumberPdv(getPointSale() != null ? getPointSale().toUpperCase() : "");
-            outlet.setOcsPrimary(getOcsPrimary());
+            if (getOcsPrimary().getOcsId() != null) {
+                outlet.setOcsPrimary(getOcsPrimary());
+            }
+            if (getOcsSecondary().getOcsId() != null) {
             outlet.setOcsSecondary(getOcsSecondary());
+            }
             if (getFather() != null && getFather().getOutletId() != null) {
                 outlet.setOutletIdFather(getFather());
             }
@@ -206,7 +218,12 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             outlet.setStatusOutlet(StateOutletChain.ACTIVE.getId());
             outlet.setStatusMDM(StatusSystemMDM.PENDING_TMC.name());
-            Audit audit=new Audit();
+            DbCustomers custo = saveCustomer();
+            if (custo != null) {
+                getListCustomers().add(custo);
+            }
+            outlet.setDbCustomersList(getListCustomers());
+            Audit audit = new Audit();
             audit.setCreationDate(super.getCurrentDate());
             audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
             outlet.setAudit(audit);
@@ -218,6 +235,22 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
 
+    }
+
+    public DbCustomers saveCustomer() {
+        try {
+            DbCustomers customer = new DbCustomers();
+            customer.setAddress(getAddress() != null ? getAddress().toUpperCase() : null);
+            customer.setCustomerName(getBusinessName() != null ? getBusinessName().toUpperCase() : null);
+            customer.setKiernanId(getKiernanId());
+            customer.setNumberPdv(getPointSale());
+            customer.setStatusCustomer(StateOutletChain.ACTIVE.getId());
+            customer.setTownId(getTownSelected());
+            return customerBeanLocal.createCustomer(customer);
+        } catch (DiageoBusinessException ex) {
+            Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
 
     public List<DbOutlets> completeChainFather(String query) {
@@ -232,7 +265,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
                     getNewPhone().setPhoneId(getListPhones().size() + 1);
                     getNewPhone().setDeleteId(Boolean.TRUE);
                 }
-                Audit audit=new Audit();
+                Audit audit = new Audit();
                 audit.setCreationDate(super.getCurrentDate());
                 audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
                 getNewPhone().setAudit(audit);
@@ -254,6 +287,25 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             }
         }
         getList3Party().add(getDb3PartySelected());
+    }
+
+    public void addCustomer() {
+        if (getCustomer().getCustomerName() != null && !getCustomer().getCustomerName().isEmpty()) {
+            for (DbCustomers cus : getListCustomers()) {
+                if (cus.equals(getCustomer())) {
+                    showWarningMessage(capturarValor("customer_msg_equal"));
+                    return;
+                }
+            }
+            getListCustomers().add(getCustomer());
+            setCustomer(new DbCustomers());
+        } else {
+            showWarningMessage(capturarValor("chain_msg_customer_empty"));
+        }
+    }
+
+    public void deleteCustomer(DbCustomers custo) {
+        getListCustomers().remove(custo);
     }
 
     /**
@@ -298,9 +350,27 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         if (getSubSegmentSelected().getDbPotentialsList() == null || getSubSegmentSelected().getDbPotentialsList().isEmpty()) {
             setListPotential(new ArrayList<DbPotentials>());
         } else {
-            setPotentialSelected(getSubSegmentSelected().getDbPotentialsList().get(0));
+            for (DbPotentials po : getSubSegmentSelected().getDbPotentialsList()) {
+                if (po.getLowPotential().equals(StateEnum.ACTIVE.getState())) {
+                    setPotentialSelected(po);
+                    break;
+                }
+            }
             setListPotential(getSubSegmentSelected().getDbPotentialsList());
         }
+    }
+
+    public List<DbCustomers> completeCustomer(String query) {
+        return customerBeanLocal.findByNameCustomer(query);
+    }
+
+    public boolean isDisabledOcs() {
+        if (!getChannelSelected().getNameChannel().startsWith("ON")) {
+            setOcsPrimary(new DbOcs());
+            setOcsSecondary(new DbOcs());
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -903,6 +973,34 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
      */
     public LoginBean getLoginBean() {
         return loginBean;
+    }
+
+    /**
+     * @return the listCustomers
+     */
+    public List<DbCustomers> getListCustomers() {
+        return listCustomers;
+    }
+
+    /**
+     * @param listCustomers the listCustomers to set
+     */
+    public void setListCustomers(List<DbCustomers> listCustomers) {
+        this.listCustomers = listCustomers;
+    }
+
+    /**
+     * @return the customer
+     */
+    public DbCustomers getCustomer() {
+        return customer;
+    }
+
+    /**
+     * @param customer the customer to set
+     */
+    public void setCustomer(DbCustomers customer) {
+        this.customer = customer;
     }
 
 }

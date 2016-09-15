@@ -343,6 +343,10 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         return false;
     }
     
+    public boolean isDisabledFieldsTmc(){
+        return !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId());
+    }
+    
     public boolean isRenderApprovedStatus(){
         return getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId());
     }

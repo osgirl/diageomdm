@@ -27,16 +27,7 @@
                                 <h:panelGroup>
                                     <p:inputText id="itApellidos" label="#{msg.usu_apellidos}" style="width: 80%" value="#{gestionarUsuarioCreacion.apellidos}" required="true"/>
                                     <p:message for="itApellidos"/>
-                                </h:panelGroup>
-                                <h:outputLabel value="#{msg.usu_tipo_doc}"/>                        
-                                <p:selectOneMenu style="width: 75%" label="#{msg.usu_tipo_doc}" value="#{gestionarUsuarioCreacion.tipoDocumento}" converter="tipoDocConverter">
-                                    <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tiDoc" itemLabel="#{tiDoc.nameDocumentType}"/>
-                                </p:selectOneMenu>
-                                <h:outputLabel value="#{msg.usu_num_doc}"/>
-                                <h:panelGroup>
-                                    <p:inputText id="itNumDoc" label="#{msg.usu_num_doc}" style="width: 80%" value="#{gestionarUsuarioCreacion.numDoc}" required="true"/>
-                                    <p:message for="itNumDoc"/>
-                                </h:panelGroup>
+                                </h:panelGroup>                                
                                 <h:outputLabel value="#{msg.usu_correo}"/>
                                 <h:panelGroup>
                                     <p:inputText id="itCorreo" label="#{msg.usu_correo}" style="width: 80%" value="#{gestionarUsuarioCreacion.correo}" required="true"/>

@@ -21,15 +21,12 @@
 
                 </style>
                 <h:form id="formDetalleUsuario">
-                    <p:fieldset legend="#{msg.m_usuario}" style="width: 90%" rendered="#{consultarUsuarioBean.verDetalle}">
+                    <p:fieldset legend="#{msg.m_usuario}" style="width: 98%" rendered="#{consultarUsuarioBean.verDetalle}">
                         <p:dataTable id="dtUsuarios" value="#{consultarUsuarioBean.listaUsuariosSistema}" var="usu"
                                      widgetVar="wvUsu" style="width: 98%; word-wrap: break-word;font-size: 11px !important" rendered="#{consultarUsuarioBean.verDetalle}"
                                      paginatorAlwaysVisible="false" rows="12"  paginator="true" 
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     reflow="true">
-                            <p:column headerText="#{msg.usu_num_doc}" filterBy="#{usu.documentNumber}" filterMatchMode="startsWith">
-                                <h:outputLabel value="#{usu.documentNumber.toUpperCase()}"/>
-                            </p:column>                        
+                                     reflow="true">                            
                             <p:column headerText="#{msg.usu_nombres}" filterBy="#{usu.nameUser}" filterMatchMode="startsWith" sortBy="#{usu.nameUser}">
                                 <h:outputLabel value="#{usu.nameUser}"/>
                             </p:column>
@@ -69,16 +66,7 @@
                                 <h:panelGroup>
                                     <p:inputText id="itApellidos" label="#{msg.usu_apellidos}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.lastName}" required="true"/>
                                     <p:message for="itApellidos"/>
-                                </h:panelGroup>
-                                <h:outputLabel value="#{msg.usu_tipo_doc}"/>                        
-                                <p:selectOneMenu style="width: 73%" label="#{msg.usu_tipo_doc}" value="#{consultarUsuarioBean.tipoDocumento}" converter="tipoDocConverter">
-                                    <f:selectItems value="#{diageoApplicationBean.listaTipoDocumento}" var="tiDoc" itemLabel="#{tiDoc.nameDocumentType}"/>
-                                </p:selectOneMenu>
-                                <h:outputLabel value="#{msg.usu_num_doc}"/>
-                                <h:panelGroup>
-                                    <p:inputText id="itNumDoc" label="#{msg.usu_num_doc}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.documentNumber}" required="true"/>
-                                    <p:message for="itNumDoc"/>
-                                </h:panelGroup>
+                                </h:panelGroup>                                
                                 <h:outputLabel value="#{msg.usu_correo}"/>
                                 <h:panelGroup>
                                     <p:inputText id="itCorreo" label="#{msg.usu_correo}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.emailUser}" required="true"/>

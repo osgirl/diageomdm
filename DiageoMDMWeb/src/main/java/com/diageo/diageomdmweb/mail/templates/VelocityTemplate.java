@@ -40,7 +40,7 @@ public class VelocityTemplate extends DiageoRootBean {
         return props;
     }
 
-    public static String recoverPassword(String link,String pathMail) {
+    public static String recoverPassword(String link, String pathMail) {
         Properties props = loadProperties(pathMail);
         VelocityEngine ve = new VelocityEngine();
         ve.init(props);
@@ -52,7 +52,7 @@ public class VelocityTemplate extends DiageoRootBean {
         return writer.toString();
     }
 
-    public static String userCreation(String link, String mail, String pass,String pathMail) {
+    public static String userCreation(String link, String mail, String pass, String pathMail) {
         Properties props = loadProperties(pathMail);
         VelocityEngine ve = new VelocityEngine();
         ve.init(props);
@@ -61,6 +61,18 @@ public class VelocityTemplate extends DiageoRootBean {
         context.put("link", link);
         context.put("mail", mail);
         context.put("password", pass);
+        StringWriter writer = new StringWriter();
+        t.merge(context, writer);
+        return writer.toString();
+    }
+
+    public static String notificationOutlet(String kiernan, String pathMail) {
+        Properties props = loadProperties(pathMail);
+        VelocityEngine ve = new VelocityEngine();
+        ve.init(props);
+        Template t = ve.getTemplate("NotificationOutlet.vm", "UTF-8");
+        VelocityContext context = new VelocityContext();
+        context.put("kiernan", kiernan);
         StringWriter writer = new StringWriter();
         t.merge(context, writer);
         return writer.toString();

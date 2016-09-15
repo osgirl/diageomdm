@@ -90,6 +90,9 @@
                                 <p:column headerText="#{msg.sub_seg_subsegmento}">
                                     <h:outputLabel value="#{report.subSegment}"/>
                                 </p:column>
+                                <p:column headerText="#{msg.out_punto_venta}">
+                                    <h:outputLabel value="#{report.pos}"/>
+                                </p:column>
                                 <p:column exportable="false">
                                     <h:commandLink value="#{msg.btn_detalle}" style="color: blue" action="#{reportCommercialManagement.detail(report)}"/>
                                 </p:column>

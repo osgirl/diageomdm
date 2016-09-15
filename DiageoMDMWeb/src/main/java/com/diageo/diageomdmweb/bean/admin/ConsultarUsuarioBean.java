@@ -90,7 +90,6 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
         setUsuarioSeleccionado(usu);
         setTemporalMail(usu.getEmailUser());
         setPerfil(usu.getProfileId());
-        setTipoDocumento(new DwDocumentTypes(usu.getDocumentTypeId().getDocumentTypeId()));
         setUsuarioActivo(usu.getStateUser().equals(StateEnum.ACTIVE.getState()));
         setAthenaCode(usu.getDistri1());
         //find permission segment
@@ -111,7 +110,6 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
             if (!validarExisteciaCorreo()) {
                 try {
                     getUsuarioSeleccionado().setProfileId(getPerfil());
-                    getUsuarioSeleccionado().setDocumentTypeId(getTipoDocumento());
                     getUsuarioSeleccionado().setStateUser(isUsuarioActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
                     Audit audit = new Audit();
                     audit.setCreationDate(getUsuarioSeleccionado().getAudit() != null ? getUsuarioSeleccionado().getAudit().getCreationDate() : null);
@@ -122,7 +120,6 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
                     getUsuarioSeleccionado().setNameUser(getUsuarioSeleccionado().getNameUser().toUpperCase());
                     getUsuarioSeleccionado().setLastName(getUsuarioSeleccionado().getLastName().toUpperCase());
                     getUsuarioSeleccionado().setEmailUser(getUsuarioSeleccionado().getEmailUser().toUpperCase());
-                    getUsuarioSeleccionado().setDocumentNumber(getUsuarioSeleccionado().getDocumentNumber());
                     getUsuarioSeleccionado().setDistri1(getAthenaCode().toUpperCase());
                     deletePermissionSegment();
                     setListPermissionSegmentToPersist(new ArrayList<DbPermissionSegments>());
@@ -178,7 +175,6 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
         setUsuarioSeleccionado(null);
         setDetailEdition(Boolean.FALSE);
         setPerfil(null);
-        setTipoDocumento(null);
         setUsuarioActivo(Boolean.FALSE);
         setVerDetalle(Boolean.TRUE);
     }

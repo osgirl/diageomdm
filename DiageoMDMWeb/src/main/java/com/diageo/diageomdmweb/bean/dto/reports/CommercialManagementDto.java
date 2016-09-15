@@ -21,8 +21,9 @@ public class CommercialManagementDto implements Serializable{
     private String channel;
     private String subChannel;
     private String segment;
-    private String subSegment;
+    private String subSegment;   
     private String source;
+    private String pos;
 
     public CommercialManagementDto() {
     }
@@ -165,6 +166,20 @@ public class CommercialManagementDto implements Serializable{
      */
     public void setSource(String source) {
         this.source = source;
+    }
+
+    /**
+     * @return the pos
+     */
+    public String getPos() {
+        return pos;
+    }
+
+    /**
+     * @param pos the pos to set
+     */
+    public void setPos(String pos) {
+        this.pos = pos;
     }
     
     

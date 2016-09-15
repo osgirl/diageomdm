@@ -48,12 +48,19 @@
                                 <h:outputLabel value="#{msg.out_kiernan}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                 <p:inputText value="#{outletCrearBean.kiernanId}"/>
                                 <h:outputLabel value="#{msg.chain_business_name}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
-                                <p:inputText value="#{outletCrearBean.businessName}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itBusinessName" value="#{outletCrearBean.businessName}" required="true" label="#{msg.chain_business_name}"/>
+                                    <p:message for="itBusinessName"/>
+                                </h:panelGroup>
                                 <h:outputLabel value="#{msg.out_nit}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
-                                <p:inputText value="#{outletCrearBean.nit}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itNit" value="#{outletCrearBean.nit}" required="true" label="#{msg.out_nit}"/>
+                                    <p:message for="itNit"/>
+                                </h:panelGroup>
                                 <h:outputLabel value="#{msg.out_verification_number}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                 <h:panelGroup>
-                                    <p:inputText id="itVerificationNumber" value="#{outletCrearBean.verificationNumber}" maxlength="1"/>
+                                    <p:inputText id="itVerificationNumber" value="#{outletCrearBean.verificationNumber}" maxlength="1" required="true"
+                                                 label="#{msg.out_verification_number}"/>
                                     <p:message for="itVerificationNumber"/>
                                 </h:panelGroup>
                                 <h:outputLabel value="#{msg.out_nombre}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
@@ -89,7 +96,7 @@
                                     <p:ajax update="formOutlet:pgSegment" process="@this" listener="#{outletCrearBean.listenerChannel()}"/>
                                 </p:selectOneMenu>
 
-                                <h:outputLabel value="#{msg.sub_subcanal}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
+                                <h:outputLabel value="#{msg.sub_subcanal}" style="width: 100%;padding: 10px" styleClass="tamanio_letra_labels"/>
                                 <p:selectOneMenu value="#{outletCrearBean.subChannelSelected}" converter="subChannelConverter" style="width: 90%">
                                     <f:selectItems value="#{outletCrearBean.listSubChannel}" var="subcha" itemLabel="#{subcha.nameSubChannel}"/>
                                     <p:ajax update="formOutlet:pgSegment" process="@this" listener="#{outletCrearBean.listenerSubChannel()}"/>
@@ -101,7 +108,7 @@
                                     <p:ajax update="formOutlet:pgSegment" process="@this" listener="#{outletCrearBean.listenerSegment()}"/>
                                 </p:selectOneMenu>
 
-                                <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
+                                <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;padding: 10px" styleClass="tamanio_letra_labels"/>
                                 <p:selectOneMenu value="#{outletCrearBean.subSegmentSelected}" converter="subSegmentoConverter" style="width: 90%">
                                     <f:selectItems value="#{outletCrearBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
                                     <p:ajax update="formOutlet:pgSegment" process="@this" listener="#{outletCrearBean.listenerSubSegment()}"/>
@@ -113,14 +120,16 @@
                                     <f:selectItems value="#{outletCrearBean.listPotential}" var="pot" itemLabel="#{pot.namePotential}"/>
                                 </p:selectOneMenu>
 
-                                <h:outputLabel value="#{msg.out_ocs_1}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                <p:selectOneMenu converter="ocsConverter" value="#{outletCrearBean.ocsPrimary}" style="width: 90%">
+                                <h:outputLabel value="#{msg.out_ocs_1}" style="width: 100%;padding: 10px" styleClass="tamanio_letra_labels"/>
+                                <p:selectOneMenu converter="ocsConverter" value="#{outletCrearBean.ocsPrimary}" style="width: 90%"
+                                                 disabled="#{outletCrearBean.disabledOcs}">
                                     <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
                                     <f:selectItems value="#{outletCrearBean.listOcs}" var="ocs" itemLabel="#{ocs.nameOcs}"/>
                                 </p:selectOneMenu>                               
 
                                 <h:outputLabel value="#{msg.out_ocs_2}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                <p:selectOneMenu converter="ocsConverter" value="#{outletCrearBean.ocsSecondary}" style="width: 90%">
+                                <p:selectOneMenu converter="ocsConverter" value="#{outletCrearBean.ocsSecondary}" style="width: 90%"
+                                                 disabled="#{outletCrearBean.disabledOcs}">
                                     <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
                                     <f:selectItems value="#{outletCrearBean.listOcs}" var="ocs" itemLabel="#{ocs.nameOcs}"/>
                                 </p:selectOneMenu>
@@ -156,6 +165,36 @@
                         </p:dataTable>                        
                     </p:fieldset>
                     <br/>
+                    <p:fieldset legend="#{msg.customer}" style="width: 95%">
+                        <h:panelGroup id="pgCustomer">
+                            <h:panelGrid columns="3" style="width: 95%">
+                                <h:outputLabel value="#{msg.customer}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:autoComplete id="acCustomer" minQueryLength="4" value="#{outletCrearBean.customer}" label="#{msg.customer}"
+                                                var="cus" itemLabel="#{cus.customerName}" itemValue="#{cus}" forceSelection="true"
+                                                completeMethod="#{outletCrearBean.completeCustomer}" effect="fade" converter="customerConverter"
+                                                style="width: 90% !important;"/>
+                                <p:commandButton value="#{msg.btn_add}" process="@parent" update="formOutlet:pgCustomer formOutlet:acCustomer"     
+                                                 actionListener="#{outletCrearBean.addCustomer()}"
+                                                 styleClass="button" style="width: 80%"/>
+                            </h:panelGrid>
+                            <br/>
+                            <p:dataTable id="dtCustomer" styleClass="paginated" paginatorAlwaysVisible="false" paginator="true" rows="5"
+                                         value="#{outletCrearBean.listCustomers}" var="custo">
+                                <p:column headerText="#{msg.customer}">
+                                    <h:outputLabel value="#{custo.customerName}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.out_kiernan}">
+                                    <h:outputLabel value="#{custo.kiernanId}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:commandLink actionListener="#{outletCrearBean.deleteCustomer(custo)}" update="formOutlet:dtCustomer" process="@this">
+                                        <p:graphicImage value="/resources/images/iconos/equis.png" width="12px"/>
+                                    </p:commandLink>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGroup>
+                    </p:fieldset>
+                    <br/>
                     <p:fieldset legend="#{msg.out_ubicacion}" style="width: 95%">
                         <h:panelGroup id="pgLocation">
                             <h:panelGrid columns="4" style="width: 95%">
@@ -170,9 +209,16 @@
                                     <f:selectItems value="#{outletCrearBean.departamentSelected.dbTownsList}" var="mpioout" itemLabel="#{mpioout.nameTown}"/>
                                 </p:selectOneMenu>
                                 <h:outputLabel value="#{msg.out_barrio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:inputText value="#{outletCrearBean.neighborhood}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itNeighborhood" value="#{outletCrearBean.neighborhood}" label="#{msg.out_barrio}"
+                                                 required="true"/>
+                                    <p:message for="itNeighborhood"/>
+                                </h:panelGroup>
                                 <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                <p:inputText value="#{outletCrearBean.address}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itAddress" value="#{outletCrearBean.address}" label="#{msg.out_direccion}" required="true"/>
+                                    <p:message for="itAddress"/>
+                                </h:panelGroup>
                                 <h:outputLabel value="#{msg.loc_latitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                 <h:panelGroup>
                                     <p:inputText id="itLatitude" value="#{outletCrearBean.latitude}" converter="javax.faces.Double"/>
