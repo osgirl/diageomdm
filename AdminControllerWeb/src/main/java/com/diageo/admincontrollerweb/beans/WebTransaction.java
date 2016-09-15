@@ -58,7 +58,7 @@ public class WebTransaction<T> {
         return query.getResultList();
     }
 
-    public List<T> findAll(Class type) {
+    public List<T> findAll(Class type) {        
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<T> criteria = cb.createQuery(type);
         criteria.from(type);

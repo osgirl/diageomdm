@@ -30,4 +30,8 @@ public interface UserBeanLocal {
 
     public DwUsers createUser(DwUsers user, List<DbPermissionSegments> per) throws ControllerWebException;
 
+    public List<DwUsers> usersByProfile(Integer profileId);
+
+    public DwUsers findById(Integer id);
+
 }

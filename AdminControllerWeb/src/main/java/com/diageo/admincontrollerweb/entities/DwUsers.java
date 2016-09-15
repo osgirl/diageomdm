@@ -37,11 +37,13 @@ import javax.validation.constraints.Size;
 @Table(name = "DW_USERS", schema = "DIAGEO_WEB")
 @NamedQueries({
     @NamedQuery(name = DwUsers.FIND_MAIL, query = "SELECT u FROM DwUsers u WHERE u.emailUser = ?1"),
+    @NamedQuery(name = DwUsers.FIND_BY_PROFILE, query = "SELECT u FROM DwUsers u WHERE u.profileId.profileId     = ?1"),
     @NamedQuery(name = DwUsers.FIND_MAIL_PASS, query = "SELECT u FROM DwUsers u WHERE u.passwordUser = ?1 AND u.emailUser = ?2")})
 public class DwUsers implements Serializable {
 
     public static final String FIND_MAIL_PASS = "DwUsers.findByMailPass";
     public static final String FIND_MAIL = "DwUsers.findByMail";
+    public static final String FIND_BY_PROFILE = "DwUsers.findByProfile";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(generator = "SQ_DW_USERS", strategy = GenerationType.SEQUENCE)
@@ -52,10 +54,7 @@ public class DwUsers implements Serializable {
     private Integer distributorId;
     @Size(max = 120)
     @Column(name = "EMAIL_USER")
-    private String emailUser;
-    @Size(max = 45)
-    @Column(name = "DOCUMENT_NUMBER")
-    private String documentNumber;
+    private String emailUser;    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
@@ -90,10 +89,7 @@ public class DwUsers implements Serializable {
     private List<DwModules> dwModulesList;
     @JoinColumn(name = "PROFILE_ID", referencedColumnName = "PROFILE_ID")
     @ManyToOne(optional = false)
-    private DwProfiles profileId;
-    @JoinColumn(name = "DOCUMENT_TYPE_ID", referencedColumnName = "DOCUMENT_TYPE_ID")
-    @ManyToOne(optional = false)
-    private DwDocumentTypes documentTypeId;
+    private DwProfiles profileId;    
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private List<DwPasscontainers> dwPasscontainersList;
     @Column(name = "DISTRI_1")
@@ -154,22 +150,6 @@ public class DwUsers implements Serializable {
 
     public void setPasswordUser(String passwordUser) {
         this.passwordUser = passwordUser;
-    }
-
-    public String getDocumentNumber() {
-        return documentNumber;
-    }
-
-    public void setDocumentNumber(String documentNumber) {
-        this.documentNumber = documentNumber;
-    }
-
-    public DwDocumentTypes getDocumentTypeId() {
-        return documentTypeId;
-    }
-
-    public void setDocumentTypeId(DwDocumentTypes documentTypeId) {
-        this.documentTypeId = documentTypeId;
     }
 
     public List<DwModules> getDwModulesList() {

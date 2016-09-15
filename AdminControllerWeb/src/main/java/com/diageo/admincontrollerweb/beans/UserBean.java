@@ -10,6 +10,7 @@ import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
@@ -51,7 +52,7 @@ public class UserBean extends WebTransaction<DwUsers> implements UserBeanLocal {
                 for (DbPermissionSegments perTemp : per) {
                     perTemp.setUserId(user.getUserId());
                 }
-                permissionsegmentBeanLocal.createPermissionSegmentList(per);                
+                permissionsegmentBeanLocal.createPermissionSegmentList(per);
             }
         } catch (Exception e) {
             LOG.log(Level.SEVERE, e.getMessage());
@@ -80,7 +81,7 @@ public class UserBean extends WebTransaction<DwUsers> implements UserBeanLocal {
 
     @Override
     public DwUsers findEmail(String correo) throws ControllerWebException {
-        if(correo==null || correo.isEmpty()){
+        if (correo == null || correo.isEmpty()) {
             return null;
         }
         List<DwUsers> listaUsuario = super.findByNamedQuery(DwUsers.class, DwUsers.FIND_MAIL, correo.toUpperCase());
@@ -135,5 +136,19 @@ public class UserBean extends WebTransaction<DwUsers> implements UserBeanLocal {
             LOG.log(Level.SEVERE, ex.getMessage());
         }
         return null;
+    }
+
+    @Override
+    public List<DwUsers> usersByProfile(Integer profileId) {
+        List<DwUsers> list = super.findByNamedQuery(DwUsers.class, DwUsers.FIND_BY_PROFILE, profileId);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
+    
+    @Override
+    public DwUsers findById(Integer id){
+        return (DwUsers)super.findById(DwUsers.class, id);
     }
 }

@@ -43,9 +43,7 @@ public class DwDocumentTypes implements Serializable {
     private String nameDocumentType;
     @Size(max = 45)
     @Column(name = "DESCRIPTION_DOC_TYPE")
-    private String descriptionDocType;
-    @OneToMany(mappedBy = "documentTypeId")
-    private List<DwUsers> dwUsersList;
+    private String descriptionDocType;    
 
     public DwDocumentTypes() {
     }
@@ -76,14 +74,6 @@ public class DwDocumentTypes implements Serializable {
 
     public void setDescriptionDocType(String descriptionDocType) {
         this.descriptionDocType = descriptionDocType;
-    }
-
-    public List<DwUsers> getDwUsersList() {
-        return dwUsersList;
-    }
-
-    public void setDwUsersList(List<DwUsers> dwUsersList) {
-        this.dwUsersList = dwUsersList;
     }
 
     @Override
