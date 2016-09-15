@@ -7,7 +7,6 @@ package com.diageo.diageonegocio.beans;
 
 import java.util.List;
 import java.util.Objects;
-import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -21,7 +20,6 @@ import javax.persistence.criteria.CriteriaQuery;
  */
 public class BusinessTransaction<T> {
 
-    private static final long serialVersionUID = 41L;
     @PersistenceContext(unitName = "DiageoNegocioUP")
     private EntityManager em;
 

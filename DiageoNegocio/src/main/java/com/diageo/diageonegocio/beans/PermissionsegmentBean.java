@@ -62,4 +62,14 @@ public class PermissionsegmentBean extends BusinessTransaction<DbPermissionSegme
     public void remove(DbPermissionSegments ps) {
         super.delete(ps);
     }
+
+    @Override
+    public List<Integer> findByUser3Party(List<Integer> users, List<Integer> db3Party) {
+        List<Integer> list = super.getEntityManager().createNamedQuery(DbPermissionSegments.FIND_BY_USERS_3PARTY_LIST).
+                setParameter(1, users).setParameter(2, db3Party).getResultList();
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
 }

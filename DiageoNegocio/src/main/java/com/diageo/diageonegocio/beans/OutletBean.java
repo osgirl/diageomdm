@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Set;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.persistence.Query;
 
 /**
  *
@@ -133,5 +134,14 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
             return new ArrayList<>();
         }
         return list;
+    }
+    
+    @Override
+    public void deleteCustomerOutlet(Integer customerId,Integer outletId){
+        String sql="DELETE FROM DIAGEO_BUSINESS.DB_CUSTOMERS_OUTLETS WHERE CUSTOMER_ID=? AND OUTLET_ID=?";
+        Query delete=super.getEntityManager().createNativeQuery(sql);
+        delete.setParameter(1, customerId);
+        delete.setParameter(2, outletId);
+        delete.executeUpdate();
     }
 }

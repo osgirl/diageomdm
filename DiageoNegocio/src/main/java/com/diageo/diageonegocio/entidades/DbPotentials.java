@@ -60,6 +60,8 @@ public class DbPotentials implements Serializable {
     private List<DbChains> dbChainsList;
     @Column(name = "DISTRI_1")
     private String distri_1;
+    @Column(name = "LOW_POTENTIAL")
+    private String lowPotential;
     @Embedded
     private Audit audit;
 
@@ -140,6 +142,14 @@ public class DbPotentials implements Serializable {
 
     public void setAudit(Audit audit) {
         this.audit = audit;
+    }
+
+    public String getLowPotential() {
+        return lowPotential;
+    }
+
+    public void setLowPotential(String lowPotential) {
+        this.lowPotential = lowPotential;
     }
 
     @Override

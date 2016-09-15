@@ -32,11 +32,14 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = DbPermissionSegments.FIND_BY_USER, query = "SELECT p FROM DbPermissionSegments p WHERE p.userId = ?1"),
     @NamedQuery(name = DbPermissionSegments.FIND_BY_USER_DISTRIBUTOR, query = "SELECT p FROM DbPermissionSegments p WHERE p.userId = ?1 AND "
-            + "p.db3partyId.db3partyId = ?2")
+            + "p.db3partyId.db3partyId = ?2"),
+    @NamedQuery(name = DbPermissionSegments.FIND_BY_USERS_3PARTY_LIST, 
+            query = "SELECT DISTINCT  p.userId FROM DbPermissionSegments p WHERE p.userId IN ?1 AND p.db3partyId.db3partyId IN ?2")
 })
 public class DbPermissionSegments implements Serializable {
 
     public static final String FIND_BY_USER = "DbPermissionSegments.findByUser";
+    public static final String FIND_BY_USERS_3PARTY_LIST = "DbPermissionSegments.findByUsers3pary";
     public static final String FIND_BY_USER_DISTRIBUTOR = "DbPermissionSegments.findByUserDistributor";
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation

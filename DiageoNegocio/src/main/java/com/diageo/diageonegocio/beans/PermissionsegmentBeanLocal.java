@@ -26,5 +26,7 @@ public interface PermissionsegmentBeanLocal {
     public Set<DbPermissionSegments> findByUserDistributor(Integer idUser, Integer distributor);
 
     public void remove(DbPermissionSegments ps);
+
+    public List<Integer> findByUser3Party(List<Integer> users, List<Integer> db3Party);
     
 }
