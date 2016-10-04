@@ -53,7 +53,8 @@
                                     </h:panelGroup>
                                     <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
                                     <h:panelGroup>
-                                        <p:inputText id="itAthenaCode" value="#{segementoConsultarBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"/>
+                                        <p:inputText id="itAthenaCode" value="#{segementoConsultarBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"
+                                                     readonly="true"/>
                                         <p:message for="itAthenaCode"/>
                                     </h:panelGroup>
                                     <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>

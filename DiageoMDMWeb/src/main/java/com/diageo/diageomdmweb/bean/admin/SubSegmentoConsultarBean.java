@@ -27,10 +27,10 @@ import javax.faces.view.ViewScoped;
 @Named(value = "subSegmentoConsultarBean")
 @ViewScoped
 public class SubSegmentoConsultarBean extends SegementoConsultarBean implements Serializable {
-
+    
     private static final Logger LOG = Logger.getLogger(SubSegmentoConsultarBean.class.getName());
     @EJB
-    private SubSegmentoBeanLocal subSegmentoBeanLocal;
+    protected SubSegmentoBeanLocal subSegmentoBeanLocal;
     private List<DbSubSegments> listaSubSegmentos;
     private DbSegments segmento;
     private DbSubSegments subSegmentoSeleccionado;

@@ -127,7 +127,7 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
     public void init() {
         setListChannel(channelBeanLocal.findAllChannel());
         setListTypePhone(typePhoneBeanLocal.findAll());
-        setList3Party(db3PartyBeanLocal.searchAllDistributor());
+        setList3Party(db3PartyBeanLocal.searchDistributorByIsChain(StateEnum.ACTIVE.getState(), StateEnum.ACTIVE.getState()));
         initFields();
     }
 

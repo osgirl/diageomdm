@@ -71,7 +71,7 @@ public class DiageoApplicationBean extends DiageoRootBean implements Serializabl
     @PostConstruct
     public void init() {
         setListaTipoDocumento((List<DwDocumentTypes>) tipoDocBean.findAll());
-        setListaPerfiles((List<DwProfiles>) perfilBean.findBySystem());
+        //setListaPerfiles((List<DwProfiles>) perfilBean.findBySystem());
         setListaDepartamento(departamentoBeanLocal.findAllDepartament());
         setPathMailTemplate(parameterBeanLocal.findByKey(ParameterKeyEnum.PATH_MAIL_TEMPLATE.name()).get(0).getParameterValue());
     }

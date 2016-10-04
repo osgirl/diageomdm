@@ -21,6 +21,8 @@ import javax.faces.view.ViewScoped;
 @ViewScoped
 public class RegionalCreateBean extends RegionalSearchBean {
 
+    private static final String ATHENA_CODE = "GER";
+
     /**
      * Creates a new instance of RegionalCreateBean
      */
@@ -36,12 +38,19 @@ public class RegionalCreateBean extends RegionalSearchBean {
     public void updateRegional() {
         try {
             getRegionalSelected().setNameRegional(getRegionalName().toUpperCase());
-            getRegionalSelected().setDistri_1(getAthenaCode().toUpperCase());
             Audit audit = new Audit();
             audit.setCreationDate(super.getCurrentDate());
             audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
             getRegionalSelected().setAudit(audit);
             regionalBeanLocal.createRegional(getRegionalSelected());
+            if (getRegionalSelected().getDb3partyRegionalId() != null) {
+                if (getRegionalSelected().getDb3partyRegionalId() < 10) {
+                    getRegionalSelected().setDistri_1(ATHENA_CODE + "0" + getRegionalSelected().getDb3partyRegionalId());
+                } else {
+                    getRegionalSelected().setDistri_1(ATHENA_CODE + getRegionalSelected().getDb3partyRegionalId());
+                }
+                regionalBeanLocal.updateRegional(getRegionalSelected());
+            }
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
             cleanUpFields();
         } catch (DiageoBusinessException ex) {

@@ -10,9 +10,10 @@
         <ui:composition template="./../WEB-INF/templates/diageoWebTemplate.xhtml">
 
             <ui:define name="content">
-                <h:form>
+                <h:form enctype="multipart/form-data">
                     <p:fileUpload mode="advanced" dragDropSupport="false"
-                                  sizeLimit="100000" fileLimit="3" allowTypes="/(\.|\/)(gif|jpe?g|png|csv|xls)$/"/>
+                                  sizeLimit="20000000" fileLimit="3" allowTypes="/(\.|\/)(csv)$/"
+                                  fileUploadListener="#{massiveLoadBean.load}" />
                 </h:form>
             </ui:define>
 

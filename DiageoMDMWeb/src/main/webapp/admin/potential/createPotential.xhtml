@@ -40,12 +40,7 @@
                                     <h:panelGroup>
                                         <p:inputText id="itName" value="#{potentialCreateBean.name}" required="true" label="#{msg.out_potencial}" style="width: 93%"/>
                                         <p:message for="itName"/>
-                                    </h:panelGroup>           
-                                    <h:outputLabel value="#{msg.athena_code}"/>
-                                    <h:panelGroup>
-                                        <p:inputText id="itAthenaCode" value="#{potentialCreateBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 93%"/>
-                                        <p:message for="itAthenaCode"/>
-                                    </h:panelGroup>           
+                                    </h:panelGroup>
                                 </h:panelGrid>
                                 <br/><br/>
                                 <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{potentialCreateBean.createPotential()}" styleClass="button"/>

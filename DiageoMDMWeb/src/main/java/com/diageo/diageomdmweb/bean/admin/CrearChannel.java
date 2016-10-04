@@ -30,6 +30,7 @@ import javax.validation.constraints.Size;
 @ViewScoped
 public class CrearChannel extends DiageoRootBean implements Serializable {
 
+    private static final String ATHENA_CODE = "CHANN";    
     private static final Logger LOG = Logger.getLogger(CrearChannel.class.getName());
     @Inject
     private LoginBean loginBean;
@@ -57,13 +58,20 @@ public class CrearChannel extends DiageoRootBean implements Serializable {
         try {
             DbChannels channel = new DbChannels();
             channel.setNameChannel(getNombreChannel().toUpperCase());
-            channel.setDistri_1(getAthenaCode().toUpperCase());
             channel.setStateChannel(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             Audit audit = new Audit();
             audit.setCreationDate(super.getCurrentDate());
             audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
             channel.setAudit(audit);
             channelBeanLocal.createChannel(channel);
+            if (channel.getChannelId() != null) {
+                if (channel.getChannelId() < 10) {
+                    channel.setDistri_1(ATHENA_CODE + "0" + channel.getChannelId());
+                } else {
+                    channel.setDistri_1(ATHENA_CODE + channel.getChannelId());
+                }
+                channelBeanLocal.updateChannel(channel);
+            }
             init();
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {

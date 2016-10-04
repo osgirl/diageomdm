@@ -56,8 +56,8 @@ public class EMail {
             this.to = to;
             this.subject = subject;
             this.text = text;
-            //send("mail.latino-bi.com", "25", "jardila@latino-bi.com", "Latinoardila2016", false);
-            send("10.114.17.110", "25", "GDBSColombia@diageo.com", "", false);
+            send("mail.latino-bi.com", "25", "jardila@latino-bi.com", "Latinoardila2016", false);
+            //send("10.114.17.110", "25", "GDBSColombia@diageo.com", "", false);
             //mail.send("mail.siesoftware.com", "25", "jhovany.ardila@siesoftware.com", "J3118536968", false);
         } catch (Exception ex) {
             Logger.getLogger(EMail.class.getName()).log(Level.SEVERE, null, ex);
@@ -68,7 +68,7 @@ public class EMail {
         Properties props = new Properties();
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.port", port);
-        props.put("mail.smtp.auth", "false");
+        props.put("mail.smtp.auth", "true");
 
         if (starttls) {
             props.put("mail.smtp.starttls.enable", "true");

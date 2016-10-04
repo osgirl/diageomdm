@@ -15,6 +15,7 @@ import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.DbChains;
 import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbOutlets;
+import com.diageo.diageonegocio.entidades.DbPhones;
 import com.diageo.diageonegocio.entidades.DbSegments;
 import com.diageo.diageonegocio.entidades.DbSubChannels;
 import com.diageo.diageonegocio.entidades.DbSubSegments;
@@ -37,7 +38,6 @@ import javax.servlet.http.HttpSession;
 @ViewScoped
 public class ReportCommercialManagement extends DiageoRootBean implements Serializable {
 
-    
     @EJB
     private ChainBeanLocal chainBeanLocal;
     @EJB
@@ -130,6 +130,18 @@ public class ReportCommercialManagement extends DiageoRootBean implements Serial
                 dto.setSubSegment(outlet.getSubSegmentId().getNameSubsegment());
                 dto.setSource(OUTLET);
                 dto.setPos(outlet.getNumberPdv());
+                dto.setOutletName(outlet.getOutletName());
+                dto.setPotential(outlet.getPotentialId() != null ? outlet.getPotentialId().getNamePotential() : "");
+                dto.setDepartament(outlet.getTownId().getDepartamentId().getNameDepartament());
+                dto.setCity(outlet.getTownId().getNameTown());
+                dto.setAddress(outlet.getAddress());
+                if (outlet.getDbPhonesList() != null) {
+                    String phones = "";
+                    for (DbPhones pho : outlet.getDbPhonesList()) {
+                        phones += pho.getNumberPhone() + " ";
+                    }
+                    dto.setPhone(phones.trim());
+                }
                 outletTemp.add(dto);
             }
         }
@@ -153,6 +165,18 @@ public class ReportCommercialManagement extends DiageoRootBean implements Serial
                 dto.setSubSegment(chain.getSubSegmentId().getNameSubsegment());
                 dto.setSource(CHAIN);
                 dto.setPos(chain.getCodeEan());
+                dto.setOutletName(chain.getNameChain());
+                dto.setPotential(chain.getPotentialId() != null ? chain.getPotentialId().getNamePotential() : "");
+                dto.setDepartament(chain.getDbTownId().getDepartamentId().getNameDepartament());
+                dto.setCity(chain.getDbTownId().getNameTown());
+                dto.setAddress(chain.getAddress());
+                if (chain.getDbPhonesList() != null) {
+                    String phones = "";
+                    for (DbPhones pho : chain.getDbPhonesList()) {
+                        phones += pho.getNumberPhone() + " ";
+                    }
+                    dto.setPhone(phones.trim());
+                }
                 chainTemp.add(dto);
             }
         }

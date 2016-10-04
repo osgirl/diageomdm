@@ -24,17 +24,17 @@
                             </h:panelGrid>
                             <br/>
                             <h:commandLink>
-                                <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
+                                <p:graphicImage name="/images/iconos/xls.png" width="40px"/>
                                 <p:dataExporter type="xls" target="dtUser" fileName="Report" pageOnly="false" />
                             </h:commandLink>
 
                             <h:commandLink>
-                                <p:graphicImage name="/images/iconos/pdf.png" width="5%"/>
+                                <p:graphicImage name="/images/iconos/pdf.png" width="40px"/>
                                 <p:dataExporter type="pdf" target="dtUser" fileName="Report" pageOnly="false" />
                             </h:commandLink>
 
                             <h:commandLink>
-                                <p:graphicImage name="/images/iconos/csv.png" width="5%"/>
+                                <p:graphicImage name="/images/iconos/csv.png" width="40px"/>
                                 <p:dataExporter type="csv" target="dtUser" fileName="Report" pageOnly="false" />
                             </h:commandLink>
                             <p:dataTable id="dtUser" value="#{reportUserBean.profile.dwUsersList}" var="user" paginatorAlwaysVisible="false" rows="15"

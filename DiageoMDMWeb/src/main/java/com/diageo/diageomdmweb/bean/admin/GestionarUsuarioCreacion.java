@@ -21,6 +21,7 @@ import javax.faces.view.ViewScoped;
 import javax.validation.constraints.Pattern;
 import com.diageo.admincontrollerweb.beans.UserBeanLocal;
 import com.diageo.admincontrollerweb.beans.ModuleBeanLocal;
+import com.diageo.admincontrollerweb.beans.ProfileBeanLocal;
 import com.diageo.admincontrollerweb.entities.Audit;
 import com.diageo.admincontrollerweb.entities.DwModules;
 import com.diageo.admincontrollerweb.entities.DwUsers;
@@ -97,6 +98,8 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     protected SegmentBeanLocal segmentoBeanLocal;
     @EJB
     protected SubSegmentoBeanLocal subSegmentoBeanLocal;
+    @EJB
+    private ProfileBeanLocal perfilBean;
 
     @Inject
     protected LoginBean loginBean;
@@ -173,6 +176,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     private DbPotentials potentialManual;
     private Set<DbPermissionSegments> listDistributorPermissionRemove;
     private String athenaCode;
+    private List<DwProfiles> listaPerfiles;
 
     /**
      * Creates a new instance of GestionarUsuarioCreacion
@@ -198,6 +202,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         setChannelCheck(Boolean.TRUE);
         setDetailEdition(Boolean.FALSE);
         initFields();
+        setListaPerfiles((List<DwProfiles>) perfilBean.findBySystem());
     }
 
     private void initFields() {
@@ -935,6 +940,14 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
      */
     public void setAthenaCode(String athenaCode) {
         this.athenaCode = athenaCode;
+    }
+
+    public List<DwProfiles> getListaPerfiles() {
+        return listaPerfiles;
+    }
+
+    public void setListaPerfiles(List<DwProfiles> listaPerfiles) {
+        this.listaPerfiles = listaPerfiles;
     }
 
 }

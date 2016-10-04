@@ -22,7 +22,7 @@
                                                  label="#{msg.m_distri_nombre}" style="width: 90%"/>
                                     <p:message for="itNombre"/>
                                 </h:panelGroup>
-                              
+
                                 <h:outputLabel value="#{msg.regional}"/>
                                 <p:selectOneMenu id="somRegional" value="#{distributorCreate.db3partyRegionalSelected}" converter="regionalConverter" label="#{msg.regional}"
                                                  style="width: 84%">
@@ -54,6 +54,18 @@
                                         <f:selectItems value="#{distributorCreate.listDistributorFather}" var="reg" itemLabel="#{reg.name3party}"/>
                                     </p:selectOneMenu>
                                 </h:panelGroup>
+
+                                <h:outputLabel value="#{msg.client_type}"/>
+                                <p:selectOneRadio value="#{distributorCreate.isChain}">
+                                    <f:selectItem itemLabel="#{msg.usu_chain}" itemValue="1"/>
+                                    <f:selectItem itemLabel="#{msg.m_outlet}" itemValue="0" />
+                                </p:selectOneRadio>
+
+                                <h:outputLabel value="#{msg.status}"/>
+                                <p:selectOneRadio value="#{distributorCreate.status}">
+                                    <f:selectItem itemLabel="#{msg.active}" itemValue="1"/>
+                                    <f:selectItem itemLabel="#{msg.inactive}" itemValue="0" />
+                                </p:selectOneRadio>
                             </h:panelGrid>
                             <br/>
                             <br/>

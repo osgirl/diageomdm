@@ -7,7 +7,7 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <h:head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />        
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <h:outputStylesheet library="css" name="template.css"/>
         <title>#{msg.tittle_app}</title>
     </h:head>
@@ -33,16 +33,16 @@
                         <p:breadCrumb model="#{loginBean.migaPan}"/>
                     </h:form>
                     <ui:include src="menu.xhtml"/>
-                </div>        
+                </div>
                 <div class="barra_lateral_izquierda" style="background: #D9D9D9"/>
-                <div class="barra_lateral_derecha" style="background: #D9D9D9"/>            
+                <div class="barra_lateral_derecha" style="background: #D9D9D9"/>
                 <div class="body_content">
                     <div class="capa_div_content">
-                        <ui:insert name="content"></ui:insert>                         
+                        <ui:insert name="content"></ui:insert>
                     </div>
                 </div>
                 <ui:include src="cambiarIdioma.xhtml"/>
-            </f:view>        
-        </div>       
+            </f:view>
+        </div>
     </h:body>
 </html>

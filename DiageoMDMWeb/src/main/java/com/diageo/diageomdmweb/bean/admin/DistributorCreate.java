@@ -10,6 +10,7 @@ import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.Db3partyRegional;
 import com.diageo.diageonegocio.enums.FatherDistributorEnum;
+import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
 import java.util.logging.Level;
@@ -29,6 +30,8 @@ public class DistributorCreate extends DistributorSearch implements Serializable
      * Creates a new instance of DistributorCreate
      */
     public DistributorCreate() {
+        setIsChain(StateDiageo.ACTIVO.getId());
+        setStatus(StateDiageo.ACTIVO.getId());
     }
 
     private void cleanUpFields() {
@@ -45,6 +48,8 @@ public class DistributorCreate extends DistributorSearch implements Serializable
             getSelectedDistributor().setDistri1(getAthenaCode().toUpperCase());
             getSelectedDistributor().setDb3partyRegionalId(getDb3partyRegionalSelected());
             getSelectedDistributor().setIsFather(isIsFather() ? FatherDistributorEnum.FATHER.getIsPadre() : FatherDistributorEnum.NOT_FATHER.getIsPadre());
+            getSelectedDistributor().setIsChain(getIsChain());
+            getSelectedDistributor().setStatus(getStatus());
             Audit audit = new Audit();
             audit.setCreationDate(super.getCurrentDate());
             audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());

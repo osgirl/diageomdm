@@ -53,6 +53,8 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
     private boolean seeDetail;
     private boolean isFather;
     private boolean father;
+    private String isChain;
+    private String status;
 
     /**
      * Creates a new instance of DistributorSearch
@@ -62,7 +64,7 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
 
     @PostConstruct
     public void init() {
-        setListDistributor(distributorBeanLocal.searchAllDistributor());
+        setListDistributor(distributorBeanLocal.searchAll());
         setListDistributorFather(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsPadre()));
         setSeeDetail(Boolean.TRUE);
         setSelectedDistributor(new Db3party());
@@ -76,6 +78,8 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
         setIsFather(distri.getIsFather().equals(FatherDistributorEnum.FATHER.getIsPadre()));
         setFather(distri.getDb3partyIdFather() != null);
         setDb3partyRegionalSelected(distri.getDb3partyRegionalId());
+        setIsChain(distri.getIsChain());
+        setStatus(distri.getStatus());
         if (isFather()) {
             setPartyFatherSelected(distri.getDb3partyIdFather());
         }
@@ -92,11 +96,13 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
             getSelectedDistributor().setDistri1(getAthenaCode().toUpperCase());
             getSelectedDistributor().setDb3partyRegionalId(db3partyRegionalSelected);
             getSelectedDistributor().setIsFather(isFather ? FatherDistributorEnum.FATHER.getIsPadre() : FatherDistributorEnum.NOT_FATHER.getIsPadre());
+            getSelectedDistributor().setIsChain(getIsChain());
+            getSelectedDistributor().setStatus(getStatus());
             Audit audit = new Audit();
             audit.setModificationDate(super.getCurrentDate());
             audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
-            audit.setCreationUser(getSelectedDistributor().getAudit()!=null?getSelectedDistributor().getAudit().getCreationUser():null);
-            audit.setCreationDate(getSelectedDistributor().getAudit()!=null?getSelectedDistributor().getAudit().getCreationDate():null);
+            audit.setCreationUser(getSelectedDistributor().getAudit() != null ? getSelectedDistributor().getAudit().getCreationUser() : null);
+            audit.setCreationDate(getSelectedDistributor().getAudit() != null ? getSelectedDistributor().getAudit().getCreationDate() : null);
             getSelectedDistributor().setAudit(audit);
             if (father) {
                 getSelectedDistributor().setDb3partyIdFather(partyFatherSelected);
@@ -237,6 +243,22 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
 
     public LoginBean getLoginBean() {
         return loginBean;
+    }
+
+    public String getIsChain() {
+        return isChain;
+    }
+
+    public void setIsChain(String isChain) {
+        this.isChain = isChain;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

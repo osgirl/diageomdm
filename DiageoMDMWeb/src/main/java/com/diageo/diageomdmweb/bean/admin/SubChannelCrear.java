@@ -30,6 +30,7 @@ import javax.validation.constraints.Size;
 @ViewScoped
 public class SubChannelCrear extends DiageoRootBean implements Serializable {
 
+    private static final String ATHENA_CODE = "SUBCHANN";
     private static final Logger LOG = Logger.getLogger(SubChannelCrear.class.getName());
     @EJB
     private SubChannelBeanLocal subChannelBeanLocal;
@@ -60,19 +61,26 @@ public class SubChannelCrear extends DiageoRootBean implements Serializable {
         setAthenaCode("");
         if (getListaChannel() != null && !getListaChannel().isEmpty()) {
             setChannel(getListaChannel().get(0));
-        }else{
+        } else {
             setChannel(new DbChannels());
-        }        
+        }
     }
-    
-    public void guardarSubCanal(){
+
+    public void guardarSubCanal() {
         try {
-            DbSubChannels sc=new DbSubChannels();
+            DbSubChannels sc = new DbSubChannels();
             sc.setNameSubChannel(getNombreSubChannel().toUpperCase());
-            sc.setStateSubChannel(isEstado()?StateDiageo.ACTIVO.getId():StateDiageo.INACTIVO.getId());
-            sc.setDistri_1(getAthenaCode().toUpperCase());
+            sc.setStateSubChannel(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             sc.setChannelId(getChannel());
             subChannelBeanLocal.crearSubChannel(sc);
+            if (sc.getSubChannelId() != null) {
+                if (sc.getSubChannelId() < 10) {
+                    sc.setDistri_1(ATHENA_CODE + "0" + sc.getSubChannelId());
+                } else {
+                    sc.setDistri_1(ATHENA_CODE + sc.getSubChannelId());
+                }
+                subChannelBeanLocal.modificarSubChannel(sc);
+            }
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
             inicializarCampos();
         } catch (DiageoBusinessException ex) {

@@ -36,6 +36,7 @@ import javax.validation.constraints.Size;
 @ViewScoped
 public class SegmentoCrearBean extends DiageoRootBean implements Serializable {
 
+    private static final String ATHENA_CODE = "SEGMENT";
     private static final Logger LOG = Logger.getLogger(SegmentoCrearBean.class.getName());
     @Inject
     private LoginBean loginBean;
@@ -86,12 +87,19 @@ public class SegmentoCrearBean extends DiageoRootBean implements Serializable {
             seg.setNameSegment(getNombre().toUpperCase());
             seg.setStateSegment(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             seg.setSubChannelId(getSubCanal());
-            seg.setDistri_1(getAthenaCode().toUpperCase());
             Audit audit = new Audit();
             audit.setCreationDate(super.getCurrentDate());
             audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
             seg.setAudit(audit);
             segmentoBeanLocal.createSegment(seg);
+            if (seg.getSegmentId() != null) {
+                if (seg.getSegmentId() < 10) {
+                    seg.setDistri_1(ATHENA_CODE + "0" + seg.getSegmentId());
+                } else {
+                    seg.setDistri_1(ATHENA_CODE + seg.getSegmentId());
+                }
+                segmentoBeanLocal.updateSegment(seg);
+            }
             inicializarCampos();
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {

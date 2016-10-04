@@ -67,6 +67,18 @@
                                             <f:selectItems value="#{distributorSearch.listDistributorFather}" var="reg" itemLabel="#{reg.name3party}"/>
                                         </p:selectOneMenu>
                                     </h:panelGroup>
+
+                                    <h:outputLabel value="#{msg.client_type}"/>
+                                    <p:selectOneRadio value="#{distributorSearch.isChain}">
+                                        <f:selectItem itemLabel="#{msg.usu_chain}" itemValue="1"/>
+                                        <f:selectItem itemLabel="#{msg.m_outlet}" itemValue="0" />
+                                    </p:selectOneRadio>
+                                    
+                                    <h:outputLabel value="#{msg.status}"/>
+                                    <p:selectOneRadio value="#{distributorSearch.status}">
+                                        <f:selectItem itemLabel="#{msg.active}" itemValue="1"/>
+                                        <f:selectItem itemLabel="#{msg.inactive}" itemValue="0" />
+                                    </p:selectOneRadio>
                                 </h:panelGrid>
                                 <br/>
                                 <br/>

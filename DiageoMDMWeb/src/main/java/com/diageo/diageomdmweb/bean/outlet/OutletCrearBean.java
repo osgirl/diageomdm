@@ -138,7 +138,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     public void init() {
         setListChannel(channelBeanLocal.findAllChannel());
         setListTypePhone(typePhoneBeanLocal.findAll());
-        setList3PartyToDeploy(db3PartyBeanLocal.searchAllDistributor());
+        setList3PartyToDeploy(db3PartyBeanLocal.searchDistributorByIsChain(StateEnum.INACTIVE.getState(), StateEnum.ACTIVE.getState()));
         setListOcs(ocsBeanLocal.findAll());
         initFields();
     }
@@ -213,9 +213,9 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             outlet.setTypeOutlet(getTypeOutlet() != null ? getTypeOutlet().toUpperCase() : "");
             outlet.setVerificationNumber(getVerificationNumber());
             outlet.setWebsite(getWebsite() != null ? getWebsite().toUpperCase() : "");
-            outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
-            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
-            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+//            outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+//            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+//            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             outlet.setStatusOutlet(StateOutletChain.ACTIVE.getId());
             outlet.setStatusMDM(StatusSystemMDM.PENDING_TMC.name());
             DbCustomers custo = saveCustomer();

@@ -74,7 +74,7 @@
                                 </h:panelGroup>
                                 <h:outputLabel value="#{msg.usu_perfil}"/>                        
                                 <p:selectOneMenu style="width: 73%" label="#{msg.usu_perfil}" value="#{consultarUsuarioBean.perfil}" converter="perfilConverter">
-                                    <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemLabel="#{per.nameProfile}"/>
+                                    <f:selectItems value="#{consultarUsuarioBean.listaPerfiles}" var="per" itemLabel="#{per.nameProfile}"/>
                                     <p:ajax update="formDetalleUsuario:pgEditDetail" process="@this" listener="#{consultarUsuarioBean.listenerDetailEdition()}"/>
                                 </p:selectOneMenu>
                                 <h:outputLabel value="#{msg.athena_code}"/>

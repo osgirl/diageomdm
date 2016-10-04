@@ -7,6 +7,7 @@ package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.admincontrollerweb.entities.Audit;
 import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
+import com.diageo.admincontrollerweb.entities.DwModules;
 import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
@@ -110,6 +111,7 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
             if (!validarExisteciaCorreo()) {
                 try {
                     getUsuarioSeleccionado().setProfileId(getPerfil());
+                    getUsuarioSeleccionado().setDwModulesList(getPerfil().getDwModulesList());
                     getUsuarioSeleccionado().setStateUser(isUsuarioActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
                     Audit audit = new Audit();
                     audit.setCreationDate(getUsuarioSeleccionado().getAudit() != null ? getUsuarioSeleccionado().getAudit().getCreationDate() : null);
@@ -127,6 +129,11 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
                         getListPermissionSegmentToPersist().addAll(ps.getListPermissionSegment());
                     }
                     usuarioBean.updateUser(getUsuarioSeleccionado(), getListPermissionSegmentToPersist());
+                    moduloBean.deleteModuleUser(getUsuarioSeleccionado().getUserId());
+                    for (DwModules mod : getPerfil().getDwModulesList()) {
+                        mod.getDwUsersList().add(getUsuarioSeleccionado());
+                        moduloBean.createUserModule(mod);
+                    }
                     showInfoMessage(capturarValor("usu_mis_datos"));
                     findPermissionSegment(usuarioSeleccionado);
                 } catch (ControllerWebException ex) {

@@ -44,7 +44,7 @@
                                     <p:inputText id="itNombre" value="#{consultarSubChannel.nombreSubChannel}" required="true" label="#{msg.sub_can_nombre}" style="width: 70%"/>
 
                                     <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
-                                    <p:inputText id="itAthenaCode" value="#{consultarSubChannel.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"/>                             
+                                    <p:inputText id="itAthenaCode" value="#{consultarSubChannel.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%" readonly="true"/>                             
 
                                     <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
                                     <p:selectOneMenu value="#{consultarSubChannel.channel}" converter="channelConverter" style="width: 67%">

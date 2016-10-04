@@ -35,7 +35,7 @@
                                 </h:panelGroup>
                                 <h:outputLabel value="#{msg.usu_perfil}"/>                        
                                 <p:selectOneMenu style="width: 75%" label="#{msg.usu_perfil}" value="#{gestionarUsuarioCreacion.perfil}" converter="perfilConverter">
-                                    <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemLabel="#{per.nameProfile}"/>
+                                    <f:selectItems value="#{gestionarUsuarioCreacion.listaPerfiles}" var="per" itemLabel="#{per.nameProfile}"/>
                                     <p:ajax update="formCrearUsuario:pgEditDetail" process="@this" listener="#{gestionarUsuarioCreacion.listenerDetailEdition()}"/>
                                 </p:selectOneMenu>
                                 <h:outputLabel value="#{msg.athena_code}"/>

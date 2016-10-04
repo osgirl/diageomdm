@@ -11,8 +11,8 @@ import java.io.Serializable;
  *
  * @author EDUARDO
  */
-public class CommercialManagementDto implements Serializable{
-    
+public class CommercialManagementDto implements Serializable {
+
     private Integer outletCode;
     private String kiernan;
     private String athenaCode;
@@ -21,10 +21,16 @@ public class CommercialManagementDto implements Serializable{
     private String channel;
     private String subChannel;
     private String segment;
-    private String subSegment;   
+    private String subSegment;
     private String source;
     private String pos;
-
+    private String outletName;
+    private String potential;
+    private String departament;
+    private String city;
+    private String address;
+    private String phone;
+    
     public CommercialManagementDto() {
     }
 
@@ -181,7 +187,89 @@ public class CommercialManagementDto implements Serializable{
     public void setPos(String pos) {
         this.pos = pos;
     }
-    
-    
-    
+
+    /**
+     * @return the outletName
+     */
+    public String getOutletName() {
+        return outletName;
+    }
+
+    /**
+     * @param outletName the outletName to set
+     */
+    public void setOutletName(String outletName) {
+        this.outletName = outletName;
+    }
+
+    /**
+     * @return the potential
+     */
+    public String getPotential() {
+        return potential;
+    }
+
+    /**
+     * @param potential the potential to set
+     */
+    public void setPotential(String potential) {
+        this.potential = potential;
+    }
+
+    /**
+     * @return the departament
+     */
+    public String getDepartament() {
+        return departament;
+    }
+
+    /**
+     * @param departament the departament to set
+     */
+    public void setDepartament(String departament) {
+        this.departament = departament;
+    }
+
+    /**
+     * @return the city
+     */
+    public String getCity() {
+        return city;
+    }
+
+    /**
+     * @param city the city to set
+     */
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    /**
+     * @return the address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+    /**
+     * @param address the address to set
+     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    /**
+     * @return the phone
+     */
+    public String getPhone() {
+        return phone;
+    }
+
+    /**
+     * @param phone the phone to set
+     */
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
 }

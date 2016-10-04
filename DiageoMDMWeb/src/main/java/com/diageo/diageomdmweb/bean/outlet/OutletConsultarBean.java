@@ -14,6 +14,7 @@ import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import com.diageo.diageomdmweb.bean.LoginBean;
+import com.diageo.diageomdmweb.datamodel.DbOutletsLazyDataModel;
 import com.diageo.diageomdmweb.mail.EMail;
 import com.diageo.diageomdmweb.mail.templates.VelocityTemplate;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
@@ -40,9 +41,9 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
-import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.http.HttpSession;
 import org.primefaces.context.RequestContext;
 
@@ -62,7 +63,6 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     private UserBeanLocal userBeanLocal;
     @Inject
     private LoginBean loginBean;
-    private List<DbOutlets> listOutlets;
     private List<DbPermissionSegments> listPermi;
     private List<DbCustomers> listCustomerDelete;
     private boolean verDetalle;
@@ -75,6 +75,9 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     private boolean renderMassiveApproval;
     private boolean disabledFields;
     private String buttonNameCommit;
+    private DbOutletsLazyDataModel outletsLazyDataModel;
+    private DbSubSegments subSegmentDistributor;
+    private List<DbOutlets> listOutlets;
 
     /**
      * Creates a new instance of OutletConsultarBean
@@ -86,9 +89,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     @Override
     public void init() {
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
-                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
-                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())) {
-            setListOutlets(outletBeanLocal.listOutletNew("0"));
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
+            setOutletsLazyDataModel(new DbOutletsLazyDataModel(outletBeanLocal, getLoginBean().getUsuario().getProfileId().getProfileId()));
             setRenderMassiveApproval(Boolean.FALSE);
             setDisabledFields(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId()));
             setButtonNameCommit(capturarValor("btn_send"));
@@ -114,9 +116,11 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             for (DbPermissionSegments permi : getListPermi()) {
                 listDistributor.add(permi.getDb3partyId().getDb3partyId());
             }
+//            setOutletsLazyDataModel(new DbOutletsLazyDataModel(outletBeanLocal, getLoginBean().getUsuario().getProfileId().getProfileId(),
+//                    parametersQuerySegment, statusMDM, listDistributor, segmentoBeanLocal, subChannelBeanLocal, channelBeanLocal, listPermi));
             for (Integer id3party : listDistributor) {
                 Set<Integer> listSubSegment = new HashSet<>();
-                for (DbPermissionSegments permi : getListPermi()) {
+                for (DbPermissionSegments permi : listPermi) {
                     if (permi.getDb3partyId().getDb3partyId().equals(id3party)) {
                         if (permi.getSubSegmentCheck().equals(StateEnum.ACTIVE.getState())) {
                             listSubSegment.add(permi.getSubSegmentId());
@@ -172,8 +176,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                     List<DbOutlets> listOutTem = outletBeanLocal.findBy3PartyPermissionSegment(id3party, listSegmentQuery, statusMDM);
                     getListOutlets().addAll(listOutTem);
                 }
+                //setOutletsLazyDataModel(new DbOutletsLazyDataModel(listTemp, getLoginBean().getUsuario().getProfileId().getProfileId()));
             }
-            System.out.println("tamaño de lista de outlets: " + getListOutlets().size());
         }
         setVerDetalle(Boolean.TRUE);
         setListCustomerDelete(new ArrayList<DbCustomers>());
@@ -206,9 +210,9 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setPointSale(out.getNumberPdv());
         setTypeOutlet(out.getTypeOutlet());
         setWebsite(out.getWebsite());
-        setWine(out.getWine() != null ? out.getWine().equals(StateDiageo.ACTIVO.getId()) : false);
-        setBeer(out.getBeer() != null ? out.getBeer().equals(StateDiageo.ACTIVO.getId()) : false);
-        setSpirtis(out.getSpirtis() != null ? out.getSpirtis().equals(StateDiageo.ACTIVO.getId()) : false);
+//        setWine(out.getWine() != null ? out.getWine().equals(StateDiageo.ACTIVO.getId()) : false);
+//        setBeer(out.getBeer() != null ? out.getBeer().equals(StateDiageo.ACTIVO.getId()) : false);
+//        setSpirtis(out.getSpirtis() != null ? out.getSpirtis().equals(StateDiageo.ACTIVO.getId()) : false);
         setOcsPrimary(out.getOcsPrimary());
         setOcsSecondary(out.getOcsSecondary());
         setPotentialSelected(out.getPotentialId());
@@ -230,6 +234,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setTownSelected(out.getTownId());
         setPhonesDelete(new ArrayList<DbPhones>());
         setListCustomers(out.getDbCustomersList());
+        setSubSegmentDistributor(out.getDistributorSubSegmentId());
         setVerDetalle(Boolean.FALSE);
     }
 
@@ -270,9 +275,9 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             outlet.setTypeOutlet(getTypeOutlet() != null ? getTypeOutlet().toUpperCase() : "");
             outlet.setVerificationNumber(getVerificationNumber());
             outlet.setWebsite(getWebsite() != null ? getWebsite().toUpperCase() : "");
-            outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
-            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
-            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+//            outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+//            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
+//            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             outlet.setStatusOutlet(StateOutletChain.ACTIVE.getId());
             outlet.setDbCustomersList(getListCustomers());
             if (!getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
@@ -288,6 +293,9 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             deletCustomerChain();
             outletBeanLocal.updateOutlet(outlet);
             sendMail();
+            setVerDetalle(!getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                    && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
+            init();
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(OutletCrearBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -336,6 +344,21 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         }
     }
 
+    public void rejectAllOutlet() {
+        for (DbOutlets listaOutlet : getListOutlets()) {
+            if (listaOutlet.isApprobationMassive()) {
+                listaOutlet.setStatusMDM(StatusSystemMDM.REJECT.name());
+                try {
+                    outletBeanLocal.updateOutlet(listaOutlet);
+                } catch (DiageoBusinessException ex) {
+                    Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        init();
+        showInfoMessage(capturarValor("sis_approbation_masive"));
+    }
+
     public void rejectOutlet() {
         try {
             DbOutlets outlet = outletBeanLocal.findById(getIdOutlet());
@@ -357,6 +380,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     }
 
     public void approbatrionMasive() {
+        //for (DbOutlets listaOutlet : getListOutlets()) {
         for (DbOutlets listaOutlet : getListOutlets()) {
             if (listaOutlet.isApprobationMassive()) {
                 if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())) {
@@ -427,8 +451,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         }
         return false;
     }
-    
-    public boolean isDisabledFieldsTmc(){
+
+    public boolean isDisabledFieldsTmc() {
         return !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId());
     }
 
@@ -441,20 +465,6 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
      */
     public LoginBean getLoginBean() {
         return loginBean;
-    }
-
-    /**
-     * @return the listOutlets
-     */
-    public List<DbOutlets> getListOutlets() {
-        return listOutlets;
-    }
-
-    /**
-     * @param listOutlets the listOutlets to set
-     */
-    public void setListOutlets(List<DbOutlets> listOutlets) {
-        this.listOutlets = listOutlets;
     }
 
     /**
@@ -623,6 +633,48 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
      */
     public void setListCustomerDelete(List<DbCustomers> listCustomerDelete) {
         this.listCustomerDelete = listCustomerDelete;
+    }
+
+    /**
+     * @return the outletsLazyDataModel
+     */
+    public DbOutletsLazyDataModel getOutletsLazyDataModel() {
+        return outletsLazyDataModel;
+    }
+
+    /**
+     * @param outletsLazyDataModel the outletsLazyDataModel to set
+     */
+    public void setOutletsLazyDataModel(DbOutletsLazyDataModel outletsLazyDataModel) {
+        this.outletsLazyDataModel = outletsLazyDataModel;
+    }
+
+    /**
+     * @return the subSegmentDistributor
+     */
+    public DbSubSegments getSubSegmentDistributor() {
+        return subSegmentDistributor;
+    }
+
+    /**
+     * @param subSegmentDistributor the subSegmentDistributor to set
+     */
+    public void setSubSegmentDistributor(DbSubSegments subSegmentDistributor) {
+        this.subSegmentDistributor = subSegmentDistributor;
+    }
+
+    /**
+     * @return the listOutlets
+     */
+    public List<DbOutlets> getListOutlets() {
+        return listOutlets;
+    }
+
+    /**
+     * @param listOutlets the listOutlets to set
+     */
+    public void setListOutlets(List<DbOutlets> listOutlets) {
+        this.listOutlets = listOutlets;
     }
 
 }

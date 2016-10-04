@@ -59,12 +59,15 @@
                                 </h:panelGroup>
                                 <h:outputLabel value="#{msg.out_verification_number}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                 <h:panelGroup>
-                                    <p:inputText id="itVerificationNumber" value="#{outletCrearBean.verificationNumber}" maxlength="1" required="true"
+                                    <p:inputText id="itVerificationNumber" value="#{outletCrearBean.verificationNumber}" maxlength="1"
                                                  label="#{msg.out_verification_number}"/>
                                     <p:message for="itVerificationNumber"/>
                                 </h:panelGroup>
                                 <h:outputLabel value="#{msg.out_nombre}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
-                                <p:inputText value="#{outletCrearBean.outletName}"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itOutName" value="#{outletCrearBean.outletName}" required="true" label="#{msg.out_nombre}"/>
+                                    <p:message for="itOutName"/>
+                                </h:panelGroup>
                                 <h:outputLabel value="#{msg.out_punto_venta}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                 <p:inputText value="#{outletCrearBean.pointSale}"/>
                                 <h:outputLabel value="#{msg.out_tipo_outlet}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
@@ -76,14 +79,14 @@
                                 <p:inputText value="#{outletCrearBean.website}"/>
                             </h:panelGrid>
                             <br/>
-                            <h:panelGrid columns="6" style="width: 80%">
-                                <h:outputLabel value="#{msg.out_wine}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
-                                <p:selectBooleanCheckbox value="#{outletCrearBean.wine}"/>
-                                <h:outputLabel value="#{msg.out_beer}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
-                                <p:selectBooleanCheckbox value="#{outletCrearBean.beer}"/>
-                                <h:outputLabel value="#{msg.out_spirtis}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
-                                <p:selectBooleanCheckbox value="#{outletCrearBean.spirtis}"/>
-                            </h:panelGrid>
+                            <!--h:panelGrid columns="6" style="width: 80%">
+                                <h:outputLabel value="{msg.out_wine}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                <p:selectBooleanCheckbox value="{outletCrearBean.wine}"/>
+                                <h:outputLabel value="{msg.out_beer}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                <p:selectBooleanCheckbox value="{outletCrearBean.beer}"/>
+                                <h:outputLabel value="{msg.out_spirtis}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                <p:selectBooleanCheckbox value="{outletCrearBean.spirtis}"/>
+                            </h:panelGrid-->
                         </h:panelGrid>
                     </p:fieldset>
                     <br/>

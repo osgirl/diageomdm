@@ -66,6 +66,9 @@
                                 <p:column headerText="#{msg.out_code}">
                                     <h:outputLabel value="#{report.outletCode}"/>
                                 </p:column>
+                                <p:column headerText="#{msg.out_punto_venta}">
+                                    <h:outputLabel value="#{report.pos}"/>
+                                </p:column>
                                 <p:column headerText="#{msg.out_kiernan}">
                                     <h:outputLabel value="#{report.kiernan}"/>
                                 </p:column>
@@ -77,6 +80,9 @@
                                 </p:column>
                                 <p:column headerText="#{msg.out_razon_social}">
                                     <h:outputLabel value="#{report.businessName}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.out_nombre}">
+                                    <h:outputLabel value="#{report.outletName}"/>
                                 </p:column>
                                 <p:column headerText="#{msg.can_canal}">
                                     <h:outputLabel value="#{report.channel}"/>
@@ -90,12 +96,21 @@
                                 <p:column headerText="#{msg.sub_seg_subsegmento}">
                                     <h:outputLabel value="#{report.subSegment}"/>
                                 </p:column>
-                                <p:column headerText="#{msg.out_punto_venta}">
-                                    <h:outputLabel value="#{report.pos}"/>
+                                <p:column headerText="#{msg.out_potencial}">
+                                    <h:outputLabel value="#{report.potential}"/>
                                 </p:column>
-                                <p:column exportable="false">
-                                    <h:commandLink value="#{msg.btn_detalle}" style="color: blue" action="#{reportCommercialManagement.detail(report)}"/>
+                                <p:column headerText="#{msg.loc_depto}">
+                                    <h:outputLabel value="#{report.departament}"/>
                                 </p:column>
+                                <p:column headerText="#{msg.chain_city}">
+                                    <h:outputLabel value="#{report.city}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.out_direccion}">
+                                    <h:outputLabel value="#{report.address}"/>
+                                </p:column>
+                                <!--p:column exportable="false">
+                                    <h:commandLink value="{msg.btn_detalle}" style="color: blue" action="{reportCommercialManagement.detail(report)}"/>
+                                </p:column-->
                             </p:dataTable>
                         </h:panelGroup>
                     </p:fieldset>

@@ -35,6 +35,7 @@ import javax.inject.Inject;
 @ViewScoped
 public class PotentialCreateBean extends DiageoRootBean implements Serializable {
 
+    private static final String ATHENA_CODE = "BTTLE";
     @Inject
     private LoginBean loginBean;
     @EJB
@@ -83,12 +84,19 @@ public class PotentialCreateBean extends DiageoRootBean implements Serializable 
             DbPotentials pot = new DbPotentials();
             pot.setNamePotential(getName().toUpperCase());
             pot.setSubSegmentId(getSubSegmento());
-            pot.setDistri_1(getAthenaCode().toUpperCase());
             Audit audit = new Audit();
             audit.setCreationDate(super.getCurrentDate());
             audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
             pot.setAudit(audit);
             potentialBeanLocal.createPotential(pot);
+            if (pot.getPotentialId() != null) {
+                if (pot.getPotentialId() < 10) {
+                    pot.setDistri_1(ATHENA_CODE + "0" + pot.getPotentialId());
+                } else {
+                    pot.setDistri_1(ATHENA_CODE + pot.getPotentialId());
+                }
+                potentialBeanLocal.updatePotential(pot);
+            }
             initFields();
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
