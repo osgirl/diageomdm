@@ -31,7 +31,9 @@ public class ProfileBean extends WebTransaction<DwProfiles> implements ProfileBe
 
     @Override
     public List<DwProfiles> findBySystem() {
+        System.out.println("entro metodo");
         List<DwProfiles> list = super.findByNamedQuery(DwProfiles.class, DwProfiles.FIND_BY_SYSTEM, null);
+        System.out.println("resultados"+list);
         if (list == null) {
             return new ArrayList<>();
         }

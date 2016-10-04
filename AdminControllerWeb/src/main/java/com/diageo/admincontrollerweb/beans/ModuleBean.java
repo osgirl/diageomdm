@@ -7,19 +7,28 @@ package com.diageo.admincontrollerweb.beans;
 
 import com.diageo.admincontrollerweb.entities.DwModules;
 import javax.ejb.Stateless;
+import javax.persistence.Query;
 
 /**
  *
  * @author yovanoty126
  */
 @Stateless
-public class ModuleBean extends WebTransaction<DwModules>implements ModuleBeanLocal {
+public class ModuleBean extends WebTransaction<DwModules> implements ModuleBeanLocal {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
-    public void createUserModule(DwModules mod){
-        super.update(mod);        
+    public void createUserModule(DwModules mod) {
+        super.update(mod);
     }
-    
+
+    @Override
+    public void deleteModuleUser(Integer userId) {
+        String delete="DELETE FROM DIAGEO_WEB.DW_USERS_MODULES WHERE USER_ID = ?";
+        Query sql=super.getEntityManager().createNativeQuery(delete);
+        sql.setParameter(1, userId);
+        sql.executeUpdate();
+    }
+
 }

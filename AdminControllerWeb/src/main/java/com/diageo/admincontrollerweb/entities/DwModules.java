@@ -72,7 +72,7 @@ public class DwModules implements Serializable {
     @JoinTable(name = "DW_USERS_MODULES", joinColumns = {
         @JoinColumn(name = "MODULE_ID", referencedColumnName = "MODULE_ID")}, inverseJoinColumns = {
         @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")})
-    @ManyToMany
+    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
     private List<DwUsers> dwUsersList;
     @OneToMany(mappedBy = "fatherModuleId")
     private List<DwModules> dwModulesList;

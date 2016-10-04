@@ -16,5 +16,7 @@ import javax.ejb.Local;
 public interface ModuleBeanLocal {
 
     public void createUserModule(DwModules mod);
+
+    public void deleteModuleUser(Integer userId);
     
 }
