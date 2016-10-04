@@ -31,15 +31,15 @@ public class BusinessTransaction<T> {
         Object o = getEntityManager().find(t, id);
         return o;
     }
-    
-    public Object update(Object obj){
-        obj=getEntityManager().merge(obj);
+
+    public Object update(Object obj) {
+        obj = getEntityManager().merge(obj);
         getEntityManager().flush();
         return obj;
     }
-    
-    public Object updateWithoutFlush(Object obj){
-        obj=getEntityManager().merge(obj);
+
+    public Object updateWithoutFlush(Object obj) {
+        obj = getEntityManager().merge(obj);
         return obj;
     }
 
@@ -50,14 +50,16 @@ public class BusinessTransaction<T> {
     }
 
     public void delete(Object entity) {
-        entity=getEntityManager().merge(entity);
+        entity = getEntityManager().merge(entity);
         getEntityManager().remove(entity);
     }
 
     public List<T> searchByNamedQuery(Class type, String namedQuery, Object... parameters) {
         Query query = getEntityManager().createNamedQuery(namedQuery, type);
-        for (int i = 0; i < parameters.length; i++) {
-            query.setParameter(i + 1, parameters[i]);
+        if (parameters != null) {
+            for (int i = 0; i < parameters.length; i++) {
+                query.setParameter(i + 1, parameters[i]);
+            }
         }
         return query.getResultList();
     }
@@ -70,14 +72,13 @@ public class BusinessTransaction<T> {
         return query.getResultList();
     }
 
-    
     @Override
     public boolean equals(Object obj) {
-        if(obj==null){
+        if (obj == null) {
             return false;
         }
-        if(obj instanceof BusinessTransaction){
-            BusinessTransaction bt=(BusinessTransaction)obj;
+        if (obj instanceof BusinessTransaction) {
+            BusinessTransaction bt = (BusinessTransaction) obj;
             return bt.em.equals(this.em);
         }
         return false;
@@ -89,7 +90,5 @@ public class BusinessTransaction<T> {
         hash = 17 * hash + Objects.hashCode(this.em);
         return hash;
     }
-    
-    
 
 }

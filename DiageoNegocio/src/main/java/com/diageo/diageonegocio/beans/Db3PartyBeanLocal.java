@@ -28,5 +28,9 @@ public interface Db3PartyBeanLocal {
     public List<Db3party> searchDistributorFather(String isFather);
 
     public List<Db3party> searchDistributorByFather(Integer father);
+
+    public List<Db3party> searchDistributorByIsChain(String isChain, String status);
+
+    public List<Db3party> searchAll();
     
 }

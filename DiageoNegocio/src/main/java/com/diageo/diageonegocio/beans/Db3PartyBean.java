@@ -47,11 +47,20 @@ public class Db3PartyBean extends BusinessTransaction<Db3party> implements Db3Pa
 
     @Override
     public List<Db3party> searchAllDistributor() {
-        List<Db3party> lista = super.searchAll(Db3party.class);
-        if (lista == null) {
+        List<Db3party> list = super.searchByNamedQuery(Db3party.class, Db3party.FIND_ALL, null);
+        if (list == null) {
             return new ArrayList<>();
         }
-        return lista;
+        return list;
+    }
+
+    @Override
+    public List<Db3party> searchAll() {
+        List<Db3party> list = super.searchAll(Db3party.class);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
     }
 
     @Override
@@ -66,6 +75,15 @@ public class Db3PartyBean extends BusinessTransaction<Db3party> implements Db3Pa
     @Override
     public List<Db3party> searchDistributorByFather(Integer padre) {
         List<Db3party> list = super.searchByNamedQuery(Db3party.class, Db3party.FIND_BY_PADRE, padre);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
+
+    @Override
+    public List<Db3party> searchDistributorByIsChain(String isChain, String status) {
+        List<Db3party> list = super.searchByNamedQuery(Db3party.class, Db3party.FIND_BY_IS_CHAIN, isChain, status);
         if (list == null) {
             return new ArrayList<>();
         }

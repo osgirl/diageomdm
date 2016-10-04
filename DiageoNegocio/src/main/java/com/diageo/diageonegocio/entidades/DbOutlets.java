@@ -32,28 +32,62 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DB_OUTLETS")
 @NamedQueries({
-    @NamedQuery(name = DbOutlets.FIND_ALL, query = "SELECT e FROM DbOutlets e"),
+    @NamedQuery(name = DbOutlets.FIND_ALL, query = "SELECT e FROM DbOutlets e "
+            + "WHERE e.nit LIKE :nit "
+            + "AND e.businessName LIKE :businessName "
+            + "AND e.numberPdv LIKE :numberPdv "
+            + "AND e.kiernanId LIKE :kiernanId "
+            + "AND e.subSegmentId.nameSubsegment LIKE :nameSubsegment "
+            + "AND e.statusOutlet LIKE :statusOutlet "
+            + "AND e.statusMDM LIKE :statusMDM"),
+    @NamedQuery(name = DbOutlets.FIND_ALL_COUNT, query = "SELECT COUNT(e) FROM DbOutlets e "
+            + "WHERE e.nit LIKE :nit "
+            + "AND e.businessName LIKE :businessName "
+            + "AND e.numberPdv LIKE :numberPdv "
+            + "AND e.kiernanId LIKE :kiernanId "
+            + "AND e.subSegmentId.nameSubsegment LIKE :nameSubsegment "
+            + "AND e.statusOutlet LIKE :statusOutlet "
+            + "AND e.statusMDM LIKE :statusMDM"),
     @NamedQuery(name = DbOutlets.FIND_BY_NEW,
-            query = "SELECT e FROM DbOutlets e WHERE e.isNewOutlet = ?1 AND e.subSegmentId.subSegmentId IN(16,22,23,24,32,33,34)"),
+            query = "SELECT e FROM DbOutlets e WHERE e.isNewOutlet = ?1"),
     @NamedQuery(name = DbOutlets.FIND_BY_SUB_SEGMENT, query = "SELECT o FROM DbOutlets o WHERE o.subSegmentId.subSegmentId=?1"),
     @NamedQuery(name = DbOutlets.FIND_BY_BUSINESS_NAME, query = "SELECT o FROM DbOutlets o WHERE o.businessName LIKE ?1 AND o.isFather = ?2"),
     @NamedQuery(name = DbOutlets.FIND_BY_SUB_SEGMENT_3PARTY, query = "SELECT o FROM DbOutlets o "
             + "INNER JOIN o.db3partyList p "
             + "WHERE o.subSegmentId.subSegmentId=?1 AND p.db3partyId=?2"),
     @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION, query = "SELECT o FROM DbOutlets o INNER JOIN o.db3partyList p "
+            + "WHERE p.db3partyId=:db3partyId AND o.subSegmentId.subSegmentId IN :subSegmentId AND o.statusMDM  IN :statusMDM "
+            + "AND o.nit LIKE :nit "
+            + "AND o.businessName LIKE :businessName "
+            + "AND o.numberPdv LIKE :numberPdv "
+            + "AND o.kiernanId LIKE :kiernanId "
+            + "AND o.subSegmentId.nameSubsegment LIKE :nameSubsegment "
+            + "AND o.statusOutlet LIKE :statusOutlet "),
+    @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION_LIST, query = "SELECT o FROM DbOutlets o INNER JOIN o.db3partyList p "
             + "WHERE p.db3partyId=?1 AND o.subSegmentId.subSegmentId IN ?2 AND o.statusMDM  IN ?3"),
-//    @NamedQuery(name = DbOutlets.FIND_BY_DISTRI_SUBSEGMENT, query = "SELECT e FROM Outlet e WHERE e.idDistribuidor.idDistribuidor IN ?1 "
-//            + "AND e.idsubsegmento.idsubSegmento IN ?2 AND e.idStateOutlet.idSateOutlet IN ?3 AND e.isNewOutlet=?4")
+    @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION_COUNT, query = "SELECT COUNT (o) FROM DbOutlets o INNER JOIN o.db3partyList p "
+            + "WHERE p.db3partyId=:db3partyId AND o.subSegmentId.subSegmentId IN :subSegmentId AND o.statusMDM  IN :statusMDM "
+            + "AND o.nit LIKE :nit "
+            + "AND o.businessName LIKE :businessName "
+            + "AND o.numberPdv LIKE :numberPdv "
+            + "AND o.kiernanId LIKE :kiernanId "
+            + "AND o.subSegmentId.nameSubsegment LIKE :nameSubsegment "
+            + "AND o.statusOutlet LIKE :statusOutlet"),
+    @NamedQuery(name = DbOutlets.COUNT, query = "SELECT COUNT (o) FROM DbOutlets o")
 })
 public class DbOutlets implements Serializable {
 
     public static final String FIND_ALL = "DbOutlets.findAll";
+    public static final String FIND_ALL_COUNT = "DbOutlets.findAllCount";
+    public static final String COUNT = "DbOutlets.count";
     public static final String FIND_BY_DISTRI = "DbOutlets.findByDistributor";
     public static final String FIND_BY_NEW = "DbOutlets.findByNew";
     public static final String FIND_BY_SUB_SEGMENT = "DbOutlets.findBySubSegment";
     public static final String FIND_BY_SUB_SEGMENT_3PARTY = "DbOutlets.findBySubSegment3Party";
     public static final String FIND_BY_BUSINESS_NAME = "DbOutlets.findByBusinessName";
     public static final String FIND_BY_3PARTY_PERMISSION = "DbOutlets.findBy3PartyPermission";
+    public static final String FIND_BY_3PARTY_PERMISSION_LIST = "DbOutlets.findBy3PartyPermissionList";
+    public static final String FIND_BY_3PARTY_PERMISSION_COUNT = "DbOutlets.findBy3PartyPermissionCount";
     /**
      * search for distributor, subsegment, is new, and state outlets
      */
@@ -68,6 +102,9 @@ public class DbOutlets implements Serializable {
     @JoinColumn(name = "SUB_SEGMENT_ID", referencedColumnName = "SUB_SEGMENT_ID")
     @ManyToOne(optional = false)
     private DbSubSegments subSegmentId;
+    @JoinColumn(name = "DISTRIBUTOR_SUB_SEGMENT_ID", referencedColumnName = "SUB_SEGMENT_ID")
+    @ManyToOne(optional = false)
+    private DbSubSegments distributorSubSegmentId;    
     @JoinColumn(name = "POTENTIAL_ID", referencedColumnName = "POTENTIAL_ID")
     @ManyToOne(optional = false)
     private DbPotentials potentialId;
@@ -505,6 +542,14 @@ public class DbOutlets implements Serializable {
 
     public void setAudit(Audit audit) {
         this.audit = audit;
+    }
+
+    public DbSubSegments getDistributorSubSegmentId() {
+        return distributorSubSegmentId;
+    }
+
+    public void setDistributorSubSegmentId(DbSubSegments distributorSubSegmentId) {
+        this.distributorSubSegmentId = distributorSubSegmentId;
     }
 
     @Override

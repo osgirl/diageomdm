@@ -32,10 +32,10 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DB_SUB_SEGMENTS")
 @NamedQueries({
-@NamedQuery(name = DbSubSegments.FIND_BY_SEGMENT, query = "SELECT s FROM DbSubSegments s WHERE s.segmentId.segmentId = ?1")    
+    @NamedQuery(name = DbSubSegments.FIND_BY_SEGMENT, query = "SELECT s FROM DbSubSegments s WHERE s.segmentId.segmentId = ?1")
 })
 public class DbSubSegments implements Serializable {
-    
+
     public static final String FIND_BY_SEGMENT = "DbSubSegments.findBySegment";
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -54,6 +54,8 @@ public class DbSubSegments implements Serializable {
     private DbSegments segmentId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subSegmentId")
     private List<DbOutlets> dbOutletsList;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "distributorSubSegmentId")
+    private List<DbOutlets> dbOutletsListDistributor;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subSegmentId")
     private List<DbPotentials> dbPotentialsList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subSegmentId")
@@ -149,6 +151,14 @@ public class DbSubSegments implements Serializable {
         this.audit = audit;
     }
 
+    public List<DbOutlets> getDbOutletsListDistributor() {
+        return dbOutletsListDistributor;
+    }
+
+    public void setDbOutletsListDistributor(List<DbOutlets> dbOutletsListDistributor) {
+        this.dbOutletsListDistributor = dbOutletsListDistributor;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -173,5 +183,5 @@ public class DbSubSegments implements Serializable {
     public String toString() {
         return "com.diageonegocio.entidades[ subSegmentId=" + subSegmentId + " ]";
     }
-    
+
 }

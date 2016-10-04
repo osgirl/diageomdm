@@ -8,6 +8,7 @@ package com.diageo.diageonegocio.beans;
 import com.diageo.diageonegocio.entidades.DbOutlets;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import javax.ejb.Local;
 
@@ -38,8 +39,18 @@ public interface OutletBeanLocal {
 
     public List<DbOutlets> findByBusinessName(String query);
 
-    public List<DbOutlets> findBy3PartyPermissionSegment(Integer id3party, List<Integer> subSegment,List<String> statusMDM);
+    public List<DbOutlets> findBy3PartyPermissionSegment(Integer id3party, List<Integer> subSegment, List<String> statusMDM);
 
     public void deleteCustomerOutlet(Integer customerId, Integer outletId);
-    
+
+    public long countOutlets();
+
+    public List<DbOutlets> findAllOutlets(int initial, int page, Map<String, Object> filters);
+
+    public long findAllOutletsCount(int initial, int page, Map<String, Object> filters);
+
+    public List<DbOutlets> findBy3PartyPermissionSegment(Integer id3party, List<Integer> subSegment, List<String> statusMDM, Map<String, Object> filters, int initial, int page);
+
+    public long findBy3PartyPermissionSegmentCount(Integer id3party, List<Integer> subSegment, List<String> statusMDM, Map<String, Object> filters);
+
 }

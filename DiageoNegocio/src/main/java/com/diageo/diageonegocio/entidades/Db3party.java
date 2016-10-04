@@ -15,7 +15,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -32,13 +31,17 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DB_3PARTY")
 @NamedQueries({
-    @NamedQuery(name = "Db3party.findAll", query = "SELECT d FROM Db3party d"),
-    @NamedQuery(name = Db3party.FIND_BY_IS_PADRE, query = "SELECT d FROM Db3party d WHERE d.isFather = ?1"),
-    @NamedQuery(name = Db3party.FIND_BY_PADRE, query = "SELECT d FROM Db3party d WHERE d.db3partyIdFather.db3partyId = ?1"),})
+    @NamedQuery(name = Db3party.FIND_ALL, query = "SELECT d FROM Db3party d WHERE d.status = '1'"),
+    @NamedQuery(name = Db3party.FIND_BY_IS_PADRE, query = "SELECT d FROM Db3party d WHERE d.isFather = ?1 AND d.status = '1'"),
+    @NamedQuery(name = Db3party.FIND_BY_PADRE, query = "SELECT d FROM Db3party d WHERE d.db3partyIdFather.db3partyId = ?1 AND d.status = '1'"),
+    @NamedQuery(name = Db3party.FIND_BY_IS_CHAIN, query = "SELECT d FROM Db3party d WHERE d.isChain = ?1 AND d.status = ?2")
+})
 public class Db3party implements Serializable {
 
     public static final String FIND_BY_IS_PADRE = "Db3party.findByIsFather";
     public static final String FIND_BY_PADRE = "Db3party.findByFather";
+    public static final String FIND_ALL = "Db3party.findAll";
+    public static final String FIND_BY_IS_CHAIN = "Db3party.findByIsChain";
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
@@ -75,11 +78,15 @@ public class Db3party implements Serializable {
     private String distri_1;
     @Column(name = "KIERNAN")
     private String kiernan;
+    @Column(name = "IS_CHAIN")
+    private String isChain;
     @ManyToOne
     @JoinColumn(name = "DB_3PARTY_ADMIN_ID", referencedColumnName = "DB_3PARTY_ADMIN_ID")
     private Db3partyAdmin db3PartyAdmin;
     @Embedded
     private Audit audit;
+    @Column(name = "STATUS")
+    private String status;
 
     public Db3party() {
     }
@@ -198,6 +205,22 @@ public class Db3party implements Serializable {
 
     public void setAudit(Audit audit) {
         this.audit = audit;
+    }
+
+    public String getIsChain() {
+        return isChain;
+    }
+
+    public void setIsChain(String isChain) {
+        this.isChain = isChain;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     @Override
