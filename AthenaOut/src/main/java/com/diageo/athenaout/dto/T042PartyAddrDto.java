@@ -153,7 +153,7 @@ public class T042PartyAddrDto implements Serializable {
     public String toString() {
         return codParty + SEPARATOR.getSeparator() + desAddre_1 + SEPARATOR.getSeparator()
                 + desLoc_1 + SEPARATOR.getSeparator() + numPhone_1 + SEPARATOR.getSeparator()
-                + codArea + SEPARATOR.getSeparator() + codZone
+                + codZone + SEPARATOR.getSeparator() +  codArea
                 + SEPARATOR.getSeparator() + codNation + ENTER.getSeparator();
     }
 

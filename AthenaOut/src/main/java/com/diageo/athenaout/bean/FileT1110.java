@@ -31,10 +31,20 @@ public class FileT1110 {
                 + "FROM DIAGEO_BUSINESS.DB_OUTLETS O  "
                 + " WHERE O.IS_FATHER = '1'  "
                 + " AND O.STATUS_OUTLET = 'A' "
+                + " AND O.OUTLET_ID > 78180 "
                 + " UNION ALL  "
                 + " SELECT CHAIN_ID, CHAIN_ID PADRE "
                 + "FROM DIAGEO_BUSINESS.DB_CHAINS "
-                + " WHERE IS_ACTIVE = 1";
+                + " WHERE IS_ACTIVE = 1 "
+                + " AND CHAIN_ID > 67914 ";
+//        String sql = "SELECT OUTLET_ID, NVL(O.OUTLET_ID_FATHER, O.OUTLET_ID) OUTLET_ID_PADRE "
+//                + "FROM DIAGEO_BUSINESS.DB_OUTLETS O  "
+//                + " WHERE O.IS_FATHER = '1'  "
+//                + " AND O.STATUS_OUTLET = 'A' "
+//                + " UNION ALL  "
+//                + " SELECT CHAIN_ID, CHAIN_ID PADRE "
+//                + "FROM DIAGEO_BUSINESS.DB_CHAINS "
+//                + " WHERE IS_ACTIVE = 1";
         Query query = em.createNativeQuery(sql);
         List listOutlet = query.getResultList();
         for (Object out : listOutlet) {

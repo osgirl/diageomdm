@@ -28,11 +28,19 @@ public class FileT41 {
     public List<T041Dto> findOutlets() {
         List<T041Dto> list = new ArrayList<>();
         String sql = "SELECT  "
-                + " OUTLET_ID,  "
-                + " NVL(TMC,KAM) AS TMC,  "
-                + " CPA,  "
-                + " ADMIN  "
-                + "FROM TMP_OUTLET_USER";
+                + "  OUTLET_ID,   "
+                + "  NVL(TMC,KAM) AS TMC,  "
+                + "  CPA,  "
+                + "  ADMIN  "
+                + " FROM TMP_OUTLET_USER "
+                + " WHERE OUTLET_ID > 78180";
+
+//        String sql = "SELECT  "
+//                + " OUTLET_ID,  "
+//                + " NVL(TMC,KAM) AS TMC,  "
+//                + " CPA,  "
+//                + " ADMIN  "
+//                + "FROM TMP_OUTLET_USER";
 //        String sql = "SELECT OU.OUTLET_ID,TMC.NAME_USER AS TMC, "
 //                + "CPA.NAME_USER AS CPA,OU.ADMIN_3PARTY "
 //                + "FROM ( "
