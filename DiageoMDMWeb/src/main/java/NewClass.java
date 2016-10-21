@@ -1,16 +1,23 @@
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -51,22 +58,14 @@ public class NewClass {
     }
 
     public static void main(String[] args) {
-        String publicIP = null;
         try {
-            URL tempURL = new URL("http://www.whatismyip.org/");
-            HttpURLConnection tempConn = (HttpURLConnection) tempURL.openConnection();
-            InputStream tempInStream = tempConn.getInputStream();
-            InputStreamReader tempIsr = new InputStreamReader(tempInStream);
-            BufferedReader tempBr = new BufferedReader(tempIsr);
-            publicIP = tempBr.readLine();
-
-            tempBr.close();
-            tempInStream.close();
-
-        } catch (Exception ex) {
-            publicIP = "<No es posible resolver la direccion IP>";
+            Path pathTemp = Files.createTempFile("log_", ".txt");
+            FileOutputStream fos = new FileOutputStream(pathTemp.toFile());
+            String texto = "hola mundo";
+            fos.write(texto.getBytes());
+        } catch (IOException ex) {
+            Logger.getLogger(NewClass.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        System.out.println("Mi IP Publica es " + publicIP);
     }
 }

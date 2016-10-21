@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
@@ -40,12 +41,36 @@
                         }
 
                     </style>     
+                    <h:commandLink rendered="#{outletConsultarBean.verDetalle and (loginBean.usuario.profileId.nameProfile eq 'ADMINISTRATOR'  or loginBean.usuario.profileId.nameProfile eq 'DATA STEWARD')}">
+                        <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
+                        <pe:exporter type="xlsx" target="dtOutletNew"  fileName="Report" pageOnly="false"/>
+                    </h:commandLink>
+
+                    <h:commandLink rendered="#{outletConsultarBean.verDetalle and (loginBean.usuario.profileId.nameProfile eq 'ADMINISTRATOR'  or loginBean.usuario.profileId.nameProfile eq 'DATA STEWARD')}">
+                        <p:graphicImage name="/images/iconos/csv.png" width="5%"/>
+                        <p:dataExporter type="csv" target="dtOutletNew" fileName="Report" pageOnly="false" />
+                    </h:commandLink>
+
+                    <h:commandLink rendered="#{outletConsultarBean.verDetalle and (loginBean.usuario.profileId.nameProfile eq 'TMC' or loginBean.usuario.profileId.nameProfile eq 'COMMERCIAL MANAGER' 
+                                               or loginBean.usuario.profileId.nameProfile eq 'KAM' or loginBean.usuario.profileId.nameProfile eq 'CATDEV')}">
+                        <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
+                        <p:dataExporter type="xls" target="dtOutletNew2" fileName="Report" pageOnly="false" />
+                    </h:commandLink>
+
+                    <h:commandLink rendered="#{outletConsultarBean.verDetalle and (loginBean.usuario.profileId.nameProfile eq 'TMC' or loginBean.usuario.profileId.nameProfile eq 'COMMERCIAL MANAGER' 
+                                               or loginBean.usuario.profileId.nameProfile eq 'KAM' or loginBean.usuario.profileId.nameProfile eq 'CATDEV')}">
+                        <p:graphicImage name="/images/iconos/csv.png" width="5%"/>
+                        <p:dataExporter type="csv" target="dtOutletNew2" fileName="Report" pageOnly="false" />
+                    </h:commandLink>
+                    <br/>
+
                     <p:dataTable id="dtOutletNew" value="#{outletConsultarBean.outletsLazyDataModel}" var="outdtNew" paginatorAlwaysVisible="false" rows="15"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 style="font-size:  90%;word-wrap: break-word;" rendered="#{outletConsultarBean.verDetalle and (loginBean.usuario.profileId.nameProfile eq 'ADMINISTRATOR'  or loginBean.usuario.profileId.nameProfile eq 'DATA STEWARD')}" paginator="true"
+                                 style="font-size:  90%;word-wrap: break-word;font-size: 9px !important" 
+                                 rendered="#{outletConsultarBean.verDetalle and (loginBean.usuario.profileId.nameProfile eq 'ADMINISTRATOR'  or loginBean.usuario.profileId.nameProfile eq 'DATA STEWARD')}" paginator="true"
                                  widgetVar="dtOutletSearch" lazy="true"
                                  emptyMessage="#{msg.out_msg_not_record}"> 
-                        <p:column headerText="#{msg.status}" filterMatchMode="exact" filterBy="#{outdtNew.statusMDM}">
+                        <p:column headerText="#{msg.status}" filterMatchMode="exact" filterBy="#{outdtNew.statusMDM}" exportable="false">
                             <f:facet name="filter">
                                 <p:selectOneMenu onchange="PF('dtOutletSearch').filter()" style="width: 80%">
                                     <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}" noSelectionOption="true"/>
@@ -80,16 +105,41 @@
                         <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{outdtNew.subSegmentId.nameSubsegment}" filterMatchMode="startsWith">
                             <h:outputLabel value="#{outdtNew.subSegmentId.nameSubsegment}"/>
                         </p:column>
-                        <!--p:column headerText="{msg.estado}" filterBy="{outdtNew.statusOutlet}" filterMatchMode="startsWith">
-                            <h:outputLabel value="{outletConsultarBean.labelState(outdtNew.statusOutlet)}"/>
-                        </p:column--> 
+
                         <p:column headerText="#{msg.out_kiernan}" filterBy="#{outdtNew.kiernanId}" filterMatchMode="startsWith">
                             <h:outputLabel value="#{outdtNew.kiernanId}"/>
                         </p:column>    
                         <p:column headerText="#{msg.out_punto_venta}" filterBy="#{outdtNew.kiernanId}" filterMatchMode="startsWith">
                             <h:outputLabel value="#{outdtNew.numberPdv}"/>
-                        </p:column>    
-                        <p:column style="width: 8%;text-align: center">
+                        </p:column>
+                        <p:column headerText="#{msg.out_direccion}">
+                            <h:outputLabel value="#{outdtNew.address}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.chain_city}">
+                            <h:outputLabel value="#{outdtNew.townId.nameTown}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.out_nit}">
+                            <h:outputLabel value="#{outdtNew.nit}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.can_canal}">
+                            <h:outputLabel value="#{outdtNew.subSegmentId.segmentId.subChannelId.channelId.nameChannel}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.sub_subcanal}">
+                            <h:outputLabel value="#{outdtNew.subSegmentId.segmentId.subChannelId.nameSubChannel}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.seg_segmento}">
+                            <h:outputLabel value="#{outdtNew.subSegmentId.segmentId.nameSegment}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.out_potencial}">
+                            <h:outputLabel value="#{outdtNew.potentialId.namePotential}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.out_distribuidor} #{msg.old}">
+                            <h:outputLabel value="#{outletConsultarBean.showDistributorName(outdtNew.db3PartyIdOld)}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.out_distribuidor}">
+                            <h:outputLabel value="#{outletConsultarBean.showDistributorName(outdtNew.db3PartyIdNew)}"/>
+                        </p:column>
+                        <p:column style="width: 8%;text-align: center" exportable="false">
                             <p:commandLink value="#{msg.btn_edit}" style="color: blue" process="@all" update="@form"
                                            actionListener="#{outletConsultarBean.seeDetail(outdtNew)}" disabled="#{outdtNew.disabledButtonEdit}"/>
                             <br/><br/>
@@ -140,16 +190,37 @@
                         </p:column>
                         <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{outdtNew2.subSegmentId.nameSubsegment}" filterMatchMode="startsWith">
                             <h:outputLabel value="#{outdtNew2.subSegmentId.nameSubsegment}"/>
-                        </p:column>
-                        <!--p:column headerText="{msg.estado}" filterBy="{outdtNew2.statusOutlet}" filterMatchMode="startsWith">
-                            <h:outputLabel value="{outletConsultarBean.labelState(outdtNew2.statusOutlet)}"/>
-                        </p:column--> 
+                        </p:column>                        
                         <p:column headerText="#{msg.out_kiernan}" filterBy="#{outdtNew2.kiernanId}" filterMatchMode="startsWith">
                             <h:outputLabel value="#{outdtNew2.kiernanId}"/>
                         </p:column>    
                         <p:column headerText="#{msg.out_punto_venta}" filterBy="#{outdtNew2.kiernanId}" filterMatchMode="startsWith">
                             <h:outputLabel value="#{outdtNew2.numberPdv}"/>
-                        </p:column>    
+                        </p:column>   
+                        <p:column headerText="#{msg.out_direccion}">
+                            <h:outputLabel value="#{outdtNew2.address}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.chain_city}">
+                            <h:outputLabel value="#{outdtNew2.townId.nameTown}"/>
+                        </p:column>                        
+                        <p:column headerText="#{msg.can_canal}">
+                            <h:outputLabel value="#{outdtNew2.subSegmentId.segmentId.subChannelId.channelId.nameChannel}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.sub_subcanal}">
+                            <h:outputLabel value="#{outdtNew2.subSegmentId.segmentId.subChannelId.nameSubChannel}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.seg_segmento}">
+                            <h:outputLabel value="#{outdtNew2.subSegmentId.segmentId.nameSegment}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.out_potencial}">
+                            <h:outputLabel value="#{outdtNew.potentialId.namePotential}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.out_distribuidor} #{msg.old}">
+                            <h:outputLabel value="#{outletConsultarBean.showDistributorName(outdtNew2.db3PartyIdOld)}"/>
+                        </p:column>
+                        <p:column headerText="#{msg.out_distribuidor}">
+                            <h:outputLabel value="#{outletConsultarBean.showDistributorName(outdtNew2.db3PartyIdNew)}"/>
+                        </p:column>
                         <p:column style="width: 8%;text-align: center">
                             <p:commandLink value="#{msg.btn_edit}" style="color: blue" process="@all" update="@form"
                                            actionListener="#{outletConsultarBean.seeDetail(outdtNew2)}" disabled="#{outdtNew2.disabledButtonEdit}"/>
@@ -168,13 +239,13 @@
                         <p:commandButton value="#{msg.btn_unselect_all}" styleClass="button" process="@all" update="@form"
                                          actionListener="#{outletConsultarBean.unSelectAll()}" rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval}"
                                          style="width: 100%;left: 0%"/>
-                        <p:commandButton value="#{msg.btn_send}" styleClass="button" process="@all" update="@form"
+                        <p:commandButton value="#{msg.btn_approved_2}" styleClass="button" process="@all" update="@form"
                                          actionListener="#{outletConsultarBean.approbatrionMasive()}" rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval}"
                                          style="width: 100%;left: 0%"/>
                         <p:commandButton value="#{msg.btn_reject}" process="@all" update="@form" actionListener="#{outletConsultarBean.rejectAllOutlet()}"                                             
-                                             styleClass="button_reject" style="left: 0%;width: 100%" 
-                                             rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval
-                                                         and loginBean.usuario.profileId.nameProfile eq 'COMMERCIAL MANAGER'}"/>
+                                         styleClass="button_reject" style="left: 0%;width: 100%" 
+                                         rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval
+                                                     and loginBean.usuario.profileId.nameProfile eq 'COMMERCIAL MANAGER'}"/>
                     </h:panelGrid>
 
                     <h:panelGroup id="pgCOnsultarOut">
@@ -229,6 +300,14 @@
                                         </p:selectOneMenu>
                                         <h:outputLabel value="#{msg.out_website}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                         <p:inputText value="#{outletConsultarBean.website}" disabled="#{outletConsultarBean.disabledFields}"/>
+
+                                        <h:outputLabel value="#{msg.out_distributor_new}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:selectOneMenu value="#{outletConsultarBean.db3PartySelected}" style="width: 90%" converter="db3PartyConverter">
+                                            <f:selectItems value="#{outletConsultarBean.list3PartyToDeploy}" var="distri" itemLabel="#{distri.name3party}"/>
+                                        </p:selectOneMenu>
+
+                                        <h:outputLabel value="#{msg.out_distributor_old}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:inputText readonly="true" value="#{outletConsultarBean.showDistributorName(outletConsultarBean.distributorOld)}"/>
                                     </h:panelGrid>
                                     <br/>
                                     <!--h:panelGrid columns="6" style="width: 80%">
@@ -310,35 +389,6 @@
 
                                     </h:panelGrid>
                                 </h:panelGroup>
-                            </p:fieldset>
-                            <br/>
-                            <p:fieldset legend="#{msg.m_distribuidor}" style="width: 95%">
-                                <h:panelGrid style="width: 95%" columns="3">
-                                    <h:outputLabel value="#{msg.m_distribuidor}"  style="width: 100%;"/>
-                                    <p:selectOneMenu value="#{outletConsultarBean.db3PartySelected}" converter="db3PartyConverter"
-                                                     disabled="#{outletConsultarBean.disabledFields}">
-                                        <f:selectItems value="#{outletConsultarBean.list3PartyToDeploy}" var="par" itemLabel="#{par.name3party}"/>
-                                    </p:selectOneMenu>
-                                    <p:commandButton value="#{msg.btn_add}" process="@parent" update="formConsultarOutlet:dt3pary"
-                                                     actionListener="#{outletConsultarBean.add3Party()}" disabled="#{outletConsultarBean.disabledFields}"
-                                                     styleClass="button" style="width: 80%"/>                            
-                                </h:panelGrid>
-                                <br/>
-                                <p:dataTable id="dt3pary" paginator="true" rows="5" styleClass="paginated" paginatorAlwaysVisible="false"
-                                             value="#{outletConsultarBean.list3Party}" var="party">
-                                    <f:facet name="header">
-                                        <h:outputLabel value="#{msg.m_distribuidor}"/>
-                                    </f:facet>
-                                    <p:column>
-                                        <p:commandLink actionListener="#{outletConsultarBean.delete3Pary(party)}" update="formConsultarOutlet:dt3pary" process="@this"
-                                                       disabled="#{outletConsultarBean.disabledFields}">
-                                            <p:graphicImage value="/resources/images/iconos/equis.png" width="12px"/>
-                                        </p:commandLink>
-                                    </p:column>
-                                    <p:column>
-                                        <h:outputLabel value="#{party.name3party}"/>
-                                    </p:column>
-                                </p:dataTable>                        
                             </p:fieldset>
                             <br/>
                             <p:fieldset legend="#{msg.customer}" style="width: 95%">

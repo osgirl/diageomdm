@@ -88,16 +88,20 @@
                         </p:column>
                     </p:dataTable>
                     <br/>
-                    <h:panelGrid columns="3">
+                    <h:panelGrid columns="4">
                         <p:commandButton value="#{msg.btn_select_all}" styleClass="button" process="@all" update="@form"
                                          actionListener="#{chainSearchBean.selectAll()}" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"
                                          style="width: 100%;left: 0%"/>
                         <p:commandButton value="#{msg.btn_unselect_all}" styleClass="button" process="@all" update="@form"
                                          actionListener="#{chainSearchBean.unSelectAll()}" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"
                                          style="width: 100%;left: 0%"/>
-                        <p:commandButton value="#{msg.btn_send}" styleClass="button" process="@all" update="@form"
-                                         actionListener="#{chainSearchBean.approbatrionMasive()}" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"
+                        <p:commandButton value="#{msg.btn_approved_2}" styleClass="button" process="@all" update="@form"
+                                         actionListener="#{chainSearchBean.approbatrionMasive()}" 
+                                         rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"
                                          style="width: 100%;left: 0%"/>
+                        <p:commandButton value="#{msg.btn_reject}" styleClass="button_reject" process="@all" update="@form" 
+                                         actionListener="#{chainSearchBean.rejectAllChain()}"
+                                         style="width: 100%;left: 0%" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"/>
                     </h:panelGrid>
 
                     <h:panelGroup id="pgChain">

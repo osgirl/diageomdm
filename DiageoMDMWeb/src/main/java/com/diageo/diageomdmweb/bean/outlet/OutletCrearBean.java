@@ -102,7 +102,6 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     private List<DbTowns> listTowns;
     private List<DbPhones> listPhones;
     private List<DbTypePhones> listTypePhone;
-    private List<Db3party> list3Party;
     private List<Db3party> list3PartyToDeploy;
     private List<DbOcs> listOcs;
     private String email;
@@ -159,7 +158,6 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         setPotentialSelected(getListPotential().get(0));
         setDb3PartySelected(getList3PartyToDeploy().get(0));
         setFather(new DbOutlets());
-        setList3Party(new ArrayList<Db3party>());
         setCustomer(new DbCustomers());
         setListCustomers(new ArrayList<DbCustomers>());
         setAddress(EMPTY_FIELD);
@@ -185,7 +183,6 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             DbOutlets outlet = new DbOutlets();
             outlet.setAddress(getAddress() != null ? getAddress().toUpperCase() : "");
             outlet.setBusinessName(getBusinessName() != null ? getBusinessName().toUpperCase() : "");
-            outlet.setDb3partyList(getList3Party());
             cleanIdPhones();
             outlet.setDbPhonesList(getListPhones());
             outlet.setEmail(getEmail() != null ? getEmail().toUpperCase() : "");
@@ -218,6 +215,8 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 //            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             outlet.setStatusOutlet(StateOutletChain.ACTIVE.getId());
             outlet.setStatusMDM(StatusSystemMDM.PENDING_TMC.name());
+            outlet.setDb3PartyIdNew(getDb3PartySelected().getDb3partyId());
+            outlet.setDb3PartyIdOld(getDb3PartySelected().getDb3partyId());
             DbCustomers custo = saveCustomer();
             if (custo != null) {
                 getListCustomers().add(custo);
@@ -278,17 +277,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             showWarningMessage(capturarValor("chain_msg_phone_empty"));
         }
     }
-
-    public void add3Party() {
-        for (Db3party par : getList3Party()) {
-            if (par.equals(getDb3PartySelected())) {
-                showWarningMessage(capturarValor("out_msg_3party_exist"));
-                return;
-            }
-        }
-        getList3Party().add(getDb3PartySelected());
-    }
-
+   
     public void addCustomer() {
         if (getCustomer().getCustomerName() != null && !getCustomer().getCustomerName().isEmpty()) {
             for (DbCustomers cus : getListCustomers()) {
@@ -322,11 +311,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
     public void deletePhone(DbPhones phone) {
         getListPhones().remove(phone);
-    }
-
-    public void delete3Pary(Db3party party) {
-        getList3Party().remove(party);
-    }
+    }    
 
     public void listenerChannel() {
         setListSubChannel(getChannelSelected().getDbSubChannelsList());
@@ -637,20 +622,6 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
      */
     public void setListTypePhone(List<DbTypePhones> listTypePhone) {
         this.listTypePhone = listTypePhone;
-    }
-
-    /**
-     * @return the list3Party
-     */
-    public List<Db3party> getList3Party() {
-        return list3Party;
-    }
-
-    /**
-     * @param list3Party the list3Party to set
-     */
-    public void setList3Party(List<Db3party> list3Party) {
-        this.list3Party = list3Party;
     }
 
     /**

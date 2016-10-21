@@ -53,20 +53,19 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = DbOutlets.FIND_BY_SUB_SEGMENT, query = "SELECT o FROM DbOutlets o WHERE o.subSegmentId.subSegmentId=?1"),
     @NamedQuery(name = DbOutlets.FIND_BY_BUSINESS_NAME, query = "SELECT o FROM DbOutlets o WHERE o.businessName LIKE ?1 AND o.isFather = ?2"),
     @NamedQuery(name = DbOutlets.FIND_BY_SUB_SEGMENT_3PARTY, query = "SELECT o FROM DbOutlets o "
-            + "INNER JOIN o.db3partyList p "
-            + "WHERE o.subSegmentId.subSegmentId=?1 AND p.db3partyId=?2"),
-    @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION, query = "SELECT o FROM DbOutlets o INNER JOIN o.db3partyList p "
-            + "WHERE p.db3partyId=:db3partyId AND o.subSegmentId.subSegmentId IN :subSegmentId AND o.statusMDM  IN :statusMDM "
+            + "WHERE o.subSegmentId.subSegmentId=?1 AND o.db3PartyIdNew=?2"),
+    @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION, query = "SELECT o FROM DbOutlets o "
+            + "WHERE o.db3PartyIdNew=:db3partyId AND o.subSegmentId.subSegmentId IN :subSegmentId AND o.statusMDM  IN :statusMDM "
             + "AND o.nit LIKE :nit "
             + "AND o.businessName LIKE :businessName "
             + "AND o.numberPdv LIKE :numberPdv "
             + "AND o.kiernanId LIKE :kiernanId "
             + "AND o.subSegmentId.nameSubsegment LIKE :nameSubsegment "
             + "AND o.statusOutlet LIKE :statusOutlet "),
-    @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION_LIST, query = "SELECT o FROM DbOutlets o INNER JOIN o.db3partyList p "
-            + "WHERE p.db3partyId=?1 AND o.subSegmentId.subSegmentId IN ?2 AND o.statusMDM  IN ?3"),
-    @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION_COUNT, query = "SELECT COUNT (o) FROM DbOutlets o INNER JOIN o.db3partyList p "
-            + "WHERE p.db3partyId=:db3partyId AND o.subSegmentId.subSegmentId IN :subSegmentId AND o.statusMDM  IN :statusMDM "
+    @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION_LIST, query = "SELECT o FROM DbOutlets o  "
+            + "WHERE o.db3PartyIdNew=?1 AND o.subSegmentId.subSegmentId IN ?2 AND o.statusMDM  IN ?3"),
+    @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION_COUNT, query = "SELECT COUNT (o) FROM DbOutlets o "
+            + "WHERE o.db3PartyIdNew=:db3partyId AND o.subSegmentId.subSegmentId IN :subSegmentId AND o.statusMDM  IN :statusMDM "
             + "AND o.nit LIKE :nit "
             + "AND o.businessName LIKE :businessName "
             + "AND o.numberPdv LIKE :numberPdv "
@@ -104,7 +103,7 @@ public class DbOutlets implements Serializable {
     private DbSubSegments subSegmentId;
     @JoinColumn(name = "DISTRIBUTOR_SUB_SEGMENT_ID", referencedColumnName = "SUB_SEGMENT_ID")
     @ManyToOne(optional = false)
-    private DbSubSegments distributorSubSegmentId;    
+    private DbSubSegments distributorSubSegmentId;
     @JoinColumn(name = "POTENTIAL_ID", referencedColumnName = "POTENTIAL_ID")
     @ManyToOne(optional = false)
     private DbPotentials potentialId;
@@ -179,11 +178,6 @@ public class DbOutlets implements Serializable {
         @JoinColumn(name = "CUSTOMER_ID", referencedColumnName = "CUSTOMER_ID")})
     @ManyToMany
     private List<DbCustomers> dbCustomersList;
-    @JoinTable(name = "DB_OUTLETS_3PARTY", inverseJoinColumns = {
-        @JoinColumn(name = "DB_3PARTY_ID", referencedColumnName = "DB_3PARTY_ID")}, joinColumns = {
-        @JoinColumn(name = "OUTLET_ID", referencedColumnName = "OUTLET_ID")})
-    @ManyToMany
-    private List<Db3party> db3partyList;
     @JoinTable(name = "DB_OUTLETS_PHONES", joinColumns = {
         @JoinColumn(name = "OUTLET_ID", referencedColumnName = "OUTLET_ID")}, inverseJoinColumns = {
         @JoinColumn(name = "PHONE_ID", referencedColumnName = "PHONE_ID")})
@@ -197,6 +191,12 @@ public class DbOutlets implements Serializable {
     private String spirtis;
     @Column(name = "STATUS_MDM")
     private String statusMDM;
+    @Column(name = "DB_3PARTY_ID_OLD")
+    private Integer db3PartyIdOld;
+    @Column(name = "DB_3PARTY_ID_NEW")
+    private Integer db3PartyIdNew;
+    @Column(name = "SUB_SEGMENT_ID_ATHENA")
+    private Integer subSegmentIdAthena;
     //TRANSIENT
     @Transient
     private boolean disabledButtonEdit;
@@ -300,14 +300,6 @@ public class DbOutlets implements Serializable {
 
     public void setDbCustomersList(List<DbCustomers> dbCustomersList) {
         this.dbCustomersList = dbCustomersList;
-    }
-
-    public List<Db3party> getDb3partyList() {
-        return db3partyList;
-    }
-
-    public void setDb3partyList(List<Db3party> db3partyList) {
-        this.db3partyList = db3partyList;
     }
 
     public List<DbPhones> getDbPhonesList() {
@@ -552,6 +544,30 @@ public class DbOutlets implements Serializable {
         this.distributorSubSegmentId = distributorSubSegmentId;
     }
 
+    public Integer getDb3PartyIdOld() {
+        return db3PartyIdOld;
+    }
+
+    public void setDb3PartyIdOld(Integer db3PartyIdOld) {
+        this.db3PartyIdOld = db3PartyIdOld;
+    }
+
+    public Integer getDb3PartyIdNew() {
+        return db3PartyIdNew;
+    }
+
+    public void setDb3PartyIdNew(Integer db3PartyIdNew) {
+        this.db3PartyIdNew = db3PartyIdNew;
+    }
+
+    public Integer getSubSegmentIdAthena() {
+        return subSegmentIdAthena;
+    }
+
+    public void setSubSegmentIdAthena(Integer subSegmentIdAthena) {
+        this.subSegmentIdAthena = subSegmentIdAthena;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -573,5 +589,4 @@ public class DbOutlets implements Serializable {
     public String toString() {
         return "com.totalseguros.entidadesdiageobusiness.DbOutlets[ outletId=" + outletId + " ]";
     }
-
 }

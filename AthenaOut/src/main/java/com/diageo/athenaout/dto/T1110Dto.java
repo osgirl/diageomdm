@@ -86,8 +86,8 @@ public class T1110Dto implements Serializable {
     public String toString() {
         return codParty + SEPARATOR.getSeparator() + codCustDeliv + SEPARATOR.getSeparator()
                 + codDiv + SEPARATOR.getSeparator() + dateFrom + SEPARATOR.getSeparator()
-                + dateTo + SEPARATOR.getSeparator() + flagPrimary + ENTER.getSeparator()
-                +flagAnn + SEPARATOR.getSeparator() ;
+                + dateTo + SEPARATOR.getSeparator() + flagPrimary + SEPARATOR.getSeparator()
+                +flagAnn + ENTER.getSeparator() ;
     }
 
 }

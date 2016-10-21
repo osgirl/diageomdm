@@ -90,7 +90,8 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                 statusMDM.add(StatusSystemMDM.PENDING_KAM.name());
                 statusMDM.add(StatusSystemMDM.PENDING_TMC_POTENTIAL.name());
                 statusMDM.add(StatusSystemMDM.REJECT.name());
-            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
+            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())
+                    || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
                 statusMDM.add(StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name());
                 setDisabledSegmentation(Boolean.TRUE);
             }
@@ -271,22 +272,51 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     }
 
     public void approbatrionMasive() {
+        boolean flagChainSelected = false;
         for (DbChains chain : getChainsList()) {
             if (chain.isApprobationMassive()) {
-                if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())) {
+                if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())||
+                        getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
                     chain.setStatusMDM(StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name());
-                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
+                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())
+                        ||getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
                     chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
                 }
                 try {
                     chainBeanLocal.updateChain(chain);
+                    flagChainSelected = true;
                 } catch (DiageoBusinessException ex) {
                     Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         }
-        init();
-        showInfoMessage(capturarValor("sis_approbation_masive"));
+        if (flagChainSelected) {
+            init();
+            showInfoMessage(capturarValor("sis_approbation_masive"));
+        } else {
+            showWarningMessage(capturarValor("msg_not_outlets_select"));
+        }
+    }
+
+    public void rejectAllChain() {
+        boolean flagChainSelected = false;
+        for (DbChains chain : getChainsList()) {
+            if (chain.isApprobationMassive()) {
+                chain.setStatusMDM(StatusSystemMDM.REJECT.name());
+                try {
+                    chainBeanLocal.updateChain(chain);
+                    flagChainSelected = true;
+                } catch (DiageoBusinessException ex) {
+                    Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        if (flagChainSelected) {
+            init();
+            showInfoMessage(capturarValor("sis_approbation_masive"));
+        } else {
+            showWarningMessage(capturarValor("msg_not_outlets_select"));
+        }
     }
 
     public void selectAll() {
@@ -315,39 +345,40 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     }
 
     public boolean isRenderButtonReject() {
-        return getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId());
+        return getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId());
     }
-    
-     public boolean isRenderPendingTMCRejectStatus(){
-        if(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())||
-                getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())||
-                getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())||
-                getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())){
+
+    public boolean isRenderPendingTMCRejectStatus() {
+        if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())) {
             return true;
-        }else if(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())){
+        } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
             return false;
         }
         return false;
     }
-    
-    public boolean isRenderPendingCMStatus(){
-        if(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())||
-                getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())||
-                getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())||
-                getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())){
+
+    public boolean isRenderPendingCMStatus() {
+        if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
             return true;
-        }else if(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())||
-                getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())){
+        } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
             return false;
         }
         return false;
     }
-    
-    public boolean isDisabledFieldsTmc(){
+
+    public boolean isDisabledFieldsTmc() {
         return !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId());
     }
-    
-    public boolean isRenderApprovedStatus(){
+
+    public boolean isRenderApprovedStatus() {
         return getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId());
     }
 

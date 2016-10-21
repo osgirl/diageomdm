@@ -42,7 +42,11 @@ public class Db3PartyBean extends BusinessTransaction<Db3party> implements Db3Pa
 
     @Override
     public Db3party searchId(Integer id) {
-        return (Db3party) super.searchById(Db3party.class, id);
+        try {
+            return (Db3party) super.searchById(Db3party.class, id);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override

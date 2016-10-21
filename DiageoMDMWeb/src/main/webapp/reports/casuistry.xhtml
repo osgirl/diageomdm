@@ -43,7 +43,7 @@
                                 <p:dataExporter type="csv" target="dtReport" fileName="Report" pageOnly="false" />
                             </h:commandLink>
                             <p:dataTable id="dtReport" value="#{reportCasuistryBean.listReport}" var="report"
-                                         style="width: 90%; word-wrap: break-word;" paginator="true" paginatorAlwaysVisible="false"
+                                         style="width: 99%; word-wrap: break-word;" paginator="true" paginatorAlwaysVisible="false"
                                          rows="20" paginatorPosition="top"
                                          paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}">
                                 <p:column headerText="#{msg.out_code}">

@@ -33,7 +33,7 @@
         <dependency>  
             <groupId>org.primefaces</groupId>  
             <artifactId>primefaces</artifactId>  
-            <version>5.3</version>  
+            <version>6.0</version>  
         </dependency> 
         <dependency>  
             <groupId>org.primefaces.themes</groupId>  
@@ -68,7 +68,12 @@
         <dependency>
             <groupId>org.apache.poi</groupId>
             <artifactId>poi</artifactId>
-            <version>3.14</version>
+            <version>3.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>3.13</version>
         </dependency>
         <dependency>
             <groupId>javax.mail</groupId>

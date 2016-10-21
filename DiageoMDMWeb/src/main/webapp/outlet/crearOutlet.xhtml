@@ -77,6 +77,10 @@
                                 </p:selectOneMenu>
                                 <h:outputLabel value="#{msg.out_website}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                 <p:inputText value="#{outletCrearBean.website}"/>
+                                <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                <p:selectOneMenu value="#{outletCrearBean.db3PartySelected}" style="width: 90%" converter="db3PartyConverter">
+                                    <f:selectItems value="#{outletCrearBean.list3PartyToDeploy}" var="distri" itemLabel="#{distri.name3party}"/>
+                                </p:selectOneMenu>
                             </h:panelGrid>
                             <br/>
                             <!--h:panelGrid columns="6" style="width: 80%">
@@ -139,33 +143,6 @@
 
                             </h:panelGrid>
                         </h:panelGroup>
-                    </p:fieldset>
-                    <br/>
-                    <p:fieldset legend="#{msg.m_distribuidor}" style="width: 95%">
-                        <h:panelGrid style="width: 95%" columns="3">
-                            <h:outputLabel value="#{msg.m_distribuidor}"  style="width: 100%;"/>
-                            <p:selectOneMenu value="#{outletCrearBean.db3PartySelected}" converter="db3PartyConverter">
-                                <f:selectItems value="#{outletCrearBean.list3PartyToDeploy}" var="par" itemLabel="#{par.name3party}"/>
-                            </p:selectOneMenu>
-                            <p:commandButton value="#{msg.btn_add}" process="@parent" update="formOutlet:dt3pary"
-                                             actionListener="#{outletCrearBean.add3Party()}"
-                                             styleClass="button" style="width: 80%"/>                            
-                        </h:panelGrid>
-                        <br/>
-                        <p:dataTable id="dt3pary" paginator="true" rows="5" styleClass="paginated" paginatorAlwaysVisible="false"
-                                     value="#{outletCrearBean.list3Party}" var="party">
-                            <f:facet name="header">
-                                <h:outputLabel value="#{msg.m_distribuidor}"/>
-                            </f:facet>
-                            <p:column>
-                                <p:commandLink actionListener="#{outletCrearBean.delete3Pary(party)}" update="formOutlet:dt3pary" process="@this">
-                                    <p:graphicImage value="/resources/images/iconos/equis.png" width="12px"/>
-                                </p:commandLink>
-                            </p:column>
-                            <p:column>
-                                <h:outputLabel value="#{party.name3party}"/>
-                            </p:column>
-                        </p:dataTable>                        
                     </p:fieldset>
                     <br/>
                     <p:fieldset legend="#{msg.customer}" style="width: 95%">

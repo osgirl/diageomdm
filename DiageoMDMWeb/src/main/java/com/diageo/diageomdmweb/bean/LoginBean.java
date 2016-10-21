@@ -113,18 +113,10 @@ public class LoginBean extends DiageoRootBean implements Serializable {
                     armarMigaPan(capturarValor("m_perfil"), capturarValor("m_cambiar_contrase"));
                     return "/perfil/cambiarContrasenia/cambiarContrasenia?faces-redirect=true";
                 }
-                System.out.println(getUsuario());
-                System.out.println(getUsuario().getProfileId());
                 if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())) {
                     armarMigaPan(capturarValor("m_administrador"), capturarValor("m_usuario"), capturarValor("m_usuario_consultar"));
                     return "/admin/usuario/consultarUsuario?faces-redirect=true";
                 } else {
-//                    if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
-//                        if (revisarOutletsPendientesRevision()) {
-//                            System.out.println("entro aprobacionoo");
-//                            RequestContext.getCurrentInstance().execute("PF('dlgPendiente').show();");
-//                        }
-//                    }
                     if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
                         armarMigaPan(capturarValor("m_outlet"), capturarValor("m_chain_search"));
                         return "/outlet/searchChain?faces-redirect=true";
@@ -132,6 +124,10 @@ public class LoginBean extends DiageoRootBean implements Serializable {
                     if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())) {
                         armarMigaPan(capturarValor("m_outlet"), capturarValor("m_outlet_consultar"));
                         return "/outlet/consultarOutlet?faces-redirect=true";
+                    }
+                    if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
+                        armarMigaPan(capturarValor("m_outlet"), capturarValor("m_chain_search"));
+                        return "/outlet/searchChain?faces-redirect=true";
                     }
                     armarMigaPan(capturarValor("m_outlet"), capturarValor("m_outlet_consultar"));
                     return "/outlet/consultarOutlet?faces-redirect=true";

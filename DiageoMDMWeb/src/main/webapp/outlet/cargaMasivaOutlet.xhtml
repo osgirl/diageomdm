@@ -10,10 +10,17 @@
         <ui:composition template="./../WEB-INF/templates/diageoWebTemplate.xhtml">
 
             <ui:define name="content">
-                <h:form enctype="multipart/form-data">
+                <h:form id="formMassive" enctype="multipart/form-data">
                     <p:fileUpload mode="advanced" dragDropSupport="false"
                                   sizeLimit="20000000" fileLimit="3" allowTypes="/(\.|\/)(csv)$/"
-                                  fileUploadListener="#{massiveLoadBean.load}" />
+                                  fileUploadListener="#{massiveLoadBean.load}" 
+                                  update="formMassive:log"/>
+                    <p:dialog widgetVar="dlgLog" header="Log" modal="false" closeOnEscape="true" showEffect="shake"
+                              width="50%">
+                        <p:scrollPanel style="width:98%;height:250px">
+                            <p:outputLabel id="log" value="#{massiveLoadBean.log}"/>
+                        </p:scrollPanel>
+                    </p:dialog>
                 </h:form>
             </ui:define>
 

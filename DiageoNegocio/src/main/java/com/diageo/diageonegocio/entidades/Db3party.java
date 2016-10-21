@@ -55,9 +55,7 @@ public class Db3party implements Serializable {
     @Size(max = 1)
     @Column(name = "IS_FATHER")
     private String isFather;    
-    @ManyToMany(mappedBy = "db3partyList")
-    private List<DbOutlets> dbOutletsList;
-
+    
     @JoinColumn(name = "DB_3PARTY_REGIONAL_ID", referencedColumnName = "DB_3PARTY_REGIONAL_ID")
     @ManyToOne(optional = false)
     private Db3partyRegional db3partyRegionalId;
@@ -117,14 +115,6 @@ public class Db3party implements Serializable {
 
     public void setIsFather(String isFather) {
         this.isFather = isFather;
-    }
-
-    public List<DbOutlets> getDbOutletsList() {
-        return dbOutletsList;
-    }
-
-    public void setDbOutletsList(List<DbOutlets> dbOutletsList) {
-        this.dbOutletsList = dbOutletsList;
     }
 
     public Db3partyRegional getDb3partyRegionalId() {
