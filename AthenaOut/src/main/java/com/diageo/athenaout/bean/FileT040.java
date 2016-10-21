@@ -120,7 +120,7 @@ public class FileT040 {
             dto.setZiln(ob[17] != null ? ob[17].toString() : "");
             dto.setzDistributor(ob[15] == null ? "" : ob[15] + "");
             dto.setPrimaryOcs(ob[11] == null ? "" : ob[11] + "");
-            dto.setSecondaryOcs(ob[12] == null ? "" : ob[12] + "");
+            dto.setSecondaryOcs("");
             dto.setRegionalSales("");
             dto.setManagerSales("");
             dto.setTerritoryMmanager("");
