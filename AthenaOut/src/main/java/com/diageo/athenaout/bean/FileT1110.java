@@ -27,14 +27,26 @@ public class FileT1110 {
 
     public List<T1110Dto> findOutlets() {
         List<T1110Dto> list = new ArrayList<>();
+//        String sql = "SELECT OUTLET_ID, NVL(O.OUTLET_ID_FATHER, O.OUTLET_ID) OUTLET_ID_PADRE "
+//                + " FROM DIAGEO_BUSINESS.DB_OUTLETS O   "
+//                + " WHERE O.IS_FATHER = '1'   "
+//                + " AND O.STATUS_OUTLET = 'A'  "
+//                + " UNION ALL   "
+//                + " SELECT CHAIN_ID, CHAIN_ID PADRE "
+//                + " FROM DIAGEO_BUSINESS.DB_CHAINS  "
+//                + " WHERE IS_ACTIVE = 1";
         String sql = "SELECT OUTLET_ID, NVL(O.OUTLET_ID_FATHER, O.OUTLET_ID) OUTLET_ID_PADRE "
-                + " FROM DIAGEO_BUSINESS.DB_OUTLETS O   "
-                + " WHERE O.IS_FATHER = '1'   "
-                + " AND O.STATUS_OUTLET = 'A'  "
-                + " UNION ALL   "
+                + "FROM DIAGEO_BUSINESS.DB_OUTLETS O  "
+                + " WHERE O.IS_FATHER = '1'  "
+                + " AND O.STATUS_OUTLET = 'A' "
+                + "AND (TO_DATE(O.MODIFICATION_DATE,'DD-MM-YYYY') > TO_DATE('15-11-16','DD-MM-YYYY') "
+                + "OR TO_DATE(O.CREATION_DATE,'DD-MM-YYYY') = TO_DATE('21-11-16','DD-MM-YYYY')) "
+                + " UNION ALL  "
                 + " SELECT CHAIN_ID, CHAIN_ID PADRE "
-                + " FROM DIAGEO_BUSINESS.DB_CHAINS  "
-                + " WHERE IS_ACTIVE = 1";
+                + "FROM DIAGEO_BUSINESS.DB_CHAINS CHA "
+                + "WHERE IS_ACTIVE = 1 "
+                + "AND (TO_DATE(CHA.MODIFICATION_DATE,'DD-MM-YYYY') > TO_DATE('15-11-16','DD-MM-YYYY') "
+                + "OR TO_DATE(CHA.CREATION_DATE,'DD-MM-YYYY') = TO_DATE('21-11-16','DD-MM-YYYY'))";
         Query query = em.createNativeQuery(sql);
         List listOutlet = query.getResultList();
         for (Object out : listOutlet) {
