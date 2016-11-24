@@ -171,8 +171,8 @@ public class MassiveLoadBean extends DiageoRootBean {
                 }
             }
         } else {
-            //RequestContext.getCurrentInstance().execute("PF('dlgLog').show();");
-            downloadFile(log);
+            RequestContext.getCurrentInstance().execute("PF('dlgLog').show();");
+            //downloadFile(log);
         }
     }
 

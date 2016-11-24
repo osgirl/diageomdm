@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.primefaces.model.LazyDataModel;
+import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 
 /**
@@ -74,7 +75,16 @@ public class DbOutletsLazyDataModel extends LazyDataModel<DbOutlets> {
     }
 
     @Override
+    public List<DbOutlets> load(int first, int pageSize, List<SortMeta> multiSortMeta, Map<String, Object> filters) {
+        System.out.println("load sort");
+        return super.load(first, pageSize, multiSortMeta, filters); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
+
+    @Override
     public List<DbOutlets> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
+        System.out.println("load con la lógica");
         if (ProfileEnum.ADMINISTRATOR.getId().equals(profile) || ProfileEnum.DATA_STEWARD.getId().equals(profile)) {
             setRowCount((int) outletBeanLocal.findAllOutletsCount(first, pageSize, filters));
             return outletBeanLocal.findAllOutlets(first, pageSize, filters);

@@ -21,6 +21,9 @@
                         <p:dataTable id="dtChannel" value="#{consultarChannelBean.listaChannels}" var="cha" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      rendered="#{consultarChannelBean.verDetalle}" paginator="true">
+                            <p:column headerText="#{msg.id}">
+                                <h:outputLabel value="#{cha.channelId}"/>
+                            </p:column>
                             <p:column headerText="#{msg.can_nombre}">
                                 <h:outputLabel value="#{cha.nameChannel}"/>
                             </p:column>

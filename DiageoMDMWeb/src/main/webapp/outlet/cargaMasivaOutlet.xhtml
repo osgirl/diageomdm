@@ -16,7 +16,7 @@
                                   fileUploadListener="#{massiveLoadBean.load}" 
                                   update="formMassive:log"/>
                     <p:dialog widgetVar="dlgLog" header="Log" modal="false" closeOnEscape="true" showEffect="shake"
-                              width="50%">
+                              width="50%" resizable="false">
                         <p:scrollPanel style="width:98%;height:250px">
                             <p:outputLabel id="log" value="#{massiveLoadBean.log}"/>
                         </p:scrollPanel>
