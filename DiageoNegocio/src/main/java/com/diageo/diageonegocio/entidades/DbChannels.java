@@ -35,8 +35,9 @@ public class DbChannels implements Serializable {
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
-    @GeneratedValue(generator = "SQ_DB_CHANNELS", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "SQ_DB_CHANNELS", sequenceName = "SQ_DB_CHANNELS", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(generator = "SQ_DB_CHANNELS", strategy = GenerationType.SEQUENCE)
+//    @SequenceGenerator(name = "SQ_DB_CHANNELS", sequenceName = "SQ_DB_CHANNELS", allocationSize = 1)
     @Column(name = "CHANNEL_ID")
     private Integer channelId;
     @Size(max = 100)

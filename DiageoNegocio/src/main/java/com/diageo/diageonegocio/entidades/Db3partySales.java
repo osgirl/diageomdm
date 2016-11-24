@@ -37,8 +37,9 @@ public class Db3partySales implements Serializable {
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
-    @GeneratedValue(generator = "SQ_DB_3PARTY_SALES", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "SQ_DB_3PARTY_SALES", sequenceName = "SQ_DB_3PARTY_SALES", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(generator = "SQ_DB_3PARTY_SALES", strategy = GenerationType.SEQUENCE)
+//    @SequenceGenerator(name = "SQ_DB_3PARTY_SALES", sequenceName = "SQ_DB_3PARTY_SALES", allocationSize = 1)
     @Column(name = "DB_3PARTY_SALE_ID")
     private Integer db3partySaleId;
     @Size(max = 50)

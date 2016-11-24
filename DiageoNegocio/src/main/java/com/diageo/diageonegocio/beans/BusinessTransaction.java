@@ -28,6 +28,7 @@ public class BusinessTransaction<T> {
     }
 
     public Object searchById(Class t, Object id) {
+        getEntityManager().getEntityManagerFactory().getCache().evictAll();
         Object o = getEntityManager().find(t, id);
         return o;
     }
@@ -55,6 +56,7 @@ public class BusinessTransaction<T> {
     }
 
     public List<T> searchByNamedQuery(Class type, String namedQuery, Object... parameters) {
+        getEntityManager().getEntityManagerFactory().getCache().evictAll();
         Query query = getEntityManager().createNamedQuery(namedQuery, type);
         if (parameters != null) {
             for (int i = 0; i < parameters.length; i++) {
@@ -65,6 +67,7 @@ public class BusinessTransaction<T> {
     }
 
     public List<T> searchAll(Class type) {
+        getEntityManager().getEntityManagerFactory().getCache().evictAll();
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<T> criteria = cb.createQuery(type);
         criteria.from(type);
