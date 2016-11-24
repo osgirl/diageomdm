@@ -17,8 +17,10 @@
                         <h:panelGroup id="pgChaDetalle" >
                             <h:panelGrid columns="2" style="width: 100%">
                                 <h:outputLabel value="#{msg.sub_can_nombre}" style="width: 30%"/>
-                                <p:inputText id="itNombre" value="#{subChannelCrear.nombreSubChannel}" required="true" label="#{msg.sub_can_nombre}" style="width: 70%"/>                                                             
-
+                                <h:panelGroup>
+                                    <p:inputText id="itNombre" value="#{subChannelCrear.nombreSubChannel}" required="true" label="#{msg.sub_can_nombre}" style="width: 70%"/>
+                                    <p:message for="itNombre"/>
+                                </h:panelGroup>
                                 <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
                                 <p:selectOneMenu value="#{subChannelCrear.channel}" converter="channelConverter" style="width: 67%">
                                     <f:selectItems value="#{subChannelCrear.listaChannel}" var="cha" itemLabel="#{cha.nameChannel}"/>

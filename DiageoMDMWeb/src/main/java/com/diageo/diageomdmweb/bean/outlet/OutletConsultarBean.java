@@ -197,6 +197,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                 Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        System.out.println("ver detalle:" + verDetalle);
+        System.out.println("perfil:" + loginBean.getUsuario().getProfileId().getNameProfile());
     }
 
     public void seeDetail(DbOutlets out) {
@@ -336,7 +338,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                 }
             }
         }
-    }    
+    }
 
     public void rejectOutlet() {
         try {
@@ -382,7 +384,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             showWarningMessage(capturarValor("msg_not_outlets_select"));
         }
     }
-    
+
     public void rejectAllOutlet() {
         boolean flagChainSelected = false;
         for (DbOutlets listaOutlet : getListOutlets()) {
@@ -471,6 +473,21 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             return "";
         }
         return searchId.getName3party();
+    }
+
+    public boolean renderDataTableLazyDataModel() {
+        return isVerDetalle() && (getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("ADMINISTRATOR")
+                || getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("DATA STEWARD"));
+    }
+    
+    public boolean renderDataTable() {
+        return isVerDetalle() 
+                &&(
+                getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("TMC") ||
+                getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("COMMERCIAL MANAGER") ||
+                getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("KAM") ||
+                getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("CATDEV") 
+                );
     }
 
     /**

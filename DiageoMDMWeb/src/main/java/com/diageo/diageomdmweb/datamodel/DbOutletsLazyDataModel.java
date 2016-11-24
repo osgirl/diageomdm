@@ -74,11 +74,11 @@ public class DbOutletsLazyDataModel extends LazyDataModel<DbOutlets> {
         this.profile = profile;
     }
 
-    @Override
-    public List<DbOutlets> load(int first, int pageSize, List<SortMeta> multiSortMeta, Map<String, Object> filters) {
-        System.out.println("load sort");
-        return super.load(first, pageSize, multiSortMeta, filters); //To change body of generated methods, choose Tools | Templates.
-    }
+//    @Override
+//    public List<DbOutlets> load(int first, int pageSize, List<SortMeta> multiSortMeta, Map<String, Object> filters) {
+//        System.out.println("load sort");
+//        return super.load(first, pageSize, multiSortMeta, filters); //To change body of generated methods, choose Tools | Templates.
+//    }
     
     
 

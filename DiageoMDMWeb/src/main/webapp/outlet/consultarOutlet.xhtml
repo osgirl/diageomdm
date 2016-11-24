@@ -67,7 +67,7 @@
                     <p:dataTable id="dtOutletNew" value="#{outletConsultarBean.outletsLazyDataModel}" var="outdtNew" paginatorAlwaysVisible="false" rows="15"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  style="font-size:  90%;word-wrap: break-word;font-size: 9px !important" 
-                                 rendered="#{outletConsultarBean.verDetalle and (loginBean.usuario.profileId.nameProfile eq 'ADMINISTRATOR'  or loginBean.usuario.profileId.nameProfile eq 'DATA STEWARD')}" paginator="true"
+                                 rendered="#{outletConsultarBean.renderDataTableLazyDataModel()}" paginator="true"
                                  widgetVar="dtOutletSearch" lazy="true"
                                  emptyMessage="#{msg.out_msg_not_record}"> 
                         <p:column headerText="#{msg.status}" filterMatchMode="exact" filterBy="#{outdtNew.statusMDM}" exportable="false">
@@ -152,8 +152,7 @@
                     <p:dataTable id="dtOutletNew2" value="#{outletConsultarBean.listOutlets}" var="outdtNew2" paginatorAlwaysVisible="false" rows="15"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  style="font-size:  90%;word-wrap: break-word;" 
-                                 rendered="#{outletConsultarBean.verDetalle and (loginBean.usuario.profileId.nameProfile eq 'TMC' or loginBean.usuario.profileId.nameProfile eq 'COMMERCIAL MANAGER' 
-                                             or loginBean.usuario.profileId.nameProfile eq 'KAM' or loginBean.usuario.profileId.nameProfile eq 'CATDEV')}" paginator="true"
+                                 rendered="#{outletConsultarBean.renderDataTable()}" paginator="true"
                                  widgetVar="dtOutletSearch2" 
                                  emptyMessage="#{msg.out_msg_not_record}"> 
                         <p:column headerText="#{msg.status}" filterMatchMode="exact" filterBy="#{outdtNew2.statusMDM}">
