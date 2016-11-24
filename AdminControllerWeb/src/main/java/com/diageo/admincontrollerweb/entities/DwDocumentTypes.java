@@ -26,15 +26,16 @@ import javax.validation.constraints.Size;
  * @author yovanoty126
  */
 @Entity
-@Table(name = "DW_DOCUMENT_TYPES")
+@Table(name = "DW_DOCUMENT_TYPES", schema = "dbo")
 @NamedQueries({
     @NamedQuery(name = "DwDocumentTypes.findAll", query = "SELECT d FROM DwDocumentTypes d")})
 public class DwDocumentTypes implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(generator = "SQ_DW_DOCUMENT_TYPES",strategy = GenerationType.SEQUENCE)   
-    @SequenceGenerator(name = "SQ_DW_DOCUMENT_TYPES", sequenceName = "SQ_DW_DOCUMENT_TYPES",allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(generator = "SQ_DW_DOCUMENT_TYPES",strategy = GenerationType.SEQUENCE)   
+//    @SequenceGenerator(name = "SQ_DW_DOCUMENT_TYPES", sequenceName = "SQ_DW_DOCUMENT_TYPES",allocationSize = 1)
     @Column(name = "DOCUMENT_TYPE_ID")
     private Integer documentTypeId;
     @NotNull

@@ -28,7 +28,7 @@ import javax.validation.constraints.Size;
  * @author EDUARDO
  */
 @Entity
-@Table(name = "DW_TEMPORAL_LINK")
+@Table(name = "DW_TEMPORAL_LINK", schema = "dbo")
 @NamedQueries({
     @NamedQuery(name = "DwTemporalLink.findByEmail", query = "SELECT d FROM DwTemporalLink d WHERE d.email = ?1 ORDER BY d.creattionDate"),
     @NamedQuery(name = "DwTemporalLink.findByToken", query = "SELECT d FROM DwTemporalLink d WHERE d.token = ?1")
@@ -40,8 +40,9 @@ public class DwTemporalLink implements Serializable {
     public static final String FIND_BY_TOKEN = "DwTemporalLink.findByToken";
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
-    @GeneratedValue(generator = "SQ_DW_TEMPORAL_LINK", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "SQ_DW_TEMPORAL_LINK", sequenceName = "SQ_DW_TEMPORAL_LINK", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(generator = "SQ_DW_TEMPORAL_LINK", strategy = GenerationType.SEQUENCE)
+//    @SequenceGenerator(name = "SQ_DW_TEMPORAL_LINK", sequenceName = "SQ_DW_TEMPORAL_LINK", allocationSize = 1)
     @Column(name = "TEMPORAL_LINK_ID")
     private BigDecimal temporalLinkId;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation

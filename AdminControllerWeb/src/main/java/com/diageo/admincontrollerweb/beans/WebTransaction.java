@@ -27,6 +27,7 @@ public class WebTransaction<T> {
     }
 
     public Object findById(Class t, Object id) {
+        getEntityManager().getEntityManagerFactory().getCache().evictAll();
         Object o = getEntityManager().find(t, id);
         return o;
     }
@@ -49,6 +50,7 @@ public class WebTransaction<T> {
     }
 
     public List<T> findByNamedQuery(Class type, String namedQuery, Object... parameter) {
+        getEntityManager().getEntityManagerFactory().getCache().evictAll();
         Query query = getEntityManager().createNamedQuery(namedQuery, type);
         if (parameter != null) {
             for (int i = 0; i < parameter.length; i++) {
@@ -58,7 +60,8 @@ public class WebTransaction<T> {
         return query.getResultList();
     }
 
-    public List<T> findAll(Class type) {        
+    public List<T> findAll(Class type) {   
+        getEntityManager().getEntityManagerFactory().getCache().evictAll();
         CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
         CriteriaQuery<T> criteria = cb.createQuery(type);
         criteria.from(type);

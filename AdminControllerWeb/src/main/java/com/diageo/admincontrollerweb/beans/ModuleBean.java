@@ -25,7 +25,7 @@ public class ModuleBean extends WebTransaction<DwModules> implements ModuleBeanL
 
     @Override
     public void deleteModuleUser(Integer userId) {
-        String delete="DELETE FROM DIAGEO_WEB.DW_USERS_MODULES WHERE USER_ID = ?";
+        String delete="DELETE FROM DW_USERS_MODULES WHERE USER_ID = ?";
         Query sql=super.getEntityManager().createNativeQuery(delete);
         sql.setParameter(1, userId);
         sql.executeUpdate();

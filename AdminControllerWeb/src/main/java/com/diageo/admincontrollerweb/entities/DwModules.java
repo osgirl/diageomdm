@@ -32,15 +32,16 @@ import javax.validation.constraints.Size;
  * @author yovanoty126
  */
 @Entity
-@Table(name = "DW_MODULES")
+@Table(name = "DW_MODULES", schema = "dbo")
 @NamedQueries({
     @NamedQuery(name = "DwModules.findAll", query = "SELECT m FROM DwModules m")})
 public class DwModules implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(generator = "SQ_DW_MODULES", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "SQ_DW_MODULES", sequenceName = "SQ_DW_MODULES", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(generator = "SQ_DW_MODULES", strategy = GenerationType.SEQUENCE)
+//    @SequenceGenerator(name = "SQ_DW_MODULES", sequenceName = "SQ_DW_MODULES", allocationSize = 1)
     @Column(name = "MODULE_ID")
     private BigDecimal moduleId;
     @Basic(optional = false)

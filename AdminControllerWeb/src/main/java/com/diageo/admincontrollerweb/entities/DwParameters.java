@@ -21,7 +21,7 @@ import javax.persistence.Table;
  * @author yovanoty126
  */
 @Entity
-@Table(name = "DW_PARAMETERS")
+@Table(name = "DW_PARAMETERS", schema = "dbo")
 @NamedQueries({
     @NamedQuery(name = DwParameters.FIND_KEY, query = "SELECT p FROM DwParameters p WHERE p.parameterKey = ?1")
 })
@@ -29,8 +29,9 @@ public class DwParameters implements Serializable {
 
     public static final String FIND_KEY = "DwParameters.findByKey";
     @Id
-    @GeneratedValue(generator = "SQ_Dw_PARAMETERS", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "SQ_Dw_PARAMETERS", sequenceName = "SQ_Dw_PARAMETERS", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(generator = "SQ_Dw_PARAMETERS", strategy = GenerationType.SEQUENCE)
+//    @SequenceGenerator(name = "SQ_Dw_PARAMETERS", sequenceName = "SQ_Dw_PARAMETERS", allocationSize = 1)
     @Column(name = "PARAMETER_ID")
     private Integer parameterId;
     @Column(name = "PARAMETER_KEY")

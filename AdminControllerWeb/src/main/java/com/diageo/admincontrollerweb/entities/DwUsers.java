@@ -34,7 +34,8 @@ import javax.validation.constraints.Size;
  * @author yovanoty126
  */
 @Entity
-@Table(name = "DW_USERS", schema = "DIAGEO_WEB")
+//@Table(name = "DW_USERS", schema = "DIAGEO_WEB")
+@Table(name = "DW_USERS", schema = "dbo")
 @NamedQueries({
     @NamedQuery(name = DwUsers.FIND_MAIL, query = "SELECT u FROM DwUsers u WHERE u.emailUser = ?1"),
     @NamedQuery(name = DwUsers.FIND_BY_PROFILE, query = "SELECT u FROM DwUsers u WHERE u.profileId.profileId     = ?1"),
@@ -46,8 +47,9 @@ public class DwUsers implements Serializable {
     public static final String FIND_BY_PROFILE = "DwUsers.findByProfile";
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(generator = "SQ_DW_USERS", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "SQ_DW_USERS", sequenceName = "SQ_DW_USERS", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(generator = "SQ_DW_USERS", strategy = GenerationType.SEQUENCE)
+//    @SequenceGenerator(name = "SQ_DW_USERS", sequenceName = "SQ_DW_USERS", allocationSize = 1)
     @Column(name = "USER_ID")
     private Integer userId;
     @Column(name = "DISTRIBUTOR_ID")

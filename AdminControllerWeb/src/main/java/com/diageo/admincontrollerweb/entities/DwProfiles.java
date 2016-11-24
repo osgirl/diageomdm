@@ -28,7 +28,7 @@ import javax.validation.constraints.Size;
  * @author yovanoty126
  */
 @Entity
-@Table(name = "DW_PROFILES")
+@Table(name = "DW_PROFILES", schema = "dbo")
 @NamedQueries({
     @NamedQuery(name = "DwProfiles.findAll", query = "SELECT p FROM DwProfiles p"),
     @NamedQuery(name = DwProfiles.FIND_BY_SYSTEM, query = "SELECT p FROM DwProfiles p WHERE p.systemMDM = 1")
@@ -38,8 +38,9 @@ public class DwProfiles implements Serializable {
     public static final String FIND_BY_SYSTEM = "DwProfiles.findBySystem";
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(generator = "SQ_DW_PROFILES", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "SQ_DW_PROFILES", sequenceName = "SQ_DW_PROFILES", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(generator = "SQ_DW_PROFILES", strategy = GenerationType.SEQUENCE)
+//    @SequenceGenerator(name = "SQ_DW_PROFILES", sequenceName = "SQ_DW_PROFILES", allocationSize = 1)
     @Column(name = "PROFILE_ID")
     private Integer profileId;
     @Basic(optional = false)

@@ -28,7 +28,7 @@ import javax.validation.constraints.Size;
  * @author yovanoty126
  */
 @Entity
-@Table(name = "DW_PASSCONTAINERS")
+@Table(name = "DW_PASSCONTAINERS", schema = "dbo")
 @NamedQueries({
     @NamedQuery(name = DwPasscontainers.FIND_BY_USER, query = "SELECT p FROM DwPasscontainers p WHERE p.userId.userId = ?1"),
     @NamedQuery(name = DwPasscontainers.FIND_BY_USER_PASS, query = "SELECT p FROM DwPasscontainers p WHERE p.userId.userId = ?1 AND p.passwordUser = ?2")
@@ -39,8 +39,9 @@ public class DwPasscontainers implements Serializable {
     public static final String FIND_BY_USER_PASS = "DwPasscontainers.findByIdUserPass";
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(generator = "SQ_DW_PASSCONTAINERS", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "SQ_DW_PASSCONTAINERS", sequenceName = "SQ_DW_PASSCONTAINERS", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    @GeneratedValue(generator = "SQ_DW_PASSCONTAINERS", strategy = GenerationType.SEQUENCE)
+//    @SequenceGenerator(name = "SQ_DW_PASSCONTAINERS", sequenceName = "SQ_DW_PASSCONTAINERS", allocationSize = 1)
     @Column(name = "PASSCONTAINER_ID")
     private Integer passcontainerId;
     @Size(max = 32)
