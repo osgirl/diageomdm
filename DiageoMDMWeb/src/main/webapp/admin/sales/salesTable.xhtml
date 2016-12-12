@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <p:fieldset legend="Vendedor" style="width: 90%">
+        <br/>
+        <h:commandLink >
+            <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
+            <p:dataExporter type="xls" target="dtSales" fileName="#{msg.sales}" pageOnly="false"/>
+        </h:commandLink>
+        <br/>
+        <p:dataTable id="dtSales" paginatorAlwaysVisible="true" rows="15" widgetVar="dtSales"
+                     value="#{salesSearchBean.listSales}" var="sales"
+                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     paginator="true">
+            <p:column headerText="#{msg.id}">
+                <h:outputText value="#{sales.db3partySaleId}"/>
+            </p:column>
+            <p:column headerText="#{msg.sales_nombre}" filterBy="#{sales.nameSales}">
+                <h:outputText value="#{sales.nameSales}"/>
+            </p:column>
+            <p:column headerText="#{msg.sales_manager}" filterBy="#{sales.db3partyManagerId.nameManager}">
+                <h:outputText value="#{sales.db3partyManagerId.nameManager}"/>
+            </p:column>
+            <p:column headerText="#{msg.usu_perfil}" filterBy="#{sales.db3PartyProfileId.description}">
+                <h:outputText value="#{sales.db3PartyProfileId.description}"/>
+            </p:column>
+            <p:column headerText="#{msg.out_distribuidor}">
+                <h:outputText value="#{salesSearchBean.seeLabel3Party(sales.dbeParty)}"/>
+            </p:column>
+            <p:column exportable="false">
+                <p:commandLink value="#{msg.btn_detalle}" actionListener="#{salesSearchBean.seeDetail(sales)}"
+                               process="@this" update="@form" style="color: blue"/>
+            </p:column>
+        </p:dataTable>
+    </p:fieldset>
+</html>

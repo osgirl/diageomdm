@@ -18,6 +18,11 @@
                 <h:form id="formCanal">
                     <p:fieldset legend="#{msg.m_canal}" style="width: 90%">
                         <br/>
+                        <h:commandLink rendered="#{consultarChannelBean.verDetalle}">
+                            <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
+                            <p:dataExporter type="xls" target="dtChannel" fileName="#{msg.can_canal}" pageOnly="false" />
+                        </h:commandLink>
+                        <br/>
                         <p:dataTable id="dtChannel" value="#{consultarChannelBean.listaChannels}" var="cha" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      rendered="#{consultarChannelBean.verDetalle}" paginator="true">
@@ -30,11 +35,11 @@
                             <p:column headerText="#{msg.athena_code}">
                                 <h:outputLabel value="#{cha.distri_1}"/>
                             </p:column>
-                            <p:column headerText="#{msg.estado}" style="text-align: center">                                       
+                            <p:column headerText="#{msg.estado}" style="text-align: center" exportable="false">                                       
                                 <p:graphicImage value="/resources/images/iconos/equis.png" width="20px" rendered="#{cha.stateChannel eq '0'}"/>
                                 <p:graphicImage value="/resources/images/iconos/chulo.png" width="20px" rendered="#{cha.stateChannel eq '1'}"/>
                             </p:column>
-                            <p:column>
+                            <p:column exportable="false">
                                 <p:commandLink value="#{msg.btn_detalle}" actionListener="#{consultarChannelBean.detalleChannel(cha)}" 
                                                style="color: blue" process="@this" update="@form"/>
                             </p:column>

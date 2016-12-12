@@ -16,6 +16,7 @@ import com.diageo.diageonegocio.entidades.Db3partyRegional;
 import com.diageo.diageonegocio.enums.FatherDistributorEnum;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -25,6 +26,7 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.validation.constraints.Size;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -47,6 +49,7 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
     private Db3partyRegional db3partyRegionalSelected;
     private Db3party partyFatherSelected;
     private List<Db3party> listDistributor;
+    private List<Db3party> listDistributorFiltered;
     private List<Db3party> listDistributorFather;
     private List<Db3partyRegional> listRegional;
     private Db3party selectedDistributor;
@@ -65,6 +68,7 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
     @PostConstruct
     public void init() {
         setListDistributor(distributorBeanLocal.searchAll());
+        setListDistributorFiltered(getListDistributor());
         setListDistributorFather(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsPadre()));
         setSeeDetail(Boolean.TRUE);
         setSelectedDistributor(new Db3party());
@@ -119,6 +123,8 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
         setSeeDetail(Boolean.TRUE);
         setName("");
         setSelectedDistributor(null);
+        RequestContext rc = RequestContext.getCurrentInstance();
+        rc.execute("PF('dtDistri').clearFilters()");
     }
 
     /**
@@ -259,6 +265,14 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<Db3party> getListDistributorFiltered() {
+        return listDistributorFiltered;
+    }
+
+    public void setListDistributorFiltered(List<Db3party> listDistributorFiltered) {
+        this.listDistributorFiltered = listDistributorFiltered;
     }
 
 }

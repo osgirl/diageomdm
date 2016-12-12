@@ -29,8 +29,10 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DB_3PARTY_SALES")
 @NamedQueries({
-    @NamedQuery(name = "Db3partySales.findAll", query = "SELECT d FROM Db3partySales d"),
-    @NamedQuery(name = "Db3partySales.findByDb3partySaleId", query = "SELECT d FROM Db3partySales d WHERE d.db3partySaleId = :db3partySaleId"),
+    @NamedQuery(name = "Db3partySales.findAll", query = "SELECT d FROM Db3partySales d")
+    ,
+    @NamedQuery(name = "Db3partySales.findByDb3partySaleId", query = "SELECT d FROM Db3partySales d WHERE d.db3partySaleId = :db3partySaleId")
+    ,
     @NamedQuery(name = "Db3partySales.findByNameSales", query = "SELECT d FROM Db3partySales d WHERE d.nameSales = :nameSales")})
 public class Db3partySales implements Serializable {
 
@@ -48,13 +50,19 @@ public class Db3partySales implements Serializable {
     @JoinColumn(name = "DB_3PARTY_MANAGER_ID", referencedColumnName = "DB_3PARTY_MANAGER_ID")
     @ManyToOne(optional = false)
     private Db3partyManagers db3partyManagerId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "db3partySaleId")
+    @OneToMany(mappedBy = "db3partySaleId")
     private List<DbOutlets> dbOutletsList;
-    
     @ManyToOne
     @JoinColumn(name = "DB_3PARTY_PROFILE_ID")
     private Db3partyProfiles db3PartyProfileId;
-    
+    @Column(name = "DB_3PARTY_ID")
+    private Integer dbeParty;
+    @Column(name = "DB_3PARTY_PDV")
+    private String pdv;
+    @Column(name = "DISTRI_2")
+    private String distri_2;
+    @Column(name = "FOCALIZADO")
+    private String focalizado;
 
     public Db3partySales() {
     }
@@ -101,6 +109,38 @@ public class Db3partySales implements Serializable {
 
     public void setDb3PartyProfileId(Db3partyProfiles db3PartyProfileId) {
         this.db3PartyProfileId = db3PartyProfileId;
+    }
+
+    public Integer getDbeParty() {
+        return dbeParty;
+    }
+
+    public void setDbeParty(Integer dbeParty) {
+        this.dbeParty = dbeParty;
+    }
+
+    public String getPdv() {
+        return pdv;
+    }
+
+    public void setPdv(String pdv) {
+        this.pdv = pdv;
+    }
+
+    public String getDistri_2() {
+        return distri_2;
+    }
+
+    public void setDistri_2(String distri_2) {
+        this.distri_2 = distri_2;
+    }
+
+    public String getFocalizado() {
+        return focalizado;
+    }
+
+    public void setFocalizado(String focalizado) {
+        this.focalizado = focalizado;
     }
 
     @Override

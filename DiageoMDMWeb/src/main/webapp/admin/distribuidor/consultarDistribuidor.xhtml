@@ -5,22 +5,29 @@
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
-
     <body>
-
         <ui:composition template="./../../WEB-INF/templates/diageoWebTemplate.xhtml">
-
             <ui:define name="content">
                 <h:form id="formDistri">
                     <p:fieldset legend="#{msg.out_distribuidor}" style="width: 90%">
                         <br/>
+                        <h:commandLink rendered="#{distributorSearch.seeDetail}">
+                            <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
+                            <p:dataExporter type="xls" target="dtDistri" fileName="#{msg.out_distribuidor}" pageOnly="false" />
+                        </h:commandLink>
+                        <br/>
                         <p:dataTable id="dtDistri" value="#{distributorSearch.listDistributor}" var="dis" paginatorAlwaysVisible="false" rows="15"
+                                     filteredValue="#{distributorSearch.listDistributorFiltered}"
+                                     widgetVar="dtDistri"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"                                     
                                      rendered="#{distributorSearch.seeDetail}" paginator="true">
+                            <p:column headerText="#{msg.id}">
+                                <h:outputLabel value="#{dis.db3partyId}"/>
+                            </p:column>
                             <p:column headerText="#{msg.m_distri_nombre}" filterBy="#{dis.name3party}" filterMatchMode="startsWith">
                                 <h:outputLabel value="#{dis.name3party}"/>
                             </p:column>
-                            <p:column>
+                            <p:column exportable="false">
                                 <p:commandLink value="#{msg.btn_detalle}" actionListener="#{distributorSearch.detail(dis)}"
                                                style="color: blue" process="@this" update="@form"/>
                             </p:column>
@@ -73,7 +80,7 @@
                                         <f:selectItem itemLabel="#{msg.usu_chain}" itemValue="1"/>
                                         <f:selectItem itemLabel="#{msg.m_outlet}" itemValue="0" />
                                     </p:selectOneRadio>
-                                    
+
                                     <h:outputLabel value="#{msg.status}"/>
                                     <p:selectOneRadio value="#{distributorSearch.status}">
                                         <f:selectItem itemLabel="#{msg.active}" itemValue="1"/>

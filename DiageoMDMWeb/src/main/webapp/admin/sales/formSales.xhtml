@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" 
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <style>
+        .ui-widget-header .ui-inputfield, .ui-widget-content .ui-inputfield {
+            width: 90% !important;
+        }
+    </style>
+    <p:fieldset legend="Vendedor" style="width: 90%">
+        <br/>
+        <h:panelGroup id="pgSales" >
+            <h:panelGrid columns="4" style="width: 100%">
+                <h:outputLabel value="#{msg.sales_nombre}"/>
+                <h:panelGroup>
+                    <p:inputText id="itName" value="#{salesCreateBean.salesName}" required="true" label="#{msg.sales_nombre}"/>
+                    <p:message for="itName"/>
+                </h:panelGroup>
+
+                <h:outputLabel value="#{msg.sales_manager}"/>
+                <p:selectOneMenu value="#{salesCreateBean.managerSelected}" style="width: 90%" converter="partyManagerConverter">
+                    <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
+                    <f:selectItems value="#{salesCreateBean.managerList}" var="man" itemLabel="#{man.nameManager}"/>
+                </p:selectOneMenu>
+
+                <h:outputLabel value="#{msg.usu_perfil}"/>
+                <p:selectOneMenu value="#{salesCreateBean.profilesSelected}" style="width: 90%" converter="db3PartyProfilesConverter">
+                    <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
+                    <f:selectItems value="#{salesCreateBean.profilesList}" var="pro" itemLabel="#{pro.description}"/>
+                </p:selectOneMenu>
+
+                <h:outputLabel value="#{msg.out_punto_venta}"/>
+                <p:inputText value="#{salesCreateBean.pointOfSale}"/>
+
+                <h:outputLabel value="#{msg.sales_code_distri}"/>
+                <p:inputText value="#{salesCreateBean.distributor_2}"/>
+
+                <h:outputLabel value="#{msg.m_distribuidor}"/>
+                <p:selectOneMenu value="#{salesCreateBean.db3PartySelected}" style="width: 90%" converter="db3PartyConverter">
+                    <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
+                    <f:selectItems value="#{salesCreateBean.db3PartyList}" var="party" itemLabel="#{party.name3party}"/>
+                </p:selectOneMenu>
+
+                <h:outputLabel value="#{msg.sales_focalizado}"/>
+                <p:selectBooleanCheckbox value="#{salesCreateBean.focalizado}"/>
+            </h:panelGrid>
+            <br/>
+            <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" 
+                             actionListener="#{salesCreateBean.saveSales()}" styleClass="button" style="left: 0%"/>
+            <p:commandButton value="#{msg.btn_regresar}" immediate="true" update="@form" 
+                             rendered="#{salesCreateBean.renderButtonBack}"
+                             actionListener="#{salesCreateBean['btnBack']}" styleClass="button" style="left: 0%"/>
+        </h:panelGroup>
+    </p:fieldset>
+</html>

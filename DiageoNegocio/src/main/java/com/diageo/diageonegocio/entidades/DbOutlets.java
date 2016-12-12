@@ -94,7 +94,7 @@ public class DbOutlets implements Serializable {
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @GeneratedValue(generator = "SQ_DB_OUTLETS_CHAINS", strategy = GenerationType.SEQUENCE)
 //    @SequenceGenerator(name = "SQ_DB_OUTLETS_CHAINS", sequenceName = "SQ_DB_OUTLETS_CHAINS", allocationSize = 1)
     @Column(name = "OUTLET_ID")
@@ -196,7 +196,7 @@ public class DbOutlets implements Serializable {
     private Integer db3PartyIdOld;
     @Column(name = "DB_3PARTY_ID_NEW")
     private Integer db3PartyIdNew;
-    @Column(name = "SUB_SEGMENT_ID_ATHENA")
+    @Column(name = "SUB_SEGMENT_ID_ATHENA")    
     private Integer subSegmentIdAthena;
     //TRANSIENT
     @Transient

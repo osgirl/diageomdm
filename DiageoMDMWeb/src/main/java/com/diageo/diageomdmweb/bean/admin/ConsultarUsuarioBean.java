@@ -184,6 +184,8 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
         setPerfil(null);
         setUsuarioActivo(Boolean.FALSE);
         setVerDetalle(Boolean.TRUE);
+        RequestContext rc = RequestContext.getCurrentInstance();
+        rc.execute("PF('wvUsu').clearFilters()");
     }
 
     public void deletePermissionSegment() {

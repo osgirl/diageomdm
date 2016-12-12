@@ -5,6 +5,7 @@
  */
 package com.diageo.diageonegocio.beans;
 
+import com.diageo.diageonegocio.entidades.DbOcs;
 import com.diageo.diageonegocio.entidades.DbOutlets;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.ArrayList;
@@ -26,6 +27,8 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
     private CustomerBeanLocal personaBeanLocal;
     @EJB
     private PhonesBeanLocal telefonosBeanLocal;
+    @EJB
+    private OcsBeanLocal ocsBeanLocal;
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
@@ -44,6 +47,14 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
     @Override
     public DbOutlets updateOutlet(DbOutlets outlet) throws DiageoBusinessException {
         try {
+            if (outlet.getOcsPrimary() == null || outlet.getOcsPrimary().getOcsId() == null) {
+                DbOcs ocsPrimary = ocsBeanLocal.findById(0);
+                outlet.setOcsPrimary(ocsPrimary);
+            }
+            if (outlet.getOcsSecondary() == null || outlet.getOcsSecondary().getOcsId() == null) {
+                DbOcs ocsSecondary = ocsBeanLocal.findById(0);
+                outlet.setOcsSecondary(ocsSecondary);
+            }
             outlet = (DbOutlets) super.update(outlet);
             return outlet;
         } catch (Exception e) {
@@ -265,14 +276,14 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
             sql.setParameter("statusOutlet", "%" + filters.get("statusOutlet").toString().toUpperCase() + "%");
         } else {
             sql.setParameter("statusOutlet", "%%");
-        }        
+        }
         long size = (long) sql.getSingleResult();
         return size;
     }
 
     @Override
     public void deleteCustomerOutlet(Integer customerId, Integer outletId) {
-        String sql = "DELETE FROM DIAGEO_BUSINESS.DB_CUSTOMERS_OUTLETS WHERE CUSTOMER_ID=? AND OUTLET_ID=?";
+        String sql = "DELETE FROM DIAGEO_BUSINESS.dbo.DB_CUSTOMERS_OUTLETS WHERE CUSTOMER_ID=? AND OUTLET_ID=?";
         Query delete = super.getEntityManager().createNativeQuery(sql);
         delete.setParameter(1, customerId);
         delete.setParameter(2, outletId);

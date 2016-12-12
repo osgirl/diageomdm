@@ -9,11 +9,19 @@
         <ui:composition template="./../../WEB-INF/templates/diageoWebTemplate.xhtml">
             <ui:define name="content">
                 <h:form id="formPotential">
-                    <p:fieldset legend="#{msg.m_management_potential}" style="width: 90%">                        
+                    <p:fieldset legend="#{msg.m_management_potential}" style="width: 90%">
+                        <br/>
+                        <h:commandLink rendered="#{potentialSearchBean.seeDetail}">
+                            <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
+                            <p:dataExporter type="xls" target="dtPotential" fileName="#{msg.out_potencial}" pageOnly="false" />
+                        </h:commandLink>
                         <br/>
                         <p:dataTable id="dtPotential" value="#{potentialSearchBean.listPotential}" var="pot" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      rendered="#{potentialSearchBean.seeDetail}" paginator="true" style="word-wrap: break-word;">
+                            <p:column headerText="#{msg.id}">
+                                <h:outputLabel value="#{pot.potentialId}"/>
+                            </p:column>
                             <p:column headerText="#{msg.sub_seg_nombre}">
                                 <h:outputLabel value="#{pot.namePotential}"/>
                             </p:column>
@@ -32,7 +40,7 @@
                             <p:column headerText="#{msg.sub_seg_subsegmento}">
                                 <h:outputLabel value="#{pot.subSegmentId.nameSubsegment}"/>
                             </p:column>
-                            <p:column>
+                            <p:column exportable="false">
                                 <p:commandLink value="#{msg.btn_detalle}" actionListener="#{potentialSearchBean.detailPotential(pot)}" 
                                                style="color: blue" process="@this" update="@form"/>
                             </p:column>

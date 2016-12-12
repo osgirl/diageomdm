@@ -94,6 +94,12 @@ public class LoginBean extends DiageoRootBean implements Serializable {
 
     @PostConstruct
     public void init() {
+        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
+        String ipAddress = request.getHeader("X-FORWARDED-FOR");
+        if (ipAddress == null) {
+            ipAddress = request.getRemoteAddr();
+        }
+        System.out.println("ipAddress:" + ipAddress);
         establecerCookiesCamposLogin();
         setLocaleApp(new Locale(ESPANOL));
     }
@@ -157,10 +163,13 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     }
 
     public boolean renderizarMenu(String idModulo) {
-        for (DwModules mod : getListModulos()) {
-            if (mod.getKekModule().equals(idModulo)) {
-                return true;
+        if (getListModulos() != null) {
+            for (DwModules mod : getListModulos()) {
+                if (mod.getKekModule().equals(idModulo)) {
+                    return true;
+                }
             }
+            return false;
         }
         return false;
     }
@@ -195,7 +204,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
             DwTemporalLink tl = new DwTemporalLink();
             Calendar expiration = Calendar.getInstance();
             expiration.setTime(getCurrentDate());
-            expiration.roll(Calendar.DATE, 3);
+            expiration.add(Calendar.DATE, 3);
             tl.setCreattionDate(getCurrentDate());
             tl.setToken(token);
             tl.setEmail(getEmailRecover());

@@ -62,6 +62,10 @@ and open the template in the editor.
                     <p:submenu label="#{msg.param}" rendered="#{loginBean.renderizarMenu('QUERY_SEGMENT')}">
                         <p:menuitem value="#{msg.param_segment_query}" rendered="#{loginBean.renderizarMenu('QUERY_SEGMENT_EDIT')}" action="#{menuBean.navegar('QUERY_SEGMENT_EDIT')}" ajax="false"/>
                     </p:submenu>
+                    <p:submenu label="#{msg.sales}" rendered="#{loginBean.renderizarMenu('SALES')}">
+                        <p:menuitem value="#{msg.m_sales_create}" rendered="#{loginBean.renderizarMenu('C_SALES')}" action="#{menuBean.navegar('C_SALES')}" ajax="false"/>
+                        <p:menuitem value="#{msg.m_sales_search}" rendered="#{loginBean.renderizarMenu('S_SALES')}" action="#{menuBean.navegar('S_SALES')}" ajax="false"/>
+                    </p:submenu>
                 </p:submenu>                   
 
                 <p:submenu label="#{msg.m_report}" rendered="#{loginBean.renderizarMenu('REPORT')}"> 

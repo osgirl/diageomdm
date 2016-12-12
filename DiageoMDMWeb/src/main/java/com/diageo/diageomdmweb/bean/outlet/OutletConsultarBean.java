@@ -78,6 +78,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     private DbOutletsLazyDataModel outletsLazyDataModel;
     private DbSubSegments subSegmentDistributor;
     private List<DbOutlets> listOutlets;
+    private List<DbOutlets> listOutletsFilter;
     private Integer distributorOld;
 
     /**
@@ -90,7 +91,9 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     @Override
     public void init() {
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
-                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())
+                ) {
             setOutletsLazyDataModel(new DbOutletsLazyDataModel(outletBeanLocal, getLoginBean().getUsuario().getProfileId().getProfileId()));
             setRenderMassiveApproval(Boolean.FALSE);
             setDisabledFields(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId()));
@@ -196,9 +199,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             } catch (DiageoBusinessException ex) {
                 Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }
-        System.out.println("ver detalle:" + verDetalle);
-        System.out.println("perfil:" + loginBean.getUsuario().getProfileId().getNameProfile());
+        }        
     }
 
     public void seeDetail(DbOutlets out) {
@@ -294,7 +295,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             outlet.setAudit(audit);
             deletCustomerChain();
             outletBeanLocal.updateOutlet(outlet);
-            sendMail();
+            //sendMail();
             setVerDetalle(!getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                     && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
             init();
@@ -345,7 +346,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             DbOutlets outlet = outletBeanLocal.findById(getIdOutlet());
             outlet.setStatusMDM(StatusSystemMDM.statusEngine(StatusSystemMDM.REJECT, getLoginBean().getUsuario().getProfileId().getProfileId()).name());
             outletBeanLocal.updateOutlet(outlet);
-            sendMail();
+            //sendMail();
+            init();
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -477,17 +479,16 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
 
     public boolean renderDataTableLazyDataModel() {
         return isVerDetalle() && (getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("ADMINISTRATOR")
-                || getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("DATA STEWARD"));
-    }
-    
-    public boolean renderDataTable() {
-        return isVerDetalle() 
-                &&(
-                getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("TMC") ||
-                getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("COMMERCIAL MANAGER") ||
-                getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("KAM") ||
-                getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("CATDEV") 
+                || getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("DATA STEWARD")
+                || getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("CATDEV")
                 );
+    }
+
+    public boolean renderDataTable() {
+        return isVerDetalle()
+                && (getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("TMC")
+                || getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("COMMERCIAL MANAGER")
+                || getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("KAM"));
     }
 
     /**
@@ -719,6 +720,14 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
      */
     public void setDistributorOld(Integer distributorOld) {
         this.distributorOld = distributorOld;
+    }
+
+    public List<DbOutlets> getListOutletsFilter() {
+        return listOutletsFilter;
+    }
+
+    public void setListOutletsFilter(List<DbOutlets> listOutletsFilter) {
+        this.listOutletsFilter = listOutletsFilter;
     }
 
 }

@@ -6,18 +6,13 @@
 package com.diageo.diageonegocio.entidades;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  *
@@ -31,7 +26,7 @@ public class Db3partyProfiles implements Serializable {
     @Id
     @Basic(optional = false)
     @Column(name = "DB_3PARTY_PROFILE_ID")
-    private BigDecimal db3partyProfileId;
+    private Integer db3partyProfileId;
     @Column(name = "DESCRIPTION")
     private String description;
     @OneToMany(mappedBy = "db3PartyProfileId")
@@ -40,15 +35,15 @@ public class Db3partyProfiles implements Serializable {
     public Db3partyProfiles() {
     }
 
-    public Db3partyProfiles(BigDecimal db3partyProfileId) {
+    public Db3partyProfiles(Integer db3partyProfileId) {
         this.db3partyProfileId = db3partyProfileId;
     }
 
-    public BigDecimal getDb3partyProfileId() {
+    public Integer getDb3partyProfileId() {
         return db3partyProfileId;
     }
 
-    public void setDb3partyProfileId(BigDecimal db3partyProfileId) {
+    public void setDb3partyProfileId(Integer db3partyProfileId) {
         this.db3partyProfileId = db3partyProfileId;
     }
 

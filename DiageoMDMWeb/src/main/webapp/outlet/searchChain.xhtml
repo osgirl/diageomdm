@@ -35,9 +35,10 @@
                             width: 300px;
                         }
                     </style>
-                    <p:dataTable id="dtOutlet" paginatorAlwaysVisible="false" rows="15"
+                    <p:dataTable id="dtOutlet" paginatorAlwaysVisible="true" rows="15"
                                  widgetVar="dtChainSearch"
                                  value="#{chainSearchBean.chainsList}" var="chain"
+                                 filteredValue="#{chainSearchBean.chainsListFiltered}"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  style="font-size:  90%" paginator="true" rendered="#{chainSearchBean.seeDetail}"
                                  emptyMessage="#{msg.out_msg_not_record}">

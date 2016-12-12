@@ -6,7 +6,6 @@
 package com.diageo.diageonegocio.entidades;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -37,7 +36,7 @@ public class Db3partyAdmin implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "DB_3PARTY_ADMIN_ID")
-    private BigDecimal db3partyAdminId;
+    private Integer db3partyAdminId;
     @Size(max = 100)
     @Column(name = "ADMIN_NAME")
     private String adminName;
@@ -58,15 +57,15 @@ public class Db3partyAdmin implements Serializable {
     public Db3partyAdmin() {
     }
 
-    public Db3partyAdmin(BigDecimal db3partyAdminId) {
+    public Db3partyAdmin(Integer db3partyAdminId) {
         this.db3partyAdminId = db3partyAdminId;
     }
 
-    public BigDecimal getDb3partyAdminId() {
+    public Integer getDb3partyAdminId() {
         return db3partyAdminId;
     }
 
-    public void setDb3partyAdminId(BigDecimal db3partyAdminId) {
+    public void setDb3partyAdminId(Integer db3partyAdminId) {
         this.db3partyAdminId = db3partyAdminId;
     }
 

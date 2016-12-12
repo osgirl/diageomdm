@@ -85,7 +85,8 @@ public class DbOutletsLazyDataModel extends LazyDataModel<DbOutlets> {
     @Override
     public List<DbOutlets> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         System.out.println("load con la lógica");
-        if (ProfileEnum.ADMINISTRATOR.getId().equals(profile) || ProfileEnum.DATA_STEWARD.getId().equals(profile)) {
+        if (ProfileEnum.ADMINISTRATOR.getId().equals(profile) || ProfileEnum.DATA_STEWARD.getId().equals(profile)
+                || ProfileEnum.CATDEV.getId().equals(profile)) {
             setRowCount((int) outletBeanLocal.findAllOutletsCount(first, pageSize, filters));
             return outletBeanLocal.findAllOutlets(first, pageSize, filters);
         } else {

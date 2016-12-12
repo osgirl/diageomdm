@@ -83,7 +83,7 @@ public class Db3PartyBean extends BusinessTransaction<Db3party> implements Db3Pa
             return new ArrayList<>();
         }
         return list;
-    }
+    }     
 
     @Override
     public List<Db3party> searchDistributorByIsChain(String isChain, String status) {

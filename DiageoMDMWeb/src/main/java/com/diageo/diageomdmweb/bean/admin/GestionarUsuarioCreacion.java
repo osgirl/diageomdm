@@ -190,7 +190,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     @PostConstruct
     public void init() {
         setPerfil(new DwProfiles());
-        setListDistributor(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsPadre()));
+        setListDistributor(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsPadre()));        
         setListDistributorSon(distributorBeanLocal.searchDistributorByFather(getListDistributor().get(0).getDb3partyId()));
         setListPotential(potentialBeanLocal.findAll());
         setListDistributorPermission(new HashSet<DistributorPermissionDto>());

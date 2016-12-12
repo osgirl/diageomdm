@@ -198,7 +198,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
                 outlet.setOcsPrimary(getOcsPrimary());
             }
             if (getOcsSecondary().getOcsId() != null) {
-            outlet.setOcsSecondary(getOcsSecondary());
+                outlet.setOcsSecondary(getOcsSecondary());
             }
             if (getFather() != null && getFather().getOutletId() != null) {
                 outlet.setOutletIdFather(getFather());
@@ -221,7 +221,8 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             if (custo != null) {
                 getListCustomers().add(custo);
             }
-            outlet.setDbCustomersList(getListCustomers());
+            outlet.setDbCustomersList(getListCustomers());            
+            outlet.setOutletId(custo.getCustomerId());
             Audit audit = new Audit();
             audit.setCreationDate(super.getCurrentDate());
             audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
@@ -238,14 +239,14 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
     public DbCustomers saveCustomer() {
         try {
-            DbCustomers customer = new DbCustomers();
-            customer.setAddress(getAddress() != null ? getAddress().toUpperCase() : null);
-            customer.setCustomerName(getBusinessName() != null ? getBusinessName().toUpperCase() : null);
-            customer.setKiernanId(getKiernanId());
-            customer.setNumberPdv(getPointSale());
-            customer.setStatusCustomer(StateOutletChain.ACTIVE.getId());
-            customer.setTownId(getTownSelected());
-            return customerBeanLocal.createCustomer(customer);
+            DbCustomers customerLocal = new DbCustomers();
+            customerLocal.setAddress(getAddress() != null ? getAddress().toUpperCase() : null);
+            customerLocal.setCustomerName(getBusinessName() != null ? getBusinessName().toUpperCase() : null);
+            customerLocal.setKiernanId(getKiernanId());
+            customerLocal.setNumberPdv(getPointSale());
+            customerLocal.setStatusCustomer(StateOutletChain.ACTIVE.getId());
+            customerLocal.setTownId(getTownSelected());
+            return customerBeanLocal.createCustomer(customerLocal);
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
             return null;
@@ -277,7 +278,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             showWarningMessage(capturarValor("chain_msg_phone_empty"));
         }
     }
-   
+
     public void addCustomer() {
         if (getCustomer().getCustomerName() != null && !getCustomer().getCustomerName().isEmpty()) {
             for (DbCustomers cus : getListCustomers()) {
@@ -311,7 +312,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
     public void deletePhone(DbPhones phone) {
         getListPhones().remove(phone);
-    }    
+    }
 
     public void listenerChannel() {
         setListSubChannel(getChannelSelected().getDbSubChannelsList());

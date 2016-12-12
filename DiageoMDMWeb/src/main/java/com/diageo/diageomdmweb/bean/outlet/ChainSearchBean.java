@@ -37,6 +37,7 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -51,6 +52,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     @Inject
     private LoginBean loginBean;
     private List<DbChains> chainsList;
+    private List<DbChains> chainsListFiltered;
     private List<DbPhones> phonesDelete;
     private List<DbPermissionSegments> listPermi;
     private List<DbCustomers> listCustomerDelete;
@@ -76,7 +78,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())) {
-            setChainsList(chainBeanLocal.findAllChains());
+            setChainsList(chainBeanLocal.findAllChains());            
             setRenderMassiveApproval(Boolean.FALSE);
             setDisabledFields(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId()));
             setButtonNameCommit(capturarValor("btn_send"));
@@ -166,6 +168,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             }
 
         }
+        setChainsListFiltered(getChainsList());
         setListCustomerDelete(new ArrayList<DbCustomers>());
         FacesContext context = FacesContext.getCurrentInstance();
         HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
@@ -253,6 +256,9 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             deletCustomerChain();
             chainBeanLocal.updateChain(chain);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+            init();
+            RequestContext rc = RequestContext.getCurrentInstance();
+            rc.execute("PF('dtChainSearch').clearFilters()");
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
@@ -265,6 +271,9 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             chain.setStatusMDM(StatusSystemMDM.statusEngine(StatusSystemMDM.REJECT, getLoginBean().getUsuario().getProfileId().getProfileId()).name());
             chainBeanLocal.updateChain(chain);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+            init();
+            RequestContext rc = RequestContext.getCurrentInstance();
+            rc.execute("PF('dtChainSearch').clearFilters()");
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(ChainSearchBean.class.getName()).log(Level.SEVERE, null, ex);
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
@@ -275,11 +284,11 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         boolean flagChainSelected = false;
         for (DbChains chain : getChainsList()) {
             if (chain.isApprobationMassive()) {
-                if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())||
-                        getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
+                if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())
+                        || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
                     chain.setStatusMDM(StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name());
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())
-                        ||getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
+                        || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
                     chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
                 }
                 try {
@@ -531,6 +540,14 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
      */
     public void setButtonNameCommit(String buttonNameCommit) {
         this.buttonNameCommit = buttonNameCommit;
+    }
+
+    public List<DbChains> getChainsListFiltered() {
+        return chainsListFiltered;
+    }
+
+    public void setChainsListFiltered(List<DbChains> chainsListFiltered) {
+        this.chainsListFiltered = chainsListFiltered;
     }
 
 }

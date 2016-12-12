@@ -191,6 +191,7 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
             audit.setCreationDate(super.getCurrentDate());
             audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
             chain.setAudit(audit);
+            chain.setChainId(custo.getCustomerId());
             chainBeanLocal.createChain(chain);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
             initFields();
