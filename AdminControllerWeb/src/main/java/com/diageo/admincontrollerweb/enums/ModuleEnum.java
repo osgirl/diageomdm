@@ -56,7 +56,10 @@ public enum ModuleEnum {
     REPORT_USER("report user"),
     RELATION_CUSTOMER("relation customer"),
     REPORT_COMMERCIAL_MANAGEMENT("report commercial management"),
-    REPORT_CASUISTRY("casuistry");
+    REPORT_CASUISTRY("casuistry"),
+    SALES("sales"),
+    S_SALES("sales search"),
+    C_SALES("sales create");
 
     private final String description;
 
