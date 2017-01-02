@@ -20,6 +20,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -106,6 +107,9 @@ public class DbChains implements Serializable {
     private boolean approbationMassive;
     @Embedded
     private Audit audit;
+    @ManyToOne
+    @JoinColumn(name = "DB_LAYER_ID")
+    private DbLayer layerId;
 
     public DbChains() {
     }
@@ -316,6 +320,14 @@ public class DbChains implements Serializable {
 
     public void setAudit(Audit audit) {
         this.audit = audit;
+    }
+
+    public DbLayer getLayerId() {
+        return layerId;
+    }
+
+    public void setLayerId(DbLayer layerId) {
+        this.layerId = layerId;
     }
 
     @Override

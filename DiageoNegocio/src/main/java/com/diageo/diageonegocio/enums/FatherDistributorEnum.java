@@ -19,7 +19,7 @@ public enum FatherDistributorEnum {
         this.isPadre = isPadre;
     }
 
-    public String getIsPadre() {
+    public String getIsFather() {
         return isPadre;
     }
 

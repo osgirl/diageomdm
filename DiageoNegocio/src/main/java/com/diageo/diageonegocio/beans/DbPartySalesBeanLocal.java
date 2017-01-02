@@ -24,5 +24,9 @@ public interface DbPartySalesBeanLocal {
     public Db3partySales createSales(Db3partySales entity) throws DiageoBusinessException;
 
     public Db3partySales updateSales(Db3partySales entity) throws DiageoBusinessException;
+
+    public List<Db3partySales> findByNameSeller(String query);
+
+    public Db3partySales getFirstResult();
     
 }

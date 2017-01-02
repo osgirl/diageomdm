@@ -33,4 +33,6 @@ public interface Db3PartyBeanLocal {
 
     public List<Db3party> searchAll();
 
+    public List<Db3party> searchDistributorFatherIsChain(String isPadre, String isChain);
+
 }

@@ -7,7 +7,6 @@ package com.diageo.diageonegocio.entidades;
 
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -18,7 +17,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -29,13 +27,11 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DB_3PARTY_SALES")
 @NamedQueries({
-    @NamedQuery(name = "Db3partySales.findAll", query = "SELECT d FROM Db3partySales d")
-    ,
-    @NamedQuery(name = "Db3partySales.findByDb3partySaleId", query = "SELECT d FROM Db3partySales d WHERE d.db3partySaleId = :db3partySaleId")
-    ,
-    @NamedQuery(name = "Db3partySales.findByNameSales", query = "SELECT d FROM Db3partySales d WHERE d.nameSales = :nameSales")})
+    @NamedQuery(name = Db3partySales.FIND_BY_NAME_SALES, query = "SELECT d FROM Db3partySales d WHERE d.nameSales LIKE ?1")
+})
 public class Db3partySales implements Serializable {
 
+    public static final String FIND_BY_NAME_SALES = "Db3partySales.findByNameSales";
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id

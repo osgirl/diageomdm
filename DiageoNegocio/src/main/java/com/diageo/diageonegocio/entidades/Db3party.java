@@ -33,12 +33,14 @@ import javax.validation.constraints.Size;
 @NamedQueries({
     @NamedQuery(name = Db3party.FIND_ALL, query = "SELECT d FROM Db3party d WHERE d.status = '1'"),
     @NamedQuery(name = Db3party.FIND_BY_IS_PADRE, query = "SELECT d FROM Db3party d WHERE d.isFather = ?1 AND d.status = '1'"),
+    @NamedQuery(name = Db3party.FIND_BY_IS_PADRE_IS_CHAIN, query = "SELECT d FROM Db3party d WHERE d.isFather = ?1 AND d.status = '1' AND d.isChain = ?2"),
     @NamedQuery(name = Db3party.FIND_BY_PADRE, query = "SELECT d FROM Db3party d WHERE d.db3partyIdFather.db3partyId = ?1 AND d.status = '1'"),
     @NamedQuery(name = Db3party.FIND_BY_IS_CHAIN, query = "SELECT d FROM Db3party d WHERE d.isChain = ?1 AND d.status = ?2")
 })
 public class Db3party implements Serializable {
 
     public static final String FIND_BY_IS_PADRE = "Db3party.findByIsFather";
+    public static final String FIND_BY_IS_PADRE_IS_CHAIN = "Db3party.findByIsFatherIsChain";
     public static final String FIND_BY_PADRE = "Db3party.findByFather";
     public static final String FIND_ALL = "Db3party.findAll";
     public static final String FIND_BY_IS_CHAIN = "Db3party.findByIsChain";

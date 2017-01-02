@@ -74,6 +74,16 @@ public class BusinessTransaction<T> {
         Query query = getEntityManager().createQuery(criteria);
         return query.getResultList();
     }
+    
+    public List<T> searchFirstResult(Class type) {
+        getEntityManager().getEntityManagerFactory().getCache().evictAll();
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaQuery<T> criteria = cb.createQuery(type);
+        criteria.from(type);
+        Query query = getEntityManager().createQuery(criteria);
+        query.setMaxResults(1);
+        return query.getResultList();
+    }
 
     @Override
     public boolean equals(Object obj) {
