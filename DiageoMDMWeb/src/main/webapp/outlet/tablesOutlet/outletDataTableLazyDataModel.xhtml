@@ -10,7 +10,7 @@ and open the template in the editor.
       xmlns:pe="http://primefaces.org/ui/extensions"
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">    
     <h:commandLink rendered="#{outletConsultarBean.renderDataTableLazyDataModel()}">
         <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
         <pe:exporter type="xlsx" target="dtOutletNew"  fileName="Report" pageOnly="false"/>
@@ -26,8 +26,9 @@ and open the template in the editor.
                      style="font-size:  90%;word-wrap: break-word;font-size: 9px !important;width:200%" 
                      rendered="#{outletConsultarBean.renderDataTableLazyDataModel()}" paginator="true"
                      widgetVar="dtOutletSearch" lazy="true"
-                     emptyMessage="#{msg.out_msg_not_record}"> 
-            <p:column style="width: 8%;text-align: center" exportable="false">
+                     emptyMessage="#{msg.out_msg_not_record}" filterEvent="enter"> 
+            <p:ajax event="filter" />
+            <p:column style="width: 8%;text-align: center" exportable="false" >
                 <p:commandLink value="#{msg.btn_edit}" style="color: blue" process="@all" update="@form"
                                actionListener="#{outletConsultarBean.seeDetail(outdtNew)}" disabled="#{outdtNew.disabledButtonEdit}"/>
                 <br/><br/>
@@ -61,8 +62,9 @@ and open the template in the editor.
             </p:column>
             <p:column headerText="#{msg.out_approbation_massive}" rendered="#{outletConsultarBean.renderMassiveApproval}">
                 <p:selectBooleanCheckbox value="#{outdtNew.approbationMassive}"/>
-            </p:column>
-            <p:column headerText="#{msg.out_razon_social}" filterBy="#{outdtNew.businessName}" filterMatchMode="startsWith">
+            </p:column>            
+            <p:column headerText="#{msg.out_razon_social}" filterBy="#{outdtNew.businessName}" 
+                      filterMatchMode="startsWith">                
                 <h:outputLabel value="#{outdtNew.businessName}"/>
             </p:column>
             <p:column headerText="#{msg.out_nit}" filterBy="#{outdtNew.nit}" filterMatchMode="startsWith">

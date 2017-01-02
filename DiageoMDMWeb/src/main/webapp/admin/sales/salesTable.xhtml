@@ -35,6 +35,9 @@ and open the template in the editor.
             <p:column headerText="#{msg.out_distribuidor}">
                 <h:outputText value="#{salesSearchBean.seeLabel3Party(sales.dbeParty)}"/>
             </p:column>
+            <p:column headerText="#{msg.sales_territory_intouch}">
+                <h:outputText value="#{sales.distri_2}"/>
+            </p:column>
             <p:column exportable="false">
                 <p:commandLink value="#{msg.btn_detalle}" actionListener="#{salesSearchBean.seeDetail(sales)}"
                                process="@this" update="@form" style="color: blue"/>

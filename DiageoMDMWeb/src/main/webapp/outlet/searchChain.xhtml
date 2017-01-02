@@ -133,20 +133,24 @@
                                                      label="#{msg.chain_code_ean_pdv}"/>
                                         <p:message for="itEancode"/>
                                     </h:panelGroup>
-                                    <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <h:outputLabel value="#{msg.out_distribuidor}/#{msg.usu_chain}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <p:selectOneMenu value="#{chainSearchBean.db3PartySelected}" converter="db3PartyConverter" style="width: 90%"
                                                      disabled="#{chainSearchBean.disabledFields}">
                                         <f:selectItems value="#{chainSearchBean.list3Party}" var="party3" itemLabel="#{party3.name3party}"/>
-                                    </p:selectOneMenu>
-                                    <h:outputLabel value="#{msg.usu_activo}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:selectBooleanCheckbox value="#{chainSearchBean.activeChain}" disabled="#{chainSearchBean.disabledFields}"/>
+                                    </p:selectOneMenu>                                    
                                     <h:outputLabel value="#{msg.status}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <p:selectOneMenu value="#{chainSearchBean.status}" style="width: 90%" disabled="#{chainSearchBean.disabledFields}">
                                         <f:selectItem itemValue="A" itemLabel="#{msg.active}"/>
                                         <f:selectItem itemValue="I" itemLabel="#{msg.inactive}"/>
-                                        <f:selectItem itemValue="B" itemLabel="#{msg.locked}"/>
                                     </p:selectOneMenu>
-                                </h:panelGrid>
+
+                                    <h:outputLabel value="#{msg.chain_layer}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:selectOneMenu value="#{chainSearchBean.layerSelected}" converter="layerConverter" style="width: 90%">
+                                        <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
+                                        <f:selectItems value="#{chainSearchBean.listLayer}" var="layer" itemLabel="#{layer.nameLayer}"/>
+                                    </p:selectOneMenu>
+
+                                </h:panelGrid>                               
                             </p:fieldset>
                             <br/>
                             <p:fieldset legend="#{msg.out_clasificacion}" style="width: 95%">
@@ -296,9 +300,9 @@
                                 </p:dataTable>
                             </p:fieldset>
                             <br/><br/>
-                            <p:commandButton value="#{chainSearchBean.buttonNameCommit}" process="@all" update="@form" actionListener="#{chainSearchBean.saveChain()}"
+                            <p:commandButton value="#{chainSearchBean.buttonNameCommit}" process="@all" update="@form :formMigaPan:idGrowl" actionListener="#{chainSearchBean.saveChain()}"
                                              styleClass="button" style="left: 0%"/>
-                            <p:commandButton value="#{msg.btn_reject}" process="@all" update="@form" actionListener="#{chainSearchBean.rejectChain()}"                                             
+                            <p:commandButton value="#{msg.btn_reject}" process="@all" update="@form :formMigaPan:idGrowl" actionListener="#{chainSearchBean.rejectChain()}"                                             
                                              styleClass="button_reject" style="left: 0%" rendered="#{chainSearchBean.renderButtonReject}"/>
                             <br/>
                         </h:panelGroup>

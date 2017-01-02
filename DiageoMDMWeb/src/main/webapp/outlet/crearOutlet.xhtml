@@ -36,7 +36,7 @@
                             <p:selectBooleanCheckbox value="#{outletCrearBean.isFather}"/>
                             <h:outputLabel value="#{msg.father}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                             <p:autoComplete id="acMinLength" minQueryLength="4" value="#{outletCrearBean.father}" label="#{msg.father}"
-                                            var="outletFather" itemLabel="#{outletFather.businessName}" itemValue="#{outletFather}" forceSelection="true"
+                                            var="outletFather" itemLabel="#{outletFather.kiernanId}    #{outletFather.businessName}" itemValue="#{outletFather}" forceSelection="true"
                                             completeMethod="#{outletCrearBean.completeChainFather}" effect="fade" converter="outletConverter"
                                             style="width: 90% !important;"/>
                         </h:panelGrid>
@@ -80,6 +80,15 @@
                                 <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                 <p:selectOneMenu value="#{outletCrearBean.db3PartySelected}" style="width: 90%" converter="db3PartyConverter">
                                     <f:selectItems value="#{outletCrearBean.list3PartyToDeploy}" var="distri" itemLabel="#{distri.name3party}"/>
+                                </p:selectOneMenu>
+
+                                <h:outputLabel value="Journey Plan" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                <p:selectBooleanCheckbox id="sbJourneyPlan" value="#{outletCrearBean.journeyPlan}"/>
+
+                                <h:outputLabel value="#{msg.status}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:selectOneMenu value="#{outletCrearBean.statusOutlet}" style="width: 90%">
+                                    <f:selectItem itemValue="A" itemLabel="#{msg.active}"/>
+                                    <f:selectItem itemValue="I" itemLabel="#{msg.inactive}"/>
                                 </p:selectOneMenu>
                             </h:panelGrid>
                             <br/>
@@ -141,6 +150,17 @@
                                     <f:selectItems value="#{outletCrearBean.listOcs}" var="ocs" itemLabel="#{ocs.nameOcs}"/>
                                 </p:selectOneMenu>
 
+                                <h:outputLabel value="#{msg.sales_singular}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
+                                <h:panelGroup>
+                                    <p:autoComplete id="dd" value="#{outletCrearBean.sellerSelected}"
+                                                    converter="salesConverter" style="width: 90% !important;"                                                    
+                                                    var="seller" itemLabel="#{seller.nameSales}" itemValue="#{seller}"
+                                                    completeMethod="#{outletCrearBean.completeSeller}"
+                                                    effect="fade" minQueryLength="4" forceSelection="true">
+                                        <p:ajax event="itemSelect" process="@this"/>
+                                    </p:autoComplete>
+                                    <p:message for="dd"/>
+                                </h:panelGroup>
                             </h:panelGrid>
                         </h:panelGroup>
                     </p:fieldset>

@@ -6,7 +6,6 @@
 package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.admincontrollerweb.entities.DwProfiles;
-import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
@@ -46,7 +45,6 @@ import com.diageo.diageonegocio.entidades.DbSubChannels;
 import com.diageo.diageonegocio.entidades.DbSubSegments;
 import com.diageo.diageonegocio.enums.FatherDistributorEnum;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
-import com.diageo.utilsdiageomdm.mail.MailBean;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -55,7 +53,6 @@ import java.util.List;
 import java.util.Set;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.primefaces.context.RequestContext;
@@ -190,7 +187,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     @PostConstruct
     public void init() {
         setPerfil(new DwProfiles());
-        setListDistributor(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsPadre()));        
+        setListDistributor(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsFather()));        
         setListDistributorSon(distributorBeanLocal.searchDistributorByFather(getListDistributor().get(0).getDb3partyId()));
         setListPotential(potentialBeanLocal.findAll());
         setListDistributorPermission(new HashSet<DistributorPermissionDto>());
@@ -376,21 +373,39 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     }
 
     public void listenerChannel() {
-        setListSubChannel(getChannelSelected().getDbSubChannelsList());
-        setSubChannelSelected(getListSubChannel().get(0));
-        this.listenerSubChannel();
+        if (getChannelSelected().getDbSubChannelsList() != null && !getChannelSelected().getDbSubChannelsList().isEmpty()) {
+            setListSubChannel(getChannelSelected().getDbSubChannelsList());
+            setSubChannelSelected(getListSubChannel().get(0));
+            this.listenerSubChannel();
+        } else {
+            setListSubChannel(new ArrayList<DbSubChannels>());
+            setListSegment(new ArrayList<DbSegments>());
+            setListSubSegment(new ArrayList<DbSubSegments>());
+            setListPotential(new ArrayList<DbPotentials>());
+        }       
     }
 
     public void listenerSubChannel() {
-        setSegmentSelected(getSubChannelSelected().getDbSegmentsList().get(0));
-        setListSegment(getSubChannelSelected().getDbSegmentsList());
-        this.listenerSegment();
+         if (getSubChannelSelected().getDbSegmentsList() != null && !getSubChannelSelected().getDbSegmentsList().isEmpty()) {
+            setSegmentSelected(getSubChannelSelected().getDbSegmentsList().get(0));
+            setListSegment(getSubChannelSelected().getDbSegmentsList());
+            this.listenerSegment();
+        } else {
+            setListSegment(new ArrayList<DbSegments>());
+            setListSubSegment(new ArrayList<DbSubSegments>());
+            setListPotential(new ArrayList<DbPotentials>());
+        }
     }
 
     public void listenerSegment() {
-        setSubSegmentSelected(getSegmentSelected().getDbSubSegmentsList().get(0));
-        setListSubSegment(getSegmentSelected().getDbSubSegmentsList());
-        listenerSubSegment();
+         if (getSegmentSelected().getDbSubSegmentsList() != null && !getSegmentSelected().getDbSubSegmentsList().isEmpty()) {
+            setSubSegmentSelected(getSegmentSelected().getDbSubSegmentsList().get(0));
+            setListSubSegment(getSegmentSelected().getDbSubSegmentsList());
+            listenerSubSegment();
+        } else {
+            setListSubSegment(new ArrayList<DbSubSegments>());
+            setListPotential(new ArrayList<DbPotentials>());
+        }
     }
 
     public void listenerSubSegment() {

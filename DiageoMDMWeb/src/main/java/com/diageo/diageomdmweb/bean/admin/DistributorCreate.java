@@ -47,17 +47,21 @@ public class DistributorCreate extends DistributorSearch implements Serializable
             getSelectedDistributor().setName3party(getName().toUpperCase());
             getSelectedDistributor().setDistri1(getAthenaCode().toUpperCase());
             getSelectedDistributor().setDb3partyRegionalId(getDb3partyRegionalSelected());
-            getSelectedDistributor().setIsFather(isIsFather() ? FatherDistributorEnum.FATHER.getIsPadre() : FatherDistributorEnum.NOT_FATHER.getIsPadre());
+            getSelectedDistributor().setIsFather(isFather() ? FatherDistributorEnum.FATHER.getIsFather() : FatherDistributorEnum.NOT_FATHER.getIsFather());
             getSelectedDistributor().setIsChain(getIsChain());
             getSelectedDistributor().setStatus(getStatus());
             Audit audit = new Audit();
             audit.setCreationDate(super.getCurrentDate());
             audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
             getSelectedDistributor().setAudit(audit);
-            if (isFather()) {
+            if (!isFather()) {
                 getSelectedDistributor().setDb3partyIdFather(getPartyFatherSelected());
             }
-            distributorBeanLocal.createDistributor(getSelectedDistributor());
+            Db3party createDistributor = distributorBeanLocal.createDistributor(getSelectedDistributor());
+            if (isFather()) {
+                createDistributor.setDb3partyIdFather(createDistributor);
+                distributorBeanLocal.updateDistributor(getSelectedDistributor());
+            }
             setSelectedDistributor(new Db3party());
             cleanUpFields();
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
@@ -67,5 +71,7 @@ public class DistributorCreate extends DistributorSearch implements Serializable
         }
 
     }
+    
+   
 
 }

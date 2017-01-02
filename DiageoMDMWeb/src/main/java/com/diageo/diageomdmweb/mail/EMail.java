@@ -68,7 +68,8 @@ public class EMail {
         Properties props = new Properties();
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.port", port);
-        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.auth", "false");
+        //props.put("mail.smtp.auth", "true");
 
         if (starttls) {
             props.put("mail.smtp.starttls.enable", "true");

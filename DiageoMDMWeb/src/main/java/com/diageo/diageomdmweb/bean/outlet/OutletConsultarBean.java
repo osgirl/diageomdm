@@ -92,8 +92,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     public void init() {
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
-                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())
-                ) {
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())) {
             setOutletsLazyDataModel(new DbOutletsLazyDataModel(outletBeanLocal, getLoginBean().getUsuario().getProfileId().getProfileId()));
             setRenderMassiveApproval(Boolean.FALSE);
             setDisabledFields(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId()));
@@ -199,7 +198,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             } catch (DiageoBusinessException ex) {
                 Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }        
+        }
     }
 
     public void seeDetail(DbOutlets out) {
@@ -240,6 +239,9 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setSubSegmentDistributor(out.getDistributorSubSegmentId());
         setVerDetalle(Boolean.FALSE);
         setDistributorOld(out.getDb3PartyIdOld());
+        setSellerSelected(out.getDb3partySaleId());
+        setJourneyPlan(out.getJourneyPlan().equals(StateEnum.ACTIVE.getState()));
+        setStatusOutlet(out.getStatusOutlet());
     }
 
     private void deletCustomerChain() {
@@ -271,6 +273,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             if (getFather() != null && getFather().getOutletId() != null) {
                 outlet.setOutletIdFather(getFather());
             }
+            outlet.setStatusOutlet(getStatusOutlet());
             outlet.setOutletName(getOutletName() != null ? getOutletName().toUpperCase() : "");
             outlet.setPotentialId(getPotentialSelected());
             outlet.setSubSegmentId(getSubSegmentSelected());
@@ -278,6 +281,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             outlet.setTypeOutlet(getTypeOutlet() != null ? getTypeOutlet().toUpperCase() : "");
             outlet.setVerificationNumber(getVerificationNumber());
             outlet.setWebsite(getWebsite() != null ? getWebsite().toUpperCase() : "");
+            outlet.setDb3partySaleId(getSellerSelected());
+            outlet.setJourneyPlan(isJourneyPlan() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
 //            outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
@@ -461,6 +466,10 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         return false;
     }
 
+    public boolean isDisabledPotentialSegmentation() {
+        return !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId());
+    }
+
     public boolean isDisabledFieldsTmc() {
         return !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId());
     }
@@ -480,8 +489,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     public boolean renderDataTableLazyDataModel() {
         return isVerDetalle() && (getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("ADMINISTRATOR")
                 || getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("DATA STEWARD")
-                || getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("CATDEV")
-                );
+                || getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("CATDEV"));
     }
 
     public boolean renderDataTable() {

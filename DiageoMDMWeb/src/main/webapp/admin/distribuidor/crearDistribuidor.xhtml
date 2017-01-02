@@ -35,30 +35,18 @@
                                     <p:inputText id="itAthenaCode" required="true" value="#{distributorCreate.athenaCode}"
                                                  label="#{msg.athena_code}" style="width: 90%"/>
                                     <p:message for="itAthenaCode"/>
-                                </h:panelGroup>
+                                </h:panelGroup>                               
 
                                 <h:outputLabel value="#{msg.is_father}"/>
-                                <p:selectBooleanCheckbox value="#{distributorCreate.isFather}"/>
-
-                                <h:outputLabel value="#{msg.father}"/>
                                 <p:selectBooleanCheckbox value="#{distributorCreate.father}">
                                     <p:ajax process="@this" update="formDistri:ol3partyFather formDistri:sompartyFather"/>
-                                </p:selectBooleanCheckbox>
-
-                                <h:panelGroup id="ol3partyFather">
-                                    <h:outputLabel value="#{msg.distri_father}" rendered="#{distributorCreate.father}"/>
-                                </h:panelGroup>
-                                <h:panelGroup id="sompartyFather">
-                                    <p:selectOneMenu value="#{distributorCreate.partyFatherSelected}" converter="distribuidorConverter" label="#{msg.distri_father}"
-                                                     rendered="#{distributorCreate.father}" style="width: 84%">
-                                        <f:selectItems value="#{distributorCreate.listDistributorFather}" var="reg" itemLabel="#{reg.name3party}"/>
-                                    </p:selectOneMenu>
-                                </h:panelGroup>
+                                </p:selectBooleanCheckbox>                                
 
                                 <h:outputLabel value="#{msg.client_type}"/>
                                 <p:selectOneRadio value="#{distributorCreate.isChain}">
-                                    <f:selectItem itemLabel="#{msg.usu_chain}" itemValue="1"/>
-                                    <f:selectItem itemLabel="#{msg.m_outlet}" itemValue="0" />
+                                    <f:selectItem itemLabel="#{msg.distri_pos_chain}" itemValue="1"/>
+                                    <f:selectItem itemLabel="#{msg.distri_pos_outlet}" itemValue="0" />
+                                    <p:ajax listener="#{distributorCreate.listenerListDistributor()}" update="formDistri:sompartyFather" process="@this"/>
                                 </p:selectOneRadio>
 
                                 <h:outputLabel value="#{msg.status}"/>
@@ -66,6 +54,16 @@
                                     <f:selectItem itemLabel="#{msg.active}" itemValue="1"/>
                                     <f:selectItem itemLabel="#{msg.inactive}" itemValue="0" />
                                 </p:selectOneRadio>
+
+                                <h:panelGroup id="ol3partyFather">
+                                    <h:outputLabel value="#{msg.distri_father}" rendered="#{!distributorCreate.father}"/>
+                                </h:panelGroup>
+                                <h:panelGroup id="sompartyFather">
+                                    <p:selectOneMenu value="#{distributorCreate.partyFatherSelected}" converter="distribuidorConverter" label="#{msg.distri_father}"
+                                                     rendered="#{!distributorCreate.father}" style="width: 84%">
+                                        <f:selectItems value="#{distributorCreate.listDistributorFather}" var="reg" itemLabel="#{reg.name3party}"/>
+                                    </p:selectOneMenu>
+                                </h:panelGroup>
                             </h:panelGrid>
                             <br/>
                             <br/>

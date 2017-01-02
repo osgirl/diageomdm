@@ -5,7 +5,6 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
-import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
@@ -69,7 +68,7 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
     public void init() {
         setListDistributor(distributorBeanLocal.searchAll());
         setListDistributorFiltered(getListDistributor());
-        setListDistributorFather(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsPadre()));
+        setListDistributorFather(distributorBeanLocal.searchDistributorFatherIsChain(FatherDistributorEnum.FATHER.getIsFather(),"1"));        
         setSeeDetail(Boolean.TRUE);
         setSelectedDistributor(new Db3party());
         setListRegional(regionalBeanLocal.findAll());
@@ -79,11 +78,12 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
         setSelectedDistributor(distri);
         setName(distri.getName3party());
         setNameAdmin(distri.getDb3PartyAdmin() != null ? distri.getDb3PartyAdmin().getAdminName() : "");
-        setIsFather(distri.getIsFather().equals(FatherDistributorEnum.FATHER.getIsPadre()));
-        setFather(distri.getDb3partyIdFather() != null);
+        setFather(distri.getIsFather().equals(FatherDistributorEnum.FATHER.getIsFather()));
+        //setFather(distri.getDb3partyIdFather() != null);
         setDb3partyRegionalSelected(distri.getDb3partyRegionalId());
         setIsChain(distri.getIsChain());
         setStatus(distri.getStatus());
+        setListDistributorFather(distributorBeanLocal.searchDistributorFatherIsChain(FatherDistributorEnum.FATHER.getIsFather(),distri.getIsChain()));        
         if (isFather()) {
             setPartyFatherSelected(distri.getDb3partyIdFather());
         }
@@ -99,7 +99,7 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
             getSelectedDistributor().setName3party(getName().toUpperCase());
             getSelectedDistributor().setDistri1(getAthenaCode().toUpperCase());
             getSelectedDistributor().setDb3partyRegionalId(db3partyRegionalSelected);
-            getSelectedDistributor().setIsFather(isFather ? FatherDistributorEnum.FATHER.getIsPadre() : FatherDistributorEnum.NOT_FATHER.getIsPadre());
+            getSelectedDistributor().setIsFather(isFather ? FatherDistributorEnum.FATHER.getIsFather() : FatherDistributorEnum.NOT_FATHER.getIsFather());
             getSelectedDistributor().setIsChain(getIsChain());
             getSelectedDistributor().setStatus(getStatus());
             Audit audit = new Audit();
@@ -125,6 +125,10 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
         setSelectedDistributor(null);
         RequestContext rc = RequestContext.getCurrentInstance();
         rc.execute("PF('dtDistri').clearFilters()");
+    }
+
+    public void listenerListDistributor() {
+        setListDistributorFather(distributorBeanLocal.searchDistributorFatherIsChain(FatherDistributorEnum.FATHER.getIsFather(), getIsChain()));
     }
 
     /**

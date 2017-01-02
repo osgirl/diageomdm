@@ -28,7 +28,8 @@ and open the template in the editor.
                      widgetVar="dtOutletSearch2" 
                      rowKey="#{outdtNew2.outletId}"
                      filteredValue="#{outletConsultarBean.listOutletsFilter}"
-                     emptyMessage="#{msg.out_msg_not_record}"> 
+                     emptyMessage="#{msg.out_msg_not_record}"
+                     filterEvent="enter"> 
             <p:column style="width: 8%;text-align: center">
                 <p:commandLink value="#{msg.btn_edit}" style="color: blue" process="@all" update="@form"
                                actionListener="#{outletConsultarBean.seeDetail(outdtNew2)}" disabled="#{outdtNew2.disabledButtonEdit}"/>

@@ -3,6 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core">
 
@@ -22,6 +23,11 @@
                 </style>
                 <h:form id="formDetalleUsuario">
                     <p:fieldset legend="#{msg.m_usuario}" style="width: 98%" rendered="#{consultarUsuarioBean.verDetalle}">
+                        <h:commandLink rendered="#{consultarUsuarioBean.verDetalle}">
+                            <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
+                            <pe:exporter type="xlsx" target="dtUsuarios"  fileName="User Report" pageOnly="false"/>
+                        </h:commandLink>
+                        <br/>
                         <p:dataTable id="dtUsuarios" value="#{consultarUsuarioBean.listaUsuariosSistema}" var="usu"
                                      widgetVar="wvUsu" style="width: 98%; word-wrap: break-word;font-size: 11px !important" rendered="#{consultarUsuarioBean.verDetalle}"
                                      paginatorAlwaysVisible="true" rows="12"  paginator="true" 
@@ -49,7 +55,7 @@
                                 <p:graphicImage value="/resources/images/iconos/equis.png" width="20px" rendered="#{usu.stateUser eq '0'}"/>
                                 <p:graphicImage value="/resources/images/iconos/chulo.png" width="20px" rendered="#{usu.stateUser eq '1'}"/>
                             </p:column>
-                            <p:column style="width: 10%">
+                            <p:column style="width: 10%" exportable="false">
                                 <p:commandLink value="#{msg.btn_detalle}" actionListener="#{consultarUsuarioBean.verDetalleUsuario(usu)}" style="color: blue" process="@this" update="@form"/>
                             </p:column>
                         </p:dataTable>

@@ -190,8 +190,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         setDb3PartySelected(chain.getDbPartyId());
         setListPhones(chain.getDbPhonesList());
         setDepartamentSelected(chain.getDbTownId().getDepartamentId());
-        setTownSelected(chain.getDbTownId());
-        setActiveChain(chain.getIsActive().equals(StateEnum.ACTIVE.getState()));
+        setTownSelected(chain.getDbTownId());        
         setKiernan(chain.getKiernanId());
         setLatitude(chain.getLatitude());
         setLongitude(chain.getLongitude());
@@ -210,6 +209,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         setPhonesDelete(new ArrayList<DbPhones>());
         setListCustomers(chain.getDbCustomerList());
         setSeeDetail(Boolean.FALSE);
+        setLayerSelected(chain.getLayerId());
     }
 
     private void deletCustomerChain() {
@@ -232,7 +232,6 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             super.cleanIdPhones();
             chain.setDbPhonesList(getListPhones());
             chain.setDbTownId(getTownSelected());
-            chain.setIsActive(isActiveChain() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
             chain.setKiernanId(getKiernan() != null ? getKiernan().toUpperCase() : "");
             chain.setLatitude(getLatitude());
             chain.setLongitude(getLongitude());
@@ -248,9 +247,10 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             audit.setModificationDate(super.getCurrentDate());
             audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
             chain.setAudit(audit);
+            chain.setLayerId(getLayerSelected());
             this.deletePhone();
-            if (!getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
-                    && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
+            if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())
+                        || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
                 chain.setStatusMDM(StatusSystemMDM.statusEngine(StatusSystemMDM.APPROVED, getLoginBean().getUsuario().getProfileId().getProfileId()).name());
             }
             deletCustomerChain();
@@ -259,6 +259,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             init();
             RequestContext rc = RequestContext.getCurrentInstance();
             rc.execute("PF('dtChainSearch').clearFilters()");
+            setSeeDetail(Boolean.TRUE);
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
