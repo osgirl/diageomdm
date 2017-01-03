@@ -14,42 +14,43 @@ and open the template in the editor.
             width: 90% !important;
         }
     </style>
-    <p:fieldset legend="Vendedor" style="width: 90%">
+    <p:fieldset legend="Vendedor" style="width: 100%">
         <br/>
-        <h:panelGroup id="pgSales" >
-            <h:panelGrid columns="4" style="width: 100%">
+        <h:panelGroup id="pgSales" style="width: 70%">
+            <h:panelGrid columns="4" >
                 <h:outputLabel value="#{msg.sales_nombre}"/>
                 <h:panelGroup>
-                    <p:inputText id="itName" value="#{salesCreateBean.salesName}" required="true" label="#{msg.sales_nombre}"/>
+                    <p:inputText id="itName" value="#{salesCreateBean.salesName}" required="true" label="#{msg.sales_nombre}" readonly="true"/>
                     <p:message for="itName"/>
                 </h:panelGroup>
 
-                <h:outputLabel value="#{msg.sales_manager}"/>
-                <p:selectOneMenu value="#{salesCreateBean.managerSelected}" style="width: 90%" converter="partyManagerConverter">
+                <h:outputLabel value="#{msg.sales_manager}"/>                
+                <p:selectOneMenu value="#{salesCreateBean.managerSelected}" converter="partyManagerConverter" disabled="true">
                     <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
                     <f:selectItems value="#{salesCreateBean.managerList}" var="man" itemLabel="#{man.nameManager}"/>
                 </p:selectOneMenu>
 
                 <h:outputLabel value="#{msg.usu_perfil}"/>
-                <p:selectOneMenu value="#{salesCreateBean.profilesSelected}" style="width: 90%" converter="db3PartyProfilesConverter">
+                <p:selectOneMenu value="#{salesCreateBean.profilesSelected}" converter="db3PartyProfilesConverter" 
+                                 disabled="true" style="width: 70%">
                     <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
                     <f:selectItems value="#{salesCreateBean.profilesList}" var="pro" itemLabel="#{pro.description}"/>
-                </p:selectOneMenu>
-
-                <h:outputLabel value="#{msg.out_punto_venta}"/>
-                <p:inputText value="#{salesCreateBean.pointOfSale}"/>
+                </p:selectOneMenu>               
 
                 <h:outputLabel value="#{msg.sales_territory_intouch}"/>
-                <p:inputText value="#{salesCreateBean.distributor_2}"/>
+                <p:selectOneMenu value="#{salesCreateBean.territorySelected}" converter="territoryConverter" style="width: 70%">
+                    <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}"/>
+                    <f:selectItems value="#{salesCreateBean.db3PartyTerritoryList}" var="terri" itemLabel="#{terri.nameTerritory}"/>
+                </p:selectOneMenu>
 
-                <h:outputLabel value="#{msg.m_distribuidor}"/>
-                <p:selectOneMenu value="#{salesCreateBean.db3PartySelected}" style="width: 90%" converter="db3PartyConverter">
+                <h:outputLabel value="#{msg.m_distribuidor}" />
+                <p:selectOneMenu value="#{salesCreateBean.db3PartySelected}" style="width: 70%" converter="db3PartyConverter" disabled="true">
                     <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
                     <f:selectItems value="#{salesCreateBean.db3PartyList}" var="party" itemLabel="#{party.name3party}"/>
                 </p:selectOneMenu>
 
                 <h:outputLabel value="#{msg.sales_focalizado}"/>
-                <p:selectBooleanCheckbox value="#{salesCreateBean.focalizado}"/>
+                <p:selectBooleanCheckbox value="#{salesCreateBean.focalizado}" disabled="true"/>
             </h:panelGrid>
             <br/>
             <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" 

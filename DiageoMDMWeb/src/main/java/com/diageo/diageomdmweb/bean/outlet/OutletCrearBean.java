@@ -224,7 +224,6 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 //            outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
-            outlet.setStatusOutlet(StateOutletChain.ACTIVE.getId());
             outlet.setStatusMDM(StatusSystemMDM.PENDING_TMC.name());
             outlet.setDb3PartyIdNew(getDb3PartySelected().getDb3partyId());
             outlet.setDb3PartyIdOld(getDb3PartySelected().getDb3partyId());

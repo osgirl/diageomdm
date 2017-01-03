@@ -11,10 +11,12 @@ import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
 import com.diageo.diageonegocio.beans.Db3PartyManagerBeanLocal;
 import com.diageo.diageonegocio.beans.Db3PartyProfilesBeanLocal;
 import com.diageo.diageonegocio.beans.DbPartySalesBeanLocal;
+import com.diageo.diageonegocio.beans.TerritoryBeanLocal;
 import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.Db3partyManagers;
 import com.diageo.diageonegocio.entidades.Db3partyProfiles;
 import com.diageo.diageonegocio.entidades.Db3partySales;
+import com.diageo.diageonegocio.entidades.Db3partyTerritory;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.List;
 import java.util.logging.Level;
@@ -40,13 +42,16 @@ public class SalesCreateBean extends DiageoRootBean {
     protected Db3PartyManagerBeanLocal db3PartyManagerBeanLocal;
     @EJB
     protected Db3PartyBeanLocal db3PartyBeanLocal;
+    @EJB
+    protected TerritoryBeanLocal territoryBeanLocal;
     private List<Db3partyManagers> managerList;
     private List<Db3partyProfiles> profilesList;
     private List<Db3party> db3PartyList;
+    private List<Db3partyTerritory> db3PartyTerritoryList;
     private Db3partyManagers managerSelected;
     private Db3partyProfiles profilesSelected;
     private Db3party db3PartySelected;
-    private String pointOfSale;
+    private Db3partyTerritory territorySelected;
     private String salesName;
     private String distributor_2;
     private boolean focalizado;
@@ -62,16 +67,17 @@ public class SalesCreateBean extends DiageoRootBean {
         setManagerSelected(new Db3partyManagers());
         setProfilesSelected(new Db3partyProfiles());
         setDb3PartySelected(new Db3party());
-        setPointOfSale("");
         setSalesName("");
         setDistributor_2("");
         setFocalizado(Boolean.FALSE);
+        setTerritorySelected(new Db3partyTerritory());
     }
 
     protected void initList() {
         setManagerList(db3PartyManagerBeanLocal.searchAllManagers());
         setProfilesList(db3PartyProfilesBeanLocal.searchAll3PartyProfiles());
         setDb3PartyList(db3PartyBeanLocal.searchAll());
+        setDb3PartyTerritoryList(territoryBeanLocal.findAll());
     }
 
     public void saveSales() {
@@ -83,7 +89,6 @@ public class SalesCreateBean extends DiageoRootBean {
             entity.setDbeParty(getDb3PartySelected().getDb3partyId());
             entity.setDistri_2(getDistributor_2() != null ? getDistributor_2().toUpperCase() : "");
             entity.setFocalizado(isFocalizado() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-            entity.setPdv(getPointOfSale());
             dbPartySalesBeanLocal.createSales(entity);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
             initObjects();
@@ -141,14 +146,6 @@ public class SalesCreateBean extends DiageoRootBean {
         this.db3PartySelected = db3PartySelected;
     }
 
-    public String getPointOfSale() {
-        return pointOfSale;
-    }
-
-    public void setPointOfSale(String pointOfSale) {
-        this.pointOfSale = pointOfSale;
-    }
-
     public String getSalesName() {
         return salesName;
     }
@@ -179,6 +176,22 @@ public class SalesCreateBean extends DiageoRootBean {
 
     public void setRenderButtonBack(boolean renderButtonBack) {
         this.renderButtonBack = renderButtonBack;
+    }
+
+    public List<Db3partyTerritory> getDb3PartyTerritoryList() {
+        return db3PartyTerritoryList;
+    }
+
+    public void setDb3PartyTerritoryList(List<Db3partyTerritory> db3PartyTerritoryList) {
+        this.db3PartyTerritoryList = db3PartyTerritoryList;
+    }
+
+    public Db3partyTerritory getTerritorySelected() {
+        return territorySelected;
+    }
+
+    public void setTerritorySelected(Db3partyTerritory territorySelected) {
+        this.territorySelected = territorySelected;
     }
 
 }

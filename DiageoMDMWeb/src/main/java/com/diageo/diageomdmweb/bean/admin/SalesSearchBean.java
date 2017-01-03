@@ -9,6 +9,7 @@ import com.diageo.admincontrollerweb.enums.StateEnum;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
 import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.Db3partySales;
+import com.diageo.diageonegocio.entidades.Db3partyTerritory;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.List;
 import java.util.logging.Level;
@@ -37,6 +38,7 @@ public class SalesSearchBean extends SalesCreateBean {
         setRenderTable(Boolean.TRUE);
         setListSales(dbPartySalesBeanLocal.searchAll());
         setRenderButtonBack(Boolean.TRUE);
+        setDb3PartyTerritoryList(territoryBeanLocal.findAll());
     }
 
     public void seeDetail(Db3partySales sales) {
@@ -45,8 +47,13 @@ public class SalesSearchBean extends SalesCreateBean {
         setFocalizado(sales.getFocalizado() != null ? sales.getFocalizado().equals(StateEnum.ACTIVE.getState()) : false);
         setManagerSelected(sales.getDb3partyManagerId());
         setProfilesSelected(sales.getDb3PartyProfileId());
-        setPointOfSale(sales.getPdv());
-        setDistributor_2(sales.getDistri_2());
+        if (sales.getDistri_2() != null) {
+            Db3partyTerritory terri = territoryBeanLocal.findByName(sales.getDistri_2());
+            if (terri != null) {
+                setTerritorySelected(terri);
+            }
+        }
+
         setDb3PartySelected(new Db3party(sales.getDbeParty() != null ? sales.getDbeParty() : 0));
         setSalesSelected(sales);
         setRenderTable(Boolean.FALSE);
@@ -66,9 +73,8 @@ public class SalesSearchBean extends SalesCreateBean {
             entity.setDb3PartyProfileId(getProfilesSelected());
             entity.setDb3partyManagerId(getManagerSelected());
             entity.setDbeParty(getDb3PartySelected() != null ? getDb3PartySelected().getDb3partyId() : 0);
-            entity.setDistri_2(getDistributor_2() != null ? getDistributor_2().toUpperCase() : "");
+            entity.setDistri_2(getTerritorySelected().getNameTerritory());
             entity.setFocalizado(isFocalizado() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-            entity.setPdv(getPointOfSale());
             dbPartySalesBeanLocal.updateSales(entity);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {

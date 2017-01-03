@@ -24,7 +24,15 @@
                                 <h:panelGroup>
                                     <p:inputText id="itNombre" value="#{crearChannel.nombreChannel}" required="true" label="#{msg.can_nombre}" style="width: 70%"/>
                                     <p:message for="itNombre"/>
-                                </h:panelGroup>                                
+                                </h:panelGroup> 
+                                
+                                <h:outputLabel value="#{msg.can_nombre}" style="width: 30%"/>
+                                <h:panelGroup>
+                                    <p:inputText id="itNombreAthena" required="true" label="#{msg.can_nombre}" style="width: 70%"/>
+                                    <p:message for="itNombreAthena"/>
+                                </h:panelGroup> 
+                                
+                                
                                 <h:outputLabel value="#{msg.estado}"/>
                                 <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{crearChannel.estado}"/>
                             </h:panelGrid> 
