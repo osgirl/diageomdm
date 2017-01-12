@@ -65,6 +65,8 @@ public class DbPotentials implements Serializable {
     private String lowPotential;
     @Embedded
     private Audit audit;
+    @Embedded
+    private CodeAthena codeAthena;
 
     public DbPotentials() {
     }
@@ -151,6 +153,14 @@ public class DbPotentials implements Serializable {
 
     public void setLowPotential(String lowPotential) {
         this.lowPotential = lowPotential;
+    }
+
+    public CodeAthena getCodeAthena() {
+        return codeAthena;
+    }
+
+    public void setCodeAthena(CodeAthena codeAthena) {
+        this.codeAthena = codeAthena;
     }
 
     @Override

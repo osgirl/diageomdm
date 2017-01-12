@@ -50,6 +50,8 @@ public class DbChannels implements Serializable {
     @Column(name = "DISTRI_1")
     private String distri_1;
     @Embedded
+    private CodeAthena codeAthena;
+    @Embedded
     private Audit audit;
 
     public DbChannels() {
@@ -105,6 +107,14 @@ public class DbChannels implements Serializable {
 
     public void setAudit(Audit audit) {
         this.audit = audit;
+    }
+
+    public CodeAthena getCodeAthena() {
+        return codeAthena;
+    }
+
+    public void setCodeAthena(CodeAthena codeAthena) {
+        this.codeAthena = codeAthena;
     }
 
     @Override

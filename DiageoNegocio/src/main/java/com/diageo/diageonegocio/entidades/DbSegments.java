@@ -61,6 +61,8 @@ public class DbSegments implements Serializable {
     private String distri_1;
     @Embedded
     private Audit audit;
+    @Embedded
+    private CodeAthena codeAthena;
 
     public DbSegments() {
     }
@@ -128,6 +130,14 @@ public class DbSegments implements Serializable {
 
     public void setAudit(Audit audit) {
         this.audit = audit;
+    }
+
+    public CodeAthena getCodeAthena() {
+        return codeAthena;
+    }
+
+    public void setCodeAthena(CodeAthena codeAthena) {
+        this.codeAthena = codeAthena;
     }
 
     @Override

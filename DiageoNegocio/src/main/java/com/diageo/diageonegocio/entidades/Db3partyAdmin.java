@@ -10,6 +10,8 @@ import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -25,16 +27,19 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DB_3PARTY_ADMIN")
 @NamedQueries({
-    @NamedQuery(name = "Db3partyAdmin.findAll", query = "SELECT d FROM Db3partyAdmin d"),
-    @NamedQuery(name = "Db3partyAdmin.findByDb3partyAdminId", query = "SELECT d FROM Db3partyAdmin d WHERE d.db3partyAdminId = :db3partyAdminId"),
-    @NamedQuery(name = "Db3partyAdmin.findByAdminName", query = "SELECT d FROM Db3partyAdmin d WHERE d.adminName = :adminName"),
+    @NamedQuery(name = "Db3partyAdmin.findAll", query = "SELECT d FROM Db3partyAdmin d")
+    ,
+    @NamedQuery(name = "Db3partyAdmin.findByDb3partyAdminId", query = "SELECT d FROM Db3partyAdmin d WHERE d.db3partyAdminId = :db3partyAdminId")
+    ,
+    @NamedQuery(name = "Db3partyAdmin.findByAdminName", query = "SELECT d FROM Db3partyAdmin d WHERE d.adminName = :adminName")
+    ,
     @NamedQuery(name = "Db3partyAdmin.findByDistri1", query = "SELECT d FROM Db3partyAdmin d WHERE d.distri1 = :distri1")})
 public class Db3partyAdmin implements Serializable {
+
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
-    @Basic(optional = false)
-    @NotNull
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "DB_3PARTY_ADMIN_ID")
     private Integer db3partyAdminId;
     @Size(max = 100)
@@ -109,5 +114,5 @@ public class Db3partyAdmin implements Serializable {
     public String toString() {
         return "com.diageo.diageonegocio.entidades.Db3partyAdmin[ db3partyAdminId=" + db3partyAdminId + " ]";
     }
-    
+
 }

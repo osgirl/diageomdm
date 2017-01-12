@@ -67,6 +67,8 @@ public class DbSubSegments implements Serializable {
     private String distri_1;
     @Embedded
     private Audit audit;
+    @Embedded
+    private CodeAthena codeAthena;
 
     public DbSubSegments() {
     }
@@ -158,6 +160,14 @@ public class DbSubSegments implements Serializable {
 
     public void setDbOutletsListDistributor(List<DbOutlets> dbOutletsListDistributor) {
         this.dbOutletsListDistributor = dbOutletsListDistributor;
+    }
+
+    public CodeAthena getCodeAthena() {
+        return codeAthena;
+    }
+
+    public void setCodeAthena(CodeAthena codeAthena) {
+        this.codeAthena = codeAthena;
     }
 
     @Override

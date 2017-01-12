@@ -22,9 +22,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "DB_3PARTY_TERRITORY")
 @NamedQueries({
-    @NamedQuery(name = Db3partyTerritory.FIND_BY_NAME_TERRITORY_LIKE, query = "SELECT d FROM Db3partyTerritory d WHERE d.nameTerritory LIKE ?1"),
-    @NamedQuery(name = Db3partyTerritory.FIND_BY_NAME_TERRITORY, query = "SELECT d FROM Db3partyTerritory d WHERE d.nameTerritory = ?1"),
-})
+    @NamedQuery(name = Db3partyTerritory.FIND_BY_NAME_TERRITORY_LIKE, query = "SELECT d FROM Db3partyTerritory d WHERE d.nameTerritory LIKE ?1")
+    ,
+    @NamedQuery(name = Db3partyTerritory.FIND_BY_NAME_TERRITORY, query = "SELECT d FROM Db3partyTerritory d WHERE d.nameTerritory = ?1"),})
 public class Db3partyTerritory implements Serializable {
 
     public static final String FIND_BY_NAME_TERRITORY = "Db3partyTerritory.findByNameTerritory";
@@ -82,7 +82,10 @@ public class Db3partyTerritory implements Serializable {
         }
         if (obj instanceof Db3partyTerritory) {
             Db3partyTerritory d = (Db3partyTerritory) obj;
-            return this.db3PartyTerritoryId.equals(d.db3PartyTerritoryId);
+            if (this.db3PartyTerritoryId != null && d.db3PartyTerritoryId != null) {
+                return this.db3PartyTerritoryId.equals(d.db3PartyTerritoryId);
+            }
+            return false;
         }
         return false;
     }
