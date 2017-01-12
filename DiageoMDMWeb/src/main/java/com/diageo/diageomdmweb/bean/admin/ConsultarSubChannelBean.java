@@ -45,6 +45,10 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
     private boolean verDetalle;
     private boolean estado;
     private String athenaCode;
+    private String codeMeico;
+    private String codeAltipal;
+    private String codeDialsa;
+    private String codeChain;
 
     /**
      * Creates a new instance of ConsultarSubChannel
@@ -63,12 +67,26 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
         setListaSubChannel(subChannelBeanLocal.consultarTodosSubChannel());
     }
 
+    public void cleanFields() {
+        setAthenaCode("");
+        setCodeMeico("");
+        setCodeAltipal("");
+        setCodeChain("");
+        setCodeDialsa("");
+    }
+
     public void detalleSubChannel(DbSubChannels sc) {
         setNombreSubChannel(sc.getNameSubChannel());
         setEstado(sc.getStateSubChannel().equals(StateDiageo.ACTIVO.getId()));
         setChannel(sc.getChannelId());
         setSubChannelSeleccionado(sc);
         setAthenaCode(sc.getDistri_1());
+        if (sc.getCodeAthena() != null) {
+            setCodeAltipal(sc.getCodeAthena().getDistri_coa());
+            setCodeMeico(sc.getCodeAthena().getDistri_com());
+            setCodeDialsa(sc.getCodeAthena().getDistri_cod());
+            setCodeChain(sc.getCodeAthena().getDistri_co());
+        }
         setVerDetalle(Boolean.FALSE);
     }
 
@@ -76,7 +94,7 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
         try {
             getSubChannelSeleccionado().setStateSubChannel(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             getSubChannelSeleccionado().setNameSubChannel(getNombreSubChannel().toUpperCase());
-            getSubChannelSeleccionado().setDistri_1(getAthenaCode().toUpperCase());
+            //getSubChannelSeleccionado().setDistri_1(getAthenaCode().toUpperCase());
             getSubChannelSeleccionado().setChannelId(getChannel());
             subChannelBeanLocal.modificarSubChannel(getSubChannelSeleccionado());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
@@ -91,6 +109,7 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
         setChannel(null);
         setEstado(Boolean.FALSE);
         setVerDetalle(Boolean.TRUE);
+        cleanFields();
     }
 
     /**
@@ -203,6 +222,38 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
      */
     public void setAthenaCode(String athenaCode) {
         this.athenaCode = athenaCode;
+    }
+
+    public String getCodeMeico() {
+        return codeMeico;
+    }
+
+    public void setCodeMeico(String codeMeico) {
+        this.codeMeico = codeMeico;
+    }
+
+    public String getCodeAltipal() {
+        return codeAltipal;
+    }
+
+    public void setCodeAltipal(String codeAltipal) {
+        this.codeAltipal = codeAltipal;
+    }
+
+    public String getCodeDialsa() {
+        return codeDialsa;
+    }
+
+    public void setCodeDialsa(String codeDialsa) {
+        this.codeDialsa = codeDialsa;
+    }
+
+    public String getCodeChain() {
+        return codeChain;
+    }
+
+    public void setCodeChain(String codeChain) {
+        this.codeChain = codeChain;
     }
 
 }

@@ -7,10 +7,12 @@ package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import com.diageo.diageomdmweb.bean.LoginBean;
+import com.diageo.diageonegocio.beans.Db3PartyAdminBeanLocal;
 import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
 import com.diageo.diageonegocio.beans.RegionalBeanLocal;
 import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.Db3party;
+import com.diageo.diageonegocio.entidades.Db3partyAdmin;
 import com.diageo.diageonegocio.entidades.Db3partyRegional;
 import com.diageo.diageonegocio.enums.FatherDistributorEnum;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
@@ -41,16 +43,20 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
     protected Db3PartyBeanLocal distributorBeanLocal;
     @EJB
     protected RegionalBeanLocal regionalBeanLocal;
+    @EJB
+    protected Db3PartyAdminBeanLocal db3PartyAdminBeanLocal;
     @Size(max = 50, message = "{size.invalido}")
     private String name;
     private String nameAdmin;
     private String athenaCode;
     private Db3partyRegional db3partyRegionalSelected;
     private Db3party partyFatherSelected;
+    private Db3partyAdmin adminSelected;
     private List<Db3party> listDistributor;
     private List<Db3party> listDistributorFiltered;
     private List<Db3party> listDistributorFather;
     private List<Db3partyRegional> listRegional;
+    private List<Db3partyAdmin> listAdmin;
     private Db3party selectedDistributor;
     private boolean seeDetail;
     private boolean isFather;
@@ -68,10 +74,12 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
     public void init() {
         setListDistributor(distributorBeanLocal.searchAll());
         setListDistributorFiltered(getListDistributor());
-        setListDistributorFather(distributorBeanLocal.searchDistributorFatherIsChain(FatherDistributorEnum.FATHER.getIsFather(),"1"));        
+        setListDistributorFather(distributorBeanLocal.searchDistributorFatherIsChain(FatherDistributorEnum.FATHER.getIsFather(), "1"));
         setSeeDetail(Boolean.TRUE);
         setSelectedDistributor(new Db3party());
         setListRegional(regionalBeanLocal.findAll());
+        setListAdmin(db3PartyAdminBeanLocal.findAll());
+        setAdminSelected(new Db3partyAdmin());
     }
 
     public void detail(Db3party distri) {
@@ -83,13 +91,16 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
         setDb3partyRegionalSelected(distri.getDb3partyRegionalId());
         setIsChain(distri.getIsChain());
         setStatus(distri.getStatus());
-        setListDistributorFather(distributorBeanLocal.searchDistributorFatherIsChain(FatherDistributorEnum.FATHER.getIsFather(),distri.getIsChain()));        
+        setListDistributorFather(distributorBeanLocal.searchDistributorFatherIsChain(FatherDistributorEnum.FATHER.getIsFather(), distri.getIsChain()));
         if (isFather()) {
             setPartyFatherSelected(distri.getDb3partyIdFather());
         }
         setAthenaCode(distri.getDistri1());
         if (father) {
             setPartyFatherSelected(distri.getDb3partyIdFather());
+        }
+        if (distri.getDb3PartyAdmin() != null) {
+            setAdminSelected(distri.getDb3PartyAdmin());
         }
         setSeeDetail(Boolean.FALSE);
     }
@@ -102,6 +113,7 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
             getSelectedDistributor().setIsFather(isFather ? FatherDistributorEnum.FATHER.getIsFather() : FatherDistributorEnum.NOT_FATHER.getIsFather());
             getSelectedDistributor().setIsChain(getIsChain());
             getSelectedDistributor().setStatus(getStatus());
+            getSelectedDistributor().setDb3PartyAdmin(adminSelected);
             Audit audit = new Audit();
             audit.setModificationDate(super.getCurrentDate());
             audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
@@ -123,6 +135,7 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
         setSeeDetail(Boolean.TRUE);
         setName("");
         setSelectedDistributor(null);
+        setAdminSelected(null);
         RequestContext rc = RequestContext.getCurrentInstance();
         rc.execute("PF('dtDistri').clearFilters()");
     }
@@ -277,6 +290,22 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
 
     public void setListDistributorFiltered(List<Db3party> listDistributorFiltered) {
         this.listDistributorFiltered = listDistributorFiltered;
+    }
+
+    public List<Db3partyAdmin> getListAdmin() {
+        return listAdmin;
+    }
+
+    public void setListAdmin(List<Db3partyAdmin> listAdmin) {
+        this.listAdmin = listAdmin;
+    }
+
+    public Db3partyAdmin getAdminSelected() {
+        return adminSelected;
+    }
+
+    public void setAdminSelected(Db3partyAdmin adminSelected) {
+        this.adminSelected = adminSelected;
     }
 
 }

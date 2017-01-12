@@ -49,7 +49,7 @@
                         <p:commandButton value="#{msg.btn_unselect_all}" styleClass="button" process="@all" update="@form"
                                          actionListener="#{outletConsultarBean.unSelectAll()}" rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval}"
                                          style="width: 100%;left: 0%"/>
-                        <p:commandButton value="#{msg.btn_approved_2}" styleClass="button" process="@all" update="@form"
+                        <p:commandButton id="cbAprobar" value="#{msg.btn_approved_2}" styleClass="button" process="@all" update="@form"
                                          actionListener="#{outletConsultarBean.approbatrionMasive()}" rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval}"
                                          style="width: 100%;left: 0%"/>
                         <p:commandButton value="#{msg.btn_reject}" process="@all" update="@form" actionListener="#{outletConsultarBean.rejectAllOutlet()}"                                             
@@ -144,25 +144,29 @@
                                 <h:panelGroup id="pgSegment">
                                     <h:panelGrid columns="4" style="width: 95%">
                                         <h:outputLabel value="#{msg.can_canal}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu value="#{outletConsultarBean.channelSelected}" converter="channelConverter" style="width: 90%">
+                                        <p:selectOneMenu value="#{outletConsultarBean.channelSelected}" converter="channelConverter" style="width: 90%"
+                                                         disabled="#{outletConsultarBean.disabledFuntionalSegmentation}">
                                             <f:selectItems value="#{outletConsultarBean.listChannel}" var="cha" itemLabel="#{cha.nameChannel}"/>
                                             <p:ajax update="formConsultarOutlet:pgSegment" process="@this" listener="#{outletConsultarBean.listenerChannel()}"/>
                                         </p:selectOneMenu>
 
                                         <h:outputLabel value="#{msg.sub_subcanal}" style="width: 100%;padding: 10px" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu value="#{outletConsultarBean.subChannelSelected}" converter="subChannelConverter" style="width: 90%">
+                                        <p:selectOneMenu value="#{outletConsultarBean.subChannelSelected}" converter="subChannelConverter" style="width: 90%"
+                                                         disabled="#{outletConsultarBean.disabledFuntionalSegmentation}">
                                             <f:selectItems value="#{outletConsultarBean.listSubChannel}" var="subcha" itemLabel="#{subcha.nameSubChannel}"/>
                                             <p:ajax update="formConsultarOutlet:pgSegment" process="@this" listener="#{outletConsultarBean.listenerSubChannel()}"/>
                                         </p:selectOneMenu>
 
                                         <h:outputLabel value="#{msg.seg_segmento}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu converter="segmentoConverter" value="#{outletConsultarBean.segmentSelected}" style="width: 90%">
+                                        <p:selectOneMenu converter="segmentoConverter" value="#{outletConsultarBean.segmentSelected}" style="width: 90%"
+                                                         disabled="#{outletConsultarBean.disabledFuntionalSegmentation}">
                                             <f:selectItems value="#{outletConsultarBean.listSegment}" var="seg" itemLabel="#{seg.nameSegment}"/>
                                             <p:ajax update="formConsultarOutlet:pgSegment" process="@this" listener="#{outletConsultarBean.listenerSegment()}"/>
                                         </p:selectOneMenu>
 
                                         <h:outputLabel value="#{msg.sub_seg_subsegmento}" style="width: 100%;padding: 10px" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu value="#{outletConsultarBean.subSegmentSelected}" converter="subSegmentoConverter" style="width: 90%">
+                                        <p:selectOneMenu value="#{outletConsultarBean.subSegmentSelected}" converter="subSegmentoConverter" style="width: 90%"
+                                                         disabled="#{outletConsultarBean.disabledFuntionalSegmentation}">
                                             <f:selectItems value="#{outletConsultarBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
                                             <p:ajax update="formConsultarOutlet:pgSegment" process="@this" listener="#{outletConsultarBean.listenerSubSegment()}"/>
                                         </p:selectOneMenu>
@@ -265,7 +269,7 @@
                                         <h:outputLabel value="#{msg.out_barrio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                         <h:panelGroup>
                                             <p:inputText id="itNeighborhood" value="#{outletConsultarBean.neighborhood}" disabled="#{outletConsultarBean.disabledFields}"
-                                                         required="true" label="#{msg.out_barrio}"/>
+                                                         required="false" label="#{msg.out_barrio}"/>
                                             <p:message for="itNeighborhood"/>
                                         </h:panelGroup>
                                         <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>

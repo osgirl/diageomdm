@@ -18,20 +18,13 @@
                 <h:form id="formCanal">
                     <p:fieldset legend="#{msg.m_canal}" style="width: 90%">
                         <br/>
-                        <h:panelGroup id="pgChaDetalle" >
+                        <h:panelGroup id="pgChaDetalle">
                             <h:panelGrid columns="2" style="width: 100%">
                                 <h:outputLabel value="#{msg.can_nombre}" style="width: 30%"/>
                                 <h:panelGroup>
                                     <p:inputText id="itNombre" value="#{crearChannel.nombreChannel}" required="true" label="#{msg.can_nombre}" style="width: 70%"/>
                                     <p:message for="itNombre"/>
-                                </h:panelGroup> 
-                                
-                                <h:outputLabel value="#{msg.can_nombre}" style="width: 30%"/>
-                                <h:panelGroup>
-                                    <p:inputText id="itNombreAthena" required="true" label="#{msg.can_nombre}" style="width: 70%"/>
-                                    <p:message for="itNombreAthena"/>
-                                </h:panelGroup> 
-                                
+                                </h:panelGroup>
                                 
                                 <h:outputLabel value="#{msg.estado}"/>
                                 <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{crearChannel.estado}"/>

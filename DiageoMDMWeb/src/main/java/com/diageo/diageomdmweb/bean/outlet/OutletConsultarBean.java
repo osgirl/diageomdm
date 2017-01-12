@@ -466,7 +466,13 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     }
 
     public boolean isDisabledPotentialSegmentation() {
-        return !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId());
+        return !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())
+                && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId());
+    }
+    
+    public boolean isDisabledFuntionalSegmentation() {
+        return !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC.getId())
+                && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId());
     }
 
     public boolean isDisabledFieldsTmc() {

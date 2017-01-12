@@ -63,14 +63,7 @@
                                     <h:panelGroup>
                                         <p:inputText id="itNombre" value="#{subSegmentoConsultarBean.nombre}" required="true" label="#{msg.sub_seg_nombre}" style="width: 70%"/>
                                         <p:message for="itNombre"/>
-                                    </h:panelGroup>
-
-                                    <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
-                                    <h:panelGroup>
-                                        <p:inputText id="itAthenaCode" value="#{subSegmentoConsultarBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"
-                                                     readonly="true"/>
-                                        <p:message for="itAthenaCode"/>
-                                    </h:panelGroup>
+                                    </h:panelGroup>                                   
 
                                     <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
                                     <p:selectOneMenu value="#{subSegmentoConsultarBean.canal}" converter="channelConverter" required="true" label="#{msg.can_canal}" style="width: 67%">
@@ -88,6 +81,25 @@
                                     <p:selectOneMenu id="somSegmento" value="#{subSegmentoConsultarBean.segmento}" converter="segmentoConverter" required="true" label="#{msg.seg_segmento}" style="width: 67%">
                                         <f:selectItems value="#{subSegmentoConsultarBean.listaSegmento}" var="subseg" itemLabel="#{subseg.nameSegment}"/>
                                     </p:selectOneMenu>
+
+                                    <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
+                                    <h:panelGroup>
+                                        <p:inputText id="itAthenaCode" value="#{subSegmentoConsultarBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"
+                                                     readonly="true"/>
+                                        <p:message for="itAthenaCode"/>
+                                    </h:panelGroup>
+
+                                    <h:outputLabel value="#{msg.code_meico}"/>
+                                    <p:inputText value="#{subSegmentoConsultarBean.codeMeico}" style="width: 70%" readonly="true"/>
+
+                                    <h:outputLabel value="#{msg.code_altipal}"/>
+                                    <p:inputText value="#{subSegmentoConsultarBean.codeAltipal}" style="width: 70%" readonly="true"/>
+
+                                    <h:outputLabel value="#{msg.code_dialsa}"/>
+                                    <p:inputText value="#{subSegmentoConsultarBean.codeDialsa}" style="width: 70%" readonly="true"/>
+
+                                    <h:outputLabel value="#{msg.code_chain}"/>
+                                    <p:inputText value="#{subSegmentoConsultarBean.codeChain}" style="width: 70%" readonly="true"/>
 
                                     <h:outputLabel value="#{msg.estado}"/>
                                     <p:selectBooleanCheckbox value="#{subSegmentoConsultarBean.estado}"/>

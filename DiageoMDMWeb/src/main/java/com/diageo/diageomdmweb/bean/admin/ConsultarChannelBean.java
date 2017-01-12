@@ -42,6 +42,10 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
     @Size(max = 100, message = "{size.invalido}")
     private String nombreChannel;
     private String athenaCode;
+    private String codeMeico;
+    private String codeAltipal;
+    private String codeDialsa;
+    private String codeChain;
     private boolean verDetalle;
     private boolean estado;
 
@@ -58,6 +62,15 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
 
     }
 
+    public void cleanFields() {
+        setNombreChannel("");
+        setAthenaCode("");
+        setCodeMeico("");
+        setCodeAltipal("");
+        setCodeChain("");
+        setCodeDialsa("");
+    }
+
     public void consultarListaChannel() {
         setListaChannels(channelBeanLocal.findAllChannel());
     }
@@ -67,6 +80,12 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
         setNombreChannel(cha.getNameChannel());
         setEstado(cha.getStateChannel().equals(StateDiageo.ACTIVO.getId()));
         setAthenaCode(cha.getDistri_1());
+        if (cha.getCodeAthena() != null) {
+            setCodeAltipal(cha.getCodeAthena().getDistri_coa());
+            setCodeMeico(cha.getCodeAthena().getDistri_com());
+            setCodeDialsa(cha.getCodeAthena().getDistri_cod());
+            setCodeChain(cha.getCodeAthena().getDistri_co());
+        }
         setVerDetalle(Boolean.FALSE);
     }
 
@@ -74,10 +93,10 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
         try {
             getChannelSeleccionado().setStateChannel(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             getChannelSeleccionado().setNameChannel(getNombreChannel().toUpperCase());
-            getChannelSeleccionado().setDistri_1(getAthenaCode().toUpperCase());
+            //getChannelSeleccionado().setDistri_1(getAthenaCode().toUpperCase());
             Audit audit = new Audit();
-            audit.setCreationDate(getChannelSeleccionado().getAudit()!=null?getChannelSeleccionado().getAudit().getCreationDate():null);
-            audit.setCreationUser(getChannelSeleccionado().getAudit()!=null?getChannelSeleccionado().getAudit().getCreationUser():null);
+            audit.setCreationDate(getChannelSeleccionado().getAudit() != null ? getChannelSeleccionado().getAudit().getCreationDate() : null);
+            audit.setCreationUser(getChannelSeleccionado().getAudit() != null ? getChannelSeleccionado().getAudit().getCreationUser() : null);
             audit.setModificationDate(super.getCurrentDate());
             audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
             getChannelSeleccionado().setAudit(audit);
@@ -93,6 +112,7 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
         setChannelSeleccionado(null);
         setEstado(Boolean.FALSE);
         setVerDetalle(Boolean.TRUE);
+        cleanFields();
     }
 
     /**
@@ -166,6 +186,38 @@ public class ConsultarChannelBean extends DiageoRootBean implements Serializable
      */
     public LoginBean getLoginBean() {
         return loginBean;
+    }
+
+    public String getCodeMeico() {
+        return codeMeico;
+    }
+
+    public void setCodeMeico(String codeMeico) {
+        this.codeMeico = codeMeico;
+    }
+
+    public String getCodeAltipal() {
+        return codeAltipal;
+    }
+
+    public void setCodeAltipal(String codeAltipal) {
+        this.codeAltipal = codeAltipal;
+    }
+
+    public String getCodeDialsa() {
+        return codeDialsa;
+    }
+
+    public void setCodeDialsa(String codeDialsa) {
+        this.codeDialsa = codeDialsa;
+    }
+
+    public String getCodeChain() {
+        return codeChain;
+    }
+
+    public void setCodeChain(String codeChain) {
+        this.codeChain = codeChain;
     }
 
 }

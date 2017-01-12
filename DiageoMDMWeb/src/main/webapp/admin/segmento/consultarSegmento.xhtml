@@ -60,12 +60,7 @@
                                         <p:inputText id="itNombre" value="#{segementoConsultarBean.nombre}" required="true" label="#{msg.seg_nombre}" style="width: 70%"/>
                                         <p:message for="itNombre"/>
                                     </h:panelGroup>
-                                    <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
-                                    <h:panelGroup>
-                                        <p:inputText id="itAthenaCode" value="#{segementoConsultarBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"
-                                                     readonly="true"/>
-                                        <p:message for="itAthenaCode"/>
-                                    </h:panelGroup>
+
                                     <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
                                     <p:selectOneMenu value="#{segementoConsultarBean.canal}" converter="channelConverter"
                                                      required="true" label="#{msg.can_canal}" style="width: 67%">
@@ -77,6 +72,26 @@
                                                      required="true" label="#{msg.sub_subcanal}" style="width: 67%">
                                         <f:selectItems value="#{segementoConsultarBean.listaSubCanales}" var="subcha" itemLabel="#{subcha.nameSubChannel}"/>
                                     </p:selectOneMenu>
+
+                                    <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
+                                    <h:panelGroup>
+                                        <p:inputText id="itAthenaCode" value="#{segementoConsultarBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"
+                                                     readonly="true"/>
+                                        <p:message for="itAthenaCode"/>
+                                    </h:panelGroup>
+                                    
+                                     <h:outputLabel value="#{msg.code_meico}"/>
+                                    <p:inputText value="#{segementoConsultarBean.codeMeico}" style="width: 70%" readonly="true"/>
+
+                                    <h:outputLabel value="#{msg.code_altipal}"/>
+                                    <p:inputText value="#{segementoConsultarBean.codeAltipal}" style="width: 70%" readonly="true"/>
+
+                                    <h:outputLabel value="#{msg.code_dialsa}"/>
+                                    <p:inputText value="#{segementoConsultarBean.codeDialsa}" style="width: 70%" readonly="true"/>
+
+                                    <h:outputLabel value="#{msg.code_chain}"/>
+                                    <p:inputText value="#{segementoConsultarBean.codeChain}" style="width: 70%" readonly="true"/>
+
                                     <h:outputLabel value="#{msg.estado}"/>
                                     <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{segementoConsultarBean.estado}"/>
                                 </h:panelGrid>

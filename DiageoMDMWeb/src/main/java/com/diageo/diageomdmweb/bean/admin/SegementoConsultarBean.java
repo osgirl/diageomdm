@@ -56,6 +56,10 @@ public class SegementoConsultarBean extends DiageoRootBean implements Serializab
     private boolean estado;
     private boolean verDetalle;
     private String athenaCode;
+    private String codeMeico;
+    private String codeAltipal;
+    private String codeDialsa;
+    private String codeChain;
 
     /**
      * Creates a new instance of SegementoConsultarBean
@@ -76,6 +80,14 @@ public class SegementoConsultarBean extends DiageoRootBean implements Serializab
         setEstado(Boolean.FALSE);
     }
 
+    public void cleanFields() {
+        setAthenaCode("");
+        setCodeMeico("");
+        setCodeAltipal("");
+        setCodeChain("");
+        setCodeDialsa("");
+    }
+
     public void detalle(DbSegments seg) {
         setSegmentoSeleccionado(seg);
         setNombre(seg.getNameSegment());
@@ -84,6 +96,12 @@ public class SegementoConsultarBean extends DiageoRootBean implements Serializab
         setAthenaCode(seg.getDistri_1());
         listenerListaSubCanales();
         setSubCanal(seg.getSubChannelId());
+        if (seg.getCodeAthena() != null) {
+            setCodeAltipal(seg.getCodeAthena().getDistri_coa());
+            setCodeMeico(seg.getCodeAthena().getDistri_com());
+            setCodeDialsa(seg.getCodeAthena().getDistri_cod());
+            setCodeChain(seg.getCodeAthena().getDistri_co());
+        }
         setVerDetalle(Boolean.FALSE);
     }
 
@@ -92,12 +110,12 @@ public class SegementoConsultarBean extends DiageoRootBean implements Serializab
             getSegmentoSeleccionado().setNameSegment(getNombre().toUpperCase());
             getSegmentoSeleccionado().setStateSegment(isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             getSegmentoSeleccionado().setSubChannelId(getSubCanal());
-            getSegmentoSeleccionado().setDistri_1(getAthenaCode().toUpperCase());
+            //getSegmentoSeleccionado().setDistri_1(getAthenaCode().toUpperCase());
             Audit audit = new Audit();
             audit.setModificationDate(super.getCurrentDate());
             audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
-            audit.setCreationDate(getSegmentoSeleccionado().getAudit()!=null?getSegmentoSeleccionado().getAudit().getCreationDate():null);
-            audit.setCreationUser(getSegmentoSeleccionado().getAudit()!=null?getSegmentoSeleccionado().getAudit().getCreationUser():null);
+            audit.setCreationDate(getSegmentoSeleccionado().getAudit() != null ? getSegmentoSeleccionado().getAudit().getCreationDate() : null);
+            audit.setCreationUser(getSegmentoSeleccionado().getAudit() != null ? getSegmentoSeleccionado().getAudit().getCreationUser() : null);
             getSegmentoSeleccionado().setAudit(audit);
             segmentoBeanLocal.updateSegment(getSegmentoSeleccionado());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
@@ -123,6 +141,7 @@ public class SegementoConsultarBean extends DiageoRootBean implements Serializab
     public void regresar() {
         inicializarCampos();
         setVerDetalle(Boolean.TRUE);
+        cleanFields();
     }
 
     /**
@@ -270,6 +289,38 @@ public class SegementoConsultarBean extends DiageoRootBean implements Serializab
      */
     public LoginBean getLoginBean() {
         return loginBean;
+    }
+
+    public String getCodeMeico() {
+        return codeMeico;
+    }
+
+    public void setCodeMeico(String codeMeico) {
+        this.codeMeico = codeMeico;
+    }
+
+    public String getCodeAltipal() {
+        return codeAltipal;
+    }
+
+    public void setCodeAltipal(String codeAltipal) {
+        this.codeAltipal = codeAltipal;
+    }
+
+    public String getCodeDialsa() {
+        return codeDialsa;
+    }
+
+    public void setCodeDialsa(String codeDialsa) {
+        this.codeDialsa = codeDialsa;
+    }
+
+    public String getCodeChain() {
+        return codeChain;
+    }
+
+    public void setCodeChain(String codeChain) {
+        this.codeChain = codeChain;
     }
 
 }

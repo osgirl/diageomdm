@@ -5,6 +5,7 @@
  */
 package com.diageo.diageomdmweb.bean.admin;
 
+import com.diageo.admincontrollerweb.enums.StateEnum;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
 import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.Db3party;
@@ -40,6 +41,7 @@ public class DistributorCreate extends DistributorSearch implements Serializable
         setNameAdmin("");
         setAthenaCode("");
         setIsFather(Boolean.FALSE);
+        setAdminSelected(null);
     }
 
     public void create() {
@@ -50,6 +52,7 @@ public class DistributorCreate extends DistributorSearch implements Serializable
             getSelectedDistributor().setIsFather(isFather() ? FatherDistributorEnum.FATHER.getIsFather() : FatherDistributorEnum.NOT_FATHER.getIsFather());
             getSelectedDistributor().setIsChain(getIsChain());
             getSelectedDistributor().setStatus(getStatus());
+            getSelectedDistributor().setDb3PartyAdmin(getAdminSelected());
             Audit audit = new Audit();
             audit.setCreationDate(super.getCurrentDate());
             audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
@@ -58,8 +61,9 @@ public class DistributorCreate extends DistributorSearch implements Serializable
                 getSelectedDistributor().setDb3partyIdFather(getPartyFatherSelected());
             }
             Db3party createDistributor = distributorBeanLocal.createDistributor(getSelectedDistributor());
-            if (isFather()) {
+            if (isFather() || getIsChain().equals(StateEnum.ACTIVE.getState())) {
                 createDistributor.setDb3partyIdFather(createDistributor);
+                createDistributor.setIsFather(FatherDistributorEnum.FATHER.getIsFather());
                 distributorBeanLocal.updateDistributor(getSelectedDistributor());
             }
             setSelectedDistributor(new Db3party());
@@ -71,7 +75,5 @@ public class DistributorCreate extends DistributorSearch implements Serializable
         }
 
     }
-    
-   
 
 }

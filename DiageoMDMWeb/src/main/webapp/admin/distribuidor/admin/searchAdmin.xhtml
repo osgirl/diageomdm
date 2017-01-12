@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+    <h:body>        
+        <ui:composition template="./../../../WEB-INF/templates/diageoWebTemplate.xhtml">
+            <ui:define name="content">
+                <h:form id="formAdmin">
+                    <p:fieldset legend="#{msg.m_distribuidor} #{msg.admin}" style="width: 90%">
+                        <p:dataTable id="dtAdmin" value="#{adminDistributorSearchBean.listAdmin}" 
+                                     var="admin" paginatorAlwaysVisible="false" rows="15"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     paginator="true" rendered="#{!adminDistributorSearchBean.detail}" >
+                            <p:column headerText="#{msg.name_admin}">
+                                <h:outputLabel value="#{admin.adminName}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.athena_code}">
+                                <h:outputLabel value="#{admin.distri1}"/>
+                            </p:column>
+                            <p:column exportable="false">
+                                <p:commandLink value="#{msg.btn_detalle}" actionListener="#{adminDistributorSearchBean.seeDetail(admin)}" 
+                                               style="color: blue" process="@this" update="@form"/>
+                            </p:column>
+                        </p:dataTable>
+
+                        <h:panelGroup id="pgChannel">                            
+                            <h:panelGroup id="pgChaDetalle" rendered="#{adminDistributorSearchBean.detail}" style="width: 100%">
+                                <br/>
+                                <h:panelGrid columns="2" style="width: 100%">
+                                    <h:outputLabel value="#{msg.name_admin}" style="width: 30%"/>
+                                    <h:panelGroup>
+                                        <p:inputText id="itNombre" value="#{adminDistributorSearchBean.nameAdmin}" required="true" label="#{msg.name_admin}" style="width: 70%"/>
+                                        <p:message for="itNombre"/>
+                                    </h:panelGroup>
+                                    <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
+                                    <h:panelGroup>
+                                        <p:inputText id="itAthenaCode" value="#{adminDistributorSearchBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"/>
+                                        <p:message for="itAthenaCode"/>
+                                    </h:panelGroup>
+                                </h:panelGrid>
+                                <br/>
+                                <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" 
+                                                 actionListener="#{adminDistributorSearchBean.saveAdmin()}"
+                                                 styleClass="button" style="width: 20%;left: 0%"/>
+                                <p:commandButton value="#{msg.btn_regresar}" immediate="true" actionListener="#{adminDistributorSearchBean.back()}" update="@form"
+                                                 styleClass="button" style="width: 20%;left: 0%"/>
+                            </h:panelGroup>
+                        </h:panelGroup>
+                    </p:fieldset>
+                </h:form>
+            </ui:define>
+
+        </ui:composition>
+
+    </h:body>
+</html>

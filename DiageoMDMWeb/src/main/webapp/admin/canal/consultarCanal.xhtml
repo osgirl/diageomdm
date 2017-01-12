@@ -60,6 +60,19 @@
                                                      readonly="true"/>
                                         <p:message for="itAthenaCode"/>
                                     </h:panelGroup>
+
+                                    <h:outputLabel value="#{msg.code_meico}"/>
+                                    <p:inputText value="#{consultarChannelBean.codeMeico}" style="width: 70%" readonly="true"/>
+
+                                    <h:outputLabel value="#{msg.code_altipal}"/>
+                                    <p:inputText value="#{consultarChannelBean.codeAltipal}" style="width: 70%" readonly="true"/>
+
+                                    <h:outputLabel value="#{msg.code_dialsa}"/>
+                                    <p:inputText value="#{consultarChannelBean.codeDialsa}" style="width: 70%" readonly="true"/>
+
+                                    <h:outputLabel value="#{msg.code_chain}"/>
+                                    <p:inputText value="#{consultarChannelBean.codeChain}" style="width: 70%" readonly="true"/>
+
                                     <h:outputLabel value="#{msg.estado}"/>
                                     <p:selectBooleanCheckbox label="#{msg.usu_activo}" value="#{consultarChannelBean.estado}"/>
                                 </h:panelGrid>

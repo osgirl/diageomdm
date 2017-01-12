@@ -37,16 +37,21 @@
                                     <p:message for="itAthenaCode"/>
                                 </h:panelGroup>                               
 
-                                <h:outputLabel value="#{msg.is_father}"/>
-                                <p:selectBooleanCheckbox value="#{distributorCreate.father}">
-                                    <p:ajax process="@this" update="formDistri:ol3partyFather formDistri:sompartyFather"/>
-                                </p:selectBooleanCheckbox>                                
+                                <h:panelGroup id="pgIsFatherLabel">
+                                    <h:outputLabel value="#{msg.is_father}" rendered="#{distributorCreate.isChain eq '0'}"/>
+                                </h:panelGroup>
+                                <h:panelGroup id="pgIsFatherCheck">
+                                    <p:selectBooleanCheckbox value="#{distributorCreate.father}" rendered="#{distributorCreate.isChain eq '0'}">
+                                        <p:ajax process="@this" update="formDistri:ol3partyFather formDistri:sompartyFather"/>
+                                    </p:selectBooleanCheckbox>                                
+                                </h:panelGroup>
 
                                 <h:outputLabel value="#{msg.client_type}"/>
                                 <p:selectOneRadio value="#{distributorCreate.isChain}">
                                     <f:selectItem itemLabel="#{msg.distri_pos_chain}" itemValue="1"/>
                                     <f:selectItem itemLabel="#{msg.distri_pos_outlet}" itemValue="0" />
-                                    <p:ajax listener="#{distributorCreate.listenerListDistributor()}" update="formDistri:sompartyFather" process="@this"/>
+                                    <p:ajax listener="#{distributorCreate.listenerListDistributor()}" 
+                                            update="formDistri:sompartyFather formDistri:ol3partyFather formDistri:pgIsFatherCheck formDistri:pgIsFatherLabel" process="@this"/>
                                 </p:selectOneRadio>
 
                                 <h:outputLabel value="#{msg.status}"/>
@@ -55,12 +60,18 @@
                                     <f:selectItem itemLabel="#{msg.inactive}" itemValue="0" />
                                 </p:selectOneRadio>
 
+                                <h:outputLabel value="#{msg.admin}"/>
+                                <p:selectOneMenu value="#{distributorCreate.adminSelected}" converter="adminConverter">
+                                    <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}"/>
+                                    <f:selectItems value="#{distributorCreate.listAdmin}" var="admin" itemLabel="#{admin.adminName}"/>
+                                </p:selectOneMenu> 
+
                                 <h:panelGroup id="ol3partyFather">
-                                    <h:outputLabel value="#{msg.distri_father}" rendered="#{!distributorCreate.father}"/>
+                                    <h:outputLabel value="#{msg.distri_father}" rendered="#{!distributorCreate.father and distributorCreate.isChain eq '0'}"/>
                                 </h:panelGroup>
                                 <h:panelGroup id="sompartyFather">
                                     <p:selectOneMenu value="#{distributorCreate.partyFatherSelected}" converter="distribuidorConverter" label="#{msg.distri_father}"
-                                                     rendered="#{!distributorCreate.father}" style="width: 84%">
+                                                     rendered="#{!distributorCreate.father and distributorCreate.isChain eq '0'}" style="width: 84%">
                                         <f:selectItems value="#{distributorCreate.listDistributorFather}" var="reg" itemLabel="#{reg.name3party}"/>
                                     </p:selectOneMenu>
                                 </h:panelGroup>

@@ -57,16 +57,22 @@
                                         <p:message for="itAthenaCode"/>
                                     </h:panelGroup>
 
-                                    <h:outputLabel value="#{msg.is_father}" style="width: 30%"/>
-                                    <p:selectBooleanCheckbox value="#{distributorSearch.father}">
-                                        <p:ajax process="@this" update="formDistri:ol3partyFather formDistri:sompartyFather"/>
-                                    </p:selectBooleanCheckbox>
+                                    <h:panelGroup id="pgIsFatherLabel">
+                                        <h:outputLabel value="#{msg.is_father}" style="width: 30%" rendered="#{distributorSearch.isChain eq '0'}"/>
+                                    </h:panelGroup>
+                                    <h:panelGroup id="pgIsFatherCheck">
+                                        <p:selectBooleanCheckbox value="#{distributorSearch.father}" rendered="#{distributorSearch.isChain eq '0'}">
+                                            <p:ajax process="@this" update="formDistri:ol3partyFather formDistri:sompartyFather"/>
+                                        </p:selectBooleanCheckbox>
+                                    </h:panelGroup>
 
                                     <h:outputLabel value="#{msg.client_type}"/>
                                     <p:selectOneRadio value="#{distributorSearch.isChain}">
                                         <f:selectItem itemLabel="#{msg.distri_pos_chain}" itemValue="1"/>
                                         <f:selectItem itemLabel="#{msg.distri_pos_outlet}" itemValue="0" />
-                                        <p:ajax listener="#{distributorSearch.listenerListDistributor()}" update="formDistri:sompartyFather" process="@this"/>
+                                        <p:ajax listener="#{distributorSearch.listenerListDistributor()}" 
+                                                update="formDistri:sompartyFather formDistri:ol3partyFather formDistri:pgIsFatherCheck formDistri:pgIsFatherLabel"
+                                                process="@this"/>
                                     </p:selectOneRadio>
 
                                     <h:outputLabel value="#{msg.status}"/>
@@ -75,12 +81,19 @@
                                         <f:selectItem itemLabel="#{msg.inactive}" itemValue="0" />
                                     </p:selectOneRadio>
 
+                                    <h:outputLabel value="#{msg.admin}"/>
+                                    <p:selectOneMenu value="#{distributorSearch.adminSelected}" converter="adminConverter">
+                                        <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}"/>
+                                        <f:selectItems value="#{distributorSearch.listAdmin}" var="admin" itemLabel="#{admin.adminName}"/>
+                                    </p:selectOneMenu> 
+
                                     <h:panelGroup id="ol3partyFather">
-                                        <h:outputLabel value="#{msg.distri_father}" style="width: 30%" rendered="#{!distributorSearch.father}"/>
+                                        <h:outputLabel value="#{msg.distri_father}" style="width: 30%" 
+                                                       rendered="#{!distributorSearch.father and distributorSearch.isChain eq '0'}"/>
                                     </h:panelGroup>
                                     <h:panelGroup id="sompartyFather">
                                         <p:selectOneMenu value="#{distributorSearch.partyFatherSelected}" converter="distribuidorConverter" label="#{msg.distri_father}"
-                                                         rendered="#{!distributorSearch.father}" style="width: 90%">
+                                                         rendered="#{!distributorSearch.father and distributorSearch.isChain eq '0'}" style="width: 90%">
                                             <f:selectItems value="#{distributorSearch.listDistributorFather}" var="reg" itemLabel="#{reg.name3party}"/>
                                         </p:selectOneMenu>
                                     </h:panelGroup>

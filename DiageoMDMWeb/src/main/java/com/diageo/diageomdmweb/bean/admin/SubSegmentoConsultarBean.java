@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import org.apache.xmlbeans.impl.common.QNameHelper;
 
 /**
  *
@@ -27,7 +28,7 @@ import javax.faces.view.ViewScoped;
 @Named(value = "subSegmentoConsultarBean")
 @ViewScoped
 public class SubSegmentoConsultarBean extends SegementoConsultarBean implements Serializable {
-    
+
     private static final Logger LOG = Logger.getLogger(SubSegmentoConsultarBean.class.getName());
     @EJB
     protected SubSegmentoBeanLocal subSegmentoBeanLocal;
@@ -61,23 +62,31 @@ public class SubSegmentoConsultarBean extends SegementoConsultarBean implements 
         }
     }
 
-    
+   
     public void detalleSub(DbSubSegments subSegmento) {
         setSubSegmentoSeleccionado(subSegmento);
         super.setVerDetalle(Boolean.FALSE);
         super.setNombre(subSegmento.getNameSubsegment());
-        super.setEstado(subSegmento.getStateSubSegment().equals(StateDiageo.ACTIVO.getId()));
+        if (subSegmento.getStateSubSegment() != null) {
+            super.setEstado(subSegmento.getStateSubSegment().equals(StateDiageo.ACTIVO.getId()));
+        }
         super.setCanal(subSegmento.getSegmentId().getSubChannelId().getChannelId());
         super.setSubCanal(subSegmento.getSegmentId().getSubChannelId());
         super.setAthenaCode(subSegmento.getDistri_1());
         setSegmento(subSegmento.getSegmentId());
         super.listenerListaSubCanales();
         listenerSegmento();
+        if (subSegmento.getCodeAthena() != null) {
+            setCodeAltipal(subSegmento.getCodeAthena().getDistri_coa());
+            setCodeMeico(subSegmento.getCodeAthena().getDistri_com());
+            setCodeDialsa(subSegmento.getCodeAthena().getDistri_cod());
+            setCodeChain(subSegmento.getCodeAthena().getDistri_co());
+        }
     }
 
     @Override
     public void guardarCambios() {
-        try {            
+        try {
             getSubSegmentoSeleccionado().setNameSubsegment(super.getNombre().toUpperCase());
             getSubSegmentoSeleccionado().setStateSubSegment(super.isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             getSubSegmentoSeleccionado().setSegmentId(getSegmento());
