@@ -59,7 +59,9 @@ public enum ModuleEnum {
     REPORT_CASUISTRY("casuistry"),
     SALES("sales"),
     S_SALES("sales search"),
-    C_SALES("sales create");
+    C_SALES("sales create"),
+    C_ADMIN("create admin"),
+    S_ADMIN("search admin");
 
     private final String description;
 
