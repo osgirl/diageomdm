@@ -15,16 +15,19 @@ public enum StatusSystemMDM {
 
     public static StatusSystemMDM statusEngine(StatusSystemMDM statusIn, Integer idProfile) {
         ProfileEnum profile = ProfileEnum.valueOf(idProfile);
-        if (ProfileEnum.TMC.equals(profile)) {
-            return PENDING_COMMERCIAL_MANAGER;
-        } else if (ProfileEnum.KAM.equals(profile)) {
-            return PENDING_COMMERCIAL_MANAGER;
-        } else if (ProfileEnum.CATDEV.equals(profile)) {
-            return PENDING_TMC_POTENTIAL;
-        } else if (ProfileEnum.COMMERCIAL_MANAGER.equals(profile)) {
-            return statusIn;
-        } else if (ProfileEnum.NAM.equals(profile)) {
-            return statusIn;
+        if (null != profile) switch (profile) {
+            case TMC_DISTRIBUIDORES:
+                return PENDING_COMMERCIAL_MANAGER;
+            case KAM:
+                return PENDING_COMMERCIAL_MANAGER;
+            case CP_A_DISTRIBUIDORES:
+                return PENDING_TMC_POTENTIAL;
+            case COMMERCIAL_MANAGER:
+                return statusIn;
+            case NAM:
+                return statusIn;
+            default:
+                break;
         }
         return statusIn;
     }

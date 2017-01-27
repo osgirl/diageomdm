@@ -69,12 +69,7 @@ public class DwModules implements Serializable {
         @JoinColumn(name = "MODULE_ID", referencedColumnName = "MODULE_ID")}, inverseJoinColumns = {
         @JoinColumn(name = "PROFILE_ID", referencedColumnName = "PROFILE_ID")})
     @ManyToMany
-    private List<DwProfiles> dwProfilesList;
-    @JoinTable(name = "DW_USERS_MODULES", joinColumns = {
-        @JoinColumn(name = "MODULE_ID", referencedColumnName = "MODULE_ID")}, inverseJoinColumns = {
-        @JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")})
-    @ManyToMany(cascade = {CascadeType.PERSIST,CascadeType.MERGE})
-    private List<DwUsers> dwUsersList;
+    private List<DwProfiles> dwProfilesList;   
     @OneToMany(mappedBy = "fatherModuleId")
     private List<DwModules> dwModulesList;
 
@@ -115,15 +110,7 @@ public class DwModules implements Serializable {
 
     public void setUrlModule(String urlModule) {
         this.urlModule = urlModule;
-    }
-
-    public List<DwUsers> getDwUsersList() {
-        return dwUsersList;
-    }
-
-    public void setDwUsersList(List<DwUsers> dwUsersList) {
-        this.dwUsersList = dwUsersList;
-    }
+    }    
 
     public List<DwProfiles> getDwProfilesList() {
         return dwProfilesList;

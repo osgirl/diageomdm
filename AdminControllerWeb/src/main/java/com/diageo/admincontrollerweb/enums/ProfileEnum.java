@@ -12,8 +12,9 @@ package com.diageo.admincontrollerweb.enums;
 public enum ProfileEnum {
 
     ADMINISTRATOR(1, "admin"), DATA_STEWARD(2, "data steward"),
-    TMC(3, "tmc"), COMMERCIAL_MANAGER(4, "commercial manager"),
-    KAM(5, "KAM"), CATDEV(6, "CATDEV"), NAM(8, "NAM");
+    TMC_DISTRIBUIDORES(3, "tmc"), COMMERCIAL_MANAGER(4, "commercial manager"),
+    KAM(5, "KAM"), CP_A_DISTRIBUIDORES(6, "CP&A DISTRIBUIDORES"), NAM(8, "NAM"),TMC_CADENAS(9,"TMC CADENAS"),
+    KAM_CADENAS(10,"KAM CADENAS"),CP_A_CADENAS(11, "CP&A CADENAS");
 
     private final Integer id;
     private final String name;

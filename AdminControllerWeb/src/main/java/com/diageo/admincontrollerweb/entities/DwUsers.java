@@ -87,8 +87,6 @@ public class DwUsers implements Serializable {
     @Column(name = "LAST_SUCCESFUL_LOGIN")
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastSuccesfulLogin;
-    @ManyToMany(mappedBy = "dwUsersList")
-    private List<DwModules> dwModulesList;
     @JoinColumn(name = "PROFILE_ID", referencedColumnName = "PROFILE_ID")
     @ManyToOne(optional = false)
     private DwProfiles profileId;    
@@ -152,14 +150,6 @@ public class DwUsers implements Serializable {
 
     public void setPasswordUser(String passwordUser) {
         this.passwordUser = passwordUser;
-    }
-
-    public List<DwModules> getDwModulesList() {
-        return dwModulesList;
-    }
-
-    public void setDwModulesList(List<DwModules> dwModulesList) {
-        this.dwModulesList = dwModulesList;
     }
 
     public DwProfiles getProfileId() {
