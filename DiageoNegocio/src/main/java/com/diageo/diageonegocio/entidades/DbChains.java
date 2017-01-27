@@ -11,8 +11,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -20,8 +18,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
@@ -33,15 +29,18 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DB_CHAINS")
 @NamedQueries({
-    @NamedQuery(name = DbChains.FIND_BY_SEGMENT_3PARTY, query = "SELECT c FROM DbChains c WHERE c.subSegmentId.subSegmentId=?1 AND c.dbPartyId.db3partyId=?2"),
-    @NamedQuery(name = DbChains.FIND_BY_NAME_CHAIN, query = "SELECT c FROM DbChains c WHERE c.nameChain LIKE ?1"),
+    @NamedQuery(name = DbChains.FIND_BY_SEGMENT_3PARTY, query = "SELECT c FROM DbChains c WHERE c.subSegmentId.subSegmentId=?1 AND c.dbPartyId.db3partyId=?2")
+    ,
+    @NamedQuery(name = DbChains.FIND_BY_NAME_CHAIN, query = "SELECT c FROM DbChains c WHERE c.nameChain LIKE ?1")
+    ,
     @NamedQuery(name = DbChains.FIND_BY_3PARTY_PERMISSION, query = "SELECT c FROM DbChains c WHERE c.dbPartyId.db3partyId = ?1 AND "
-            + "c.subSegmentId.subSegmentId IN ?2 AND c.statusMDM IN ?3")   
-
-})
+            + "c.subSegmentId.subSegmentId IN ?2 AND c.statusMDM IN ?3")
+    ,
+    @NamedQuery(name = DbChains.FIND_CHAIN_BY_CHAIN_ID_LIST, query = "SELECT c FROM DbChains c WHERE c.chainId IN ?1"),})
 public class DbChains implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    public static final String FIND_CHAIN_BY_CHAIN_ID_LIST = "DbChains.findByIdList";
     public static final String FIND_BY_SEGMENT_3PARTY = "DbChains.findBySegment3Party";
     public static final String FIND_BY_NAME_CHAIN = "DbChains.findByNameChain";
     public static final String FIND_BY_3PARTY_PERMISSION = "DbChains.findBy3PartyPermission";

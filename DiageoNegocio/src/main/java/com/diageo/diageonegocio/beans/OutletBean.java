@@ -119,6 +119,116 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
     }
 
     @Override
+    public List<DbOutlets> findAllOutlets(Map<String, Object> filters) {
+        Query sql = getEntityManager().createNamedQuery(DbOutlets.FIND_ALL);
+        if (filters.get("nit") != null) {
+            sql.setParameter("nit", "%" + filters.get("nit").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nit", "%%");
+        }
+        if (filters.get("businessName") != null) {
+            sql.setParameter("businessName", "%" + filters.get("businessName").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("businessName", "%%");
+        }
+        if (filters.get("numberPdv") != null) {
+            sql.setParameter("numberPdv", "%" + filters.get("numberPdv").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("numberPdv", "%%");
+        }
+        if (filters.get("kiernanId") != null) {
+            sql.setParameter("kiernanId", "%" + filters.get("kiernanId").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("kiernanId", "%%");
+        }
+        if (filters.get("subSegmentId.nameSubsegment") != null) {
+            sql.setParameter("nameSubsegment", "%" + filters.get("subSegmentId.nameSubsegment").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameSubsegment", "%%");
+        }
+        if (filters.get("statusOutlet") != null) {
+            sql.setParameter("statusOutlet", "%" + filters.get("statusOutlet").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("statusOutlet", "%%");
+        }
+        if (filters.get("statusMDM") != null) {
+            sql.setParameter("statusMDM", "%" + filters.get("statusMDM").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("statusMDM", "%%");
+        }
+        List<DbOutlets> list = sql.getResultList();
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
+
+    @Override
+    public List<DbOutlets> findAllOutlets(String[] names, String[] values) {
+        Query sql = getEntityManager().createNamedQuery(DbOutlets.FIND_ALL);
+        boolean flagNit = false, flagBusinessName = false, flagNumberPdv = false, flagKiernanId = false, flagNameSubsegment = false, flagStatusOutlet = false, flagStatusMDM = false;
+        for (int i = 0; i < names.length; i++) {
+            String name = names[i];
+            switch (name) {
+                case "nit":
+                    sql.setParameter("nit", "%" + values[i] + "%");
+                    flagNit = true;
+                    break;
+                case "businessName":
+                    sql.setParameter("businessName", "%" + values[i] + "%");
+                    flagBusinessName = true;
+                    break;
+                case "numberPdv":
+                    sql.setParameter("numberPdv", "%" + values[i] + "%");
+                    flagNumberPdv = true;
+                    break;
+                case "kiernanId":
+                    sql.setParameter("kiernanId", "%" + values[i] + "%");
+                    flagKiernanId = true;
+                    break;
+                case "subSegmentId.nameSubsegment":
+                    sql.setParameter("nameSubsegment", "%" + values[i] + "%");
+                    flagNameSubsegment = true;
+                    break;
+                case "statusOutlet":
+                    sql.setParameter("statusOutlet", "%" + values[i] + "%");
+                    flagStatusOutlet = true;
+                    break;
+                case "statusMDM":
+                    sql.setParameter("statusMDM", "%" + values[i] + "%");
+                    flagStatusMDM = true;
+                    break;
+            }
+        }
+        if (!flagNit) {
+            sql.setParameter("nit", "%%");
+        }
+        if (!flagBusinessName) {
+            sql.setParameter("businessName", "%%");
+        }
+        if (!flagNumberPdv) {
+            sql.setParameter("numberPdv", "%%");
+        }
+        if (!flagKiernanId) {
+            sql.setParameter("kiernanId", "%%");
+        }
+        if (!flagNameSubsegment) {
+            sql.setParameter("nameSubsegment", "%%");
+        }
+        if (!flagStatusOutlet) {
+            sql.setParameter("statusOutlet", "%%");
+        }
+        if (!flagStatusMDM) {
+            sql.setParameter("statusMDM", "%%");
+        }
+        List<DbOutlets> list = sql.getResultList();
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
+
+    @Override
     public List<DbOutlets> listOutletNew(String isNew) {
         List<DbOutlets> list = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_NEW, isNew);
         if (list == null) {
@@ -338,4 +448,101 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
         long size = (long) sql.getSingleResult();
         return size;
     }
+
+    @Override
+    public long findAllOutletsCountProfiles(int initial, int page, Map<String, Object> filters, List<Integer> listOutletid) {
+        Query sql = getEntityManager().createNamedQuery(DbOutlets.FIND_ALL_COUNT_PROFILES);
+        if (filters.get("nit") != null) {
+            sql.setParameter("nit", "%" + filters.get("nit").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nit", "%%");
+        }
+        if (filters.get("businessName") != null) {
+            sql.setParameter("businessName", "%" + filters.get("businessName").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("businessName", "%%");
+        }
+        if (filters.get("numberPdv") != null) {
+            sql.setParameter("numberPdv", "%" + filters.get("numberPdv").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("numberPdv", "%%");
+        }
+        if (filters.get("kiernanId") != null) {
+            sql.setParameter("kiernanId", "%" + filters.get("kiernanId").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("kiernanId", "%%");
+        }
+        if (filters.get("subSegmentId.nameSubsegment") != null) {
+            sql.setParameter("nameSubsegment", "%" + filters.get("subSegmentId.nameSubsegment").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameSubsegment", "%%");
+        }
+        if (filters.get("statusOutlet") != null) {
+            sql.setParameter("statusOutlet", "%" + filters.get("statusOutlet").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("statusOutlet", "%%");
+        }
+        if (filters.get("statusMDM") != null) {
+            sql.setParameter("statusMDM", "%" + filters.get("statusMDM").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("statusMDM", "%%");
+        }
+        if (!listOutletid.isEmpty()) {
+            sql.setParameter("listOutletId", listOutletid);
+        } else {
+            listOutletid.add(0);
+            sql.setParameter("listOutletId", listOutletid);
+        }
+        long size = (long) sql.getSingleResult();
+        return size;
+    }
+
+    @Override
+    public List<DbOutlets> findAllOutletsProfiles(int initial, int page, Map<String, Object> filters, List<Integer> listOutletid) {
+        Query sql = getEntityManager().createNamedQuery(DbOutlets.FIND_ALL_PROFILES);
+        if (filters.get("nit") != null) {
+            sql.setParameter("nit", "%" + filters.get("nit").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nit", "%%");
+        }
+        if (filters.get("businessName") != null) {
+            sql.setParameter("businessName", "%" + filters.get("businessName").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("businessName", "%%");
+        }
+        if (filters.get("numberPdv") != null) {
+            sql.setParameter("numberPdv", "%" + filters.get("numberPdv").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("numberPdv", "%%");
+        }
+        if (filters.get("kiernanId") != null) {
+            sql.setParameter("kiernanId", "%" + filters.get("kiernanId").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("kiernanId", "%%");
+        }
+        if (filters.get("subSegmentId.nameSubsegment") != null) {
+            sql.setParameter("nameSubsegment", "%" + filters.get("subSegmentId.nameSubsegment").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameSubsegment", "%%");
+        }
+        if (filters.get("statusOutlet") != null) {
+            sql.setParameter("statusOutlet", "%" + filters.get("statusOutlet").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("statusOutlet", "%%");
+        }
+        if (filters.get("statusMDM") != null) {
+            sql.setParameter("statusMDM", "%" + filters.get("statusMDM").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("statusMDM", "%%");
+        }
+        sql.setParameter("listOutletId", listOutletid);
+        sql.setFirstResult(initial);
+        sql.setMaxResults(page);
+        List<DbOutlets> list = sql.getResultList();
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
+
 }

@@ -76,14 +76,23 @@ public class ChainBean extends BusinessTransaction<DbChains> implements ChainBea
         }
         return list;
     }
-    
+
     @Override
-    public void deleteCustomerChain(Integer customerId,Integer chainId){
-        String sql="DELETE FROM DIAGEO_BUSINESS.dbo.DB_CUSTOMERS_CHAINS WHERE CUSTOMER_ID=? AND CHAIN_ID=?";
-        Query delete=super.getEntityManager().createNativeQuery(sql);
+    public void deleteCustomerChain(Integer customerId, Integer chainId) {
+        String sql = "DELETE FROM DIAGEO_BUSINESS.dbo.DB_CUSTOMERS_CHAINS WHERE CUSTOMER_ID=? AND CHAIN_ID=?";
+        Query delete = super.getEntityManager().createNativeQuery(sql);
         delete.setParameter(1, customerId);
         delete.setParameter(2, chainId);
         delete.executeUpdate();
+    }
+
+    @Override
+    public List<DbChains> findAllChainsProfiles(List<Integer> listChainId) {
+        List<DbChains> list = super.searchByNamedQuery(DbChains.class, DbChains.FIND_CHAIN_BY_CHAIN_ID_LIST, listChainId);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
     }
 
 }

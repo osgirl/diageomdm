@@ -33,4 +33,6 @@ public interface ChainBeanLocal {
 
     public void deleteCustomerChain(Integer customerId, Integer chainId);
 
+    public List<DbChains> findAllChainsProfiles(List<Integer> listChainId);
+
 }

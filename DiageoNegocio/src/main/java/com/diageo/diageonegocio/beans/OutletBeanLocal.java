@@ -6,6 +6,7 @@
 package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.DbOutlets;
+import com.diageo.diageonegocio.entidades.DbOutletsUsers;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.List;
 import java.util.Map;
@@ -52,5 +53,13 @@ public interface OutletBeanLocal {
     public List<DbOutlets> findBy3PartyPermissionSegment(Integer id3party, List<Integer> subSegment, List<String> statusMDM, Map<String, Object> filters, int initial, int page);
 
     public long findBy3PartyPermissionSegmentCount(Integer id3party, List<Integer> subSegment, List<String> statusMDM, Map<String, Object> filters);
+
+    public List<DbOutlets> findAllOutlets(String[] names, String[] values);
+
+    public List<DbOutlets> findAllOutlets(Map<String, Object> filters);
+
+    public long findAllOutletsCountProfiles(int initial, int page, Map<String, Object> filters, List<Integer> listOutletid);
+
+    public List<DbOutlets> findAllOutletsProfiles(int initial, int page,Map<String, Object> filters, List<Integer> listOutletid);
 
 }
