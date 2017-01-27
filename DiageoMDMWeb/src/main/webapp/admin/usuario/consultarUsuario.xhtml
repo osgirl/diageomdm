@@ -32,7 +32,7 @@
                                      widgetVar="wvUsu" style="width: 98%; word-wrap: break-word;font-size: 11px !important" rendered="#{consultarUsuarioBean.verDetalle}"
                                      paginatorAlwaysVisible="true" rows="12"  paginator="true" 
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     reflow="true">                            
+                                     reflow="true" filterEvent="enter">                            
                             <p:column headerText="#{msg.usu_nombres}" filterBy="#{usu.nameUser}" filterMatchMode="startsWith" sortBy="#{usu.nameUser}">
                                 <h:outputLabel value="#{usu.nameUser}"/>
                             </p:column>

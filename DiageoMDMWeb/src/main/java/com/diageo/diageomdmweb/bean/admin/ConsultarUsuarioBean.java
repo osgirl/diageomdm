@@ -110,8 +110,7 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
         if (!validateListDistributorPermission()) {
             if (!validarExisteciaCorreo()) {
                 try {
-                    getUsuarioSeleccionado().setProfileId(getPerfil());
-                    getUsuarioSeleccionado().setDwModulesList(getPerfil().getDwModulesList());
+                    getUsuarioSeleccionado().setProfileId(getPerfil());                    
                     getUsuarioSeleccionado().setStateUser(isUsuarioActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
                     Audit audit = new Audit();
                     audit.setCreationDate(getUsuarioSeleccionado().getAudit() != null ? getUsuarioSeleccionado().getAudit().getCreationDate() : null);
@@ -129,11 +128,7 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
                         getListPermissionSegmentToPersist().addAll(ps.getListPermissionSegment());
                     }
                     usuarioBean.updateUser(getUsuarioSeleccionado(), getListPermissionSegmentToPersist());
-                    moduloBean.deleteModuleUser(getUsuarioSeleccionado().getUserId());
-                    for (DwModules mod : getPerfil().getDwModulesList()) {
-                        mod.getDwUsersList().add(getUsuarioSeleccionado());
-                        moduloBean.createUserModule(mod);
-                    }
+                    moduloBean.deleteModuleUser(getUsuarioSeleccionado().getUserId());                   
                     showInfoMessage(capturarValor("usu_mis_datos"));
                     findPermissionSegment(usuarioSeleccionado);
                 } catch (ControllerWebException ex) {

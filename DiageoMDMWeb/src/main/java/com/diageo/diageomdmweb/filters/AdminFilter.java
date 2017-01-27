@@ -31,7 +31,7 @@ import javax.servlet.http.HttpSession;
  *
  * @author yovanoty126
  */
-@WebFilter(filterName = "AdminFilter", urlPatterns = {"/faces/admin/*", "/faces/outlet/*","/faces/reports/*"})
+@WebFilter(filterName = "AdminFilter", urlPatterns = {"/faces/admin/*", "/faces/outlet/*", "/faces/reports/*"})
 public class AdminFilter implements Filter {
 
     private static final Logger LOG = Logger.getLogger(AdminFilter.class.getName());
@@ -141,7 +141,7 @@ public class AdminFilter implements Filter {
                  * o no esa url
                  */
                 boolean bandera = false;
-                for (DwModules mod : usu.getDwModulesList()) {
+                for (DwModules mod : usu.getProfileId().getDwModulesList()) {
                     String urlModulo = req.getContextPath() + "/faces/" + mod.getUrlModule();
                     if (contextoDestino.equals(urlModulo)) {
                         bandera = true;
@@ -151,8 +151,18 @@ public class AdminFilter implements Filter {
                 if (!bandera) {
                     if (usu.getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())) {
                         res.sendRedirect(req.getContextPath() + "/faces/admin/usuario/consultarUsuario.xhtml");
-                    } else if (usu.getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
+                    } else if (usu.getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
+                            || usu.getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())
+                            || usu.getProfileId().getProfileId().equals(ProfileEnum.CP_A_DISTRIBUIDORES.getId())
+                            || usu.getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
                         res.sendRedirect(req.getContextPath() + "/faces/outlet/consultarOutlet.xhtml");
+                    }else if(usu.getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())
+                            ||usu.getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
+                            ||usu.getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())
+                            ||usu.getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())
+                            ||usu.getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())
+                            ){
+                        res.sendRedirect(req.getContextPath() + "/faces/outlet/searchChain.xhtml");
                     }
                     return;
                 }

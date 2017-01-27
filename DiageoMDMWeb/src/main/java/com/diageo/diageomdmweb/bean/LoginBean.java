@@ -93,13 +93,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     private Locale localeApp;
 
     @PostConstruct
-    public void init() {
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        String ipAddress = request.getHeader("X-FORWARDED-FOR");
-        if (ipAddress == null) {
-            ipAddress = request.getRemoteAddr();
-        }
-        System.out.println("ipAddress:" + ipAddress);
+    public void init() {        
         establecerCookiesCamposLogin();
         setLocaleApp(new Locale(ESPANOL));
     }
@@ -111,7 +105,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
         if (getUsuario() != null) {
             if (getUsuario().getStateUser().equals(StateEnum.ACTIVE.getState())) {
                 HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-                setListModulos(getUsuario().getDwModulesList());
+                setListModulos(getUsuario().getProfileId().getDwModulesList());
                 session.setAttribute(USUARIO, getUsuario());
                 //setPassword(null);
                 findPermissionSegment(getUsuario().getUserId());
@@ -123,20 +117,20 @@ public class LoginBean extends DiageoRootBean implements Serializable {
                     armarMigaPan(capturarValor("m_administrador"), capturarValor("m_usuario"), capturarValor("m_usuario_consultar"));
                     return "/admin/usuario/consultarUsuario?faces-redirect=true";
                 } else {
-                    if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
+                    if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
+                            || getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())
+                            || getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())
+                            || getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())
+                            || getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())) {
                         armarMigaPan(capturarValor("m_outlet"), capturarValor("m_chain_search"));
                         return "/outlet/searchChain?faces-redirect=true";
-                    }
-                    if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CATDEV.getId())) {
+                    }else if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())
+                            || getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())
+                            || getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
+                            || getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_DISTRIBUIDORES.getId())) {
                         armarMigaPan(capturarValor("m_outlet"), capturarValor("m_outlet_consultar"));
                         return "/outlet/consultarOutlet?faces-redirect=true";
                     }
-                    if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
-                        armarMigaPan(capturarValor("m_outlet"), capturarValor("m_chain_search"));
-                        return "/outlet/searchChain?faces-redirect=true";
-                    }
-                    armarMigaPan(capturarValor("m_outlet"), capturarValor("m_outlet_consultar"));
-                    return "/outlet/consultarOutlet?faces-redirect=true";
                 }
             }
             showWarningMessage(capturarValor("user_locked"));

@@ -95,7 +95,11 @@ and open the template in the editor.
                         <p:column headerText="#{msg.sub_seg_subsegmento}">
                             <p:selectBooleanCheckbox value="#{segmentDistributor.subSegmentCheck eq '1'}" disabled="true"/>
                             <h:outputLabel value="#{consultarUsuarioBean.subSegmentName(segmentDistributor.subSegmentId)}"/>                            
-                        </p:column>                        
+                        </p:column>    
+                        <p:column headerText="#{msg.out_potencial}">
+                            <p:selectBooleanCheckbox value="#{segmentDistributor.potentialCheck eq '1'}" disabled="true"/>
+                            <h:outputLabel value="#{consultarUsuarioBean.potentialName(segmentDistributor.potentialId)}"/>
+                        </p:column>
                         <p:column>
                             <p:commandLink value="#{msg.btn_remove}" style="color: blue" update="formCreateUserModal:dtSegmentSelect"
                                            process="@this" actionListener="#{consultarUsuarioBean.removePermissionFromPopup(segmentDistributor)}"/>

@@ -242,17 +242,12 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
                     usu.setProfileId(getPerfil());
                     usu.setDistri1(getAthenaCode().toUpperCase());
                     usu.setFailedAttempt(0);
-                    usu.setFirstEntry(UserEntryEnum.FIRST_ENTRY.getState());
-                    usu.setDwModulesList(perfil.getDwModulesList());
+                    usu.setFirstEntry(UserEntryEnum.FIRST_ENTRY.getState());                   
                     if (isDetailEdition()) {
                         usu.setDistributorId(getDistributorSelected().getDb3partyId());
                         usuarioBean.createUser(usu, getListPermissionSegmentToPersist());
                     } else {
                         usuarioBean.createUser(usu, null);
-                    }
-                    for (DwModules mod : getPerfil().getDwModulesList()) {
-                        mod.getDwUsersList().add(usu);
-                        moduloBean.createUserModule(mod);
                     }
                     EMail email = new EMail();
                     HttpServletRequest req = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -272,8 +267,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     }
 
     public void listenerDetailEdition() {
-        detailEdition = !((getPerfil().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())) || (getPerfil().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()))
-                || (getPerfil().getProfileId().equals(ProfileEnum.CATDEV.getId())));
+        detailEdition = !((getPerfil().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())) || (getPerfil().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())));
     }
 
     public void listenerFindDistributorSonByFather() {
@@ -467,6 +461,21 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
         try {
             return subSegmentoBeanLocal.findById(id).getNameSubsegment();
         } catch (DiageoBusinessException ex) {
+            Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+    
+    public String potentialName(Integer id) {
+        if (id == null) {
+            return "";
+        }
+        if (id == -1) {
+            return capturarValor("usu_msg_all");
+        }
+        try {
+            return potentialBeanLocal.findById(id).getNamePotential();
+        } catch (Exception ex) {
             Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }

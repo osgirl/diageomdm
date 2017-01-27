@@ -41,7 +41,8 @@
                                  filteredValue="#{chainSearchBean.chainsListFiltered}"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  style="font-size:  90%" paginator="true" rendered="#{chainSearchBean.seeDetail}"
-                                 emptyMessage="#{msg.out_msg_not_record}">
+                                 emptyMessage="#{msg.out_msg_not_record}"
+                                 filterEvent="enter">
                         <p:column headerText="#{msg.status}" filterMatchMode="exact" filterBy="#{chain.statusMDM}">
                             <f:facet name="filter">
                                 <p:selectOneMenu onchange="PF('dtChainSearch').filter()" style="width: 80%">
@@ -80,7 +81,7 @@
                         <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{chain.subSegmentId.nameSubsegment}">
                             <h:outputLabel  value="#{chain.subSegmentId.nameSubsegment}"/>
                         </p:column>
-                        <p:column headerText="#{msg.out_codigo_ean}" filterBy="#{chain.subSegmentId.nameSubsegment}">
+                        <p:column headerText="#{msg.out_codigo_ean}" filterBy="#{chain.codeEan}">
                             <h:outputLabel  value="#{chain.codeEan}"/>
                         </p:column>
                         <p:column>
@@ -109,10 +110,10 @@
                         <h:panelGroup id="pgChaDetalle" rendered="#{!chainSearchBean.seeDetail}" style="width: 100%">
                             <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
                                 <h:panelGrid columns="4" style="width: 100%">
-                                    <h:outputLabel value="#{msg.out_kiernan}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <h:outputLabel value="#{msg.cod_sap}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <h:panelGroup>
                                         <p:inputText id="itKiernan" value="#{chainSearchBean.kiernan}" disabled="#{chainSearchBean.disabledFields}" required="false"
-                                                     label="#{msg.out_kiernan}"/>
+                                                     label="#{msg.out_kiernan}" readonly="true"/>
                                         <p:message for="itKiernan"/>
                                     </h:panelGroup>
                                     <h:outputLabel value="#{msg.chain_name}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>

@@ -32,7 +32,7 @@
                 <h:form id="formChain">                    
                     <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
                         <h:panelGrid columns="4" style="width: 100%">
-                            <h:outputLabel value="#{msg.out_kiernan}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <h:outputLabel value="#{msg.cod_sap}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                             <h:panelGroup>
                                 <p:inputText id="itKiernan" value="#{createChainBean.kiernan}" required="false" label="#{msg.out_kiernan}"/>
                                 <p:message for="itKiernan"/>
@@ -99,7 +99,7 @@
 
                                 <h:outputLabel value="#{msg.out_potencial}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                 <p:selectOneMenu converter="potentialConverter" value="#{createChainBean.potentialSelected}"
-                                                 disabled="true"  style="width: 90%">
+                                                  style="width: 90%">
                                     <f:selectItems value="#{createChainBean.listPotential}" var="pot" itemLabel="#{pot.namePotential}"/>
                                 </p:selectOneMenu>
 
