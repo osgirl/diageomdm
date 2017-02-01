@@ -26,10 +26,22 @@ import javax.persistence.TemporalType;
 @NamedQueries({
     @NamedQuery(name = DbChainsUsers.FIND_BY_USER_ID,
             query = "SELECT o.dbChainsUsersPK.chainId FROM DbChainsUsers o WHERE o.dbChainsUsersPK.userId = ?1")
+    ,
+    @NamedQuery(name = DbChainsUsers.FIND_BY_CHAIN_ID,
+            query = "SELECT o FROM DbChainsUsers o WHERE o.dbChainsUsersPK.chainId = ?1")
+    ,
+    @NamedQuery(name = DbChainsUsers.FIND_BY_USER_ID_JOIN,
+            query = "SELECT c FROM DbChainsUsers cu JOIN DbChains c ON c.chainId=cu.dbChainsUsersPK.chainId WHERE cu.dbChainsUsersPK.userId = ?1")
+    ,
+    @NamedQuery(name = DbChainsUsers.FIND_BY_USER_ID_JOIN_IN,
+            query = "SELECT c FROM DbChainsUsers cu JOIN DbChains c ON c.chainId=cu.dbChainsUsersPK.chainId WHERE cu.dbChainsUsersPK.userId IN ?1")
 })
 public class DbChainsUsers implements Serializable {
 
     public static final String FIND_BY_USER_ID = "DbChainsUsers.findByUserId";
+    public static final String FIND_BY_CHAIN_ID = "DbChainsUsers.findByChainId";
+    public static final String FIND_BY_USER_ID_JOIN = "DbChainsUsers.findByUserIdJoin";
+    public static final String FIND_BY_USER_ID_JOIN_IN = "DbChainsUsers.findByUserIdJoinIn";
     @EmbeddedId
     private DbChainsUsersPK dbChainsUsersPK;
     @Column(name = "PARETO")

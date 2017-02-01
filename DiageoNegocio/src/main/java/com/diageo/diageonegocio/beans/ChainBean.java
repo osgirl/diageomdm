@@ -79,7 +79,7 @@ public class ChainBean extends BusinessTransaction<DbChains> implements ChainBea
 
     @Override
     public void deleteCustomerChain(Integer customerId, Integer chainId) {
-        String sql = "DELETE FROM DIAGEO_BUSINESS.dbo.DB_CUSTOMERS_CHAINS WHERE CUSTOMER_ID=? AND CHAIN_ID=?";
+        String sql = "DELETE FROM DIAGEO_BUSINESS.dbo.DB_CUSTOMERS_CHAINS WHERE CUSTOMER_ID=?1 AND CHAIN_ID=?2";
         Query delete = super.getEntityManager().createNativeQuery(sql);
         delete.setParameter(1, customerId);
         delete.setParameter(2, chainId);

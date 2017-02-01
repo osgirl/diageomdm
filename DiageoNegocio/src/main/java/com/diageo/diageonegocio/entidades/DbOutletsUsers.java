@@ -24,12 +24,64 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "DB_OUTLETS_USERS")
 @NamedQueries({
+    @NamedQuery(name = DbOutletsUsers.FIND_BY_OUTLET_ID,
+            query = "SELECT o FROM DbOutletsUsers o WHERE o.dbOutletsUsersPK.outletId = ?1")
+    ,
     @NamedQuery(name = DbOutletsUsers.FIND_BY_USER_ID,
             query = "SELECT o.dbOutletsUsersPK.outletId FROM DbOutletsUsers o WHERE o.dbOutletsUsersPK.userId = ?1")
+    ,
+    @NamedQuery(name = DbOutletsUsers.FIND_BY_USER_OUTLETS_JOIN, query = "SELECT do FROM DbOutletsUsers o "
+            + "JOIN DbOutlets do ON do.outletId=o.dbOutletsUsersPK.outletId "
+            + "WHERE o.dbOutletsUsersPK.userId = :userId "
+            + "AND do.nit LIKE :nit "
+            + "AND do.businessName LIKE :businessName "
+            + "AND do.numberPdv LIKE :numberPdv "
+            + "AND do.kiernanId LIKE :kiernanId "
+            + "AND do.subSegmentId.nameSubsegment LIKE :nameSubsegment "
+            + "AND do.statusOutlet LIKE :statusOutlet "
+            + "AND do.statusMDM LIKE :statusMDM")
+    ,
+    @NamedQuery(name = DbOutletsUsers.FIND_BY_USER_OUTLETS_JOIN_COUNT, query = "SELECT COUNT(do) FROM DbOutletsUsers o "
+            + "JOIN DbOutlets do ON do.outletId=o.dbOutletsUsersPK.outletId "
+            + "WHERE o.dbOutletsUsersPK.userId = :userId "
+            + "AND do.nit LIKE :nit "
+            + "AND do.businessName LIKE :businessName "
+            + "AND do.numberPdv LIKE :numberPdv "
+            + "AND do.kiernanId LIKE :kiernanId "
+            + "AND do.subSegmentId.nameSubsegment LIKE :nameSubsegment "
+            + "AND do.statusOutlet LIKE :statusOutlet "
+            + "AND do.statusMDM LIKE :statusMDM")
+    ,
+    @NamedQuery(name = DbOutletsUsers.FIND_BY_USER_OUTLETS_JOIN_IN, query = "SELECT do FROM DbOutletsUsers o "
+            + "JOIN DbOutlets do ON do.outletId=o.dbOutletsUsersPK.outletId "
+            + "WHERE o.dbOutletsUsersPK.userId IN :userId "
+            + "AND do.nit LIKE :nit "
+            + "AND do.businessName LIKE :businessName "
+            + "AND do.numberPdv LIKE :numberPdv "
+            + "AND do.kiernanId LIKE :kiernanId "
+            + "AND do.subSegmentId.nameSubsegment LIKE :nameSubsegment "
+            + "AND do.statusOutlet LIKE :statusOutlet "
+            + "AND do.statusMDM LIKE :statusMDM")
+    ,
+    @NamedQuery(name = DbOutletsUsers.FIND_BY_USER_OUTLETS_JOIN_COUNT_IN, query = "SELECT COUNT(do) FROM DbOutletsUsers o "
+            + "JOIN DbOutlets do ON do.outletId=o.dbOutletsUsersPK.outletId "
+            + "WHERE o.dbOutletsUsersPK.userId IN :userId "
+            + "AND do.nit LIKE :nit "
+            + "AND do.businessName LIKE :businessName "
+            + "AND do.numberPdv LIKE :numberPdv "
+            + "AND do.kiernanId LIKE :kiernanId "
+            + "AND do.subSegmentId.nameSubsegment LIKE :nameSubsegment "
+            + "AND do.statusOutlet LIKE :statusOutlet "
+            + "AND do.statusMDM LIKE :statusMDM")
 })
 public class DbOutletsUsers implements Serializable {
 
     public static final String FIND_BY_USER_ID = "DbOutletsUsers.findByUserId";
+    public static final String FIND_BY_OUTLET_ID = "DbOutletsUsers.findByOutletId";
+    public static final String FIND_BY_USER_OUTLETS_JOIN = "DbOutletsUsers.findByUserOutletsJoin";
+    public static final String FIND_BY_USER_OUTLETS_JOIN_IN = "DbOutletsUsers.findByUserOutletsJoinIn";
+    public static final String FIND_BY_USER_OUTLETS_JOIN_COUNT = "DbOutletsUsers.findByUserOutletsJoinCount";
+    public static final String FIND_BY_USER_OUTLETS_JOIN_COUNT_IN = "DbOutletsUsers.findByUserOutletsJoinCountIn";
     @EmbeddedId
     private DbOutletsUsersPK dbOutletsUsersPK;
     @Column(name = "PARETO")
