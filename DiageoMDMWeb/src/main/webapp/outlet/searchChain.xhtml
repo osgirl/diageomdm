@@ -4,8 +4,7 @@
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <body>
 
@@ -41,34 +40,28 @@
                                  filteredValue="#{chainSearchBean.chainsListFiltered}"
                                  paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                  style="font-size:  90%" paginator="true" rendered="#{chainSearchBean.seeDetail}"
-                                 emptyMessage="#{msg.out_msg_not_record}"
-                                 filterEvent="enter">
+                                 emptyMessage="#{msg.out_msg_not_record}" selectionMode="multiple" selection="#{chainSearchBean.chainsListSelected}"
+                                 filterEvent="enter" rowKey="#{chain.chainId}">
+                        <p:ajax event="filter" listener="#{chainSearchBean.listenerFilterList}"/>
+                        <p:column>
+                            <p:commandLink value="#{msg.btn_detalle}" style="color: blue" process="@this" update="@form"
+                                           actionListener="#{chainSearchBean.detailChain(chain)}"/>
+                        </p:column>
                         <p:column headerText="#{msg.status}" filterMatchMode="exact" filterBy="#{chain.statusMDM}">
                             <f:facet name="filter">
                                 <p:selectOneMenu onchange="PF('dtChainSearch').filter()" style="width: 80%">
                                     <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}" noSelectionOption="true"/>
-                                    <c:if test="#{chainSearchBean.renderPendingTMCRejectStatus}">
-                                        <f:selectItem itemValue="PENDING_KAM" itemLabel="#{msg.sta_pending_kam}"/>
-                                    </c:if>
-                                    <c:if test="#{chainSearchBean.renderPendingTMCRejectStatus}">
-                                        <f:selectItem itemValue="REJECT" itemLabel="#{msg.sta_reject}"/>
-                                    </c:if>
-                                    <c:if test="#{chainSearchBean.renderPendingCMStatus}">
-                                        <f:selectItem itemValue="PENDING_COMMERCIAL_MANAGER" itemLabel="#{msg.sta_pending_commercial_manager}"/>
-                                    </c:if>
-                                    <c:if test="#{chainSearchBean.renderApprovedStatus}">
-                                        <f:selectItem itemValue="APPROVED" itemLabel="#{msg.sta_approval}"/>
-                                    </c:if>
+                                    <f:selectItem itemValue="PENDING_KAM" itemLabel="#{msg.sta_pending_kam}"/>
+                                    <f:selectItem itemValue="REJECT" itemLabel="#{msg.sta_reject}"/>
+                                    <f:selectItem itemValue="PENDING_COMMERCIAL_MANAGER" itemLabel="#{msg.sta_pending_commercial_manager}"/>
+                                    <f:selectItem itemValue="APPROVED" itemLabel="#{msg.sta_approval}"/>
                                 </p:selectOneMenu>
                             </f:facet>
                             <h:outputLabel value="&lt;b&gt;#{msg.sta_reject}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'REJECT'}" style="color: red" escape="false"/>
                             <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_kam}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'PENDING_KAM'}" style="color: blue" escape="false"/>
                             <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_commercial_manager}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'PENDING_COMMERCIAL_MANAGER'}" style="color: sienna" escape="false"/>
-                            <h:outputLabel value="&lt;b&gt;#{msg.sta_approval}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'APPROVED'}" style="color: greenyellow" escape="false"/>
-                        </p:column>
-                        <p:column headerText="#{msg.out_approbation_massive}" rendered="#{chainSearchBean.renderMassiveApproval}">
-                            <p:selectBooleanCheckbox value="#{chain.approbationMassive}"/>
-                        </p:column>
+                            <h:outputLabel value="&lt;b&gt;#{msg.sta_approval}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'APPROVED'}" style="color: green" escape="false"/>
+                        </p:column>                        
                         <p:column headerText="#{msg.chain_id}" filterBy="#{chain.chainId}">
                             <h:outputLabel value="#{chain.chainId}"/>
                         </p:column>
@@ -83,27 +76,22 @@
                         </p:column>
                         <p:column headerText="#{msg.out_codigo_ean}" filterBy="#{chain.codeEan}">
                             <h:outputLabel  value="#{chain.codeEan}"/>
-                        </p:column>
-                        <p:column>
-                            <p:commandLink value="#{msg.btn_detalle}" style="color: blue" process="@this" update="@form"
-                                           actionListener="#{chainSearchBean.detailChain(chain)}"/>
-                        </p:column>
+                        </p:column>                        
                     </p:dataTable>
                     <br/>
-                    <h:panelGrid columns="4">
-                        <p:commandButton value="#{msg.btn_select_all}" styleClass="button" process="@all" update="@form"
-                                         actionListener="#{chainSearchBean.selectAll()}" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"
+                    <h:panelGrid columns="4">                        
+                        <p:commandButton value="#{msg.btn_approved_all}" styleClass="button" process="@all" update="formChainSearch:dtOutlet"
+                                         actionListener="#{chainSearchBean.approbatrionMasive()}" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"
                                          style="width: 100%;left: 0%"/>
-                        <p:commandButton value="#{msg.btn_unselect_all}" styleClass="button" process="@all" update="@form"
-                                         actionListener="#{chainSearchBean.unSelectAll()}" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"
-                                         style="width: 100%;left: 0%"/>
-                        <p:commandButton value="#{msg.btn_approved_2}" styleClass="button" process="@all" update="@form"
-                                         actionListener="#{chainSearchBean.approbatrionMasive()}" 
-                                         rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"
-                                         style="width: 100%;left: 0%"/>
-                        <p:commandButton value="#{msg.btn_reject}" styleClass="button_reject" process="@all" update="@form" 
+                        <p:commandButton value="#{msg.btn_approved_selected}" styleClass="button" process="@all" update="@form"
+                                         actionListener="#{chainSearchBean.approvedSelected()}" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"
+                                         style="width: 100%;left: 0%"/>                        
+                        <p:commandButton value="#{msg.btn_reject_all}" styleClass="button_reject" process="@all" update="@form" 
                                          actionListener="#{chainSearchBean.rejectAllChain()}"
-                                         style="width: 100%;left: 0%" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"/>
+                                         style="width: 100%;left: 0%" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderButtonRejectTable}"/>
+                        <p:commandButton value="#{msg.btn_reject_selected}" styleClass="button_reject" process="@all" update="@form" 
+                                         actionListener="#{chainSearchBean.rejectAllChainSelected()}"
+                                         style="width: 100%;left: 0%" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderButtonRejectTable}"/>
                     </h:panelGrid>
 
                     <h:panelGroup id="pgChain">
@@ -113,7 +101,7 @@
                                     <h:outputLabel value="#{msg.cod_sap}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <h:panelGroup>
                                         <p:inputText id="itKiernan" value="#{chainSearchBean.kiernan}" disabled="#{chainSearchBean.disabledFields}" required="false"
-                                                     label="#{msg.out_kiernan}" readonly="true"/>
+                                                     label="#{msg.out_kiernan}"/>
                                         <p:message for="itKiernan"/>
                                     </h:panelGroup>
                                     <h:outputLabel value="#{msg.chain_name}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
@@ -301,10 +289,13 @@
                                 </p:dataTable>
                             </p:fieldset>
                             <br/><br/>
-                            <p:commandButton value="#{chainSearchBean.buttonNameCommit}" process="@all" update="@form :formMigaPan:idGrowl" actionListener="#{chainSearchBean.saveChain()}"
-                                             styleClass="button" style="left: 0%"/>
+                            <p:commandButton value="#{chainSearchBean.buttonNameCommit}" process="@all" update="@form :formMigaPan:idGrowl" 
+                                             actionListener="#{chainSearchBean.saveChain()}"
+                                             styleClass="button" style="left: 0%" rendered="#{chainSearchBean.renderButtonApproved}"/>
                             <p:commandButton value="#{msg.btn_reject}" process="@all" update="@form :formMigaPan:idGrowl" actionListener="#{chainSearchBean.rejectChain()}"                                             
                                              styleClass="button_reject" style="left: 0%" rendered="#{chainSearchBean.renderButtonReject}"/>
+                            <p:commandButton value="#{msg.btn_back}" actionListener="#{chainSearchBean.buttonBack()}" update="@form"
+                                             styleClass="button" style="left: 0%" immediate="false"/>
                             <br/>
                         </h:panelGroup>
                     </h:panelGroup>

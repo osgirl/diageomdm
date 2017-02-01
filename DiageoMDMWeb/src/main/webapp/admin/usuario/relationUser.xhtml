@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:body>
+        <ui:composition template="./../../WEB-INF/templates/diageoWebTemplate.xhtml">
+            <ui:define name="content">
+                <br/>
+                <h:form id="formRelationUser">
+                    <p:fieldset legend="#{msg.relation_user}" style="width: 90%">
+                        <h:panelGroup id="pgConsulta">
+                            <p:dataTable id="dtRelationUser" value="#{relationUserBean.listUserByProfileLevel_1}" var="user" 
+                                         paginatorAlwaysVisible="false" rows="15" paginator="true" rendered="#{relationUserBean.detail}"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         filterEvent="enter">
+                                <p:column headerText="#{msg.usu_nombres}" filterBy="#{user.nameUser}">
+                                    <h:outputLabel value="#{user.nameUser}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.usu_apellidos}" filterBy="#{user.lastName}">
+                                    <h:outputLabel value="#{user.lastName}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.usu_perfil}" filterBy="#{user.profileId.nameProfile}">
+                                    <h:outputLabel value="#{user.profileId.nameProfile}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:commandLink value="#{msg.btn_detalle}" actionListener="#{relationUserBean.seeDetail(user)}" 
+                                                   style="color: blue" process="@this" update="@form"/>
+                                </p:column>
+                            </p:dataTable>
+                        </h:panelGroup>
+                        <h:panelGroup id="pgEdit" rendered="#{!relationUserBean.detail}" style="width: 80%">
+                            <h:outputLabel value="#{relationUserBean.userSelectedLevel_1.profileId.nameProfile.toUpperCase()} 
+                                           #{relationUserBean.userSelectedLevel_1.nameUser.toUpperCase()} #{relationUserBean.userSelectedLevel_1.lastName.toUpperCase()}"
+                                           style="font-size: 15px!important"/>
+                            <br/><br/><br/>
+                            <h:panelGrid columns="6">
+                                <h:outputLabel value="#{msg.usu_perfil}"/>
+                                <h:panelGroup>
+                                    <p:selectOneMenu id="somProfile_2" value="#{relationUserBean.profileLevel_2}" converter="perfilConverter" required="true"
+                                                     label="#{msg.usu_perfil}">
+                                        <p:ajax process="@this" update="formRelationUser:somUserProfileLevel_2" listener="#{relationUserBean.listenerProfileUser()}"/>
+                                        <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
+                                        <f:selectItems value="#{relationUserBean.listProfileLevel_2}" var="pro" itemLabel="#{pro.nameProfile}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="somProfile_2"/>
+                                </h:panelGroup>
+
+                                <h:outputLabel value="#{msg.usu_nombres}"/>
+                                <h:panelGroup>
+                                    <p:selectOneMenu id="somUserProfileLevel_2" value="#{relationUserBean.userSelectedLevel_2}" converter="userConverter"
+                                                     required="true" label="#{msg.usu_nombres}">
+                                        <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
+                                        <f:selectItems value="#{relationUserBean.listUserByProfileLevel_2}" var="us" itemLabel="#{us.nameUser.toUpperCase()} #{us.lastName.toUpperCase()}"/>
+                                    </p:selectOneMenu>
+                                    <p:message for="somUserProfileLevel_2"/>
+                                </h:panelGroup>
+                                <p:selectOneRadio id="console" value="#{relationUserBean.readModify}">
+                                    <f:selectItem itemLabel="#{msg.relation_modify}" itemValue="1"/>
+                                    <f:selectItem itemLabel="#{msg.relation_read}" itemValue="0" />
+                                </p:selectOneRadio>
+                                <p:commandLink value="#{msg.btn_add}" process="@all" update="@form" style="color: blue"
+                                               actionListener="#{relationUserBean.addUser()}"/>
+                            </h:panelGrid>
+                            <br/>
+                            <p:dataTable value="#{relationUserBean.tableUserRelation}" var="setRelation"
+                                         paginatorAlwaysVisible="false" rows="15"
+                                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                         paginator="true">
+                                <p:column headerText="#{msg.usu_perfil}">
+                                    <h:outputLabel value="#{setRelation.userSelected.profileId.nameProfile}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.usu_nombres}">
+                                    <h:outputLabel value="#{setRelation.userSelected.nameUser}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.usu_apellidos}">
+                                    <h:outputLabel value="#{setRelation.userSelected.lastName}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.relation_modify}" style="text-align: center">
+                                    <h:outputLabel value="#{setRelation.modify}"/>
+                                </p:column>
+                                <p:column headerText="#{msg.relation_read}" style="text-align: center">
+                                    <h:outputLabel value="#{setRelation.read}"/>
+                                </p:column>
+                                <p:column>
+                                    <p:commandLink value="#{msg.btn_remove}" actionListener="#{relationUserBean.deleteUserFromTable(setRelation)}" 
+                                                   style="color: blue" process="@this" update="@form"/>
+                                </p:column>
+                            </p:dataTable>
+                            <br/>
+                            <p:commandButton value="#{msg.btn_send}" update="@form" process="@this"
+                                             styleClass="button" style="width: 20%;left: 0%"
+                                             actionListener="#{relationUserBean.saveRelationUser()}"/> 
+                            <p:commandButton value="#{msg.btn_regresar}" immediate="true" actionListener="#{relationUserBean.btnBack()}" update="@form"
+                                             styleClass="button" style="width: 20%;left: 0%"/> 
+                        </h:panelGroup>
+                    </p:fieldset>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>

@@ -29,6 +29,7 @@ and open the template in the editor.
                     <p:submenu label="#{msg.m_usuario}" rendered="#{loginBean.renderizarMenu('USU')}">
                         <p:menuitem value="#{msg.m_usuario_crear}" rendered="#{loginBean.renderizarMenu('C_USU')}" action="#{menuBean.navegar('C_USU')}" ajax="false"/>
                         <p:menuitem value="#{msg.m_usuario_consultar}" rendered="#{loginBean.renderizarMenu('S_USU')}" action="#{menuBean.navegar('S_USU')}" ajax="false"/>
+                        <p:menuitem value="#{msg.usu_relation}" rendered="#{loginBean.renderizarMenu('U_RELATION')}" action="#{menuBean.navegar('U_RELATION')}" ajax="false"/>
                     </p:submenu>
                     <p:submenu label="#{msg.m_canal}" rendered="#{loginBean.renderizarMenu('CHAN')}">
                         <p:menuitem value="#{msg.m_canal_crear}" rendered="#{loginBean.renderizarMenu('C_CHAN')}" action="#{menuBean.navegar('C_CHAN')}" ajax="false"/>

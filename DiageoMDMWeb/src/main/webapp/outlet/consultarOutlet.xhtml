@@ -39,7 +39,6 @@
                         }
 
                     </style>
-                    <!--ui:include src="tablesOutlet/outletDataTable.xhtml"/-->
                     <ui:include src="tablesOutlet/outletDataTableLazyDataModel.xhtml"/>
                     <br/>
                     <!--p:commandButton value="{msg.btn_select_all}" styleClass="button" process="@all" update="@form"
@@ -53,17 +52,17 @@
                                          rendered="{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval
                                                      and loginBean.usuario.profileId.nameProfile eq 'COMMERCIAL MANAGER'}"/-->
                     <h:panelGrid columns="4">                       
-                        <p:commandButton value="Aprobar Todos" styleClass="button" process="@all" update="@form"
-                                         actionListener="#{outletConsultarBean.selectAll()}" rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval}"
+                        <p:commandButton value="#{msg.btn_approved_all}" styleClass="button" process="@all" update="@form"
+                                         actionListener="#{outletConsultarBean.approvedAllOutlets()}" rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval}"
                                          style="width: 100%;left: 0%"/>
-                        <p:commandButton id="cbAprobar" value="#{msg.btn_approved_2} Seleccionados" styleClass="button" process="@all" update="@form"
-                                         actionListener="#{outletConsultarBean.approbatrionMasive()}" rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval}"
+                        <p:commandButton id="cbAprobar" value="#{msg.btn_approved_selected}" styleClass="button" process="@all" update="@form"
+                                         actionListener="#{outletConsultarBean.approvedAllOutletsSelected()}" rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval}"
                                          style="width: 100%;left: 0%"/>
-                        <p:commandButton value="Rechazar Todos" process="@all" update="@form" actionListener="#{outletConsultarBean.rejectAllOutlet()}"                                             
+                        <p:commandButton value="#{msg.btn_reject_all}" process="@all" update="@form" actionListener="#{outletConsultarBean.rejectAllOutlet()}"                                             
                                          styleClass="button_reject" style="left: 0%;width: 100%" 
                                          rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval
                                                      and loginBean.usuario.profileId.nameProfile.equalsIgnoreCase('COMMERCIAL MANAGER')}"/>
-                        <p:commandButton value="Rechazar Seleccionados" process="@all" update="@form" actionListener="#{outletConsultarBean.rejectAllOutlet()}"                                             
+                        <p:commandButton value="#{msg.btn_reject_selected}" process="@all" update="@form" actionListener="#{outletConsultarBean.rejectAllOutletsSelected()}"                                             
                                          styleClass="button_reject" style="left: 0%;width: 100%" 
                                          rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval
                                                      and loginBean.usuario.profileId.nameProfile.equalsIgnoreCase('COMMERCIAL MANAGER')}"/>
@@ -340,9 +339,12 @@
                             </p:fieldset>
                             <br/><br/>
                             <p:commandButton value="#{outletConsultarBean.buttonNameCommit}" process="@all" update="@form" actionListener="#{outletConsultarBean.saveOutlet()}"
-                                             styleClass="button" style="left: 0%" onclick="PF('dtOutletSearch').clearFilters()"/>
+                                             styleClass="button" style="left: 0%" onclick="PF('dtOutletSearch').clearFilters()" rendered="#{outletConsultarBean.renderButtonApproved}"/>
                             <p:commandButton value="#{msg.btn_reject}" process="@all" update="@form" actionListener="#{outletConsultarBean.rejectOutlet()}"                                             
                                              styleClass="button_reject" style="left: 0%" rendered="#{outletConsultarBean.renderButtonReject}"
+                                             onclick="PF('dtOutletSearch').clearFilters()"/>
+                            <p:commandButton value="#{msg.btn_back}" update="@form" actionListener="#{outletConsultarBean.buttonBack()}"                                             
+                                             styleClass="button" style="left: 0%"  immediate="false"
                                              onclick="PF('dtOutletSearch').clearFilters()"/>
                             <br/>
                         </h:panelGroup>

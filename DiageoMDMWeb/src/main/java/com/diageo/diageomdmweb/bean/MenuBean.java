@@ -141,6 +141,9 @@ public class MenuBean extends DiageoRootBean {
             case S_ADMIN:
                 getLoginBean().armarMigaPan(capturarValor("m_administrador"), capturarValor("m_distribuidor"), capturarValor("m_distr_admin_search"));
                 return "/admin/distribuidor/admin/searchAdmin?faces-redirect=true";
+            case U_RELATION:
+                getLoginBean().armarMigaPan(capturarValor("m_administrador"), capturarValor("m_usuario"), capturarValor("usu_relation"));
+                return "/admin/usuario/relationUser?faces-redirect=true";
         }
         return null;
     }
