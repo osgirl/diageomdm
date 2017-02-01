@@ -146,9 +146,18 @@ public class UserBean extends WebTransaction<DwUsers> implements UserBeanLocal {
         }
         return list;
     }
-    
+
     @Override
-    public DwUsers findById(Integer id){
-        return (DwUsers)super.findById(DwUsers.class, id);
+    public DwUsers findById(Integer id) {
+        return (DwUsers) super.findById(DwUsers.class, id);
+    }
+
+    @Override
+    public List<DwUsers> usersByProfileLevel(boolean level) {
+        List<DwUsers> list = super.findByNamedQuery(DwUsers.class, DwUsers.FIND_BY_PROFILE_LEVEL, level);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
     }
 }

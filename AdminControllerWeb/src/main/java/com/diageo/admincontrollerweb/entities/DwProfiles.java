@@ -29,10 +29,12 @@ import javax.validation.constraints.Size;
 @Table(name = "DW_PROFILES", schema = "dbo")
 @NamedQueries({
     @NamedQuery(name = DwProfiles.FIND_BY_SYSTEM, query = "SELECT p FROM DwProfiles p WHERE p.systemMDM = '1'")
-})
+    ,
+    @NamedQuery(name = DwProfiles.FIND_BY_LEVEL, query = "SELECT p FROM DwProfiles p WHERE p.profileLevel = ?1"),})
 public class DwProfiles implements Serializable {
 
     public static final String FIND_BY_SYSTEM = "DwProfiles.findBySystem";
+    public static final String FIND_BY_LEVEL = "DwProfiles.findByLevel";
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -53,6 +55,8 @@ public class DwProfiles implements Serializable {
     private List<DwUsers> dwUsersList;
     @Column(name = "SYSTEM_MDM")
     private String systemMDM;
+    @Column(name = "PROFILE_LEVEL")
+    private Boolean profileLevel;
 
     public DwProfiles() {
     }
@@ -107,6 +111,14 @@ public class DwProfiles implements Serializable {
 
     public void setSystemMDM(String systemMDM) {
         this.systemMDM = systemMDM;
+    }
+
+    public Boolean getProfileLevel() {
+        return profileLevel;
+    }
+
+    public void setProfileLevel(Boolean profileLevel) {
+        this.profileLevel = profileLevel;
     }
 
     @Override

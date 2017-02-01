@@ -34,4 +34,6 @@ public interface UserBeanLocal {
 
     public DwUsers findById(Integer id);
 
+    public List<DwUsers> usersByProfileLevel(boolean level);
+
 }

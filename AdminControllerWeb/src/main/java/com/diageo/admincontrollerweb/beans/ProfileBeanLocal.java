@@ -21,5 +21,7 @@ public interface ProfileBeanLocal {
     public DwProfiles findById(Integer id);
 
     public List<DwProfiles> findBySystem();
+
+    public List<DwProfiles> findByLevel(boolean level);
     
 }

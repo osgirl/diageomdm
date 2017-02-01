@@ -37,12 +37,17 @@ import javax.validation.constraints.Size;
 //@Table(name = "DW_USERS", schema = "DIAGEO_WEB")
 @Table(name = "DW_USERS", schema = "dbo")
 @NamedQueries({
-    @NamedQuery(name = DwUsers.FIND_MAIL, query = "SELECT u FROM DwUsers u WHERE u.emailUser = ?1"),
-    @NamedQuery(name = DwUsers.FIND_BY_PROFILE, query = "SELECT u FROM DwUsers u WHERE u.profileId.profileId     = ?1"),
-    @NamedQuery(name = DwUsers.FIND_MAIL_PASS, query = "SELECT u FROM DwUsers u WHERE u.passwordUser = ?1 AND u.emailUser = ?2")})
+    @NamedQuery(name = DwUsers.FIND_MAIL, query = "SELECT u FROM DwUsers u WHERE u.emailUser = ?1")
+    ,
+    @NamedQuery(name = DwUsers.FIND_BY_PROFILE, query = "SELECT u FROM DwUsers u WHERE u.profileId.profileId     = ?1")
+    ,
+    @NamedQuery(name = DwUsers.FIND_MAIL_PASS, query = "SELECT u FROM DwUsers u WHERE u.passwordUser = ?1 AND u.emailUser = ?2")
+    ,
+    @NamedQuery(name = DwUsers.FIND_BY_PROFILE_LEVEL, query = "SELECT u FROM DwUsers u WHERE u.profileId.profileLevel = ?1"),})
 public class DwUsers implements Serializable {
 
     public static final String FIND_MAIL_PASS = "DwUsers.findByMailPass";
+    public static final String FIND_BY_PROFILE_LEVEL = "DwUsers.findByProfileLevel";
     public static final String FIND_MAIL = "DwUsers.findByMail";
     public static final String FIND_BY_PROFILE = "DwUsers.findByProfile";
     private static final long serialVersionUID = 1L;
@@ -56,7 +61,7 @@ public class DwUsers implements Serializable {
     private Integer distributorId;
     @Size(max = 120)
     @Column(name = "EMAIL_USER")
-    private String emailUser;    
+    private String emailUser;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 50)
@@ -89,12 +94,12 @@ public class DwUsers implements Serializable {
     private Date lastSuccesfulLogin;
     @JoinColumn(name = "PROFILE_ID", referencedColumnName = "PROFILE_ID")
     @ManyToOne(optional = false)
-    private DwProfiles profileId;    
+    private DwProfiles profileId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private List<DwPasscontainers> dwPasscontainersList;
     @Column(name = "DISTRI_1")
     private String distri1;
-    @Embedded    
+    @Embedded
     private Audit audit;
 
     public DwUsers() {

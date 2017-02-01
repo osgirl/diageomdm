@@ -61,7 +61,8 @@ public enum ModuleEnum {
     S_SALES("sales search"),
     C_SALES("sales create"),
     C_ADMIN("create admin"),
-    S_ADMIN("search admin");
+    S_ADMIN("search admin"),
+    U_RELATION("user relation");
 
     private final String description;
 
