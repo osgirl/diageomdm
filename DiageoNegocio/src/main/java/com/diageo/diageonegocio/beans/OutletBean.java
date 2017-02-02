@@ -288,7 +288,7 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
 
     @Override
     public List<DbOutlets> findByBusinessName(String query) {
-        query = query.toUpperCase();
+        query = query.toUpperCase().trim();
         List<DbOutlets> list = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_BUSINESS_NAME, "%" + query + "%", "1");
         if (list == null) {
             return new ArrayList<>();
