@@ -209,9 +209,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             if (getOcsSecondary() != null && getOcsSecondary().getOcsId() != null) {
                 outlet.setOcsSecondary(getOcsSecondary());
             }
-            if (getFather() != null && getFather().getOutletId() != null) {
-                outlet.setOutletIdFather(getFather());
-            }
+            outlet.setOutletIdFather(getFather());
             outlet.setOutletName(getOutletName() != null ? getOutletName().toUpperCase() : "");
             outlet.setPotentialId(getPotentialSelected());
             outlet.setSubSegmentId(getSubSegmentSelected());
@@ -295,7 +293,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     }
 
     public void addCustomer() {
-        if (getCustomer()!=null && getCustomer().getCustomerName() != null && !getCustomer().getCustomerName().isEmpty()) {
+        if (getCustomer() != null && getCustomer().getCustomerName() != null && !getCustomer().getCustomerName().isEmpty()) {
             for (DbCustomers cus : getListCustomers()) {
                 if (cus.equals(getCustomer())) {
                     showWarningMessage(capturarValor("customer_msg_equal"));
@@ -307,6 +305,10 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         } else {
             showWarningMessage(capturarValor("chain_msg_customer_empty"));
         }
+    }
+
+    public void deleteOutletFather() {
+        setFather(null);
     }
 
     public void deleteCustomer(DbCustomers custo) {

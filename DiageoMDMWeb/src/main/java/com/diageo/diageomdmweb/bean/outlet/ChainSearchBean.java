@@ -181,19 +181,22 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             this.deletePhone();
             if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
                     || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
-                if (chain.getStatusMDM().equals(ProfileEnum.COMMERCIAL_MANAGER.name())) {
+                if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
                     chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
                 }
             } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())
                     || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
-                chain.setStatusMDM(StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name());
+                if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name())) {
+                    chain.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+                }
             } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())) {
-                chain.setStatusMDM(StatusSystemMDM.PENDING_KAM.name());
+                if (chain.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
+                    chain.setStatusMDM(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name());
+                }
             }
             deletCustomerChain();
             chainBeanLocal.updateChain(chain);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-
             setSeeDetail(Boolean.TRUE);
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -208,10 +211,14 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     public void rejectChain() {
         try {
             DbChains chain = getChainSelected();
-            chain.setStatusMDM(StatusSystemMDM.REJECT.name());
-            chainBeanLocal.updateChain(chain);
-            showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-            setSeeDetail(Boolean.TRUE);
+            if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
+                chain.setStatusMDM(StatusSystemMDM.REJECT.name());
+                chainBeanLocal.updateChain(chain);
+                showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+                setSeeDetail(Boolean.TRUE);
+            } else {
+                showWarningMessage(capturarValor("chain_meg_no_reject_outlet"));
+            }
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(ChainSearchBean.class.getName()).log(Level.SEVERE, null, ex);
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
@@ -226,19 +233,27 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                         || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
                     DbChainsUsers chainIdTemp = chainUserBeanLocal.findByChainId(ch.getChainId());
                     if (chainIdTemp != null) {
-                        List<DwRelationUsers> listTemp = relationUserBeanLocal.findByUserIdAndParent(chainIdTemp.getDbChainsUsersPK().getUserId(), getLoginBean().getUsuario().getUserId());
-                        if (!listTemp.isEmpty()) {
-                            update = listTemp.get(0).getStateApproved();
+                        if (ch.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
+                            List<DwRelationUsers> listTemp = relationUserBeanLocal.findByUserIdAndParent(chainIdTemp.getDbChainsUsersPK().getUserId(), getLoginBean().getUsuario().getUserId());
+                            if (!listTemp.isEmpty()) {
+                                update = listTemp.get(0).getStateApproved();
+                            }
+                            if (update) {
+                                ch.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                            }
                         }
                     }
-                    if (update) {
-                        ch.setStatusMDM(StatusSystemMDM.APPROVED.name());
-                    }
+
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())
                         || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
-                    ch.setStatusMDM(StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name());
+                    if (ch.getStatusMDM().equals(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name())
+                            || ch.getStatusMDM().equals(StatusSystemMDM.REJECT.name())) {
+                        ch.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+                    }
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())) {
-                    ch.setStatusMDM(StatusSystemMDM.PENDING_KAM.name());
+                    if (ch.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
+                        ch.setStatusMDM(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name());
+                    }
                 }
                 if (update) {
                     chainBeanLocal.updateChain(ch);
@@ -247,19 +262,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                 Logger.getLogger(ChainSearchBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-
-//        if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())
-//                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
-//            chainUserBeanLocal.updateAllChains(filtersTable, getLoginBean().getUsuario().getUserId(), StatusSystemMDM.APPROVED.name());
-//        } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())
-//                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
-//            chainUserBeanLocal.updateAllChains(filtersTable, getLoginBean().getUsuario().getUserId(), StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name());
-//        } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())) {
-//            chainUserBeanLocal.updateAllChains(filtersTable, getLoginBean().getUsuario().getUserId(), StatusSystemMDM.PENDING_KAM.name());
-//        }
         showInfoMessage(capturarValor("sis_msg_record_outlet_change"));
-//        setChainsList(new ArrayList<DbChains>());
-//        setChainsList(chainUserBeanLocal.findByUserIdJoin(getLoginBean().getUsuario().getUserId()));
     }
 
     public void approvedSelected() {
@@ -269,20 +272,25 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                 if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())
                         || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
                     DbChainsUsers chainIdTemp = chainUserBeanLocal.findByChainId(chain.getChainId());
-                    if (chainIdTemp != null) {
+                    if (chainIdTemp != null && chain.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
                         List<DwRelationUsers> listTemp = relationUserBeanLocal.findByUserIdAndParent(chainIdTemp.getDbChainsUsersPK().getUserId(), getLoginBean().getUsuario().getUserId());
                         if (!listTemp.isEmpty()) {
                             update = listTemp.get(0).getStateApproved();
                         }
-                    }
-                    if (update) {
-                        chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                        if (update) {
+                            chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                        }
                     }
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())
                         || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
-                    chain.setStatusMDM(StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name());
+                    if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name())
+                            || chain.getStatusMDM().equals(StatusSystemMDM.REJECT.name())) {
+                        chain.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+                    }
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())) {
-                    chain.setStatusMDM(StatusSystemMDM.PENDING_KAM.name());
+                    if (chain.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
+                        chain.setStatusMDM(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name());
+                    }
                 }
                 if (update) {
                     chainBeanLocal.updateChain(chain);
@@ -301,16 +309,17 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                         || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
                     boolean update = true;
                     DbChainsUsers chainIdTemp = chainUserBeanLocal.findByChainId(ch.getChainId());
-                    if (chainIdTemp != null) {
+                    if (chainIdTemp != null && ch.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
                         List<DwRelationUsers> listTemp = relationUserBeanLocal.findByUserIdAndParent(chainIdTemp.getDbChainsUsersPK().getUserId(), getLoginBean().getUsuario().getUserId());
                         if (!listTemp.isEmpty()) {
                             update = listTemp.get(0).getStateApproved();
                         }
+                        if (update) {
+                            ch.setStatusMDM(StatusSystemMDM.REJECT.name());
+                            chainBeanLocal.updateChain(ch);
+                        }
                     }
-                    if (update) {
-                        ch.setStatusMDM(StatusSystemMDM.REJECT.name());
-                        chainBeanLocal.updateChain(ch);
-                    }
+
                 }
             } catch (DiageoBusinessException ex) {
                 Logger.getLogger(ChainSearchBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -328,17 +337,19 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             try {
                 if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())
                         || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
-                    boolean update = true;
-                    DbChainsUsers chainIdTemp = chainUserBeanLocal.findByChainId(chain.getChainId());
-                    if (chainIdTemp != null) {
-                        List<DwRelationUsers> listTemp = relationUserBeanLocal.findByUserIdAndParent(chainIdTemp.getDbChainsUsersPK().getUserId(), getLoginBean().getUsuario().getUserId());
-                        if (!listTemp.isEmpty()) {
-                            update = listTemp.get(0).getStateApproved();
+                    if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
+                        boolean update = true;
+                        DbChainsUsers chainIdTemp = chainUserBeanLocal.findByChainId(chain.getChainId());
+                        if (chainIdTemp != null) {
+                            List<DwRelationUsers> listTemp = relationUserBeanLocal.findByUserIdAndParent(chainIdTemp.getDbChainsUsersPK().getUserId(), getLoginBean().getUsuario().getUserId());
+                            if (!listTemp.isEmpty()) {
+                                update = listTemp.get(0).getStateApproved();
+                            }
                         }
-                    }
-                    if (update) {
-                        chain.setStatusMDM(StatusSystemMDM.REJECT.name());
-                        chainBeanLocal.updateChain(chain);
+                        if (update) {
+                            chain.setStatusMDM(StatusSystemMDM.REJECT.name());
+                            chainBeanLocal.updateChain(chain);
+                        }
                     }
                 }
             } catch (DiageoBusinessException ex) {

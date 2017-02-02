@@ -187,7 +187,7 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
             chain.setPotentialId(getPotentialSelected());
             chain.setSubSegmentId(getSubSegmentSelected());
             chain.setStatusChain(getStatus());
-            chain.setStatusMDM(StatusSystemMDM.PENDING_KAM.name());
+            chain.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
             chain.setLayerId(getLayerSelected());
             DbCustomers custo = saveCustomer();
             if (custo != null) {
@@ -198,7 +198,9 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
             audit.setCreationDate(super.getCurrentDate());
             audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
             chain.setAudit(audit);
-            chain.setChainId(custo.getCustomerId());
+            if (custo != null) {
+                chain.setChainId(custo.getCustomerId());
+            }
             chainBeanLocal.createChain(chain);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
             initFields();

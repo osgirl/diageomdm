@@ -77,12 +77,14 @@
                             <p:fieldset legend="#{msg.is_father}" style="width: 95%">
                                 <h:panelGrid columns="4" style="width: 100%">
                                     <h:outputLabel value="#{msg.is_father}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:selectBooleanCheckbox value="#{outletConsultarBean.isFather}" disabled="#{outletConsultarBean.disabledFields and outletConsultarBean.disabledFieldsTmc}"/>
+                                    <p:selectBooleanCheckbox value="#{outletConsultarBean.isFather}" disabled="#{outletConsultarBean.disabledFields and outletConsultarBean.disabledFieldsTmc}">
+                                        <p:ajax process="@this" update="formConsultarOutlet:acMinLength" listener="#{outletConsultarBean.deleteOutletFather()}"/>
+                                    </p:selectBooleanCheckbox>
                                     <h:outputLabel value="#{msg.father}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <p:autoComplete id="acMinLength" minQueryLength="4" value="#{outletConsultarBean.father}" label="#{msg.father}"
                                                     var="outletFather" itemLabel="#{outletFather.kiernanId}   #{outletFather.businessName}" itemValue="#{outletFather}" forceSelection="true"
                                                     completeMethod="#{outletConsultarBean.completeChainFather}" effect="fade" converter="outletConverter"
-                                                    style="width: 90% !important;" disabled="#{outletConsultarBean.disabledFields and outletConsultarBean.disabledFieldsTmc}"/>
+                                                    style="width: 90% !important;" disabled="#{outletConsultarBean.disabledFields and outletConsultarBean.disabledFieldsTmc or outletConsultarBean.isFather}" queryEvent="enter"/>
                                 </h:panelGrid>
                             </p:fieldset>
                             <br/>

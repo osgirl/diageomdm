@@ -127,8 +127,7 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
                     for (DistributorPermissionDto ps : getListDistributorPermission()) {
                         getListPermissionSegmentToPersist().addAll(ps.getListPermissionSegment());
                     }
-                    usuarioBean.updateUser(getUsuarioSeleccionado(), getListPermissionSegmentToPersist());
-                    moduloBean.deleteModuleUser(getUsuarioSeleccionado().getUserId());                   
+                    usuarioBean.updateUser(getUsuarioSeleccionado(), getListPermissionSegmentToPersist());                    
                     showInfoMessage(capturarValor("usu_mis_datos"));
                     findPermissionSegment(usuarioSeleccionado);
                 } catch (ControllerWebException ex) {

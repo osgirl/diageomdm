@@ -41,16 +41,14 @@ and open the template in the editor.
                     <p:selectOneMenu onchange="PF('dtOutletSearch').filter()" style="width: 80%">
                         <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}" noSelectionOption="true"/>
                         <f:selectItem itemValue="PENDING_TMC" itemLabel="#{msg.sta_pending_tmc}" />
-                        <f:selectItem itemValue="PENDING_TMC_POTENTIAL" itemLabel="#{msg.sta_pending_tmc_potential}" />
                         <f:selectItem itemValue="REJECT" itemLabel="#{msg.sta_reject}"/>
-                        <f:selectItem itemValue="PENDING_COMMERCIAL_MANAGER" itemLabel="#{msg.sta_pending_commercial_manager}"/>
+                        <f:selectItem itemValue="PENDING_APPROVAL" itemLabel="#{msg.sta_pending_commercial_manager}"/>
                         <f:selectItem itemValue="APPROVED" itemLabel="#{msg.sta_approval}"/>
                     </p:selectOneMenu>
                 </f:facet>
                 <h:outputLabel value="&lt;b&gt;#{msg.sta_reject}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'REJECT'}" style="color: red" escape="false"/>
                 <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_tmc}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'PENDING_TMC'}" style="color: blue" escape="false"/>
-                <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_tmc_potential}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'PENDING_TMC_POTENTIAL'}" style="color: blue" escape="false"/>
-                <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_commercial_manager}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'PENDING_COMMERCIAL_MANAGER'}" style="color: sienna" escape="false"/>
+                <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_commercial_manager}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'PENDING_APPROVAL'}" style="color: sienna" escape="false"/>
                 <h:outputLabel value="&lt;b&gt;#{msg.sta_approval}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'APPROVED'}" style="color: green" escape="false"/>
             </p:column>            
             <p:column headerText="#{msg.out_razon_social}" filterBy="#{outdtNew.businessName}" 

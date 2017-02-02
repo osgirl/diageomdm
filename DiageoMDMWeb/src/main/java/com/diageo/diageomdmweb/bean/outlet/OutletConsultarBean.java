@@ -212,9 +212,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             outlet.setNumberPdv(getPointSale() != null ? getPointSale().toUpperCase() : "");
             outlet.setOcsPrimary(getOcsPrimary());
             outlet.setOcsSecondary(getOcsSecondary());
-            if (getFather() != null && getFather().getOutletId() != null) {
-                outlet.setOutletIdFather(getFather());
-            }
+            outlet.setOutletIdFather(getFather());
             outlet.setStatusOutlet(getStatusOutlet());
             outlet.setOutletName(getOutletName() != null ? getOutletName().toUpperCase() : "");
             outlet.setPotentialId(getPotentialSelected());
@@ -231,13 +229,13 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             outlet.setDbCustomersList(getListCustomers());
 
             if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
-                if (outlet.getStatusMDM().equals(StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name())) {
+                if (outlet.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
                     outlet.setStatusMDM(StatusSystemMDM.APPROVED.name());
                 }
             } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_DISTRIBUIDORES.getId())) {
-                outlet.setStatusMDM(StatusSystemMDM.PENDING_TMC_POTENTIAL.name());
+                outlet.setStatusMDM(StatusSystemMDM.PENDING_TMC.name());
             } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
-                outlet.setStatusMDM(StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name());
+                outlet.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
             }
 
             Audit audit = new Audit();
@@ -313,7 +311,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
             outletsUserBeanLocal.updateOutletCommercialManager(listId, StatusSystemMDM.APPROVED.name(), filtersTable);
         } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
-            outletsUserBeanLocal.updateOutlet(getLoginBean().getUsuario().getUserId(), StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name(), filtersTable);
+            outletsUserBeanLocal.updateOutlet(getLoginBean().getUsuario().getUserId(), StatusSystemMDM.PENDING_APPROVAL.name(), filtersTable);
         } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_DISTRIBUIDORES.getId())) {
             outletsUserBeanLocal.updateOutlet(getLoginBean().getUsuario().getUserId(), StatusSystemMDM.PENDING_TMC.name(), filtersTable);
         }
@@ -343,9 +341,9 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                         out.setStatusMDM(StatusSystemMDM.APPROVED.name());
                     }
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
-                    out.setStatusMDM(StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name());
+                    out.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_DISTRIBUIDORES.getId())) {
-                    out.setStatusMDM(StatusSystemMDM.PENDING_TMC_POTENTIAL.name());
+                    out.setStatusMDM(StatusSystemMDM.PENDING_TMC.name());
                 }
                 if (update) {
                     outletBeanLocal.updateOutlet(out);
@@ -367,7 +365,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                     update = listTemp.get(0).getStateApproved();
                 }
                 if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
-                    if (out.getStatusMDM().equals(StatusSystemMDM.PENDING_COMMERCIAL_MANAGER.name())) {                        
+                    if (out.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
                         if (update) {
                             out.setStatusMDM(StatusSystemMDM.REJECT.name());
                             outletBeanLocal.updateOutlet(out);

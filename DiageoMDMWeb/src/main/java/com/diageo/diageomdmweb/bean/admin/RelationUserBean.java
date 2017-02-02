@@ -15,7 +15,6 @@ import com.diageo.admincontrollerweb.entities.RelationUserPK;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import com.diageo.diageomdmweb.bean.dto.RelationUserDto;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -119,16 +118,27 @@ public class RelationUserBean extends DiageoRootBean implements Serializable {
             relationUserBeanLocal.createRelationUser(buildEntity(relationUserDto));
         }
         for (RelationUserDto relationUserDto : tableUserRelationDelete) {
-            relationUserBeanLocal.deleteRelation(buildEntity(relationUserDto));
+            boolean flag = true;
+            for (RelationUserDto relUsu : tableUserRelationNew) {
+                if (relationUserDto.equals(relUsu)) {
+                    flag=false;
+                    break;
+                }
+            }
+            if (flag) {
+                relationUserBeanLocal.deleteRelation(buildEntity(relationUserDto));
+            }
         }
+        tableUserRelationDelete = new HashSet<>();
+        tableUserRelationNew = new HashSet<>();
         showInfoMessage(capturarValor("relation_msg_save"));
     }
 
     private DwRelationUsers buildEntity(RelationUserDto dto) {
         DwRelationUsers e = new DwRelationUsers();
         e.setCreationDate(getCurrentDate());
-        e.setStateApproved(dto.getModify().equals("1"));
-        e.setStateView(dto.getModify().equals("0"));
+        e.setStateApproved(dto.getModify().equals("X"));
+        e.setStateView(dto.getRead().equals("X"));
         e.setRelationUserPK(new RelationUserPK(dto.getUserSelected().getUserId(), getUserSelectedLevel_1().getUserId()));
         return e;
     }

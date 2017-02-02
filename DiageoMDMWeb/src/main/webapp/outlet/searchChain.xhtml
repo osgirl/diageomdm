@@ -51,15 +51,15 @@
                             <f:facet name="filter">
                                 <p:selectOneMenu onchange="PF('dtChainSearch').filter()" style="width: 80%">
                                     <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}" noSelectionOption="true"/>
-                                    <f:selectItem itemValue="PENDING_KAM" itemLabel="#{msg.sta_pending_kam}"/>
+                                    <f:selectItem itemValue="PENDING_KAM_TMC_CHAINS" itemLabel="#{msg.sta_pending_kam}"/>
                                     <f:selectItem itemValue="REJECT" itemLabel="#{msg.sta_reject}"/>
-                                    <f:selectItem itemValue="PENDING_COMMERCIAL_MANAGER" itemLabel="#{msg.sta_pending_commercial_manager}"/>
+                                    <f:selectItem itemValue="PENDING_APPROVAL" itemLabel="#{msg.sta_pending_approval}"/>
                                     <f:selectItem itemValue="APPROVED" itemLabel="#{msg.sta_approval}"/>
                                 </p:selectOneMenu>
                             </f:facet>
                             <h:outputLabel value="&lt;b&gt;#{msg.sta_reject}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'REJECT'}" style="color: red" escape="false"/>
-                            <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_kam}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'PENDING_KAM'}" style="color: blue" escape="false"/>
-                            <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_commercial_manager}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'PENDING_COMMERCIAL_MANAGER'}" style="color: sienna" escape="false"/>
+                            <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_kam}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'PENDING_KAM_TMC_CHAINS'}" style="color: blue" escape="false"/>
+                            <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_approval}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'PENDING_APPROVAL'}" style="color: sienna" escape="false"/>
                             <h:outputLabel value="&lt;b&gt;#{msg.sta_approval}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'APPROVED'}" style="color: green" escape="false"/>
                         </p:column>                        
                         <p:column headerText="#{msg.chain_id}" filterBy="#{chain.chainId}">
