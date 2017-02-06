@@ -34,7 +34,7 @@
                         <h:panelGrid columns="4" style="width: 100%">
                             <h:outputLabel value="#{msg.cod_sap}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                             <h:panelGroup>
-                                <p:inputText id="itKiernan" value="#{createChainBean.kiernan}" required="false" label="#{msg.out_kiernan}"/>
+                                <p:inputText id="itKiernan" value="#{createChainBean.kiernan}" required="false" label="#{msg.out_kiernan}" disabled="true"/>
                                 <p:message for="itKiernan"/>
                             </h:panelGroup>
                             <h:outputLabel value="#{msg.chain_name}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
@@ -161,7 +161,7 @@
                                 </h:panelGroup>
                                 <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                 <h:panelGroup>
-                                    <p:inputText id="itAddress" value="#{createChainBean.address}" required="true" label="#{msg.out_direccion}"/>
+                                    <p:inputText id="itAddress" value="#{createChainBean.address}" required="false" label="#{msg.out_direccion}"/>
                                     <p:message for="itAddress"/>
                                 </h:panelGroup>
                                 <h:outputLabel value="#{msg.loc_latitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>

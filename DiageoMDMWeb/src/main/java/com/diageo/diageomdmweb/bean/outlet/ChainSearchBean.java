@@ -85,9 +85,15 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             setRenderMassiveApproval(Boolean.FALSE);
             setButtonNameCommit(capturarValor("btn_send"));
         } else {
-            setButtonNameCommit(capturarValor("btn_approved"));
+            if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())) {
+                setButtonNameCommit(capturarValor("btn_send_approved"));
+            } else {
+                setButtonNameCommit(capturarValor("btn_approved"));
+            }
+
             setDisabledFields(Boolean.TRUE);
-            setRenderMassiveApproval(Boolean.TRUE);
+            boolean bol = !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId()));
+            setRenderMassiveApproval(bol);
             if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())
                     || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
                 listId = relationUserBeanLocal.findByParentId(getLoginBean().getUsuario().getUserId());
@@ -182,16 +188,32 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
                     || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
                 if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
-                    chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                    if (chain.getKiernanId() == null || chain.getKiernanId().isEmpty()) {
+                        chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
+                    } else {
+                        chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                    }
                 }
-            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())
-                    || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
-                if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name())) {
+            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())) {
+                if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name())
+                        || chain.getStatusMDM().equals(StatusSystemMDM.REJECT.name())) {
                     chain.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
                 }
             } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())) {
                 if (chain.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
-                    chain.setStatusMDM(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name());
+                    chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                }
+            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
+                if (chain.getKiernanId() == null || chain.getKiernanId().isEmpty()) {
+                    chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
+                } else {
+                    chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                }
+            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
+                if (chain.getKiernanId() == null || chain.getKiernanId().isEmpty()) {
+                    chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
+                } else {
+                    chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
                 }
             }
             deletCustomerChain();
@@ -359,6 +381,13 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         showInfoMessage(capturarValor("sis_msg_record_outlet_change"));
     }
 
+    public boolean disabledKiernan() {
+        return !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
+    }
+
     @Override
     public void deletePhone(DbPhones phone) {
         getListPhones().remove(phone);
@@ -379,13 +408,11 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     }
 
     public boolean isRenderButtonRejectTable() {
-        return getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
-                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId());
+        return getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId());
     }
 
     public boolean isRenderButtonReject() {
-        if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
-                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
+        if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
             DbChainsUsers chainIdTemp = chainUserBeanLocal.findByChainId(getIdChain());
             if (chainIdTemp != null) {
                 List<DwRelationUsers> listTemp = relationUserBeanLocal.findByUserIdAndParent(chainIdTemp.getDbChainsUsersPK().getUserId(), getLoginBean().getUsuario().getUserId());
@@ -401,13 +428,21 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
             DbChainsUsers chainIdTemp = chainUserBeanLocal.findByChainId(getIdChain());
+            Logger.getLogger(ChainSearchBean.class.getName()).log(Level.INFO, "chainIdTemp={0}", chainIdTemp);
             if (chainIdTemp != null) {
                 List<DwRelationUsers> listTemp = relationUserBeanLocal.findByUserIdAndParent(chainIdTemp.getDbChainsUsersPK().getUserId(), getLoginBean().getUsuario().getUserId());
+                for (DwRelationUsers dwRelationUsers : listTemp) {
+                    System.out.println("APROBADO" + dwRelationUsers.getStateApproved());
+                    Logger.getLogger(ChainSearchBean.class.getName()).log(Level.INFO, "APROBADO={0}", dwRelationUsers.getStateApproved());
+                }
                 if (!listTemp.isEmpty()) {
+                    Logger.getLogger(ChainSearchBean.class.getName()).log(Level.INFO, "flag={0}", listTemp.get(0).getStateApproved());
                     return listTemp.get(0).getStateApproved();
                 }
             }
             return false;
+        } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())) {
+            return (getChainSelected().getStatusMDM().equals(StatusSystemMDM.APPROVED.name()));
         }
         return true;
     }

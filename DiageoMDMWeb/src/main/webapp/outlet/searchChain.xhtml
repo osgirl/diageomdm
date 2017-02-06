@@ -55,12 +55,14 @@
                                     <f:selectItem itemValue="REJECT" itemLabel="#{msg.sta_reject}"/>
                                     <f:selectItem itemValue="PENDING_APPROVAL" itemLabel="#{msg.sta_pending_approval}"/>
                                     <f:selectItem itemValue="APPROVED" itemLabel="#{msg.sta_approval}"/>
+                                    <f:selectItem itemValue="PENDING_KIERNAN" itemLabel="#{msg.code_pending_kiernan}"/>
                                 </p:selectOneMenu>
                             </f:facet>
                             <h:outputLabel value="&lt;b&gt;#{msg.sta_reject}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'REJECT'}" style="color: red" escape="false"/>
                             <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_kam}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'PENDING_KAM_TMC_CHAINS'}" style="color: blue" escape="false"/>
                             <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_approval}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'PENDING_APPROVAL'}" style="color: sienna" escape="false"/>
                             <h:outputLabel value="&lt;b&gt;#{msg.sta_approval}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'APPROVED'}" style="color: green" escape="false"/>
+                            <h:outputLabel value="&lt;b&gt;#{msg.code_pending_kiernan}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'PENDING_KIERNAN'}" style="color: green" escape="false"/>
                         </p:column>                        
                         <p:column headerText="#{msg.chain_id}" filterBy="#{chain.chainId}">
                             <h:outputLabel value="#{chain.chainId}"/>
@@ -100,7 +102,7 @@
                                 <h:panelGrid columns="4" style="width: 100%">
                                     <h:outputLabel value="#{msg.cod_sap}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <h:panelGroup>
-                                        <p:inputText id="itKiernan" value="#{chainSearchBean.kiernan}" disabled="#{chainSearchBean.disabledFields}" required="false"
+                                        <p:inputText id="itKiernan" value="#{chainSearchBean.kiernan}" disabled="#{chainSearchBean.disabledKiernan()}" required="false"
                                                      label="#{msg.out_kiernan}"/>
                                         <p:message for="itKiernan"/>
                                     </h:panelGroup>
@@ -128,7 +130,7 @@
                                         <f:selectItems value="#{chainSearchBean.list3Party}" var="party3" itemLabel="#{party3.name3party}"/>
                                     </p:selectOneMenu>                                    
                                     <h:outputLabel value="#{msg.status}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
-                                    <p:selectOneMenu value="#{chainSearchBean.status}" style="width: 90%" disabled="#{chainSearchBean.disabledFields}">
+                                    <p:selectOneMenu value="#{chainSearchBean.status}" style="width: 90%">
                                         <f:selectItem itemValue="A" itemLabel="#{msg.active}"/>
                                         <f:selectItem itemValue="I" itemLabel="#{msg.inactive}"/>
                                     </p:selectOneMenu>
@@ -239,7 +241,7 @@
                                         <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                         <h:panelGroup>
                                             <p:inputText id="itAddress" value="#{chainSearchBean.address}" disabled="#{chainSearchBean.disabledFields}" 
-                                                         required="true" label="#{msg.out_direccion}"/>
+                                                         required="false" label="#{msg.out_direccion}"/>
                                             <p:message for="itAddress"/>
                                         </h:panelGroup>
                                         <h:outputLabel value="#{msg.loc_latitude}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>

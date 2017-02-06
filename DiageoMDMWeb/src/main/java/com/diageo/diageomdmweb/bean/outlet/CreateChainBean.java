@@ -5,6 +5,7 @@
  */
 package com.diageo.diageomdmweb.bean.outlet;
 
+import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
@@ -187,7 +188,14 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
             chain.setPotentialId(getPotentialSelected());
             chain.setSubSegmentId(getSubSegmentSelected());
             chain.setStatusChain(getStatus());
-            chain.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+            if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())) {
+                chain.setStatusMDM(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name());
+            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
+                    || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
+                chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
+            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())) {
+                chain.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+            }
             chain.setLayerId(getLayerSelected());
             DbCustomers custo = saveCustomer();
             if (custo != null) {

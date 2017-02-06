@@ -46,7 +46,7 @@
                                 <f:facet name="filter">
                                     <p:selectOneMenu onchange="PF('wvUsu').filter()" >
                                         <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}" noSelectionOption="true"/>
-                                        <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemValue="#{per.nameProfile}" itemLabel="#{per.nameProfile}"/>
+                                        <f:selectItems value="#{diageoApplicationBean.listaPerfiles}" var="per" itemValue="#{per.nameProfile}" itemLabel="#{per.nameProfile.toUpperCase()}"/>
                                     </p:selectOneMenu>
                                 </f:facet>
                                 <h:outputLabel value="#{usu.profileId.nameProfile.toUpperCase()}"/>

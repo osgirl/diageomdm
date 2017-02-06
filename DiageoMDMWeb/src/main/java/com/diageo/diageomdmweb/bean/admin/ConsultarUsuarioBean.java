@@ -8,13 +8,18 @@ package com.diageo.diageomdmweb.bean.admin;
 import com.diageo.admincontrollerweb.entities.Audit;
 import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
 import com.diageo.admincontrollerweb.entities.DwModules;
+import com.diageo.admincontrollerweb.entities.DwParameters;
 import com.diageo.admincontrollerweb.entities.DwUsers;
+import com.diageo.admincontrollerweb.enums.ParameterKeyEnum;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageomdmweb.bean.dto.DistributorPermissionDto;
+import com.diageo.diageomdmweb.jdbc.ConecctionJDBC;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import java.io.Serializable;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -110,7 +115,7 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
         if (!validateListDistributorPermission()) {
             if (!validarExisteciaCorreo()) {
                 try {
-                    getUsuarioSeleccionado().setProfileId(getPerfil());                    
+                    getUsuarioSeleccionado().setProfileId(getPerfil());
                     getUsuarioSeleccionado().setStateUser(isUsuarioActivo() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
                     Audit audit = new Audit();
                     audit.setCreationDate(getUsuarioSeleccionado().getAudit() != null ? getUsuarioSeleccionado().getAudit().getCreationDate() : null);
@@ -127,7 +132,22 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
                     for (DistributorPermissionDto ps : getListDistributorPermission()) {
                         getListPermissionSegmentToPersist().addAll(ps.getListPermissionSegment());
                     }
-                    usuarioBean.updateUser(getUsuarioSeleccionado(), getListPermissionSegmentToPersist());                    
+                    List<DbPermissionSegments> updateUser_Test = usuarioBean.updateUser_Test(getUsuarioSeleccionado(), getListPermissionSegmentToPersist());
+
+                    List<DwParameters> ipDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.DATABASE_IP.name());
+                    List<DwParameters> userDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.USER_DATABASE.name());
+                    List<DwParameters> passDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.PASS_DATABASE.name());
+                    Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
+                            userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
+                    for (DbPermissionSegments dbPermissionSegments : updateUser_Test) {
+                        ConecctionJDBC.callStoreOutletsUser(con, dbPermissionSegments.getPermissionSegment(), "Insert");
+                    }
+                    try {
+                        con.close();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
                     showInfoMessage(capturarValor("usu_mis_datos"));
                     findPermissionSegment(usuarioSeleccionado);
                 } catch (ControllerWebException ex) {
@@ -183,6 +203,19 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
     }
 
     public void deletePermissionSegment() {
+        List<DwParameters> ipDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.DATABASE_IP.name());
+        List<DwParameters> userDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.USER_DATABASE.name());
+        List<DwParameters> passDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.PASS_DATABASE.name());
+        Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
+                userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
+        for (DbPermissionSegments dbPermissionSegments : getListDistributorPermissionRemove()) {
+            ConecctionJDBC.callStoreOutletsUser(con, dbPermissionSegments.getPermissionSegment(), "Delete");
+        }
+        try {
+            con.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
         for (DbPermissionSegments ps : getListDistributorPermissionRemove()) {
             permissionsegmentBeanLocal.remove(ps);
         }

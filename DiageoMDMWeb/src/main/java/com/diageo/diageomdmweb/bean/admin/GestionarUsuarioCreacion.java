@@ -20,14 +20,17 @@ import javax.faces.view.ViewScoped;
 import javax.validation.constraints.Pattern;
 import com.diageo.admincontrollerweb.beans.UserBeanLocal;
 import com.diageo.admincontrollerweb.beans.ModuleBeanLocal;
+import com.diageo.admincontrollerweb.beans.ParameterBeanLocal;
 import com.diageo.admincontrollerweb.beans.ProfileBeanLocal;
 import com.diageo.admincontrollerweb.entities.Audit;
-import com.diageo.admincontrollerweb.entities.DwModules;
+import com.diageo.admincontrollerweb.entities.DwParameters;
 import com.diageo.admincontrollerweb.entities.DwUsers;
+import com.diageo.admincontrollerweb.enums.ParameterKeyEnum;
 import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.admincontrollerweb.enums.UserEntryEnum;
 import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageomdmweb.bean.dto.DistributorPermissionDto;
+import com.diageo.diageomdmweb.jdbc.ConecctionJDBC;
 import com.diageo.diageomdmweb.mail.EMail;
 import com.diageo.diageomdmweb.mail.templates.VelocityTemplate;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
@@ -47,6 +50,8 @@ import com.diageo.diageonegocio.enums.FatherDistributorEnum;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -96,7 +101,9 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     @EJB
     protected SubSegmentoBeanLocal subSegmentoBeanLocal;
     @EJB
-    private ProfileBeanLocal perfilBean;
+    protected ProfileBeanLocal perfilBean;
+    @EJB
+    protected ParameterBeanLocal parameterBeanLocal;
 
     @Inject
     protected LoginBean loginBean;
@@ -187,7 +194,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     @PostConstruct
     public void init() {
         setPerfil(new DwProfiles());
-        setListDistributor(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsFather()));        
+        setListDistributor(distributorBeanLocal.searchDistributorFather(FatherDistributorEnum.FATHER.getIsFather()));
         setListDistributorSon(distributorBeanLocal.searchDistributorByFather(getListDistributor().get(0).getDb3partyId()));
         setListPotential(potentialBeanLocal.findAll());
         setListDistributorPermission(new HashSet<DistributorPermissionDto>());
@@ -242,10 +249,27 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
                     usu.setProfileId(getPerfil());
                     usu.setDistri1(getAthenaCode().toUpperCase());
                     usu.setFailedAttempt(0);
-                    usu.setFirstEntry(UserEntryEnum.FIRST_ENTRY.getState());                   
+                    usu.setFirstEntry(UserEntryEnum.FIRST_ENTRY.getState());
                     if (isDetailEdition()) {
                         usu.setDistributorId(getDistributorSelected().getDb3partyId());
-                        usuarioBean.createUser(usu, getListPermissionSegmentToPersist());
+                        List<DbPermissionSegments> createUser_Test = usuarioBean.createUser_Test(usu, getListPermissionSegmentToPersist());
+                        
+                        
+                        List<DwParameters> ipDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.DATABASE_IP.name());
+                        List<DwParameters> userDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.USER_DATABASE.name());
+                        List<DwParameters> passDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.PASS_DATABASE.name());                        
+                        Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
+                                userDatabase.get(0).getParameterValue(),passDatabase.get(0).getParameterValue());
+                        for (DbPermissionSegments dbPermissionSegments : createUser_Test) {
+                            ConecctionJDBC.callStoreOutletsUser(con, dbPermissionSegments.getPermissionSegment(),"Insert");
+                        }
+                        try {
+                            con.close();
+                        } catch (SQLException ex) {
+                            Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
+                        
                     } else {
                         usuarioBean.createUser(usu, null);
                     }
@@ -376,11 +400,11 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
             setListSegment(new ArrayList<DbSegments>());
             setListSubSegment(new ArrayList<DbSubSegments>());
             setListPotential(new ArrayList<DbPotentials>());
-        }       
+        }
     }
 
     public void listenerSubChannel() {
-         if (getSubChannelSelected().getDbSegmentsList() != null && !getSubChannelSelected().getDbSegmentsList().isEmpty()) {
+        if (getSubChannelSelected().getDbSegmentsList() != null && !getSubChannelSelected().getDbSegmentsList().isEmpty()) {
             setSegmentSelected(getSubChannelSelected().getDbSegmentsList().get(0));
             setListSegment(getSubChannelSelected().getDbSegmentsList());
             this.listenerSegment();
@@ -392,7 +416,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     }
 
     public void listenerSegment() {
-         if (getSegmentSelected().getDbSubSegmentsList() != null && !getSegmentSelected().getDbSubSegmentsList().isEmpty()) {
+        if (getSegmentSelected().getDbSubSegmentsList() != null && !getSegmentSelected().getDbSubSegmentsList().isEmpty()) {
             setSubSegmentSelected(getSegmentSelected().getDbSubSegmentsList().get(0));
             setListSubSegment(getSegmentSelected().getDbSubSegmentsList());
             listenerSubSegment();
@@ -465,7 +489,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
             return null;
         }
     }
-    
+
     public String potentialName(Integer id) {
         if (id == null) {
             return "";
