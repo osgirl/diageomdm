@@ -10,6 +10,7 @@ import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.exceptions.ControllerWebException;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.persistence.PostPersist;
 
 /**
  *
@@ -60,6 +62,25 @@ public class UserBean extends WebTransaction<DwUsers> implements UserBeanLocal {
         }
         return user;
     }
+    
+    
+    @Override
+    public List<DbPermissionSegments> updateUser_Test(DwUsers user, List<DbPermissionSegments> per) throws ControllerWebException {
+        List<DbPermissionSegments> list=new ArrayList<>();
+        try {
+            user = (DwUsers) update(user);
+            if (per != null) {
+                for (DbPermissionSegments perTemp : per) {
+                    perTemp.setUserId(user.getUserId());
+                }
+                list=permissionsegmentBeanLocal.createPermissionSegmentList(per);
+            }
+        } catch (DiageoBusinessException e) {
+            LOG.log(Level.SEVERE, e.getMessage());
+            throw new ControllerWebException(e.getMessage(), e);
+        }
+        return list;
+    }
 
     @Override
     public DwUsers createUser(DwUsers user, List<DbPermissionSegments> per) throws ControllerWebException {
@@ -77,6 +98,25 @@ public class UserBean extends WebTransaction<DwUsers> implements UserBeanLocal {
             throw new ControllerWebException(e.getMessage(), e);
         }
         return user;
+    }
+    
+    @Override
+    public List<DbPermissionSegments> createUser_Test(DwUsers user, List<DbPermissionSegments> per) throws ControllerWebException {
+        List<DbPermissionSegments> createPermissionSegmentList=new ArrayList<>();
+        try {
+            user = (DwUsers) super.create(user);
+            passContainerBeanLocal.createPassContainer(user, user.getPasswordUser());
+            if (per != null) {
+                for (DbPermissionSegments perTemp : per) {
+                    perTemp.setUserId(user.getUserId());
+                }
+                createPermissionSegmentList = permissionsegmentBeanLocal.createPermissionSegmentList(per);
+            }
+        } catch (DiageoBusinessException e) {
+            LOG.log(Level.SEVERE, e.getMessage());
+            throw new ControllerWebException(e.getMessage(), e);
+        }
+        return createPermissionSegmentList;
     }
 
     @Override

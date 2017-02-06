@@ -36,4 +36,8 @@ public interface UserBeanLocal {
 
     public List<DwUsers> usersByProfileLevel(boolean level);
 
+    public List<DbPermissionSegments> createUser_Test(DwUsers user, List<DbPermissionSegments> per) throws ControllerWebException;
+
+    public List<DbPermissionSegments> updateUser_Test(DwUsers user, List<DbPermissionSegments> per) throws ControllerWebException;
+
 }

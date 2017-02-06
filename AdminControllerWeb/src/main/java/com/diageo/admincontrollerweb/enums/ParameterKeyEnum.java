@@ -11,6 +11,7 @@ package com.diageo.admincontrollerweb.enums;
  */
 public enum ParameterKeyEnum {
 
-    QUERY_SUB_SEGMENT, PATH_MAIL_TEMPLATE;
+    QUERY_SUB_SEGMENT, PATH_MAIL_TEMPLATE, DATABASE_IP,
+    USER_DATABASE, PASS_DATABASE;
 
 }

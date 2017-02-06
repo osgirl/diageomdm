@@ -11,6 +11,7 @@ package com.diageo.admincontrollerweb.enums;
  */
 public enum StatusSystemMDM {
 
-    APPROVED, REJECT,PENDING_TMC, PENDING_KAM_TMC_CHAINS, PENDING_APPROVAL;
+    APPROVED, REJECT,PENDING_TMC, PENDING_KAM_TMC_CHAINS, PENDING_APPROVAL,
+    PENDING_KIERNAN;
    
 }
