@@ -19,7 +19,7 @@ import javax.ejb.Local;
 @Local
 public interface PermissionsegmentBeanLocal {
 
-    public void createPermissionSegmentList(List<DbPermissionSegments> entity) throws DiageoBusinessException;
+    public List<DbPermissionSegments> createPermissionSegmentList(List<DbPermissionSegments> entity) throws DiageoBusinessException;
 
     public List<DbPermissionSegments> findByUser(Integer idUser);
 

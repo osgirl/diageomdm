@@ -7,10 +7,15 @@ package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
+import com.diageo.diageonegocio.jdbc.ConecctionJDBC;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -26,14 +31,29 @@ public class PermissionsegmentBean extends BusinessTransaction<DbPermissionSegme
     // "Insert Code > Add Business Method")
     @Override
     @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-    public void createPermissionSegmentList(List<DbPermissionSegments> entity) throws DiageoBusinessException {
+    public List<DbPermissionSegments> createPermissionSegmentList(List<DbPermissionSegments> entity) throws DiageoBusinessException {
+        List<DbPermissionSegments> list = new ArrayList<>();
         try {
             for (DbPermissionSegments entity1 : entity) {
-                super.update(entity1);
+                DbPermissionSegments obj = (DbPermissionSegments) super.update(entity1);
+                list.add(obj);
             }
         } catch (Exception e) {
             throw new DiageoBusinessException(e, e.getMessage());
         }
+        //insertOutletUser(list);
+        return list;
+    }
+
+    public void insertOutletUser(List<DbPermissionSegments> list) {
+        try (Connection con = ConecctionJDBC.conexionSQLServer()) {
+            for (DbPermissionSegments id : list) {
+                ConecctionJDBC.callStoreInsertOutletsUser(con, id.getPermissionSegment());
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PermissionsegmentBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     @Override

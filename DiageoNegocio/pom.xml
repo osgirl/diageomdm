@@ -15,6 +15,13 @@
     </properties>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/sqljdbc4 -->
+        <dependency>
+            <groupId>com.microsoft.sqlserver</groupId>
+            <artifactId>sqljdbc4</artifactId>
+            <version>4.0</version>
+        </dependency>
+
         <dependency>
             <groupId>org.eclipse.persistence</groupId>
             <artifactId>eclipselink</artifactId>

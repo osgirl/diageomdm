@@ -233,7 +233,7 @@ public class DbPermissionSegments implements Serializable {
 
     @Override
     public String toString() {
-        return "com.totalseguros.entidadesdiageobusiness.DbPermissionSegments[ permissionSegment=" + permissionSegment + " ]";
+        return "com.diageo.diageobusienss.entidades.DbPermissionSegments[ permissionSegment=" + permissionSegment + " ]";
     }
 
 }
