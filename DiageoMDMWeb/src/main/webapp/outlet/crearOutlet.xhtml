@@ -40,6 +40,7 @@
                             <p:autoComplete id="acMinLength" minQueryLength="4" value="#{outletCrearBean.father}" label="#{msg.father}"
                                             var="outletFather" itemLabel="#{outletFather.kiernanId}    #{outletFather.businessName}" itemValue="#{outletFather}" forceSelection="true"
                                             completeMethod="#{outletCrearBean.completeChainFather}" effect="fade" converter="outletConverter"
+                                            maxResults="20"
                                             style="width: 90% !important;" disabled="#{outletCrearBean.isFather}" queryEvent="enter"/>
                         </h:panelGrid>
                     </p:fieldset>

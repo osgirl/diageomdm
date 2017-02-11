@@ -173,7 +173,9 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setListCustomers(out.getDbCustomersList());
         setSubSegmentDistributor(out.getDistributorSubSegmentId());
         setVerDetalle(Boolean.FALSE);
-        setDistributorOld(out.getDb3PartyIdOld());
+        if (out.getDb3PartyIdOld() != null) {
+            setDistributorOld(out.getDb3PartyIdOld().getDb3partyId());
+        }
         setSellerSelected(out.getDb3partySaleId());
         setJourneyPlan(out.getJourneyPlan().equals(StateEnum.ACTIVE.getState()));
         setStatusOutlet(out.getStatusOutlet());
@@ -535,6 +537,12 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         return isVerDetalle()
                 && (getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("TMC_DISTRIBUIDORES")
                 || getLoginBean().getUsuario().getProfileId().getNameProfile().equalsIgnoreCase("COMMERCIAL MANAGER"));
+    }
+
+    public boolean isDisabledFieldStatusOutlet() {
+        return !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
     }
 
     /**

@@ -86,6 +86,7 @@
                                     <p:autoComplete id="acMinLength" minQueryLength="4" value="#{outletConsultarBean.father}" label="#{msg.father}"
                                                     var="outletFather" itemLabel="#{outletFather.kiernanId}   #{outletFather.businessName}" itemValue="#{outletFather}" forceSelection="true"
                                                     completeMethod="#{outletConsultarBean.completeChainFather}" effect="fade" converter="outletConverter"
+                                                    maxResults="20"
                                                     style="width: 90% !important;" disabled="#{outletConsultarBean.disabledFields and outletConsultarBean.disabledFieldsTmc or outletConsultarBean.isFather}" queryEvent="enter"/>
                                 </h:panelGrid>
                             </p:fieldset>
@@ -141,7 +142,7 @@
                                         <p:selectBooleanCheckbox id="sbJourneyPlan" value="#{outletConsultarBean.journeyPlan}" disabled="#{outletConsultarBean.disabledFields}"/>
 
                                         <h:outputLabel value="#{msg.status}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu value="#{outletConsultarBean.statusOutlet}" style="width: 90%" disabled="#{outletConsultarBean.disabledFields}">
+                                        <p:selectOneMenu value="#{outletConsultarBean.statusOutlet}" style="width: 90%" disabled="#{outletConsultarBean.disabledFieldStatusOutlet}">
                                             <f:selectItem itemValue="A" itemLabel="#{msg.active}"/>
                                             <f:selectItem itemValue="I" itemLabel="#{msg.inactive}"/>
                                         </p:selectOneMenu>

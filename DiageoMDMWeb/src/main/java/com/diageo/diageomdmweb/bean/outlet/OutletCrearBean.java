@@ -223,15 +223,15 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 //            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             outlet.setStatusMDM(StatusSystemMDM.PENDING_TMC.name());
-            outlet.setDb3PartyIdNew(getDb3PartySelected().getDb3partyId());
-            outlet.setDb3PartyIdOld(getDb3PartySelected().getDb3partyId());
+            outlet.setDb3PartyIdNew(getDb3PartySelected());
+            outlet.setDb3PartyIdOld(getDb3PartySelected());
             outlet.setJourneyPlan(isJourneyPlan() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
             DbCustomers custo = saveCustomer();
             if (custo != null) {
                 getListCustomers().add(custo);
+                outlet.setOutletId(custo.getCustomerId());
             }
-            outlet.setDbCustomersList(getListCustomers());
-            outlet.setOutletId(custo.getCustomerId());
+            outlet.setDbCustomersList(getListCustomers());            
             Audit audit = new Audit();
             audit.setCreationDate(super.getCurrentDate());
             audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());

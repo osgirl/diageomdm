@@ -32,15 +32,7 @@ public class DbOutletsLazyDataModel extends LazyDataModel<DbOutlets> {
 
     private OutletBeanLocal outletBeanLocal;
     private OutletsUserBeanLocal outletsUserBeanLocal;
-    private SegmentBeanLocal segmentoBeanLocal;
-    private SubChannelBeanLocal subChannelBeanLocal;
-    private ChannelBeanLocal channelBeanLocal;
     private Integer profile;
-    private List<String> statusMDM;
-    private List<DwParameters> parametersQuerySegment;
-    private Set<Integer> listDistributor;
-    private List<DbOutlets> dbOutlets;
-    private List<DbPermissionSegments> listPermi;
     private Integer userId;
     /**
      * si la bandera es true, significa que la bandera debe hacer la consulta
@@ -82,7 +74,7 @@ public class DbOutletsLazyDataModel extends LazyDataModel<DbOutlets> {
         this(outletBeanLocal, profile);
         this.listIdUser = listIdUser;
         this.outletsUserBeanLocal = outletsUserBeanLocal;
-        flagCommercial=true;
+        flagCommercial = true;
     }
 
     @Override

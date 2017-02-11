@@ -12,22 +12,23 @@ and open the template in the editor.
     <!--h:commandLink rendered="{outletConsultarBean.renderDataTableLazyDataModel()}">
         <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
         <pe:exporter type="xlsx" target="dtOutletNew"  fileName="Report" pageOnly="false"/>
-    </h:commandLink>
-    <h:commandLink rendered="{outletConsultarBean.renderDataTableLazyDataModel()}">
+    </h:commandLink>-->
+    <h:commandLink id="clExportcsv" rendered="#{outletConsultarBean.renderDataTableLazyDataModel()}">
         <p:graphicImage name="/images/iconos/csv.png" width="5%"/>
         <p:dataExporter type="csv" target="dtOutletNew" fileName="Report" pageOnly="false" />
-    </h:commandLink-->
+    </h:commandLink>
+    <p:tooltip for="clExportcsv" value="Export..."/>
     <br/>
     <p:scrollPanel style="width:100%" rendered="#{outletConsultarBean.renderDataTableLazyDataModel()}" mode="native">
         <p:dataTable id="dtOutletNew" value="#{outletConsultarBean.outletsLazyDataModel}" var="outdtNew" paginatorAlwaysVisible="true" rows="15"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                     style="font-size:  90%;word-wrap: break-word;font-size: 9px !important;width:200%" 
+                     style="font-size:  90%;word-wrap: break-word;font-size: 9px !important;width:300%" 
                      rendered="#{outletConsultarBean.renderDataTableLazyDataModel()}" paginator="true"
                      widgetVar="dtOutletSearch" lazy="true" 
                      emptyMessage="#{msg.out_msg_not_record}" filterEvent="enter" rowKey="#{outdtNew.outletId}"
                      selectionMode="multiple" selection="#{outletConsultarBean.listOutletsFilter}"> 
             <p:ajax event="filter" listener="#{outletConsultarBean.listenerFilterList}"/>
-            <p:column style="width: 8%;text-align: center" exportable="false" >
+            <p:column style="text-align: center" exportable="false" >
                 <p:commandLink value="#{msg.btn_edit}" style="color: blue" process="@all" update="@form"
                                actionListener="#{outletConsultarBean.seeDetail(outdtNew)}" disabled="#{outdtNew.disabledButtonEdit}"/>
                 <br/><br/>
@@ -36,7 +37,7 @@ and open the template in the editor.
                     <p:tooltip for="labelRe" value="#{outdtNew.rejectMessage}"/>
                 </h:panelGroup>
             </p:column>
-            <p:column headerText="#{msg.status}" filterMatchMode="exact" filterBy="#{outdtNew.statusMDM}" exportable="false">
+            <p:column headerText="#{msg.status}" filterMatchMode="exact" filterBy="#{outdtNew.statusMDM}" exportable="false" style="text-align: center">
                 <f:facet name="filter">
                     <p:selectOneMenu onchange="PF('dtOutletSearch').filter()" style="width: 80%">
                         <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}" noSelectionOption="true"/>
@@ -50,50 +51,70 @@ and open the template in the editor.
                 <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_tmc}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'PENDING_TMC'}" style="color: blue" escape="false"/>
                 <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_commercial_manager}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'PENDING_APPROVAL'}" style="color: sienna" escape="false"/>
                 <h:outputLabel value="&lt;b&gt;#{msg.sta_approval}&lt;/b&gt;" rendered="#{outdtNew.statusMDM eq 'APPROVED'}" style="color: green" escape="false"/>
-            </p:column>            
+            </p:column>    
+            <p:column headerText="#{msg.out_kiernan}" filterBy="#{outdtNew.kiernanId}" filterMatchMode="startsWith">
+                <h:outputLabel value="#{outdtNew.kiernanId}"/>
+            </p:column>    
+            <p:column headerText="#{msg.m_outlet} #{msg.id}" filterBy="#{outdtNew.outletId}">
+                <h:outputLabel value="#{outdtNew.outletId}"/>
+            </p:column>    
+            <p:column headerText="#{msg.distri_father}" filterBy="#{outdtNew.outletIdFather.outletId}">
+                <h:outputLabel value="#{outdtNew.outletIdFather.outletId}"/>
+            </p:column> 
             <p:column headerText="#{msg.out_razon_social}" filterBy="#{outdtNew.businessName}" 
                       filterMatchMode="startsWith">                
                 <h:outputLabel value="#{outdtNew.businessName}"/>
+            </p:column>            
+            <p:column headerText="#{msg.distri_outlet}" filterBy="#{outdtNew.db3PartyIdOld.name3party}">                
+                <h:outputLabel value="#{outdtNew.db3PartyIdOld.name3party}"/>
+            </p:column>            
+            <p:column headerText="#{msg.sub_segment_diageo}" filterBy="#{outdtNew.subSegmentId.nameSubsegment}" filterMatchMode="startsWith">
+                <h:outputLabel value="#{outdtNew.subSegmentId.nameSubsegment}"/>
+            </p:column>            
+            <p:column headerText="#{msg.sub_segment_distributor}" filterBy="#{outdtNew.distributorSubSegmentId.nameSubsegment}">
+                <h:outputLabel value="#{outdtNew.distributorSubSegmentId.nameSubsegment}"/>
+            </p:column>
+            <p:column headerText="#{msg.out_potencial}" filterBy="#{outdtNew.potentialId.namePotential}">
+                <h:outputLabel value="#{outdtNew.potentialId.namePotential}"/>
             </p:column>
             <p:column headerText="#{msg.out_nit}" filterBy="#{outdtNew.nit}" filterMatchMode="startsWith">
                 <h:outputLabel value="#{outdtNew.nit}"/>
             </p:column>
-            <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{outdtNew.subSegmentId.nameSubsegment}" filterMatchMode="startsWith">
-                <h:outputLabel value="#{outdtNew.subSegmentId.nameSubsegment}"/>
+            <p:column headerText="#{msg.sales_code}" filterBy="#{outdtNew.db3partySaleId.pdv}">
+                <h:outputLabel value="#{outdtNew.db3partySaleId.pdv}"/>
             </p:column>
-
-            <p:column headerText="#{msg.out_kiernan}" filterBy="#{outdtNew.kiernanId}" filterMatchMode="startsWith">
-                <h:outputLabel value="#{outdtNew.kiernanId}"/>
-            </p:column>    
-            <p:column headerText="#{msg.out_punto_venta}">
+            <p:column headerText="#{msg.sales_nombre}" filterBy="#{outdtNew.db3partySaleId.nameSales}">
+                <h:outputLabel value="#{outdtNew.db3partySaleId.nameSales}"/>
+            </p:column>
+            <p:column headerText="#{msg.code_pos_distributor}" filterBy="#{outdtNew.numberPdv}">
                 <h:outputLabel value="#{outdtNew.numberPdv}"/>
             </p:column>
-            <p:column headerText="#{msg.out_direccion}">
+            <p:column headerText="#{msg.out_direccion}" filterBy="#{outdtNew.address}">
                 <h:outputLabel value="#{outdtNew.address}"/>
             </p:column>
-            <p:column headerText="#{msg.chain_city}">
+            <p:column headerText="#{msg.chain_city}" filterBy="#{outdtNew.townId.nameTown}">
                 <h:outputLabel value="#{outdtNew.townId.nameTown}"/>
             </p:column>
-            <p:column headerText="#{msg.out_nit}">
-                <h:outputLabel value="#{outdtNew.nit}"/>
+            <p:column headerText="#{msg.dis_commercial_management}" filterBy="#{outdtNew.db3PartyIdOld.db3partyRegionalId.nameRegional}">
+                <h:outputLabel value="#{outdtNew.db3PartyIdOld.db3partyRegionalId.nameRegional}"/>
             </p:column>
-            <p:column headerText="#{msg.can_canal}">
+            <p:column headerText="#{msg.loc_depto}" filterBy="#{outdtNew.townId.departamentId.nameDepartament}">
+                <h:outputLabel value="#{outdtNew.townId.departamentId.nameDepartament}"/>
+            </p:column>
+            <p:column headerText="#{msg.can_canal}" filterBy="#{outdtNew.subSegmentId.segmentId.subChannelId.channelId.nameChannel}">
                 <h:outputLabel value="#{outdtNew.subSegmentId.segmentId.subChannelId.channelId.nameChannel}"/>
             </p:column>
-            <p:column headerText="#{msg.sub_subcanal}">
+            <p:column headerText="#{msg.sub_subcanal}" filterBy="#{outdtNew.subSegmentId.segmentId.subChannelId.nameSubChannel}">
                 <h:outputLabel value="#{outdtNew.subSegmentId.segmentId.subChannelId.nameSubChannel}"/>
             </p:column>
-            <p:column headerText="#{msg.seg_segmento}">
+            <p:column headerText="#{msg.seg_segmento}" filterBy="#{outdtNew.subSegmentId.segmentId.nameSegment}">
                 <h:outputLabel value="#{outdtNew.subSegmentId.segmentId.nameSegment}"/>
             </p:column>
-            <p:column headerText="#{msg.out_potencial}">
-                <h:outputLabel value="#{outdtNew.potentialId.namePotential}"/>
+            <p:column headerText="#{msg.status_2}" filterBy="#{outdtNew.statusOutlet}">
+                <h:outputLabel value="#{outdtNew.statusOutlet}"/>
             </p:column>
-            <p:column headerText="#{msg.out_distribuidor} #{msg.old}">
-                <h:outputLabel value="#{outletConsultarBean.showDistributorName(outdtNew.db3PartyIdOld)}"/>
-            </p:column>
-            <p:column headerText="#{msg.out_distribuidor}">
-                <h:outputLabel value="#{outletConsultarBean.showDistributorName(outdtNew.db3PartyIdNew)}"/>
+            <p:column headerText="#{msg.journey_plan}" filterBy="#{outdtNew.journeyPlan}">
+                <h:outputLabel value="#{outdtNew.journeyPlan}"/>
             </p:column>
         </p:dataTable>
     </p:scrollPanel>
