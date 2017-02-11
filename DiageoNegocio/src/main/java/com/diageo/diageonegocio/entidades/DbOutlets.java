@@ -36,7 +36,23 @@ import javax.validation.constraints.Size;
             + "AND e.kiernanId LIKE :kiernanId "
             + "AND e.subSegmentId.nameSubsegment LIKE :nameSubsegment "
             + "AND e.statusOutlet LIKE :statusOutlet "
-            + "AND e.statusMDM LIKE :statusMDM")
+            + "AND e.statusMDM LIKE :statusMDM "
+            + "AND e.townId.nameTown LIKE :nameTown "
+            + "AND e.distributorSubSegmentId.nameSubsegment LIKE :nameSubSegment "
+            + "AND CAST(e.outletIdFather.outletId AS VARCHAR(12)) LIKE :outletIdFather "
+            + "AND e.subSegmentId.segmentId.subChannelId.channelId.nameChannel LIKE :nameChannel "
+            + "AND e.journeyPlan LIKE :journeyPlan "
+            + "AND e.db3partySaleId.pdv LIKE :pdv "
+            + "AND e.db3PartyIdOld.db3partyRegionalId.nameRegional LIKE :nameRegional "
+            + "AND e.db3PartyIdOld.name3party LIKE :name3partyOld "
+            + "AND e.subSegmentId.segmentId.subChannelId.nameSubChannel LIKE :nameSubChannel "
+            + "AND e.db3partySaleId.nameSales LIKE :nameSales "
+            + "AND e.address LIKE :address "
+            + "AND e.townId.departamentId.nameDepartament LIKE :nameDepartament "
+            + "AND CAST(e.outletId AS VARCHAR(12)) LIKE :outletId "
+            + "AND e.subSegmentId.segmentId.nameSegment LIKE :nameSegment "
+            + "AND e.potentialId.namePotential LIKE :namePotential "
+            + "")
     ,
     @NamedQuery(name = DbOutlets.FIND_ALL_PROFILES, query = "SELECT e FROM DbOutlets e "
             + "WHERE e.nit LIKE :nit "
@@ -55,7 +71,23 @@ import javax.validation.constraints.Size;
             + "AND e.kiernanId LIKE :kiernanId "
             + "AND e.subSegmentId.nameSubsegment LIKE :nameSubsegment "
             + "AND e.statusOutlet LIKE :statusOutlet "
-            + "AND e.statusMDM LIKE :statusMDM")
+            + "AND e.statusMDM LIKE :statusMDM "
+             + "AND e.townId.nameTown LIKE :nameTown "
+            + "AND e.distributorSubSegmentId.nameSubsegment LIKE :nameSubSegment "
+            + "AND CAST(e.outletIdFather.outletId AS VARCHAR(12)) LIKE :outletIdFather "
+            + "AND e.subSegmentId.segmentId.subChannelId.channelId.nameChannel LIKE :nameChannel "
+            + "AND e.journeyPlan LIKE :journeyPlan "
+            + "AND e.db3partySaleId.pdv LIKE :pdv "
+            + "AND e.db3PartyIdOld.db3partyRegionalId.nameRegional LIKE :nameRegional "
+            + "AND e.db3PartyIdOld.name3party LIKE :name3partyOld "
+            + "AND e.subSegmentId.segmentId.subChannelId.nameSubChannel LIKE :nameSubChannel "
+            + "AND e.db3partySaleId.nameSales LIKE :nameSales "
+            + "AND e.address LIKE :address "
+            + "AND e.townId.departamentId.nameDepartament LIKE :nameDepartament "
+            + "AND CAST(e.outletId AS VARCHAR(12)) LIKE :outletId "
+            + "AND e.subSegmentId.segmentId.nameSegment LIKE :nameSegment "
+            + "AND e.potentialId.namePotential LIKE :namePotential "
+            + "")
     ,
     @NamedQuery(name = DbOutlets.FIND_ALL_COUNT_PROFILES, query = "SELECT COUNT(e) FROM DbOutlets e "
             + "WHERE e.nit LIKE :nit "
@@ -82,13 +114,13 @@ import javax.validation.constraints.Size;
     ,
     @NamedQuery(name = DbOutlets.FIND_BY_SUB_SEGMENT, query = "SELECT o FROM DbOutlets o WHERE o.subSegmentId.subSegmentId=?1")
     ,
-    @NamedQuery(name = DbOutlets.FIND_BY_BUSINESS_NAME, query = "SELECT o FROM DbOutlets o WHERE o.businessName LIKE ?1 AND o.isFather = ?2")
+    @NamedQuery(name = DbOutlets.FIND_BY_BUSINESS_NAME, query = "SELECT o FROM DbOutlets o WHERE (o.businessName+o.kiernanId) LIKE ?1 AND o.isFather = ?2")
     ,
     @NamedQuery(name = DbOutlets.FIND_BY_SUB_SEGMENT_3PARTY, query = "SELECT o FROM DbOutlets o "
-            + "WHERE o.subSegmentId.subSegmentId=?1 AND o.db3PartyIdNew=?2")
+            + "WHERE o.subSegmentId.subSegmentId=?1 AND o.db3PartyIdNew.db3partyId=?2")
     ,
     @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION, query = "SELECT o FROM DbOutlets o "
-            + "WHERE o.db3PartyIdNew=:db3partyId AND o.subSegmentId.subSegmentId IN :subSegmentId AND o.statusMDM  IN :statusMDM "
+            + "WHERE o.db3PartyIdNew.db3partyId=:db3partyId AND o.subSegmentId.subSegmentId IN :subSegmentId AND o.statusMDM  IN :statusMDM "
             + "AND o.nit LIKE :nit "
             + "AND o.businessName LIKE :businessName "
             + "AND o.numberPdv LIKE :numberPdv "
@@ -97,10 +129,10 @@ import javax.validation.constraints.Size;
             + "AND o.statusOutlet LIKE :statusOutlet ")
     ,
     @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION_LIST, query = "SELECT o FROM DbOutlets o  "
-            + "WHERE o.db3PartyIdNew=?1 AND o.subSegmentId.subSegmentId IN ?2 AND o.statusMDM  IN ?3")
+            + "WHERE o.db3PartyIdNew.db3partyId=?1 AND o.subSegmentId.subSegmentId IN ?2 AND o.statusMDM  IN ?3")
     ,
     @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION_COUNT, query = "SELECT COUNT (o) FROM DbOutlets o "
-            + "WHERE o.db3PartyIdNew=:db3partyId AND o.subSegmentId.subSegmentId IN :subSegmentId AND o.statusMDM  IN :statusMDM "
+            + "WHERE o.db3PartyIdNew.db3partyId=:db3partyId AND o.subSegmentId.subSegmentId IN :subSegmentId AND o.statusMDM  IN :statusMDM "
             + "AND o.nit LIKE :nit "
             + "AND o.businessName LIKE :businessName "
             + "AND o.numberPdv LIKE :numberPdv "
@@ -231,10 +263,18 @@ public class DbOutlets implements Serializable {
     private String spirtis;
     @Column(name = "STATUS_MDM")
     private String statusMDM;
-    @Column(name = "DB_3PARTY_ID_OLD")
-    private Integer db3PartyIdOld;
-    @Column(name = "DB_3PARTY_ID_NEW")
-    private Integer db3PartyIdNew;
+    
+    
+    //@Column(name = "DB_3PARTY_ID_OLD")
+    @ManyToOne
+    @JoinColumn(name = "DB_3PARTY_ID_OLD")
+    private Db3party db3PartyIdOld;
+    //@Column(name = "DB_3PARTY_ID_NEW")
+    @ManyToOne
+    @JoinColumn(name = "DB_3PARTY_ID_NEW")
+    private Db3party db3PartyIdNew;
+    
+    
     @Column(name = "SUB_SEGMENT_ID_ATHENA")
     private Integer subSegmentIdAthena;
     //TRANSIENT
@@ -582,21 +622,21 @@ public class DbOutlets implements Serializable {
 
     public void setDistributorSubSegmentId(DbSubSegments distributorSubSegmentId) {
         this.distributorSubSegmentId = distributorSubSegmentId;
-    }
+    }    
 
-    public Integer getDb3PartyIdOld() {
+    public Db3party getDb3PartyIdOld() {
         return db3PartyIdOld;
     }
 
-    public void setDb3PartyIdOld(Integer db3PartyIdOld) {
+    public void setDb3PartyIdOld(Db3party db3PartyIdOld) {
         this.db3PartyIdOld = db3PartyIdOld;
     }
 
-    public Integer getDb3PartyIdNew() {
+    public Db3party getDb3PartyIdNew() {
         return db3PartyIdNew;
     }
 
-    public void setDb3PartyIdNew(Integer db3PartyIdNew) {
+    public void setDb3PartyIdNew(Db3party db3PartyIdNew) {
         this.db3PartyIdNew = db3PartyIdNew;
     }
 

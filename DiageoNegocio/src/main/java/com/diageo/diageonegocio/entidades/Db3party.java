@@ -31,10 +31,14 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DB_3PARTY")
 @NamedQueries({
-    @NamedQuery(name = Db3party.FIND_ALL, query = "SELECT d FROM Db3party d WHERE d.status = '1'"),
-    @NamedQuery(name = Db3party.FIND_BY_IS_PADRE, query = "SELECT d FROM Db3party d WHERE d.isFather = ?1 AND d.status = '1'"),
-    @NamedQuery(name = Db3party.FIND_BY_IS_PADRE_IS_CHAIN, query = "SELECT d FROM Db3party d WHERE d.isFather = ?1 AND d.status = '1' AND d.isChain = ?2"),
-    @NamedQuery(name = Db3party.FIND_BY_PADRE, query = "SELECT d FROM Db3party d WHERE d.db3partyIdFather.db3partyId = ?1 AND d.status = '1'"),
+    @NamedQuery(name = Db3party.FIND_ALL, query = "SELECT d FROM Db3party d WHERE d.status = '1'")
+    ,
+    @NamedQuery(name = Db3party.FIND_BY_IS_PADRE, query = "SELECT d FROM Db3party d WHERE d.isFather = ?1 AND d.status = '1'")
+    ,
+    @NamedQuery(name = Db3party.FIND_BY_IS_PADRE_IS_CHAIN, query = "SELECT d FROM Db3party d WHERE d.isFather = ?1 AND d.status = '1' AND d.isChain = ?2")
+    ,
+    @NamedQuery(name = Db3party.FIND_BY_PADRE, query = "SELECT d FROM Db3party d WHERE d.db3partyIdFather.db3partyId = ?1 AND d.status = '1'")
+    ,
     @NamedQuery(name = Db3party.FIND_BY_IS_CHAIN, query = "SELECT d FROM Db3party d WHERE d.isChain = ?1 AND d.status = ?2")
 })
 public class Db3party implements Serializable {
@@ -57,8 +61,8 @@ public class Db3party implements Serializable {
     private String name3party;
     @Size(max = 1)
     @Column(name = "IS_FATHER")
-    private String isFather;    
-    
+    private String isFather;
+
     @JoinColumn(name = "DB_3PARTY_REGIONAL_ID", referencedColumnName = "DB_3PARTY_REGIONAL_ID")
     @ManyToOne(optional = false)
     private Db3partyRegional db3partyRegionalId;
@@ -88,6 +92,12 @@ public class Db3party implements Serializable {
     private Audit audit;
     @Column(name = "STATUS")
     private String status;
+
+    @OneToMany(mappedBy = "db3PartyIdNew")
+    private List<DbOutlets> listOutletNew;
+
+    @OneToMany(mappedBy = "db3PartyIdOld")
+    private List<DbOutlets> listOutletOld;
 
     public Db3party() {
     }
@@ -214,6 +224,22 @@ public class Db3party implements Serializable {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public List<DbOutlets> getListOutletNew() {
+        return listOutletNew;
+    }
+
+    public void setListOutletNew(List<DbOutlets> listOutletNew) {
+        this.listOutletNew = listOutletNew;
+    }
+
+    public List<DbOutlets> getListOutletOld() {
+        return listOutletOld;
+    }
+
+    public void setListOutletOld(List<DbOutlets> listOutletOld) {
+        this.listOutletOld = listOutletOld;
     }
 
     @Override

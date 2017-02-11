@@ -109,6 +109,82 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
         } else {
             sql.setParameter("statusMDM", "%%");
         }
+
+        if (filters.get("townId.nameTown") != null) {
+            sql.setParameter("nameTown", "%" + filters.get("townId.nameTown").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameTown", "%%");
+        }
+        if (filters.get("distributorSubSegmentId.nameSubsegment") != null) {
+            sql.setParameter("nameSubSegment", "%" + filters.get("distributorSubSegmentId.nameSubsegment").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameSubSegment", "%%");
+        }
+        if (filters.get("outletIdFather.outletId") != null) {
+            sql.setParameter("outletIdFather", "%" + filters.get("outletIdFather.outletId").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("outletIdFather", "%%");
+        }
+        if (filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel") != null) {
+            sql.setParameter("nameChannel", "%" + filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameChannel", "%%");
+        }
+        if (filters.get("journeyPlan") != null) {
+            sql.setParameter("journeyPlan", "%" + filters.get("journeyPlan").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("journeyPlan", "%%");
+        }
+        if (filters.get("db3partySaleId.pdv") != null) {
+            sql.setParameter("pdv", "%" + filters.get("db3partySaleId.pdv").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("pdv", "%%");
+        }
+        if (filters.get("db3PartyIdOld.db3partyRegionalId.nameRegional") != null) {
+            sql.setParameter("nameRegional", "%" + filters.get("db3PartyIdOld.db3partyRegionalId.nameRegional").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameRegional", "%%");
+        }
+        if (filters.get("db3PartyIdOld.name3party") != null) {
+            sql.setParameter("name3partyOld", "%" + filters.get("db3PartyIdOld.name3party").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("name3partyOld", "%%");
+        }
+        if (filters.get("subSegmentId.segmentId.subChannelId.nameSubChannel") != null) {
+            sql.setParameter("nameSubChannel", "%" + filters.get("subSegmentId.segmentId.subChannelId.nameSubChannel").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameSubChannel", "%%");
+        }
+        if (filters.get("db3partySaleId.nameSales") != null) {
+            sql.setParameter("nameSales", "%" + filters.get("db3partySaleId.nameSales").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameSales", "%%");
+        }
+        if (filters.get("address") != null) {
+            sql.setParameter("address", "%" + filters.get("address").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("address", "%%");
+        }
+        if (filters.get("townId.departamentId.nameDepartament") != null) {
+            sql.setParameter("nameDepartament", "%" + filters.get("townId.departamentId.nameDepartament").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameDepartament", "%%");
+        }
+        if (filters.get("outletId") != null) {
+            sql.setParameter("outletId", "%" + filters.get("outletId").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("outletId", "%%");
+        }
+        if (filters.get("subSegmentId.segmentId.nameSegment") != null) {
+            sql.setParameter("nameSegment", "%" + filters.get("subSegmentId.segmentId.nameSegment").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameSegment", "%%");
+        }
+        if (filters.get("potentialId.namePotential") != null) {
+            sql.setParameter("namePotential", "%" + filters.get("potentialId.namePotential").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("namePotential", "%%");
+        }
         sql.setFirstResult(initial);
         sql.setMaxResults(page);
         List<DbOutlets> list = sql.getResultList();
@@ -444,6 +520,81 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
             sql.setParameter("statusMDM", "%" + filters.get("statusMDM").toString().toUpperCase() + "%");
         } else {
             sql.setParameter("statusMDM", "%%");
+        }
+        if (filters.get("townId.nameTown") != null) {
+            sql.setParameter("nameTown", "%" + filters.get("townId.nameTown").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameTown", "%%");
+        }
+        if (filters.get("distributorSubSegmentId.nameSubsegment") != null) {
+            sql.setParameter("nameSubSegment", "%" + filters.get("distributorSubSegmentId.nameSubsegment").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameSubSegment", "%%");
+        }
+        if (filters.get("outletIdFather.outletId") != null) {
+            sql.setParameter("outletIdFather", "%" + filters.get("outletIdFather.outletId").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("outletIdFather", "%%");
+        }
+        if (filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel") != null) {
+            sql.setParameter("nameChannel", "%" + filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameChannel", "%%");
+        }
+        if (filters.get("journeyPlan") != null) {
+            sql.setParameter("journeyPlan", "%" + filters.get("journeyPlan").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("journeyPlan", "%%");
+        }
+        if (filters.get("db3partySaleId.pdv") != null) {
+            sql.setParameter("pdv", "%" + filters.get("db3partySaleId.pdv").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("pdv", "%%");
+        }
+        if (filters.get("db3PartyIdOld.db3partyRegionalId.nameRegional") != null) {
+            sql.setParameter("nameRegional", "%" + filters.get("db3PartyIdOld.db3partyRegionalId.nameRegional").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameRegional", "%%");
+        }
+        if (filters.get("db3PartyIdOld.name3party") != null) {
+            sql.setParameter("name3partyOld", "%" + filters.get("db3PartyIdOld.name3party").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("name3partyOld", "%%");
+        }
+        if (filters.get("subSegmentId.segmentId.subChannelId.nameSubChannel") != null) {
+            sql.setParameter("nameSubChannel", "%" + filters.get("subSegmentId.segmentId.subChannelId.nameSubChannel").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameSubChannel", "%%");
+        }
+        if (filters.get("db3partySaleId.nameSales") != null) {
+            sql.setParameter("nameSales", "%" + filters.get("db3partySaleId.nameSales").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameSales", "%%");
+        }
+        if (filters.get("address") != null) {
+            sql.setParameter("address", "%" + filters.get("address").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("address", "%%");
+        }
+        if (filters.get("townId.departamentId.nameDepartament") != null) {
+            sql.setParameter("nameDepartament", "%" + filters.get("townId.departamentId.nameDepartament").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameDepartament", "%%");
+        }
+        if (filters.get("outletId") != null) {
+            sql.setParameter("outletId", "%" + filters.get("outletId").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("outletId", "%%");
+        }
+        if (filters.get("subSegmentId.segmentId.nameSegment") != null) {
+            sql.setParameter("nameSegment", "%" + filters.get("subSegmentId.segmentId.nameSegment").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("nameSegment", "%%");
+        }
+        if (filters.get("potentialId.namePotential") != null) {
+            sql.setParameter("namePotential", "%" + filters.get("potentialId.namePotential").toString().toUpperCase() + "%");
+        } else {
+            sql.setParameter("namePotential", "%%");
         }
         long size = (long) sql.getSingleResult();
         return size;
