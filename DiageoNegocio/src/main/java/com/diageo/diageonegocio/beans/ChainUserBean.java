@@ -148,6 +148,19 @@ public class ChainUserBean extends BusinessTransaction<DbChainsUsers> implements
         Query sqlQuery = getEntityManager().createNativeQuery(sb.toString());
         int quantity = sqlQuery.executeUpdate();
     }
+    
+    @Override
+    public long notificationPendingChain(Integer userId,String status){
+        Query sql = getEntityManager().createNamedQuery(DbChainsUsers.COUNT_PENDING_OUTLETS);
+        sql.setParameter(1, userId);
+        sql.setParameter(2, status);
+        Object obj=sql.getSingleResult();
+        if(obj==null){
+            return 0;
+        }
+        long size = (long) obj;
+        return size;
+    }
 
     /**
      * Construye la cadena de texto de user_id, que serán enviados al update

@@ -30,6 +30,9 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = DbOutletsUsers.FIND_BY_USER_ID,
             query = "SELECT o.dbOutletsUsersPK.outletId FROM DbOutletsUsers o WHERE o.dbOutletsUsersPK.userId = ?1")
     ,
+    @NamedQuery(name = DbOutletsUsers.COUNT_PENDING_OUTLETS, query = "SELECT COUNT(o) FROM DbOutlets o JOIN DbOutletsUsers do ON do.dbOutletsUsersPK.outletId=o.outletId "
+            + "WHERE do.dbOutletsUsersPK.userId = ?1 AND o.statusMDM = ?2")
+    ,
     @NamedQuery(name = DbOutletsUsers.FIND_BY_USER_OUTLETS_JOIN, query = "SELECT do FROM DbOutletsUsers o "
             + "JOIN DbOutlets do ON do.outletId=o.dbOutletsUsersPK.outletId "
             + "WHERE o.dbOutletsUsersPK.userId = :userId "
@@ -42,7 +45,6 @@ import javax.persistence.TemporalType;
             + "AND do.statusMDM LIKE :statusMDM "
             + "AND do.townId.nameTown LIKE :nameTown "
             + "AND do.distributorSubSegmentId.nameSubsegment LIKE :nameSubSegment "
-            + "AND CAST(do.outletIdFather.outletId AS VARCHAR(12)) LIKE :outletIdFather "
             + "AND do.subSegmentId.segmentId.subChannelId.channelId.nameChannel LIKE :nameChannel "
             + "AND do.journeyPlan LIKE :journeyPlan "
             + "AND do.db3partySaleId.pdv LIKE :pdv "
@@ -69,7 +71,6 @@ import javax.persistence.TemporalType;
             + "AND do.statusMDM LIKE :statusMDM "
             + "AND do.townId.nameTown LIKE :nameTown "
             + "AND do.distributorSubSegmentId.nameSubsegment LIKE :nameSubSegment "
-            + "AND CAST(do.outletIdFather.outletId AS VARCHAR(12)) LIKE :outletIdFather "
             + "AND do.subSegmentId.segmentId.subChannelId.channelId.nameChannel LIKE :nameChannel "
             + "AND do.journeyPlan LIKE :journeyPlan "
             + "AND do.db3partySaleId.pdv LIKE :pdv "
@@ -96,7 +97,6 @@ import javax.persistence.TemporalType;
             + "AND do.statusMDM LIKE :statusMDM "
             + "AND do.townId.nameTown LIKE :nameTown "
             + "AND do.distributorSubSegmentId.nameSubsegment LIKE :nameSubSegment "
-            + "AND CAST(do.outletIdFather.outletId AS VARCHAR(12)) LIKE :outletIdFather "
             + "AND do.subSegmentId.segmentId.subChannelId.channelId.nameChannel LIKE :nameChannel "
             + "AND do.journeyPlan LIKE :journeyPlan "
             + "AND do.db3partySaleId.pdv LIKE :pdv "
@@ -123,7 +123,6 @@ import javax.persistence.TemporalType;
             + "AND do.statusMDM LIKE :statusMDM "
             + "AND do.townId.nameTown LIKE :nameTown "
             + "AND do.distributorSubSegmentId.nameSubsegment LIKE :nameSubSegment "
-            + "AND CAST(do.outletIdFather.outletId AS VARCHAR(12)) LIKE :outletIdFather "
             + "AND do.subSegmentId.segmentId.subChannelId.channelId.nameChannel LIKE :nameChannel "
             + "AND do.journeyPlan LIKE :journeyPlan "
             + "AND do.db3partySaleId.pdv LIKE :pdv "
@@ -146,6 +145,7 @@ public class DbOutletsUsers implements Serializable {
     public static final String FIND_BY_USER_OUTLETS_JOIN_IN = "DbOutletsUsers.findByUserOutletsJoinIn";
     public static final String FIND_BY_USER_OUTLETS_JOIN_COUNT = "DbOutletsUsers.findByUserOutletsJoinCount";
     public static final String FIND_BY_USER_OUTLETS_JOIN_COUNT_IN = "DbOutletsUsers.findByUserOutletsJoinCountIn";
+    public static final String COUNT_PENDING_OUTLETS = "DbOutletsUsers.countPendingOutlets";
     @EmbeddedId
     private DbOutletsUsersPK dbOutletsUsersPK;
     @Column(name = "PARETO")

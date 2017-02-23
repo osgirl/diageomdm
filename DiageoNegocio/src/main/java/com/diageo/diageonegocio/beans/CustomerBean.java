@@ -32,7 +32,7 @@ public class CustomerBean extends BusinessTransaction<DbCustomers> implements Cu
 
     @Override
     public List<DbCustomers> findByNameCustomer(String query) {
-        query = query.toUpperCase();
+        query = query.toUpperCase().trim();
         List<DbCustomers> list = super.searchByNamedQuery(DbCustomers.class, DbCustomers.FIND_BY_NAME, "%" + query + "%");
         if (list == null) {
             new ArrayList<DbCustomers>();

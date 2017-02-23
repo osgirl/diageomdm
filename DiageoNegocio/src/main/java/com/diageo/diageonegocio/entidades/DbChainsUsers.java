@@ -34,7 +34,10 @@ import javax.persistence.TemporalType;
             query = "SELECT c FROM DbChainsUsers cu JOIN DbChains c ON c.chainId=cu.dbChainsUsersPK.chainId WHERE cu.dbChainsUsersPK.userId = ?1")
     ,
     @NamedQuery(name = DbChainsUsers.FIND_BY_USER_ID_JOIN_IN,
-            query = "SELECT c FROM DbChainsUsers cu JOIN DbChains c ON c.chainId=cu.dbChainsUsersPK.chainId WHERE cu.dbChainsUsersPK.userId IN ?1")
+            query = "SELECT c FROM DbChainsUsers cu JOIN DbChains c ON c.chainId=cu.dbChainsUsersPK.chainId WHERE cu.dbChainsUsersPK.userId IN ?1"),
+    @NamedQuery(name = DbChainsUsers.COUNT_PENDING_OUTLETS, query = "SELECT COUNT(o) FROM DbChains o JOIN DbChainsUsers do ON do.dbChainsUsersPK.chainId=o.chainId "
+            + "WHERE do.dbChainsUsersPK.userId = ?1 AND o.statusMDM = ?2")
+    ,
 })
 public class DbChainsUsers implements Serializable {
 
@@ -42,6 +45,7 @@ public class DbChainsUsers implements Serializable {
     public static final String FIND_BY_CHAIN_ID = "DbChainsUsers.findByChainId";
     public static final String FIND_BY_USER_ID_JOIN = "DbChainsUsers.findByUserIdJoin";
     public static final String FIND_BY_USER_ID_JOIN_IN = "DbChainsUsers.findByUserIdJoinIn";
+    public static final String COUNT_PENDING_OUTLETS = "DbChainsUsers.countPendingOutlets";
     @EmbeddedId
     private DbChainsUsersPK dbChainsUsersPK;
     @Column(name = "PARETO")

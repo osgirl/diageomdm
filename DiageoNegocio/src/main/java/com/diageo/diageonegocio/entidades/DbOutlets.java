@@ -39,7 +39,7 @@ import javax.validation.constraints.Size;
             + "AND e.statusMDM LIKE :statusMDM "
             + "AND e.townId.nameTown LIKE :nameTown "
             + "AND e.distributorSubSegmentId.nameSubsegment LIKE :nameSubSegment "
-            + "AND CAST(e.outletIdFather.outletId AS VARCHAR(12)) LIKE :outletIdFather "
+            //+ "AND CAST(e.outletIdFather.outletId AS VARCHAR(12)) LIKE :outletIdFather "
             + "AND e.subSegmentId.segmentId.subChannelId.channelId.nameChannel LIKE :nameChannel "
             + "AND e.journeyPlan LIKE :journeyPlan "
             + "AND e.db3partySaleId.pdv LIKE :pdv "
@@ -72,9 +72,9 @@ import javax.validation.constraints.Size;
             + "AND e.subSegmentId.nameSubsegment LIKE :nameSubsegment "
             + "AND e.statusOutlet LIKE :statusOutlet "
             + "AND e.statusMDM LIKE :statusMDM "
-             + "AND e.townId.nameTown LIKE :nameTown "
+            + "AND e.townId.nameTown LIKE :nameTown "
             + "AND e.distributorSubSegmentId.nameSubsegment LIKE :nameSubSegment "
-            + "AND CAST(e.outletIdFather.outletId AS VARCHAR(12)) LIKE :outletIdFather "
+            //+ "AND CAST(e.outletIdFather.outletId AS VARCHAR(12)) LIKE :outletIdFather "
             + "AND e.subSegmentId.segmentId.subChannelId.channelId.nameChannel LIKE :nameChannel "
             + "AND e.journeyPlan LIKE :journeyPlan "
             + "AND e.db3partySaleId.pdv LIKE :pdv "
@@ -142,7 +142,7 @@ import javax.validation.constraints.Size;
     ,
     @NamedQuery(name = DbOutlets.COUNT, query = "SELECT COUNT (o) FROM DbOutlets o")
 })
-public class DbOutlets implements Serializable {
+public class DbOutlets implements Serializable,Cloneable {
 
     public static final String FIND_ALL = "DbOutlets.findAll";
     public static final String FIND_ALL_PROFILES = "DbOutlets.findAllProfiles";
@@ -263,8 +263,7 @@ public class DbOutlets implements Serializable {
     private String spirtis;
     @Column(name = "STATUS_MDM")
     private String statusMDM;
-    
-    
+
     //@Column(name = "DB_3PARTY_ID_OLD")
     @ManyToOne
     @JoinColumn(name = "DB_3PARTY_ID_OLD")
@@ -273,8 +272,7 @@ public class DbOutlets implements Serializable {
     @ManyToOne
     @JoinColumn(name = "DB_3PARTY_ID_NEW")
     private Db3party db3PartyIdNew;
-    
-    
+
     @Column(name = "SUB_SEGMENT_ID_ATHENA")
     private Integer subSegmentIdAthena;
     //TRANSIENT
@@ -622,7 +620,7 @@ public class DbOutlets implements Serializable {
 
     public void setDistributorSubSegmentId(DbSubSegments distributorSubSegmentId) {
         this.distributorSubSegmentId = distributorSubSegmentId;
-    }    
+    }
 
     public Db3party getDb3PartyIdOld() {
         return db3PartyIdOld;
@@ -667,6 +665,13 @@ public class DbOutlets implements Serializable {
 
     @Override
     public String toString() {
-        return "com.totalseguros.entidadesdiageobusiness.DbOutlets[ outletId=" + outletId + " ]";
+        return statusMDM+","+kiernanId+","+outletId+","+(outletIdFather!=null?outletIdFather.getOutletId():"")+","+businessName;
     }
+
+    @Override
+    public DbOutlets clone() throws CloneNotSupportedException {
+        return (DbOutlets)super.clone();
+    }
+    
+    
 }

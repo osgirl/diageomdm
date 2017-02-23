@@ -37,7 +37,7 @@ import javax.validation.constraints.Size;
             + "c.subSegmentId.subSegmentId IN ?2 AND c.statusMDM IN ?3")
     ,
     @NamedQuery(name = DbChains.FIND_CHAIN_BY_CHAIN_ID_LIST, query = "SELECT c FROM DbChains c WHERE c.chainId IN ?1"),})
-public class DbChains implements Serializable {
+public class DbChains implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1L;
     public static final String FIND_CHAIN_BY_CHAIN_ID_LIST = "DbChains.findByIdList";
@@ -109,6 +109,8 @@ public class DbChains implements Serializable {
     @ManyToOne
     @JoinColumn(name = "DB_LAYER_ID")
     private DbLayer layerId;
+    @Column(name = "SITE")
+    private String site;
 
     public DbChains() {
     }
@@ -329,6 +331,14 @@ public class DbChains implements Serializable {
         this.layerId = layerId;
     }
 
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -352,6 +362,11 @@ public class DbChains implements Serializable {
     @Override
     public String toString() {
         return "com.totalseguros.entidadesdiageobusiness.DbChains[ chainId=" + chainId + " ]";
+    }
+
+    @Override
+    public DbChains clone() throws CloneNotSupportedException {
+        return (DbChains) super.clone(); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

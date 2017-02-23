@@ -28,7 +28,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "DB_CUSTOMERS")
 @NamedQueries({
-    @NamedQuery(name = DbCustomers.FIND_BY_NAME, query = "SELECT c FROM DbCustomers c WHERE c.customerName LIKE ?1")
+    @NamedQuery(name = DbCustomers.FIND_BY_NAME, query = "SELECT c FROM DbCustomers c WHERE CONCAT(c.kiernanId, c.nit, c.customerName) LIKE ?1")
 })
 public class DbCustomers implements Serializable {
 
@@ -68,6 +68,8 @@ public class DbCustomers implements Serializable {
     private String nit;
     @Column(name = "VERIFICATION_NUMBER")
     private String verificationNumber;
+    @Column(name = "NAME_3PARTY")
+    private String name3Party;
 
     public DbCustomers() {
     }
@@ -170,6 +172,14 @@ public class DbCustomers implements Serializable {
 
     public void setVerificationNumber(String verificationNumber) {
         this.verificationNumber = verificationNumber;
+    }
+
+    public String getName3Party() {
+        return name3Party;
+    }
+
+    public void setName3Party(String name3Party) {
+        this.name3Party = name3Party;
     }
 
     @Override

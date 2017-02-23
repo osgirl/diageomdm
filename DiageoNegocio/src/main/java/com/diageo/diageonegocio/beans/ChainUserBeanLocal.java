@@ -30,4 +30,6 @@ public interface ChainUserBeanLocal {
 
     public DbChainsUsers findByChainId(Integer id);
 
+    public long notificationPendingChain(Integer userId, String status);
+
 }

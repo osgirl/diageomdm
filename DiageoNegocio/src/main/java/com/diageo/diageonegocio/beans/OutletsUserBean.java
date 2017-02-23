@@ -81,7 +81,7 @@ public class OutletsUserBean extends BusinessTransaction<DbOutletsUsers> impleme
         } else {
             sql.setParameter("statusMDM", "%%");
         }
-         if (filters.get("townId.nameTown") != null) {
+        if (filters.get("townId.nameTown") != null) {
             sql.setParameter("nameTown", "%" + filters.get("townId.nameTown").toString().toUpperCase() + "%");
         } else {
             sql.setParameter("nameTown", "%%");
@@ -91,11 +91,11 @@ public class OutletsUserBean extends BusinessTransaction<DbOutletsUsers> impleme
         } else {
             sql.setParameter("nameSubSegment", "%%");
         }
-        if (filters.get("outletIdFather.outletId") != null) {
-            sql.setParameter("outletIdFather", "%" + filters.get("outletIdFather.outletId").toString().toUpperCase() + "%");
-        } else {
-            sql.setParameter("outletIdFather", "%%");
-        }
+//        if (filters.get("outletIdFather.outletId") != null) {
+//            sql.setParameter("outletIdFather", "%" + filters.get("outletIdFather.outletId").toString().toUpperCase() + "%");
+//        } else {
+//            sql.setParameter("outletIdFather", "%%");
+//        }
         if (filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel") != null) {
             sql.setParameter("nameChannel", "%" + filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel").toString().toUpperCase() + "%");
         } else {
@@ -207,7 +207,7 @@ public class OutletsUserBean extends BusinessTransaction<DbOutletsUsers> impleme
         } else {
             sql.setParameter("statusMDM", "%%");
         }
-         if (filters.get("townId.nameTown") != null) {
+        if (filters.get("townId.nameTown") != null) {
             sql.setParameter("nameTown", "%" + filters.get("townId.nameTown").toString().toUpperCase() + "%");
         } else {
             sql.setParameter("nameTown", "%%");
@@ -217,11 +217,11 @@ public class OutletsUserBean extends BusinessTransaction<DbOutletsUsers> impleme
         } else {
             sql.setParameter("nameSubSegment", "%%");
         }
-        if (filters.get("outletIdFather.outletId") != null) {
-            sql.setParameter("outletIdFather", "%" + filters.get("outletIdFather.outletId").toString().toUpperCase() + "%");
-        } else {
-            sql.setParameter("outletIdFather", "%%");
-        }
+//        if (filters.get("outletIdFather.outletId") != null) {
+//            sql.setParameter("outletIdFather", "%" + filters.get("outletIdFather.outletId").toString().toUpperCase() + "%");
+//        } else {
+//            sql.setParameter("outletIdFather", "%%");
+//        }
         if (filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel") != null) {
             sql.setParameter("nameChannel", "%" + filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel").toString().toUpperCase() + "%");
         } else {
@@ -331,7 +331,7 @@ public class OutletsUserBean extends BusinessTransaction<DbOutletsUsers> impleme
         } else {
             sql.setParameter("statusMDM", "%%");
         }
-         if (filters.get("townId.nameTown") != null) {
+        if (filters.get("townId.nameTown") != null) {
             sql.setParameter("nameTown", "%" + filters.get("townId.nameTown").toString().toUpperCase() + "%");
         } else {
             sql.setParameter("nameTown", "%%");
@@ -341,11 +341,11 @@ public class OutletsUserBean extends BusinessTransaction<DbOutletsUsers> impleme
         } else {
             sql.setParameter("nameSubSegment", "%%");
         }
-        if (filters.get("outletIdFather.outletId") != null) {
-            sql.setParameter("outletIdFather", "%" + filters.get("outletIdFather.outletId").toString().toUpperCase() + "%");
-        } else {
-            sql.setParameter("outletIdFather", "%%");
-        }
+//        if (filters.get("outletIdFather.outletId") != null) {
+//            sql.setParameter("outletIdFather", "%" + filters.get("outletIdFather.outletId").toString().toUpperCase() + "%");
+//        } else {
+//            sql.setParameter("outletIdFather", "%%");
+//        }
         if (filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel") != null) {
             sql.setParameter("nameChannel", "%" + filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel").toString().toUpperCase() + "%");
         } else {
@@ -455,7 +455,7 @@ public class OutletsUserBean extends BusinessTransaction<DbOutletsUsers> impleme
         } else {
             sql.setParameter("statusMDM", "%%");
         }
-         if (filters.get("townId.nameTown") != null) {
+        if (filters.get("townId.nameTown") != null) {
             sql.setParameter("nameTown", "%" + filters.get("townId.nameTown").toString().toUpperCase() + "%");
         } else {
             sql.setParameter("nameTown", "%%");
@@ -465,11 +465,11 @@ public class OutletsUserBean extends BusinessTransaction<DbOutletsUsers> impleme
         } else {
             sql.setParameter("nameSubSegment", "%%");
         }
-        if (filters.get("outletIdFather.outletId") != null) {
-            sql.setParameter("outletIdFather", "%" + filters.get("outletIdFather.outletId").toString().toUpperCase() + "%");
-        } else {
-            sql.setParameter("outletIdFather", "%%");
-        }
+//        if (filters.get("outletIdFather.outletId") != null) {
+//            sql.setParameter("outletIdFather", "%" + filters.get("outletIdFather.outletId").toString().toUpperCase() + "%");
+//        } else {
+//            sql.setParameter("outletIdFather", "%%");
+//        }
         if (filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel") != null) {
             sql.setParameter("nameChannel", "%" + filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel").toString().toUpperCase() + "%");
         } else {
@@ -650,6 +650,19 @@ public class OutletsUserBean extends BusinessTransaction<DbOutletsUsers> impleme
 
         Query sql = getEntityManager().createNativeQuery(sqlUpdate.toString());
         int quantity = sql.executeUpdate();
+    }
+
+    @Override
+    public long notificationPendingOutlet(Integer userId, String status) {
+        Query sql = getEntityManager().createNamedQuery(DbOutletsUsers.COUNT_PENDING_OUTLETS);
+        sql.setParameter(1, userId);
+        sql.setParameter(2, status);
+        Object obj = sql.getSingleResult();
+        if (obj == null) {
+            return 0;
+        }
+        long size = (long) obj;
+        return size;
     }
 
     /**

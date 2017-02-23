@@ -120,11 +120,11 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
         } else {
             sql.setParameter("nameSubSegment", "%%");
         }
-        if (filters.get("outletIdFather.outletId") != null) {
-            sql.setParameter("outletIdFather", "%" + filters.get("outletIdFather.outletId").toString().toUpperCase() + "%");
-        } else {
-            sql.setParameter("outletIdFather", "%%");
-        }
+//        if (filters.get("outletIdFather.outletId") != null) {
+//            sql.setParameter("outletIdFather", "%" + filters.get("outletIdFather.outletId").toString().toUpperCase() + "%");
+//        } else {
+//            sql.setParameter("outletIdFather", "%%");
+//        }
         if (filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel") != null) {
             sql.setParameter("nameChannel", "%" + filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel").toString().toUpperCase() + "%");
         } else {
@@ -531,11 +531,11 @@ public class OutletBean extends BusinessTransaction<DbOutlets> implements Outlet
         } else {
             sql.setParameter("nameSubSegment", "%%");
         }
-        if (filters.get("outletIdFather.outletId") != null) {
-            sql.setParameter("outletIdFather", "%" + filters.get("outletIdFather.outletId").toString().toUpperCase() + "%");
-        } else {
-            sql.setParameter("outletIdFather", "%%");
-        }
+//        if (filters.get("outletIdFather.outletId") != null) {
+//            sql.setParameter("outletIdFather", "%" + filters.get("outletIdFather.outletId").toString().toUpperCase() + "%");
+//        } else {
+//            sql.setParameter("outletIdFather", "%%");
+//        }
         if (filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel") != null) {
             sql.setParameter("nameChannel", "%" + filters.get("subSegmentId.segmentId.subChannelId.channelId.nameChannel").toString().toUpperCase() + "%");
         } else {
