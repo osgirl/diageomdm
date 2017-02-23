@@ -120,3 +120,7 @@ label{
     font-size: 11px !important;
 }
 
+.ui-breadcrumb a {
+    text-decoration:none !important;
+    cursor: default !important;
+}

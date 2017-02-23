@@ -10,7 +10,31 @@
 
         <ui:composition template="./../WEB-INF/templates/diageoWebTemplate.xhtml">
 
-            <ui:define name="content">
+            <ui:define name="content">   
+                <h:form id="pop">
+                    <p:dialog widgetVar="chainInactive" modal="true" appendTo="@(body)">        
+                        <p:outputLabel value="#{msg.msg_chain_inactive}"/>
+                        <h:panelGrid columns="2">
+                            <p:commandButton value="#{msg.btn_acept}" styleClass="button"
+                                             update="@form :formChainSearch :growl" process="@this :formChainSearch"
+                                             style="left: 0%;width: 100% !important"
+                                             actionListener="#{chainSearchBean.acceptOutletInactive()}"/>
+                            <p:commandButton value="#{msg.btn_cancel}" type="button" 
+                                             styleClass="button"
+                                             style="left: 0%;width: 100% !important"
+                                             onclick="PF('chainInactive').hide()"/>
+                        </h:panelGrid>
+                    </p:dialog>
+                    <p:dialog widgetVar="chainWithoutSubSegment" modal="true" appendTo="@(body)">        
+                        <p:outputLabel value="#{msg.msg_without_sub_segment}"/>
+                        <h:panelGrid columns="1">                            
+                            <p:commandButton value="#{msg.btn_acept}" type="button" 
+                                             styleClass="button"
+                                             style="left: 0%;width: 100% !important"
+                                             onclick="PF('chainWithoutSubSegment').hide()"/>
+                        </h:panelGrid>
+                    </p:dialog>
+                </h:form>
                 <h:form id="formChainSearch">
                     <style>
                         .ui-datatable-data .ui-widget-content{
@@ -34,91 +58,58 @@
                             width: 300px;
                         }
                     </style>
-                    <p:dataTable id="dtOutlet" paginatorAlwaysVisible="true" rows="15"
-                                 widgetVar="dtChainSearch"
-                                 value="#{chainSearchBean.chainsList}" var="chain"
-                                 filteredValue="#{chainSearchBean.chainsListFiltered}"
-                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                 style="font-size:  90%" paginator="true" rendered="#{chainSearchBean.seeDetail}"
-                                 emptyMessage="#{msg.out_msg_not_record}" selectionMode="multiple" selection="#{chainSearchBean.chainsListSelected}"
-                                 filterEvent="enter" rowKey="#{chain.chainId}">
-                        <p:ajax event="filter" listener="#{chainSearchBean.listenerFilterList}"/>
-                        <p:column>
-                            <p:commandLink value="#{msg.btn_detalle}" style="color: blue" process="@this" update="@form"
-                                           actionListener="#{chainSearchBean.detailChain(chain)}"/>
-                        </p:column>
-                        <p:column headerText="#{msg.status}" filterMatchMode="exact" filterBy="#{chain.statusMDM}">
-                            <f:facet name="filter">
-                                <p:selectOneMenu onchange="PF('dtChainSearch').filter()" style="width: 80%">
-                                    <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}" noSelectionOption="true"/>
-                                    <f:selectItem itemValue="PENDING_KAM_TMC_CHAINS" itemLabel="#{msg.sta_pending_kam}"/>
-                                    <f:selectItem itemValue="REJECT" itemLabel="#{msg.sta_reject}"/>
-                                    <f:selectItem itemValue="PENDING_APPROVAL" itemLabel="#{msg.sta_pending_approval}"/>
-                                    <f:selectItem itemValue="APPROVED" itemLabel="#{msg.sta_approval}"/>
-                                    <f:selectItem itemValue="PENDING_KIERNAN" itemLabel="#{msg.code_pending_kiernan}"/>
-                                </p:selectOneMenu>
-                            </f:facet>
-                            <h:outputLabel value="&lt;b&gt;#{msg.sta_reject}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'REJECT'}" style="color: red" escape="false"/>
-                            <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_kam}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'PENDING_KAM_TMC_CHAINS'}" style="color: blue" escape="false"/>
-                            <h:outputLabel value="&lt;b&gt;#{msg.sta_pending_approval}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'PENDING_APPROVAL'}" style="color: sienna" escape="false"/>
-                            <h:outputLabel value="&lt;b&gt;#{msg.sta_approval}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'APPROVED'}" style="color: green" escape="false"/>
-                            <h:outputLabel value="&lt;b&gt;#{msg.code_pending_kiernan}&lt;/b&gt;" rendered="#{chain.statusMDM eq 'PENDING_KIERNAN'}" style="color: green" escape="false"/>
-                        </p:column>                        
-                        <p:column headerText="#{msg.chain_id}" filterBy="#{chain.chainId}">
-                            <h:outputLabel value="#{chain.chainId}"/>
-                        </p:column>
-                        <p:column headerText="#{msg.chain_name}" filterBy="#{chain.nameChain}">
-                            <h:outputLabel value="#{chain.nameChain}" />
-                        </p:column>
-                        <p:column headerText="#{msg.out_kiernan}" filterBy="#{chain.kiernanId}">
-                            <h:outputLabel  value="#{chain.kiernanId}"/>
-                        </p:column>
-                        <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{chain.subSegmentId.nameSubsegment}">
-                            <h:outputLabel  value="#{chain.subSegmentId.nameSubsegment}"/>
-                        </p:column>
-                        <p:column headerText="#{msg.out_codigo_ean}" filterBy="#{chain.codeEan}">
-                            <h:outputLabel  value="#{chain.codeEan}"/>
-                        </p:column>                        
-                    </p:dataTable>
+                    <ui:include src="popup/popupOutletChain.xhtml"/>
+                    <ui:include src="tablesOutlet/dataTableChains.xhtml"/>
                     <br/>
                     <h:panelGrid columns="4">                        
                         <p:commandButton value="#{msg.btn_approved_all}" styleClass="button" process="@all" update="formChainSearch:dtOutlet"
                                          actionListener="#{chainSearchBean.approbatrionMasive()}" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"
-                                         style="width: 100%;left: 0%"/>
+                                         style="width: 100%;left: 0%">
+                            <p:confirm header="#{msg.confirmation}" message="#{msg.msg_massive_approval}" icon="ui-icon-alert" />
+                        </p:commandButton>
                         <p:commandButton value="#{msg.btn_approved_selected}" styleClass="button" process="@all" update="@form"
                                          actionListener="#{chainSearchBean.approvedSelected()}" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderMassiveApproval}"
-                                         style="width: 100%;left: 0%"/>                        
+                                         style="width: 100%;left: 0%">
+                            <p:confirm header="#{msg.confirmation}" message="#{msg.msg_massive_approval}" icon="ui-icon-alert" />
+                        </p:commandButton>                        
                         <p:commandButton value="#{msg.btn_reject_all}" styleClass="button_reject" process="@all" update="@form" 
                                          actionListener="#{chainSearchBean.rejectAllChain()}"
-                                         style="width: 100%;left: 0%" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderButtonRejectTable}"/>
+                                         style="width: 100%;left: 0%" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderButtonRejectTable}">
+                            <p:confirm header="#{msg.confirmation}" message="#{msg.msg_massive_reject}" icon="ui-icon-alert"/>
+                        </p:commandButton>
                         <p:commandButton value="#{msg.btn_reject_selected}" styleClass="button_reject" process="@all" update="@form" 
                                          actionListener="#{chainSearchBean.rejectAllChainSelected()}"
-                                         style="width: 100%;left: 0%" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderButtonRejectTable}"/>
+                                         style="width: 100%;left: 0%" rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderButtonRejectTable}">
+                            <p:confirm header="#{msg.confirmation}" message="#{msg.msg_massive_reject}" icon="ui-icon-alert"/>
+                        </p:commandButton>
                     </h:panelGrid>
 
                     <h:panelGroup id="pgChain">
                         <h:panelGroup id="pgChaDetalle" rendered="#{!chainSearchBean.seeDetail}" style="width: 100%">
                             <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
                                 <h:panelGrid columns="4" style="width: 100%">
-                                    <h:outputLabel value="#{msg.cod_sap}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:outputLabel value="#{msg.cod_sap}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" for="itKiernan"/>
                                     <h:panelGroup>
                                         <p:inputText id="itKiernan" value="#{chainSearchBean.kiernan}" disabled="#{chainSearchBean.disabledKiernan()}" required="false"
                                                      label="#{msg.out_kiernan}"/>
                                         <p:message for="itKiernan"/>
                                     </h:panelGroup>
-                                    <h:outputLabel value="#{msg.chain_name}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:outputLabel value="#{msg.chain_name}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
+                                                   for="itChainName"/>
                                     <h:panelGroup>
                                         <p:inputText id="itChainName" value="#{chainSearchBean.chainName}" disabled="#{chainSearchBean.disabledFields}" required="true"
                                                      label="#{msg.chain_name}"/>
                                         <p:message for="itChainName"/>
                                     </h:panelGroup>
-                                    <h:outputLabel value="#{msg.out_razon_social}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:outputLabel value="#{msg.out_razon_social}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
+                                                   for="itBusinessName"/>
                                     <h:panelGroup>
                                         <p:inputText id="itBusinessName" value="#{chainSearchBean.businessName}" disabled="#{chainSearchBean.disabledFields}" required="true"
                                                      label="#{msg.out_razon_social}"/>
                                         <p:message for="itBusinessName"/>
                                     </h:panelGroup>
-                                    <h:outputLabel value="#{msg.chain_code_ean_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:outputLabel value="#{msg.chain_code_ean_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
+                                                   for="itEancode"/>
                                     <h:panelGroup>                                    
                                         <p:inputText id="itEancode" value="#{chainSearchBean.eanCode}" disabled="#{chainSearchBean.disabledFields}" required="true"
                                                      label="#{msg.chain_code_ean_pdv}"/>
@@ -141,6 +132,12 @@
                                         <f:selectItems value="#{chainSearchBean.listLayer}" var="layer" itemLabel="#{layer.nameLayer}"/>
                                     </p:selectOneMenu>
 
+                                    <p:outputLabel value="#{msg.format}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
+                                                   for="itFormat"/>
+                                    <h:panelGroup>
+                                        <p:inputText id="itFormat" value="#{chainSearchBean.site}" required="true" label="#{msg.format}"/>
+                                        <p:message for="itFormat"/>
+                                    </h:panelGroup>
                                 </h:panelGrid>                               
                             </p:fieldset>
                             <br/>
@@ -173,7 +170,7 @@
 
                                         <h:outputLabel value="#{msg.out_potencial}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                         <p:selectOneMenu converter="potentialConverter" value="#{chainSearchBean.potentialSelected}"
-                                                         disabled="true"  style="width: 90%">
+                                                         disabled="#{chainSearchBean.disabledPotentialSegmentation}"  style="width: 90%">
                                             <f:selectItems value="#{chainSearchBean.listPotential}" var="pot" itemLabel="#{pot.namePotential}"/>
                                         </p:selectOneMenu>
 
@@ -293,14 +290,16 @@
                             <br/><br/>
                             <p:commandButton value="#{chainSearchBean.buttonNameCommit}" process="@all" update="@form :formMigaPan:idGrowl" 
                                              actionListener="#{chainSearchBean.saveChain()}"
-                                             styleClass="button" style="left: 0%" rendered="#{chainSearchBean.renderButtonApproved}"/>
+                                             styleClass="button" style="left: 0%" rendered="#{chainSearchBean.renderButtonApproved}"
+                                             onclick="rcInactive()"/>
                             <p:commandButton value="#{msg.btn_reject}" process="@all" update="@form :formMigaPan:idGrowl" actionListener="#{chainSearchBean.rejectChain()}"                                             
                                              styleClass="button_reject" style="left: 0%" rendered="#{chainSearchBean.renderButtonReject}"/>
                             <p:commandButton value="#{msg.btn_back}" actionListener="#{chainSearchBean.buttonBack()}" update="@form"
-                                             styleClass="button" style="left: 0%" immediate="false"/>
+                                             styleClass="button" style="left: 0%" immediate="true"/>
                             <br/>
                         </h:panelGroup>
                     </h:panelGroup>
+                    <p:remoteCommand actionListener="#{chainSearchBean.commandRemoteOutletInactive()}" name="rcInactive"/>
                 </h:form>
             </ui:define>
 

@@ -63,24 +63,24 @@
                     <h:panelGroup id="pgVerDetalle" style="width: 100%">
                         <p:fieldset legend="#{msg.m_usuario}" style="width: 90%" rendered="#{!consultarUsuarioBean.verDetalle}">
                             <h:panelGrid columns="4" style="width: 100%" rendered="#{!consultarUsuarioBean.verDetalle}">
-                                <h:outputLabel value="#{msg.usu_nombres}"/>
+                                <p:outputLabel value="#{msg.usu_nombres}" for="itNombres"/>
                                 <h:panelGroup>
                                     <p:inputText id="itNombres" label="#{msg.usu_nombres}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.nameUser}" required="true"/>
                                     <p:message for="itNombres"/>
                                 </h:panelGroup>
-                                <h:outputLabel value="#{msg.usu_apellidos}"/>
+                                <p:outputLabel value="#{msg.usu_apellidos}" for="itApellidos"/>
                                 <h:panelGroup>
                                     <p:inputText id="itApellidos" label="#{msg.usu_apellidos}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.lastName}" required="true"/>
                                     <p:message for="itApellidos"/>
                                 </h:panelGroup>                                
-                                <h:outputLabel value="#{msg.usu_correo}"/>
+                                <p:outputLabel value="#{msg.usu_correo}" for="itCorreo"/>
                                 <h:panelGroup>
                                     <p:inputText id="itCorreo" label="#{msg.usu_correo}" style="width: 80%" value="#{consultarUsuarioBean.usuarioSeleccionado.emailUser}" required="true"/>
                                     <p:message for="itCorreo"/>
                                 </h:panelGroup>
                                 <h:outputLabel value="#{msg.usu_perfil}"/>                        
                                 <p:selectOneMenu style="width: 73%" label="#{msg.usu_perfil}" value="#{consultarUsuarioBean.perfil}" converter="perfilConverter">
-                                    <f:selectItems value="#{consultarUsuarioBean.listaPerfiles}" var="per" itemLabel="#{per.nameProfile}"/>
+                                    <f:selectItems value="#{consultarUsuarioBean.listaPerfiles}" var="per" itemLabel="#{per.nameProfile.toUpperCase()}"/>
                                     <p:ajax update="formDetalleUsuario:pgEditDetail" process="@this" listener="#{consultarUsuarioBean.listenerDetailEdition()}"/>
                                 </p:selectOneMenu>
                                 <h:outputLabel value="#{msg.athena_code}"/>

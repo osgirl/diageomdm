@@ -47,7 +47,7 @@
     </servlet-mapping>
     <session-config>
         <session-timeout>
-            35
+            40
         </session-timeout>
     </session-config>
     <welcome-file-list>

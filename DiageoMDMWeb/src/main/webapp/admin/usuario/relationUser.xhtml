@@ -38,7 +38,7 @@
                                            style="font-size: 15px!important"/>
                             <br/><br/><br/>
                             <h:panelGrid columns="6">
-                                <h:outputLabel value="#{msg.usu_perfil}"/>
+                                <p:outputLabel value="#{msg.usu_perfil}" for="somProfile_2"/>
                                 <h:panelGroup>
                                     <p:selectOneMenu id="somProfile_2" value="#{relationUserBean.profileLevel_2}" converter="perfilConverter" required="true"
                                                      label="#{msg.usu_perfil}">
@@ -49,7 +49,7 @@
                                     <p:message for="somProfile_2"/>
                                 </h:panelGroup>
 
-                                <h:outputLabel value="#{msg.usu_nombres}"/>
+                                <p:outputLabel value="#{msg.usu_nombres}" for="somUserProfileLevel_2"/>
                                 <h:panelGroup>
                                     <p:selectOneMenu id="somUserProfileLevel_2" value="#{relationUserBean.userSelectedLevel_2}" converter="userConverter"
                                                      required="true" label="#{msg.usu_nombres}">

@@ -36,7 +36,7 @@
                         <h:panelGroup id="pgDistri">
                             <h:panelGroup id="pgDistriDetail" rendered="#{!distributorSearch.seeDetail}" style="width: 100%">
                                 <h:panelGrid columns="4" style="width: 100%">
-                                    <h:outputLabel value="#{msg.m_distri_nombre}" style="width: 30%"/>
+                                    <p:outputLabel value="#{msg.m_distri_nombre}" style="width: 30%" for="itNombre"/>
                                     <h:panelGroup>
                                         <p:inputText id="itNombre" required="true" value="#{distributorSearch.name}" 
                                                      label="#{msg.m_distri_nombre}" style="width: 90%"/>
@@ -50,7 +50,7 @@
                                         <f:selectItems value="#{distributorSearch.listRegional}" var="reg" itemLabel="#{reg.nameRegional}"/>
                                     </p:selectOneMenu>
 
-                                    <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
+                                    <p:outputLabel value="#{msg.athena_code}" style="width: 30%" for="itAthenaCode"/>
                                     <h:panelGroup>
                                         <p:inputText id="itAthenaCode" required="true" value="#{distributorSearch.athenaCode}"
                                                      label="#{msg.athena_code}" style="width: 90%"/>

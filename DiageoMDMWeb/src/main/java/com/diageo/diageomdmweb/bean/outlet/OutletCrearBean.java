@@ -5,6 +5,9 @@
  */
 package com.diageo.diageomdmweb.bean.outlet;
 
+import com.diageo.admincontrollerweb.beans.ParameterBeanLocal;
+import com.diageo.admincontrollerweb.entities.DwParameters;
+import com.diageo.admincontrollerweb.enums.ParameterKeyEnum;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
@@ -12,6 +15,7 @@ import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
 import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageomdmweb.constant.PatternConstant;
+import com.diageo.diageomdmweb.jdbc.ConecctionJDBC;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.CustomerBeanLocal;
 import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
@@ -42,6 +46,7 @@ import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.enums.StateOutletChain;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -52,6 +57,7 @@ import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -87,6 +93,8 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     protected CustomerBeanLocal customerBeanLocal;
     @EJB
     protected DbPartySalesBeanLocal dbPartySalesBeanLocal;
+    @EJB
+    protected ParameterBeanLocal parameterBeanLocal;
     private DbChannels channelSelected;
     private DbSubChannels subChannelSelected;
     private DbSegments segmentSelected;
@@ -133,6 +141,13 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     private Db3partySales sellerSelected;
     private boolean journeyPlan;
     private String statusOutlet;
+    /**
+     * Parameters store procecedure
+     */
+    protected List<DwParameters> ipDatabase;
+    protected List<DwParameters> userDatabase;
+    protected List<DwParameters> passDatabase;
+    private boolean flagOutletInactive;
 
     /**
      * Creates a new instance of OutletVistaBean
@@ -142,6 +157,10 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
     @PostConstruct
     public void init() {
+        setFlagOutletInactive(true);
+        ipDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.DATABASE_IP.name());
+        userDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.USER_DATABASE.name());
+        passDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.PASS_DATABASE.name());
         setListChannel(channelBeanLocal.findAllChannel());
         setListTypePhone(typePhoneBeanLocal.findAll());
         setList3PartyToDeploy(db3PartyBeanLocal.searchDistributorByIsChain(StateEnum.INACTIVE.getState(), StateEnum.ACTIVE.getState()));
@@ -188,62 +207,75 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     }
 
     public void saveOutlet() {
-        try {
-            DbOutlets outlet = new DbOutlets();
-            outlet.setAddress(getAddress() != null ? getAddress().toUpperCase() : "");
-            outlet.setBusinessName(getBusinessName() != null ? getBusinessName().toUpperCase() : "");
-            cleanIdPhones();
-            outlet.setDbPhonesList(getListPhones());
-            outlet.setEmail(getEmail() != null ? getEmail().toUpperCase() : "");
-            outlet.setIsFather(isIsFather() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-            outlet.setIsNewOutlet(StateDiageo.ACTIVO.getId());
-            outlet.setKiernanId(getKiernanId() != null ? getKiernanId().toUpperCase() : "");
-            outlet.setLatitude(getLatitude());
-            outlet.setLongitude(getLongitude());
-            outlet.setNeighborhood(getNeighborhood() != null ? getNeighborhood().toUpperCase() : "");
-            outlet.setNit(getNit() != null ? getNit().toUpperCase() : "");
-            outlet.setNumberPdv(getPointSale() != null ? getPointSale().toUpperCase() : "");
-            if (getOcsPrimary() != null && getOcsPrimary().getOcsId() != null) {
-                outlet.setOcsPrimary(getOcsPrimary());
-            }
-            if (getOcsSecondary() != null && getOcsSecondary().getOcsId() != null) {
-                outlet.setOcsSecondary(getOcsSecondary());
-            }
-            outlet.setOutletIdFather(getFather());
-            outlet.setOutletName(getOutletName() != null ? getOutletName().toUpperCase() : "");
-            outlet.setPotentialId(getPotentialSelected());
-            outlet.setSubSegmentId(getSubSegmentSelected());
-            outlet.setStatusOutlet(getStatusOutlet());
-            outlet.setTownId(getTownSelected());
-            outlet.setDb3partySaleId(getSellerSelected());
-            outlet.setTypeOutlet(getTypeOutlet() != null ? getTypeOutlet().toUpperCase() : "");
-            outlet.setVerificationNumber(getVerificationNumber());
-            outlet.setWebsite(getWebsite() != null ? getWebsite().toUpperCase() : "");
+        if (isFlagOutletInactive()) {
+            try {
+                DbOutlets outlet = new DbOutlets();
+                outlet.setAddress(getAddress() != null ? getAddress().toUpperCase() : "");
+                outlet.setBusinessName(getBusinessName() != null ? getBusinessName().toUpperCase() : "");
+                cleanIdPhones();
+                outlet.setDbPhonesList(getListPhones());
+                outlet.setEmail(getEmail() != null ? getEmail().toUpperCase() : "");
+                outlet.setIsFather(isIsFather() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+                outlet.setIsNewOutlet(StateDiageo.ACTIVO.getId());
+                outlet.setKiernanId(getKiernanId() != null ? getKiernanId().toUpperCase() : "");
+                outlet.setLatitude(getLatitude());
+                outlet.setLongitude(getLongitude());
+                outlet.setNeighborhood(getNeighborhood() != null ? getNeighborhood().toUpperCase() : "");
+                outlet.setNit(getNit() != null ? getNit().toUpperCase() : "");
+                outlet.setNumberPdv(getPointSale() != null ? getPointSale().toUpperCase() : "");
+                if (getOcsPrimary() != null && getOcsPrimary().getOcsId() != null) {
+                    outlet.setOcsPrimary(getOcsPrimary());
+                }
+                if (getOcsSecondary() != null && getOcsSecondary().getOcsId() != null) {
+                    outlet.setOcsSecondary(getOcsSecondary());
+                }
+                outlet.setOutletIdFather(getFather());
+                outlet.setOutletName(getOutletName() != null ? getOutletName().toUpperCase() : "");
+                outlet.setPotentialId(getPotentialSelected());
+                outlet.setSubSegmentId(getSubSegmentSelected());
+                outlet.setStatusOutlet(getStatusOutlet());
+                outlet.setTownId(getTownSelected());
+                outlet.setDb3partySaleId(getSellerSelected());
+                outlet.setTypeOutlet(getTypeOutlet() != null ? getTypeOutlet().toUpperCase() : "");
+                outlet.setVerificationNumber(getVerificationNumber());
+                outlet.setWebsite(getWebsite() != null ? getWebsite().toUpperCase() : "");
 //            outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
-            outlet.setStatusMDM(StatusSystemMDM.PENDING_TMC.name());
-            outlet.setDb3PartyIdNew(getDb3PartySelected());
-            outlet.setDb3PartyIdOld(getDb3PartySelected());
-            outlet.setJourneyPlan(isJourneyPlan() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-            DbCustomers custo = saveCustomer();
-            if (custo != null) {
-                getListCustomers().add(custo);
-                outlet.setOutletId(custo.getCustomerId());
+                outlet.setStatusMDM(StatusSystemMDM.PENDING_TMC.name());
+                outlet.setDb3PartyIdNew(getDb3PartySelected());
+                outlet.setDb3PartyIdOld(getDb3PartySelected());
+                outlet.setJourneyPlan(isJourneyPlan() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+                DbCustomers custo = saveCustomer();
+                if (custo != null) {
+                    getListCustomers().add(custo);
+                    outlet.setOutletId(custo.getCustomerId());
+                }
+                outlet.setDbCustomersList(getListCustomers());
+                Audit audit = new Audit();
+                audit.setCreationDate(super.getCurrentDate());
+                audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
+                outlet.setAudit(audit);
+                outletBeanLocal.createOutlet(outlet);
+                Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
+                        userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
+                ConecctionJDBC.callStoreProcedureDBOutlets(con, outlet.getOutletId());
+                showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+                initFields();
+            } catch (DiageoBusinessException ex) {
+                Logger.getLogger(OutletCrearBean.class.getName()).log(Level.SEVERE, null, ex);
+                showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
             }
-            outlet.setDbCustomersList(getListCustomers());            
-            Audit audit = new Audit();
-            audit.setCreationDate(super.getCurrentDate());
-            audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
-            outlet.setAudit(audit);
-            outletBeanLocal.createOutlet(outlet);
-            showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-            initFields();
-        } catch (DiageoBusinessException ex) {
-            Logger.getLogger(OutletCrearBean.class.getName()).log(Level.SEVERE, null, ex);
-            showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
+        setFlagOutletInactive(true);
+    }
 
+    public void commandRemoteOutletInactive() {
+        if (getSubSegmentSelected().getSubSegmentId().equals(0)) {
+            setFlagOutletInactive(false);
+            RequestContext rc = RequestContext.getCurrentInstance();
+            rc.execute("PF('outletWithoutSubSegment').show()");
+        }
     }
 
     public DbCustomers saveCustomer() {
@@ -255,6 +287,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
             customerLocal.setNumberPdv(getPointSale());
             customerLocal.setStatusCustomer(StateOutletChain.ACTIVE.getId());
             customerLocal.setTownId(getTownSelected());
+            customerLocal.setName3Party(getDb3PartySelected().getName3party());
             return customerBeanLocal.createCustomer(customerLocal);
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
@@ -1032,6 +1065,14 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
     public void setStatusOutlet(String statusOutlet) {
         this.statusOutlet = statusOutlet;
+    }
+
+    public boolean isFlagOutletInactive() {
+        return flagOutletInactive;
+    }
+
+    public void setFlagOutletInactive(boolean flagOutletInactive) {
+        this.flagOutletInactive = flagOutletInactive;
     }
 
 }

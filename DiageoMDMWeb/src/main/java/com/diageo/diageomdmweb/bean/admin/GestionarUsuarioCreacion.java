@@ -291,7 +291,12 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
     }
 
     public void listenerDetailEdition() {
-        detailEdition = !((getPerfil().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())) || (getPerfil().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())));
+        detailEdition = !((getPerfil().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())) 
+                || (getPerfil().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()))
+                || (getPerfil().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId()))
+                || (getPerfil().getProfileId().equals(ProfileEnum.KAM.getId()))
+                || (getPerfil().getProfileId().equals(ProfileEnum.NAM.getId()))
+                );
     }
 
     public void listenerFindDistributorSonByFather() {

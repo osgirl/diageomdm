@@ -93,7 +93,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
     private Locale localeApp;
 
     @PostConstruct
-    public void init() {        
+    public void init() {
         establecerCookiesCamposLogin();
         setLocaleApp(new Locale(ESPANOL));
     }
@@ -124,7 +124,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
                             || getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())) {
                         armarMigaPan(capturarValor("m_outlet"), capturarValor("m_chain_search"));
                         return "/outlet/searchChain?faces-redirect=true";
-                    }else if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())
+                    } else if (getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())
                             || getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())
                             || getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
                             || getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_DISTRIBUIDORES.getId())) {
@@ -297,6 +297,11 @@ public class LoginBean extends DiageoRootBean implements Serializable {
         cookieRecordarme.setPath(((HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest()).getContextPath());
         response.addCookie(cookieMail);
         response.addCookie(cookieRecordarme);
+    }
+
+    public void expiredSession() {
+        RequestContext rc = RequestContext.getCurrentInstance();
+        rc.execute("PF('dlgSesionExpirada').show()");
     }
 
     /**

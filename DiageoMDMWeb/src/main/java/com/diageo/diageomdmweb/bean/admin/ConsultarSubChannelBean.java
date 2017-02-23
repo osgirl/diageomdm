@@ -7,9 +7,11 @@ package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
+import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
+import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbSubChannels;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
@@ -21,6 +23,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
+import javax.inject.Inject;
 import javax.validation.constraints.Size;
 
 /**
@@ -32,6 +35,8 @@ import javax.validation.constraints.Size;
 public class ConsultarSubChannelBean extends DiageoRootBean implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(ConsultarSubChannelBean.class.getName());
+    @Inject
+    private LoginBean loginBean;
     @EJB
     private SubChannelBeanLocal subChannelBeanLocal;
     @EJB
@@ -96,6 +101,12 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
             getSubChannelSeleccionado().setNameSubChannel(getNombreSubChannel().toUpperCase());
             //getSubChannelSeleccionado().setDistri_1(getAthenaCode().toUpperCase());
             getSubChannelSeleccionado().setChannelId(getChannel());
+            Audit audit = new Audit();
+            audit.setCreationDate(getSubChannelSeleccionado().getAudit() != null ? getSubChannelSeleccionado().getAudit().getCreationDate() : null);
+            audit.setCreationUser(getSubChannelSeleccionado().getAudit() != null ? getSubChannelSeleccionado().getAudit().getCreationUser() : null);
+            audit.setModificationDate(super.getCurrentDate());
+            audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+            getSubChannelSeleccionado().setAudit(audit);
             subChannelBeanLocal.modificarSubChannel(getSubChannelSeleccionado());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
@@ -254,6 +265,10 @@ public class ConsultarSubChannelBean extends DiageoRootBean implements Serializa
 
     public void setCodeChain(String codeChain) {
         this.codeChain = codeChain;
+    }
+
+    public LoginBean getLoginBean() {
+        return loginBean;
     }
 
 }

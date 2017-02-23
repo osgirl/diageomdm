@@ -20,13 +20,13 @@
                     <p:fieldset legend="#{msg.m_segmento}" style="width: 90%">
                         <h:panelGroup id="pgChaDetalle">
                             <h:panelGrid columns="2" style="width: 100%">
-                                <h:outputLabel value="#{msg.seg_nombre}" style="width: 30%"/>
+                                <p:outputLabel value="#{msg.seg_nombre}" style="width: 30%" for="itNombre"/>
                                 <h:panelGroup>
                                     <p:inputText id="itNombre" value="#{segmentoCrearBean.nombre}" required="true" label="#{msg.seg_nombre}" style="width: 70%"/>
                                     <p:message for="itNombre"/>
                                 </h:panelGroup>                                
 
-                                <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
+                                <p:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
                                 <p:selectOneMenu value="#{segmentoCrearBean.canal}" converter="channelConverter" required="true" label="#{msg.can_canal}" style="width: 67%">
                                     <f:selectItems value="#{segmentoCrearBean.listaCanales}" var="cha" itemLabel="#{cha.nameChannel}"/>
                                     <p:ajax listener="#{segmentoCrearBean.listenerListaSubCanales()}" process="@this" update="somSubCanal"/>

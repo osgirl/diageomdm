@@ -15,6 +15,21 @@
     <h:body>
         <div id="content">
             <f:view locale="#{loginBean.localeApp.language}">
+                <h:form id="growl">
+                    <p:dialog header="#{msg.session_expiration}" closable="false" widgetVar="dlgSesionExpirada"
+                              closeOnEscape="false" draggable="false" resizable="false" modal="true">
+                        <h:panelGrid columns="1">
+                            <h:outputLabel value="#{msg.msg_session_expiration}"/>
+                            <br/>
+                            <p:commandButton value="#{msg.btn_acept}" ajax="false" action="#{loginBean.logout()}"
+                                             styleClass="login_button"/>
+                        </h:panelGrid>
+                    </p:dialog>
+
+                    <p:idleMonitor timeout="1920000">
+                        <p:ajax event="idle" listener="#{loginBean.expiredSession()}"/>
+                    </p:idleMonitor>
+                </h:form>
                 <div class="banner">
                     <p:graphicImage value="/resources/images/logo/logoDiageoBlanco.png" style="top: 20px;position: fixed;left: 3%"/>    
                     <h:panelGrid columns="3" width="90%" style="top: 10%;position: fixed">                    
@@ -31,7 +46,9 @@
                     <h:form id="formMigaPan">
                         <p:growl id="idGrowl" showDetail="true" globalOnly="true"                             
                                  autoUpdate="true" life="6000"/>
-                        <p:breadCrumb model="#{loginBean.migaPan}"/>
+                        <p:commandLink disabled="true">
+                            <p:breadCrumb model="#{loginBean.migaPan}" />
+                        </p:commandLink>
                     </h:form>
                     <ui:include src="menu.xhtml"/>
                 </div>

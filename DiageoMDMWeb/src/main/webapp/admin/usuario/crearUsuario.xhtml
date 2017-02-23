@@ -18,17 +18,17 @@
                     <h:panelGroup style="width:100%">
                         <p:fieldset legend="#{msg.m_usuario}" style="width: 90%">
                             <h:panelGrid columns="4" style="width: 100%">
-                                <h:outputLabel value="#{msg.usu_nombres}"/>
+                                <p:outputLabel value="#{msg.usu_nombres}" for="itNombres"/>
                                 <h:panelGroup>
                                     <p:inputText id="itNombres" label="#{msg.usu_nombres}" style="width: 80%" value="#{gestionarUsuarioCreacion.nombres}" required="true"/>
                                     <p:message for="itNombres"/>
                                 </h:panelGroup>
-                                <h:outputLabel value="#{msg.usu_apellidos}"/>
+                                <p:outputLabel value="#{msg.usu_apellidos}" for="itApellidos"/>
                                 <h:panelGroup>
                                     <p:inputText id="itApellidos" label="#{msg.usu_apellidos}" style="width: 80%" value="#{gestionarUsuarioCreacion.apellidos}" required="true"/>
                                     <p:message for="itApellidos"/>
                                 </h:panelGroup>                                
-                                <h:outputLabel value="#{msg.usu_correo}"/>
+                                <p:outputLabel value="#{msg.usu_correo}" for="itCorreo"/>
                                 <h:panelGroup>
                                     <p:inputText id="itCorreo" label="#{msg.usu_correo}" style="width: 80%" value="#{gestionarUsuarioCreacion.correo}" required="true"/>
                                     <p:message for="itCorreo"/>

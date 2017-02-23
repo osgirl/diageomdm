@@ -22,7 +22,7 @@
                         <h:panelGroup id="pgDistri">
                             <h:panelGrid columns="1" style="width: 100%">
                                 <h:panelGrid columns="4" style="width: 100%">
-                                    <h:outputLabel value="#{msg.regional}"/>                                    
+                                    <p:outputLabel value="#{msg.regional}" for="itNameRegional"/>                                    
                                     <h:panelGroup>
                                         <p:inputText id="itNameRegional" label="#{msg.regional}" required="true" value="#{regionalCreateBean.regionalName}" style="width: 85%"/>
                                         <p:message for="itNameRegional"/>

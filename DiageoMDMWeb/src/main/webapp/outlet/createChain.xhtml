@@ -29,44 +29,64 @@
                     }
 
                 </style>
+                <h:form id="pop">                    
+                    <p:dialog widgetVar="chainWithoutSubSegment" modal="true" appendTo="@(body)">        
+                        <p:outputLabel value="#{msg.msg_without_sub_segment}"/>
+                        <h:panelGrid columns="1">                            
+                            <p:commandButton value="#{msg.btn_acept}" type="button" 
+                                             styleClass="button"
+                                             style="left: 0%;width: 100% !important"
+                                             onclick="PF('chainWithoutSubSegment').hide()"/>
+                        </h:panelGrid>
+                    </p:dialog>
+                </h:form>
                 <h:form id="formChain">                    
                     <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
                         <h:panelGrid columns="4" style="width: 100%">
-                            <h:outputLabel value="#{msg.cod_sap}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:outputLabel value="#{msg.cod_sap}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
+                                           for="itKiernan"/>
                             <h:panelGroup>
                                 <p:inputText id="itKiernan" value="#{createChainBean.kiernan}" required="false" label="#{msg.out_kiernan}" disabled="true"/>
                                 <p:message for="itKiernan"/>
                             </h:panelGroup>
-                            <h:outputLabel value="#{msg.chain_name}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:outputLabel value="#{msg.chain_name}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" for="itChainName"/>
                             <h:panelGroup>
                                 <p:inputText id="itChainName" value="#{createChainBean.chainName}" required="true" label="#{msg.chain_name}"/>
                                 <p:message for="itChainName"/>
                             </h:panelGroup>
-                            <h:outputLabel value="#{msg.out_razon_social}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:outputLabel value="#{msg.out_razon_social}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
+                                           for="itBusinessName"/>
                             <h:panelGroup>
                                 <p:inputText id="itBusinessName" value="#{createChainBean.businessName}" required="true" label="#{msg.out_razon_social}"/>
                                 <p:message for="itBusinessName"/>
                             </h:panelGroup>
-                            <h:outputLabel value="#{msg.chain_code_ean_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:outputLabel value="#{msg.chain_code_ean_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
+                                           for="itEancode"/>
                             <h:panelGroup>
                                 <p:inputText id="itEancode" value="#{createChainBean.eanCode}" required="true" label="#{msg.chain_code_ean_pdv}"/>
                                 <p:message for="itEancode"/>
                             </h:panelGroup>
-                            <h:outputLabel value="#{msg.out_distribuidor}/#{msg.usu_chain}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:outputLabel value="#{msg.out_distribuidor}/#{msg.usu_chain}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                             <p:selectOneMenu value="#{createChainBean.db3PartySelected}" converter="db3PartyConverter" style="width: 90%">
                                 <f:selectItems value="#{createChainBean.list3Party}" var="party3" itemLabel="#{party3.name3party}"/>
                             </p:selectOneMenu>                        
-                            <h:outputLabel value="#{msg.status}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:outputLabel value="#{msg.status}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                             <p:selectOneMenu value="#{createChainBean.status}" style="width: 90%">
                                 <f:selectItem itemValue="A" itemLabel="#{msg.active}"/>
                                 <f:selectItem itemValue="I" itemLabel="#{msg.inactive}"/>
                             </p:selectOneMenu>
-                            
-                            <h:outputLabel value="#{msg.chain_layer}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+
+                            <p:outputLabel value="#{msg.chain_layer}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                             <p:selectOneMenu value="#{createChainBean.layerSelected}" converter="layerConverter" style="width: 90%">
-                                 <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
-                                 <f:selectItems value="#{createChainBean.listLayer}" var="layer" itemLabel="#{layer.nameLayer}"/>
+                                <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
+                                <f:selectItems value="#{createChainBean.listLayer}" var="layer" itemLabel="#{layer.nameLayer}"/>
                             </p:selectOneMenu>
+
+                            <p:outputLabel value="#{msg.format}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels" for="itFormat"/>
+                            <h:panelGroup>
+                                <p:inputText id="itFormat" value="#{createChainBean.site}" required="true" label="#{msg.format}"/>
+                                <p:message for="itFormat"/>
+                            </h:panelGroup>
                         </h:panelGrid>
                     </p:fieldset>
                     <br/>
@@ -99,7 +119,7 @@
 
                                 <h:outputLabel value="#{msg.out_potencial}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                 <p:selectOneMenu converter="potentialConverter" value="#{createChainBean.potentialSelected}"
-                                                  style="width: 90%">
+                                                 style="width: 90%">
                                     <f:selectItems value="#{createChainBean.listPotential}" var="pot" itemLabel="#{pot.namePotential}"/>
                                 </p:selectOneMenu>
 
@@ -111,7 +131,7 @@
                         </h:panelGroup>
                     </p:fieldset>
                     <br/>
-                    <p:fieldset legend="#{msg.customer}" style="width: 95%">
+                    <p:fieldset legend="#{msg.customer}" style="width: 95%" rendered="#{createChainBean.renderedFieldSetCustomer}">
                         <h:panelGroup id="pgCustomer">
                             <h:panelGrid columns="3" style="width: 95%">
                                 <h:outputLabel value="#{msg.customer}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
@@ -154,12 +174,14 @@
                                 <p:selectOneMenu id="somMpioOut" value="#{createChainBean.townSelected}" converter="municipioConverter"  style="width: 90%">
                                     <f:selectItems value="#{createChainBean.departamentSelected.dbTownsList}" var="mpioout" itemLabel="#{mpioout.nameTown}"/>
                                 </p:selectOneMenu>
-                                <h:outputLabel value="#{msg.out_barrio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:outputLabel value="#{msg.out_barrio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
+                                               for="itNeighborhood"/>
                                 <h:panelGroup>
                                     <p:inputText id="itNeighborhood" value="#{createChainBean.neighborhood}" required="false" label="#{msg.out_barrio}"/>
                                     <p:message for="itNeighborhood"/>
                                 </h:panelGroup>
-                                <h:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                <p:outputLabel value="#{msg.out_direccion}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
+                                               for="itAddress"/>
                                 <h:panelGroup>
                                     <p:inputText id="itAddress" value="#{createChainBean.address}" required="false" label="#{msg.out_direccion}"/>
                                     <p:message for="itAddress"/>
@@ -211,8 +233,9 @@
                     </p:fieldset>
                     <br/><br/>
                     <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{createChainBean.saveChain()}"
-                                     styleClass="button"/>
+                                     styleClass="button" onclick="rcInactive()"/>
                     <br/>
+                    <p:remoteCommand actionListener="#{createChainBean.commandRemoteOutletInactive()}" name="rcInactive"/>
                 </h:form>
             </ui:define>
 

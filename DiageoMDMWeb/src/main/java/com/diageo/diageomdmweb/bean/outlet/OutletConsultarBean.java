@@ -14,7 +14,9 @@ import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import com.diageo.diageomdmweb.bean.LoginBean;
+import com.diageo.diageomdmweb.bean.dto.DbOutletsDto;
 import com.diageo.diageomdmweb.datamodel.DbOutletsLazyDataModel;
+import com.diageo.diageomdmweb.jdbc.ConecctionJDBC;
 import com.diageo.diageomdmweb.mail.EMail;
 import com.diageo.diageomdmweb.mail.templates.VelocityTemplate;
 import com.diageo.diageonegocio.beans.OutletsUserBeanLocal;
@@ -31,6 +33,7 @@ import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.enums.StateOutletChain;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +42,7 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -54,8 +58,6 @@ import org.primefaces.event.data.FilterEvent;
 @ViewScoped
 public class OutletConsultarBean extends OutletCrearBean implements Serializable {
 
-    @EJB
-    private ParameterBeanLocal parameterBeanLocal;
     @EJB
     private PermissionsegmentBeanLocal permissionsegmentBeanLocal;
     @EJB
@@ -89,6 +91,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
      * id de usuarios que tiene asignados
      */
     private List<Integer> listId;
+    private List<SelectItem> listFilterStatusMDM;
+    private DbOutletsDto outletClonable;
 
     /**
      * Creates a new instance of OutletConsultarBean
@@ -99,6 +103,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     @PostConstruct
     @Override
     public void init() {
+        setFlagOutletInactive(true);
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
             setOutletsLazyDataModel(new DbOutletsLazyDataModel(outletBeanLocal, getLoginBean().getUsuario().getProfileId().getProfileId()));
@@ -117,6 +122,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                         getLoginBean().getUsuario().getProfileId().getProfileId(), getLoginBean().getUsuario().getUserId(), outletsUserBeanLocal));
             }
         }
+        loadListStatusMdm();
         setVerDetalle(Boolean.TRUE);
         setListCustomerDelete(new ArrayList<DbCustomers>());
         super.init();
@@ -136,7 +142,34 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         }
     }
 
+    private void loadListStatusMdm() {
+        listFilterStatusMDM = new ArrayList<>();
+        if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_DISTRIBUIDORES.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
+            listFilterStatusMDM.add(new SelectItem("APPROVED", capturarValor("sta_approval")));
+            listFilterStatusMDM.add(new SelectItem("PENDING_APPROVAL", capturarValor("sta_pending_commercial_manager")));
+            listFilterStatusMDM.add(new SelectItem("PENDING_TMC", capturarValor("sta_pending_tmc")));
+            listFilterStatusMDM.add(new SelectItem("REJECT", capturarValor("sta_reject")));
+        } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
+            listFilterStatusMDM.add(new SelectItem("PENDING_TMC", capturarValor("sta_pending_tmc")));
+            listFilterStatusMDM.add(new SelectItem("PENDING_APPROVAL", capturarValor("sta_pending_commercial_manager")));
+            listFilterStatusMDM.add(new SelectItem("APPROVED", capturarValor("sta_approval")));
+            listFilterStatusMDM.add(new SelectItem("REJECT", capturarValor("sta_reject")));
+        } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
+            listFilterStatusMDM.add(new SelectItem("PENDING_APPROVAL", capturarValor("sta_pending_commercial_manager")));
+            listFilterStatusMDM.add(new SelectItem("PENDING_TMC", capturarValor("sta_pending_tmc")));
+            listFilterStatusMDM.add(new SelectItem("APPROVED", capturarValor("sta_approval")));
+            listFilterStatusMDM.add(new SelectItem("REJECT", capturarValor("sta_reject")));
+        }
+    }
+
     public void seeDetail(DbOutlets out) {
+        try {
+            outletClonable = new DbOutletsDto(out.clone());
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
         setIdOutlet(out.getOutletId());
         setIsFather(out.getIsFather().equals(StateDiageo.ACTIVO.getId()));
         setFather(out.getOutletIdFather());
@@ -198,68 +231,88 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
 
     @Override
     public void saveOutlet() {
-        try {
-            DbOutlets outlet = outletBeanLocal.findById(getIdOutlet());
-            outlet.setAddress(getAddress() != null ? getAddress().toUpperCase() : "");
-            outlet.setBusinessName(getBusinessName() != null ? getBusinessName().toUpperCase() : "");
-            cleanIdPhones();
-            outlet.setDbPhonesList(getListPhones());
-            outlet.setEmail(getEmail() != null ? getEmail().toUpperCase() : "");
-            outlet.setIsFather(isIsFather() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
-            outlet.setKiernanId(getKiernanId() != null ? getKiernanId().toUpperCase() : "");
-            outlet.setLatitude(getLatitude());
-            outlet.setLongitude(getLongitude());
-            outlet.setNeighborhood(getNeighborhood() != null ? getNeighborhood().toUpperCase() : "");
-            outlet.setNit(getNit() != null ? getNit().toUpperCase() : "");
-            outlet.setNumberPdv(getPointSale() != null ? getPointSale().toUpperCase() : "");
-            outlet.setOcsPrimary(getOcsPrimary());
-            outlet.setOcsSecondary(getOcsSecondary());
-            outlet.setOutletIdFather(getFather());
-            outlet.setStatusOutlet(getStatusOutlet());
-            outlet.setOutletName(getOutletName() != null ? getOutletName().toUpperCase() : "");
-            outlet.setPotentialId(getPotentialSelected());
-            outlet.setSubSegmentId(getSubSegmentSelected());
-            outlet.setTownId(getTownSelected());
-            outlet.setTypeOutlet(getTypeOutlet() != null ? getTypeOutlet().toUpperCase() : "");
-            outlet.setVerificationNumber(getVerificationNumber());
-            outlet.setWebsite(getWebsite() != null ? getWebsite().toUpperCase() : "");
-            outlet.setDb3partySaleId(getSellerSelected());
-            outlet.setJourneyPlan(isJourneyPlan() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+        if (isFlagOutletInactive()) {
+            try {
+                DbOutlets outlet = outletBeanLocal.findById(getIdOutlet());
+                if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
+                    if (!outlet.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
+                        showWarningMessage(capturarValor("msg_not_approved"));
+                        return;
+                    }
+                }
+                outlet.setAddress(getAddress() != null ? getAddress().toUpperCase() : "");
+                outlet.setBusinessName(getBusinessName() != null ? getBusinessName().toUpperCase() : "");
+                cleanIdPhones();
+                outlet.setDbPhonesList(getListPhones());
+                outlet.setEmail(getEmail() != null ? getEmail().toUpperCase() : "");
+                outlet.setIsFather(isIsFather() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+                outlet.setKiernanId(getKiernanId() != null ? getKiernanId().toUpperCase() : "");
+                outlet.setLatitude(getLatitude());
+                outlet.setLongitude(getLongitude());
+                outlet.setNeighborhood(getNeighborhood() != null ? getNeighborhood().toUpperCase() : "");
+                outlet.setNit(getNit() != null ? getNit().toUpperCase() : "");
+                outlet.setNumberPdv(getPointSale() != null ? getPointSale().toUpperCase() : "");
+                outlet.setOcsPrimary(getOcsPrimary());
+                outlet.setOcsSecondary(getOcsSecondary());
+                outlet.setOutletIdFather(getFather());
+                outlet.setStatusOutlet(getStatusOutlet());
+                outlet.setOutletName(getOutletName() != null ? getOutletName().toUpperCase() : "");
+                outlet.setPotentialId(getPotentialSelected());
+                outlet.setSubSegmentId(getSubSegmentSelected());
+                outlet.setTownId(getTownSelected());
+                outlet.setTypeOutlet(getTypeOutlet() != null ? getTypeOutlet().toUpperCase() : "");
+                outlet.setVerificationNumber(getVerificationNumber());
+                outlet.setWebsite(getWebsite() != null ? getWebsite().toUpperCase() : "");
+                outlet.setDb3partySaleId(getSellerSelected());
+                outlet.setJourneyPlan(isJourneyPlan() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
 //            outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
-            outlet.setDbCustomersList(getListCustomers());
+                outlet.setDbCustomersList(getListCustomers());
 
-            if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
-                if (outlet.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
-                    outlet.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
+                    if (outlet.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
+                        outlet.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                    }
+                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {                    
+                    if (!outletClonable.isNotificationChangedSegmentation(outlet)) {
+                        outlet.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+                    }
                 }
-            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_DISTRIBUIDORES.getId())) {
-                outlet.setStatusMDM(StatusSystemMDM.PENDING_TMC.name());
-            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
-                outlet.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+
+                Audit audit = new Audit();
+                audit.setCreationDate(outlet.getAudit() != null ? outlet.getAudit().getCreationDate() : null);
+                audit.setCreationUser(outlet.getAudit() != null ? outlet.getAudit().getCreationUser() : null);
+                audit.setModificationDate(super.getCurrentDate());
+                audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+                outlet.setAudit(audit);
+                deletCustomerChain();
+                if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_DISTRIBUIDORES.getId())) {
+                    if (outlet.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
+                        outletBeanLocal.updateOutlet(outlet);
+                        Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
+                                userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
+                        ConecctionJDBC.callStoreProcedureDBOutlets(con, outlet.getOutletId());
+                        showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+                    } else {
+                        showInfoMessage(capturarValor("msg_cp_a_warning"));
+                    }
+                } else {
+                    outletBeanLocal.updateOutlet(outlet);
+                    Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
+                            userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
+                    ConecctionJDBC.callStoreProcedureDBOutlets(con, outlet.getOutletId());
+                    showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+                }
+                setVerDetalle(!getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                        && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
+//sendMail();
+            } catch (DiageoBusinessException ex) {
+                Logger.getLogger(OutletCrearBean.class.getName()).log(Level.SEVERE, null, ex);
+                showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
             }
-
-            Audit audit = new Audit();
-            audit.setCreationDate(outlet.getAudit() != null ? outlet.getAudit().getCreationDate() : null);
-            audit.setCreationUser(outlet.getAudit() != null ? outlet.getAudit().getCreationUser() : null);
-            audit.setModificationDate(super.getCurrentDate());
-            audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
-            outlet.setAudit(audit);
-            deletCustomerChain();
-            outletBeanLocal.updateOutlet(outlet);
-            //sendMail();
-            setVerDetalle(!getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
-                    && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
-            //init();
-            RequestContext rc = RequestContext.getCurrentInstance();
-            rc.execute("PF('dtOutletSearch').clearFilters()");
-            showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-        } catch (DiageoBusinessException ex) {
-            Logger.getLogger(OutletCrearBean.class.getName()).log(Level.SEVERE, null, ex);
-            showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
-
+        setFlagOutletInactive(true);
     }
 
     public void buttonBack() {
@@ -384,12 +437,18 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
 
     public void rejectOutlet() {
         try {
-            DbOutlets outlet = outletBeanLocal.findById(getIdOutlet());
-            outlet.setStatusMDM(StatusSystemMDM.REJECT.name());
-            outletBeanLocal.updateOutlet(outlet);
-            //sendMail();
-            init();
-            showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+            if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
+                DbOutlets outlet = outletBeanLocal.findById(getIdOutlet());
+                if (outlet.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
+                    outlet.setStatusMDM(StatusSystemMDM.REJECT.name());
+                    outletBeanLocal.updateOutlet(outlet);
+                    //sendMail();
+                    init();
+                    showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+                } else {
+                    showWarningMessage(capturarValor("msg_not_reject"));
+                }
+            }
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
             showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
@@ -500,6 +559,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
 
     public boolean isDisabledPotentialSegmentation() {
         return !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_DISTRIBUIDORES.getId())
+                && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
                 && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId());
     }
 
@@ -542,6 +602,35 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     public boolean isDisabledFieldStatusOutlet() {
         return !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
+    }
+
+    @Override
+    public void commandRemoteOutletInactive() {
+        if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
+            if (getStatusOutlet().equals("I")) {
+                setFlagOutletInactive(false);
+                RequestContext rc = RequestContext.getCurrentInstance();
+                rc.execute("PF('outletInactive').show()");
+            } else if (getSubSegmentSelected().getSubSegmentId().equals(0)) {
+                setFlagOutletInactive(false);
+                RequestContext rc = RequestContext.getCurrentInstance();
+                rc.execute("PF('outletWithoutSubSegment').show()");
+            }
+        } else if (getSubSegmentSelected().getSubSegmentId().equals(0)) {
+            setFlagOutletInactive(false);
+            RequestContext rc = RequestContext.getCurrentInstance();
+            rc.execute("PF('outletWithoutSubSegment').show()");
+        }
+    }
+
+    public void acceptOutletInactive() {
+        setFlagOutletInactive(true);
+        saveOutlet();
+    }
+
+    public boolean isRenderExportExcel() {
+        return !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
     }
 
@@ -783,6 +872,14 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
 
     public void setListOutletsFilter(List<DbOutlets> listOutletsFilter) {
         this.listOutletsFilter = listOutletsFilter;
+    }
+
+    public List<SelectItem> getListFilterStatusMDM() {
+        return listFilterStatusMDM;
+    }
+
+    public void setListFilterStatusMDM(List<SelectItem> listFilterStatusMDM) {
+        this.listFilterStatusMDM = listFilterStatusMDM;
     }
 
 }

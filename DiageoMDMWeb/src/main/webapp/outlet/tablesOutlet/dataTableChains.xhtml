@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <h:commandLink rendered="#{chainSearchBean.seeDetail and chainSearchBean.renderExportExcel}">
+        <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
+        <pe:exporter type="xlsx" target="dtOutlet"  fileName="Report" pageOnly="false" encoding="ISO-8859-1"/>
+    </h:commandLink>
+    <h:commandLink id="clExportcsv" rendered="#{chainSearchBean.seeDetail}">
+        <p:graphicImage name="/images/iconos/csv.png" width="5%"/>
+        <p:dataExporter type="csv" target="dtOutlet" fileName="Report" pageOnly="false" encoding="ISO-8859-1"/>
+    </h:commandLink>
+    <p:tooltip for="clExportcsv" value="#{msg.export}"/>
+    <br/>
+    <p:scrollPanel style="width:100%" rendered="#{chainSearchBean.seeDetail}" mode="native">
+        <p:dataTable id="dtOutlet" paginatorAlwaysVisible="true" rows="15"
+                     widgetVar="dtChainSearch"
+                     value="#{chainSearchBean.chainsList}" var="chain"
+                     filteredValue="#{chainSearchBean.chainsListFiltered}"
+                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                     style="font-size:  90%;width:300%" paginator="true" rendered="#{chainSearchBean.seeDetail}"
+                     emptyMessage="#{msg.out_msg_not_record}" selectionMode="multiple" selection="#{chainSearchBean.chainsListSelected}"
+                     filterEvent="enter" rowKey="#{chain.chainId}">
+            <p:ajax event="filter" listener="#{chainSearchBean.listenerFilterList}"/>
+            <p:column exportable="false">
+                <p:commandLink value="#{msg.btn_detalle}" style="color: blue" process="@this" update="@form"
+                               actionListener="#{chainSearchBean.detailChain(chain)}"/>
+            </p:column>
+            <p:column headerText="#{msg.status}" filterMatchMode="exact" filterBy="#{chain.statusMDM}">
+                <f:facet name="filter">
+                    <p:selectOneMenu onchange="PF('dtChainSearch').filter()" style="width: 80%">
+                        <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}" noSelectionOption="true"/>                        
+                        <f:selectItems value="#{chainSearchBean.listFilterStatusMDM}"/>
+                    </p:selectOneMenu>
+                </f:facet>
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.status}"/>
+                </f:facet>
+                <h:outputLabel value="#{msg.sta_reject}" rendered="#{chain.statusMDM eq 'REJECT'}" style="color: red" escape="false"/>
+                <h:outputLabel value="#{msg.sta_pending_kam}" rendered="#{chain.statusMDM eq 'PENDING_KAM_TMC_CHAINS'}" style="color: blue" escape="false"/>
+                <h:outputLabel value="#{msg.sta_pending_approval}" rendered="#{chain.statusMDM eq 'PENDING_APPROVAL'}" style="color: sienna" escape="false"/>
+                <h:outputLabel value="#{msg.sta_approval}" rendered="#{chain.statusMDM eq 'APPROVED'}" style="color: green" escape="false"/>
+                <h:outputLabel value="#{msg.code_pending_kiernan}" rendered="#{chain.statusMDM eq 'PENDING_KIERNAN'}" style="color: green" escape="false"/>
+            </p:column>    
+            <p:column headerText="#{msg.chain_name}" filterBy="#{chain.businessName}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.chain_name}"/>
+                </f:facet>
+                <h:outputLabel value="#{chain.businessName}"/>
+            </p:column>
+            <p:column headerText="#{msg.cod_sap}" filterBy="#{chain.kiernanId}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.cod_sap}"/>
+                </f:facet>
+                <h:outputLabel  value="#{chain.kiernanId}"/>
+            </p:column>
+            <p:column headerText="#{msg.out_codigo_ean}" filterBy="#{chain.codeEan}" filterMatchMode="contains" >
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.out_codigo_ean}"/>
+                </f:facet>
+                <h:outputLabel  value="#{chain.codeEan}"/>
+            </p:column>    
+            <p:column headerText="#{msg.name_pos}" filterBy="#{chain.nameChain}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.name_pos}"/>
+                </f:facet>
+                <h:outputLabel value="#{chain.nameChain}" />
+            </p:column>
+            <p:column headerText="#{msg.seg_segmento}" filterBy="#{chain.subSegmentId.segmentId.nameSegment}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.seg_segmento}"/>
+                </f:facet>
+                <h:outputLabel  value="#{chain.subSegmentId.segmentId.nameSegment}"/>
+            </p:column>
+            <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{chain.subSegmentId.nameSubsegment}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.sub_seg_subsegmento}"/>
+                </f:facet>
+                <h:outputLabel  value="#{chain.subSegmentId.nameSubsegment}"/>
+            </p:column>
+            <p:column headerText="#{msg.out_potencial}" filterBy="#{chain.potentialId.namePotential}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.out_potencial}"/>
+                </f:facet>
+                <h:outputLabel value="#{chain.potentialId.namePotential}"/>
+            </p:column>
+            <p:column headerText="#{msg.loc_depto}" filterBy="#{chain.dbTownId.departamentId.nameDepartament}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.loc_depto}"/>
+                </f:facet>
+                <h:outputLabel value="#{chain.dbTownId.departamentId.nameDepartament}"/>
+            </p:column>
+            <p:column headerText="#{msg.chain_city}" filterBy="#{chain.dbTownId.nameTown}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.chain_city}"/>
+                </f:facet>
+                <h:outputLabel value="#{chain.dbTownId.nameTown}"/>
+            </p:column>
+            <p:column headerText="#{msg.out_direccion}" filterBy="#{chain.address}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.out_direccion}"/>
+                </f:facet>
+                <h:outputLabel value="#{chain.address}"/>
+            </p:column>
+            <p:column headerText="#{msg.chain_layer}" filterBy="#{chain.layerId.nameLayer}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.chain_layer}"/>
+                </f:facet>
+                <h:outputLabel value="#{chain.layerId.nameLayer}"/>
+            </p:column>
+            <p:column headerText="#{msg.chain_cluster}" filterBy="#{chain.dbClusterId.nameCluster}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.chain_cluster}"/>
+                </f:facet>
+                <h:outputLabel value="#{chain.dbClusterId.nameCluster}"/>
+            </p:column>
+            <p:column headerText="#{msg.format}" filterBy="#{chain.site}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.format}"/>
+                </f:facet>
+                <h:outputLabel value="#{chain.site}"/>
+            </p:column>
+            <p:column headerText="#{msg.status_2}" filterBy="#{chain.statusChain}" filterMatchMode="contains">
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.status_2}"/>
+                </f:facet>
+                <h:outputLabel value="#{chain.statusChain}"/>
+            </p:column>        
+        </p:dataTable>
+    </p:scrollPanel>
+</html>

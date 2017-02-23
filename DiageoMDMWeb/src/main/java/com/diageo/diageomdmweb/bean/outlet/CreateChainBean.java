@@ -5,6 +5,9 @@
  */
 package com.diageo.diageomdmweb.bean.outlet;
 
+import com.diageo.admincontrollerweb.beans.ParameterBeanLocal;
+import com.diageo.admincontrollerweb.entities.DwParameters;
+import com.diageo.admincontrollerweb.enums.ParameterKeyEnum;
 import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
@@ -12,6 +15,7 @@ import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
 import com.diageo.diageomdmweb.bean.DiageoRootBean;
 import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageomdmweb.constant.PatternConstant;
+import com.diageo.diageomdmweb.jdbc.ConecctionJDBC;
 import com.diageo.diageonegocio.beans.ChainBeanLocal;
 import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.ClusterBeanLocal;
@@ -41,6 +45,7 @@ import com.diageo.diageonegocio.entidades.DbTypePhones;
 import com.diageo.diageonegocio.enums.StateOutletChain;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -51,6 +56,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.primefaces.context.RequestContext;
 
 /**
  *
@@ -86,6 +92,8 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
     protected CustomerBeanLocal customerBeanLocal;
     @EJB
     protected DbLayerBeanLocal dbLayerBeanLocal;
+    @EJB
+    protected ParameterBeanLocal parameterBeanLocal;
     private String kiernan;
     private String chainName;
     private String businessName;
@@ -122,6 +130,14 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
     private DbCustomers customer;
     private List<DbLayer> listLayer;
     private DbLayer layerSelected;
+    private String site;
+    /**
+     * Parameters store procecedure
+     */
+    protected List<DwParameters> ipDatabase;
+    protected List<DwParameters> userDatabase;
+    protected List<DwParameters> passDatabase;
+    private boolean flagOutletInactive;
 
     /**
      * Creates a new instance of CreateChainBean
@@ -131,11 +147,15 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
 
     @PostConstruct
     public void init() {
+        setFlagOutletInactive(true);
         setListChannel(channelBeanLocal.findAllChannel());
         setListTypePhone(typePhoneBeanLocal.findAll());
         setList3Party(db3PartyBeanLocal.searchDistributorByIsChain(StateEnum.ACTIVE.getState(), StateEnum.ACTIVE.getState()));
         setListLayer(dbLayerBeanLocal.searchAll());
         initFields();
+        ipDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.DATABASE_IP.name());
+        userDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.USER_DATABASE.name());
+        passDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.PASS_DATABASE.name());
     }
 
     public void initFields() {
@@ -166,56 +186,74 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
         setLatitude(null);
         setLongitude(null);
         setLayerSelected(new DbLayer());
+        setSite(EMPTY_FIELD);
     }
 
     public void saveChain() {
-        try {
-            DbChains chain = new DbChains();
-            chain.setAddress(getAddress() != null ? getAddress().toUpperCase() : "");
-            chain.setBusinessName(getBusinessName() != null ? getBusinessName().toUpperCase() : "");
-            chain.setCodeEan(getEanCode() != null ? getEanCode().toUpperCase() : "");
-            chain.setDbClusterId(getClusterSelected());
-            chain.setDbPartyId(getDb3PartySelected());
-            cleanIdPhones();
-            chain.setDbPhonesList(getListPhones());
-            chain.setDbTownId(getTownSelected());
-            chain.setIsActive(StateEnum.ACTIVE.getState());
-            chain.setKiernanId(getKiernan() != null ? getKiernan().toUpperCase() : "");
-            chain.setLatitude(getLatitude());
-            chain.setLongitude(getLongitude());
-            chain.setNameChain(getChainName() != null ? getChainName().toUpperCase() : "");
-            chain.setNeighborhood(getNeighborhood() != null ? getNeighborhood().toUpperCase() : "");
-            chain.setPotentialId(getPotentialSelected());
-            chain.setSubSegmentId(getSubSegmentSelected());
-            chain.setStatusChain(getStatus());
-            if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())) {
-                chain.setStatusMDM(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name());
-            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
-                    || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
-                chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
-            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())) {
-                chain.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+        if (isFlagOutletInactive()) {
+            try {
+                DbChains chain = new DbChains();
+                chain.setAddress(getAddress() != null ? getAddress().toUpperCase() : "");
+                chain.setBusinessName(getBusinessName() != null ? getBusinessName().toUpperCase() : "");
+                chain.setCodeEan(getEanCode() != null ? getEanCode().toUpperCase() : "");
+                chain.setDbClusterId(getClusterSelected());
+                chain.setDbPartyId(getDb3PartySelected());
+                cleanIdPhones();
+                chain.setDbPhonesList(getListPhones());
+                chain.setDbTownId(getTownSelected());
+                chain.setIsActive(StateEnum.ACTIVE.getState());
+                chain.setKiernanId(getKiernan() != null ? getKiernan().toUpperCase() : "");
+                chain.setLatitude(getLatitude());
+                chain.setLongitude(getLongitude());
+                chain.setNameChain(getChainName() != null ? getChainName().toUpperCase() : "");
+                chain.setNeighborhood(getNeighborhood() != null ? getNeighborhood().toUpperCase() : "");
+                chain.setPotentialId(getPotentialSelected());
+                chain.setSubSegmentId(getSubSegmentSelected());
+                chain.setStatusChain(getStatus());
+                chain.setSite(getSite());
+                if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())) {
+                    chain.setStatusMDM(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name());
+                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
+                    chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
+                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())) {
+                    chain.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
+                    chain.setStatusMDM(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name());
+                }
+                chain.setLayerId(getLayerSelected());
+                DbCustomers custo = saveCustomer();
+                if (custo != null) {
+                    getListCustomers().add(custo);
+                }
+                chain.setDbCustomerList(getListCustomers());
+                Audit audit = new Audit();
+                audit.setCreationDate(super.getCurrentDate());
+                audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
+                chain.setAudit(audit);
+                if (custo != null) {
+                    chain.setChainId(custo.getCustomerId());
+                }
+                chainBeanLocal.createChain(chain);
+                Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
+                        userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
+                ConecctionJDBC.callStoreProcedureDBChains(con, chain.getChainId());
+                showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+                initFields();
+            } catch (DiageoBusinessException ex) {
+                Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
+                showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
             }
-            chain.setLayerId(getLayerSelected());
-            DbCustomers custo = saveCustomer();
-            if (custo != null) {
-                getListCustomers().add(custo);
-            }
-            chain.setDbCustomerList(getListCustomers());
-            Audit audit = new Audit();
-            audit.setCreationDate(super.getCurrentDate());
-            audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
-            chain.setAudit(audit);
-            if (custo != null) {
-                chain.setChainId(custo.getCustomerId());
-            }
-            chainBeanLocal.createChain(chain);
-            showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-            initFields();
-        } catch (DiageoBusinessException ex) {
-            Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
-            showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
+        setFlagOutletInactive(true);
+    }
+
+    public void commandRemoteOutletInactive() {
+        if (getSubSegmentSelected().getSubSegmentId().equals(0)) {
+            setFlagOutletInactive(false);
+            RequestContext rc = RequestContext.getCurrentInstance();
+            rc.execute("PF('chainWithoutSubSegment').show()");
+        }
+
     }
 
     public DbCustomers saveCustomer() {
@@ -344,6 +382,11 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
                 phone.setPhoneId(null);
             }
         }
+    }
+
+    public boolean isRenderedFieldSetCustomer() {
+        return getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId());
     }
 
     /**
@@ -854,6 +897,22 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
 
     public void setLayerSelected(DbLayer layerSelected) {
         this.layerSelected = layerSelected;
+    }
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    public boolean isFlagOutletInactive() {
+        return flagOutletInactive;
+    }
+
+    public void setFlagOutletInactive(boolean flagOutletInactive) {
+        this.flagOutletInactive = flagOutletInactive;
     }
 
 }

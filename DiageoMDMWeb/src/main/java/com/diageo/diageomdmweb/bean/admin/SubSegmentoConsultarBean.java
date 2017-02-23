@@ -7,6 +7,7 @@ package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
+import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.DbSegments;
 import com.diageo.diageonegocio.entidades.DbSubSegments;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
@@ -91,6 +92,12 @@ public class SubSegmentoConsultarBean extends SegementoConsultarBean implements 
             getSubSegmentoSeleccionado().setStateSubSegment(super.isEstado() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
             getSubSegmentoSeleccionado().setSegmentId(getSegmento());
             getSubSegmentoSeleccionado().setDistri_1(getAthenaCode().toUpperCase());
+            Audit audit = new Audit();
+            audit.setCreationDate(getSubSegmentoSeleccionado().getAudit() != null ? getSubSegmentoSeleccionado().getAudit().getCreationDate() : null);
+            audit.setCreationUser(getSubSegmentoSeleccionado().getAudit() != null ? getSubSegmentoSeleccionado().getAudit().getCreationUser() : null);
+            audit.setModificationDate(super.getCurrentDate());
+            audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+            getSubSegmentoSeleccionado().setAudit(audit);
             subSegmentoBeanLocal.updateSubSegment(getSubSegmentoSeleccionado());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {

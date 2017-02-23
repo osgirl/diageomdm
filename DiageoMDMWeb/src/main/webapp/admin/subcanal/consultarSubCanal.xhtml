@@ -21,17 +21,17 @@
                         <br/>
                         <p:dataTable id="dtChannel" value="#{consultarSubChannel.listaSubChannel}" var="subcha" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     rendered="#{consultarSubChannel.verDetalle}" paginator="true">
-                            <p:column headerText="#{msg.id}">
+                                     rendered="#{consultarSubChannel.verDetalle}" paginator="true" filterEvent="enter">
+                            <p:column headerText="#{msg.id}" filterBy="#{subcha.subChannelId}" filterMatchMode="contains">
                                 <h:outputLabel value="#{subcha.subChannelId}"/>
                             </p:column>
-                            <p:column headerText="#{msg.sub_can_nombre}">
+                            <p:column headerText="#{msg.sub_can_nombre}" filterBy="#{subcha.nameSubChannel}" filterMatchMode="contains">
                                 <h:outputLabel value="#{subcha.nameSubChannel}"/>
                             </p:column>
-                            <p:column headerText="#{msg.athena_code}">
+                            <p:column headerText="#{msg.athena_code}" filterBy="#{subcha.distri_1}" filterMatchMode="contains">
                                 <h:outputLabel value="#{subcha.distri_1}"/>
                             </p:column>
-                            <p:column headerText="#{msg.can_nombre}">
+                            <p:column headerText="#{msg.can_nombre}" filterBy="#{subcha.channelId.nameChannel}" filterMatchMode="contains">
                                 <h:outputLabel value="#{subcha.channelId.nameChannel}"/>
                             </p:column>
                             <p:column headerText="#{msg.estado}" style="text-align: center" exportable="false">
@@ -48,8 +48,11 @@
                         <h:panelGroup id="pgChannel" >                            
                             <h:panelGroup id="pgChaDetalle" rendered="#{!consultarSubChannel.verDetalle}" style="width: 100%">
                                 <h:panelGrid columns="2" style="width: 100%">
-                                    <h:outputLabel value="#{msg.sub_can_nombre}" style="width: 30%"/>
-                                    <p:inputText id="itNombre" value="#{consultarSubChannel.nombreSubChannel}" required="true" label="#{msg.sub_can_nombre}" style="width: 70%"/>
+                                    <p:outputLabel value="#{msg.sub_can_nombre}" style="width: 30%" for="itNombre"/>
+                                    <h:panelGroup>
+                                        <p:inputText id="itNombre" value="#{consultarSubChannel.nombreSubChannel}" required="true" label="#{msg.sub_can_nombre}" style="width: 70%"/>
+                                        <p:message for="itNombre"/>
+                                    </h:panelGroup>
                                     <h:outputLabel value="#{msg.can_canal}" style="width: 30%"/>
                                     <p:selectOneMenu value="#{consultarSubChannel.channel}" converter="channelConverter" style="width: 67%">
                                         <f:selectItems value="#{consultarSubChannel.listaChannel}" var="channel" itemLabel="#{channel.nameChannel}"/>

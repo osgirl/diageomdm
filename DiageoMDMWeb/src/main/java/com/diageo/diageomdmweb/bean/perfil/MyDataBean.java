@@ -19,6 +19,16 @@ import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import com.diageo.admincontrollerweb.beans.UserBeanLocal;
+import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
+import com.diageo.diageomdmweb.bean.admin.GestionarUsuarioCreacion;
+import com.diageo.diageonegocio.beans.ChannelBeanLocal;
+import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
+import com.diageo.diageonegocio.beans.SegmentBeanLocal;
+import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
+import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
+import com.diageo.diageonegocio.entidades.DbPermissionSegments;
+import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
+import java.util.List;
 
 /**
  *
@@ -29,14 +39,25 @@ import com.diageo.admincontrollerweb.beans.UserBeanLocal;
 public class MyDataBean extends DiageoRootBean implements Serializable {
 
     private static final Logger LOG = Logger.getLogger(MyDataBean.class.getName());
+    @EJB
+    protected ChannelBeanLocal channelBeanLocal;
+    @EJB
+    protected SubChannelBeanLocal subChannelBeanLocal;
+    @EJB
+    protected SegmentBeanLocal segmentoBeanLocal;
+    @EJB
+    protected SubSegmentoBeanLocal subSegmentoBeanLocal;
     @Inject
     private LoginBean loginBean;
+    @EJB
+    private PermissionsegmentBeanLocal permissionsegmentBeanLocal;
     @EJB
     private UserBeanLocal usuarioBeanLocal;
     private String nombres;
     private String apellidos;
     private String correo;
     private String perfil;
+    private List<DbPermissionSegments> listPermission;
 
     /**
      * Creates a new instance of MisDatosBean
@@ -50,9 +71,10 @@ public class MyDataBean extends DiageoRootBean implements Serializable {
         setNombres(getLoginBean().getUsuario().getNameUser());
         setCorreo("<b>" + getLoginBean().getUsuario().getEmailUser() + "</b>");
         setPerfil("<b>" + getLoginBean().getUsuario().getProfileId().getNameProfile() + "</b>");
+        setListPermission(permissionsegmentBeanLocal.findByUser(getLoginBean().getUsuario().getUserId()));
     }    
 
-    public void modificarDatos() {
+    public void updateData() {
         try {
             DwUsers usuario = getLoginBean().getUsuario();
             usuario.setNameUser(getNombres().toUpperCase());
@@ -65,6 +87,65 @@ public class MyDataBean extends DiageoRootBean implements Serializable {
             super.showErrorMessage(capturarValor("usu_erro_mis_datos"));
         }
     }
+    
+     public String channelName(Integer id) {
+        try {
+            return channelBeanLocal.findById(id).getNameChannel();
+        } catch (DiageoBusinessException ex) {
+            Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public String subChannelName(Integer id) {
+        if (id == null) {
+            return "";
+        }
+        if (id == -1) {
+            return capturarValor("usu_msg_all");
+        }
+        try {
+            return subChannelBeanLocal.consultarId(id).getNameSubChannel();
+        } catch (DiageoBusinessException ex) {
+            Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public String segmentName(Integer id) {
+        if (id == null) {
+            return "";
+        }
+        if (id == -1) {
+            return capturarValor("usu_msg_all");
+        }
+        try {
+            return segmentoBeanLocal.findById(id).getNameSegment();
+        } catch (DiageoBusinessException ex) {
+            Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    public String subSegmentName(Integer id) {
+        if (id == null) {
+            return "";
+        }
+        if (id == -1) {
+            return capturarValor("usu_msg_all");
+        }
+        try {
+            return subSegmentoBeanLocal.findById(id).getNameSubsegment();
+        } catch (DiageoBusinessException ex) {
+            Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
+    }
+
+    
+    public void findByPermission(){
+        
+    }
 
     /**
      * @return the loginBean
@@ -72,14 +153,7 @@ public class MyDataBean extends DiageoRootBean implements Serializable {
     public LoginBean getLoginBean() {
         return loginBean;
     }
-
-    /**
-     * @param loginBean the loginBean to set
-     */
-    public void setLoginBean(LoginBean loginBean) {
-        this.loginBean = loginBean;
-    }
-
+    
     /**
      * @return the nombres
      */
@@ -134,6 +208,14 @@ public class MyDataBean extends DiageoRootBean implements Serializable {
      */
     public void setPerfil(String perfil) {
         this.perfil = perfil;
+    }
+
+    public List<DbPermissionSegments> getListPermission() {
+        return listPermission;
+    }
+
+    public void setListPermission(List<DbPermissionSegments> listPermission) {
+        this.listPermission = listPermission;
     }
 
 }

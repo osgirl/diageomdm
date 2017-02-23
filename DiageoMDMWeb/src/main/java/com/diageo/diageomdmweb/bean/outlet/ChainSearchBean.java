@@ -12,6 +12,8 @@ import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
 import com.diageo.diageomdmweb.bean.LoginBean;
+import com.diageo.diageomdmweb.bean.dto.DbChainsDto;
+import com.diageo.diageomdmweb.jdbc.ConecctionJDBC;
 import com.diageo.diageonegocio.beans.ChainUserBeanLocal;
 import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.DbChains;
@@ -21,6 +23,7 @@ import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import com.diageo.diageonegocio.entidades.DbPhones;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +32,12 @@ import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.faces.context.FacesContext;
+import javax.faces.model.SelectItem;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.servlet.http.HttpSession;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.data.FilterEvent;
 
 /**
@@ -66,6 +71,8 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     private Map<String, Object> filtersTable;
     private List<Integer> listId;
     private DbChains chainSelected;
+    private List<SelectItem> listFilterStatusMDM;
+    private DbChainsDto chainsDto;
 
     /**
      * Creates a new instance of ChainSearchBean
@@ -76,6 +83,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     @PostConstruct
     @Override
     public void init() {
+        setFlagOutletInactive(true);
         setSeeDetail(Boolean.TRUE);
         super.init();
         setDisabledSegmentation(Boolean.FALSE);
@@ -102,6 +110,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                 setChainsList(chainUserBeanLocal.findByUserIdJoin(getLoginBean().getUsuario().getUserId()));
             }
         }
+        loadListStatusMdm();
         setChainsListFiltered(getChainsList());
         setListCustomerDelete(new ArrayList<DbCustomers>());
         FacesContext context = FacesContext.getCurrentInstance();
@@ -116,9 +125,42 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         chainsListSelected = new ArrayList<>();
     }
 
+    private void loadListStatusMdm() {
+        listFilterStatusMDM = new ArrayList<>();
+        if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
+            listFilterStatusMDM.add(new SelectItem("APPROVED", capturarValor("sta_approval")));
+            listFilterStatusMDM.add(new SelectItem("PENDING_APPROVAL", capturarValor("sta_pending_approval")));
+            listFilterStatusMDM.add(new SelectItem("PENDING_KAM_TMC_CHAINS", capturarValor("sta_pending_kam")));
+            listFilterStatusMDM.add(new SelectItem("REJECT", capturarValor("sta_reject")));
+            listFilterStatusMDM.add(new SelectItem("PENDING_KIERNAN", capturarValor("code_pending_kiernan")));
+        } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
+            listFilterStatusMDM.add(new SelectItem("PENDING_KAM_TMC_CHAINS", capturarValor("sta_pending_kam")));
+            listFilterStatusMDM.add(new SelectItem("PENDING_KIERNAN", capturarValor("code_pending_kiernan")));
+            listFilterStatusMDM.add(new SelectItem("PENDING_APPROVAL", capturarValor("sta_pending_approval")));
+            listFilterStatusMDM.add(new SelectItem("APPROVED", capturarValor("sta_approval")));
+            listFilterStatusMDM.add(new SelectItem("REJECT", capturarValor("sta_reject")));
+        } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
+            listFilterStatusMDM.add(new SelectItem("PENDING_APPROVAL", capturarValor("sta_pending_approval")));
+            listFilterStatusMDM.add(new SelectItem("PENDING_KIERNAN", capturarValor("code_pending_kiernan")));
+            listFilterStatusMDM.add(new SelectItem("PENDING_KAM_TMC_CHAINS", capturarValor("sta_pending_kam")));
+            listFilterStatusMDM.add(new SelectItem("APPROVED", capturarValor("sta_approval")));
+            listFilterStatusMDM.add(new SelectItem("REJECT", capturarValor("sta_reject")));
+        }
+    }
+
     public void detailChain(DbChains chain) {
+        try {
+            chainsDto = new DbChainsDto(chain.clone());
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(ChainSearchBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
         setChainSelected(chain);
         setIdChain(chain.getChainId());
+        setSite(chain.getSite());
         setAddress(chain.getAddress());
         setBusinessName(chain.getBusinessName());
         setEanCode(chain.getCodeEan());
@@ -158,72 +200,90 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
 
     @Override
     public void saveChain() {
-        try {
-            DbChains chain = getChainSelected();
-            chain.setAddress(getAddress() != null ? getAddress().toUpperCase() : "");
-            chain.setBusinessName(getBusinessName() != null ? getBusinessName().toUpperCase() : "");
-            chain.setCodeEan(getEanCode() != null ? getEanCode().toUpperCase() : "");
-            chain.setDbClusterId(getClusterSelected());
-            chain.setDbPartyId(getDb3PartySelected());
-            super.cleanIdPhones();
-            chain.setDbPhonesList(getListPhones());
-            chain.setDbTownId(getTownSelected());
-            chain.setKiernanId(getKiernan() != null ? getKiernan().toUpperCase() : "");
-            chain.setLatitude(getLatitude());
-            chain.setLongitude(getLongitude());
-            chain.setNameChain(getChainName() != null ? getChainName().toUpperCase() : "");
-            chain.setNeighborhood(getNeighborhood() != null ? getNeighborhood().toUpperCase() : "");
-            chain.setPotentialId(getPotentialSelected());
-            chain.setSubSegmentId(getSubSegmentSelected());
-            chain.setStatusChain(getStatus());
-            chain.setDbCustomerList(getListCustomers());
-            Audit audit = new Audit();
-            audit.setCreationDate(chain.getAudit() != null ? chain.getAudit().getCreationDate() : null);
-            audit.setCreationUser(chain.getAudit() != null ? chain.getAudit().getCreationUser() : null);
-            audit.setModificationDate(super.getCurrentDate());
-            audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
-            chain.setAudit(audit);
-            chain.setLayerId(getLayerSelected());
-            this.deletePhone();
-            if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
-                    || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
-                if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
+        if (isFlagOutletInactive()) {
+            try {
+                DbChains chain = getChainSelected();
+                chain.setAddress(getAddress() != null ? getAddress().toUpperCase() : "");
+                chain.setBusinessName(getBusinessName() != null ? getBusinessName().toUpperCase() : "");
+                chain.setCodeEan(getEanCode() != null ? getEanCode().toUpperCase() : "");
+                chain.setDbClusterId(getClusterSelected());
+                chain.setDbPartyId(getDb3PartySelected());
+                super.cleanIdPhones();
+                chain.setDbPhonesList(getListPhones());
+                chain.setDbTownId(getTownSelected());
+                chain.setKiernanId(getKiernan() != null ? getKiernan().toUpperCase() : "");
+                chain.setLatitude(getLatitude());
+                chain.setLongitude(getLongitude());
+                chain.setNameChain(getChainName() != null ? getChainName().toUpperCase() : "");
+                chain.setNeighborhood(getNeighborhood() != null ? getNeighborhood().toUpperCase() : "");
+                chain.setPotentialId(getPotentialSelected());
+                chain.setSubSegmentId(getSubSegmentSelected());
+                chain.setStatusChain(getStatus());
+                chain.setDbCustomerList(getListCustomers());
+                Audit audit = new Audit();
+                audit.setCreationDate(chain.getAudit() != null ? chain.getAudit().getCreationDate() : null);
+                audit.setCreationUser(chain.getAudit() != null ? chain.getAudit().getCreationUser() : null);
+                audit.setModificationDate(super.getCurrentDate());
+                audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+                chain.setAudit(audit);
+                chain.setLayerId(getLayerSelected());
+                chain.setSite(getSite());
+                this.deletePhone();
+                if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
+                        || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
+                    if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
+                        if (chain.getKiernanId() == null || chain.getKiernanId().isEmpty()) {
+                            chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
+                        } else {
+                            chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                        }
+                    }
+                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())) {
+                    if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name())
+                            || chain.getStatusMDM().equals(StatusSystemMDM.REJECT.name())) {
+                        if (!chainsDto.isNotificationChangedSegmentation(chain)) {
+                            chain.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+                        }
+                    }
+                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
+                    if (chain.getKiernanId() == null || chain.getKiernanId().isEmpty()) {
+                        chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
+                    } else {
+                        chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                    }
+                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
                     if (chain.getKiernanId() == null || chain.getKiernanId().isEmpty()) {
                         chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
                     } else {
                         chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
                     }
                 }
-            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())) {
-                if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name())
-                        || chain.getStatusMDM().equals(StatusSystemMDM.REJECT.name())) {
-                    chain.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
-                }
-            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())) {
-                if (chain.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
-                    chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
-                }
-            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
-                if (chain.getKiernanId() == null || chain.getKiernanId().isEmpty()) {
-                    chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
+                if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())) {
+                    if (chain.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
+                        deletCustomerChain();
+                        chainBeanLocal.updateChain(chain);
+                        Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
+                                userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
+                        ConecctionJDBC.callStoreProcedureDBChains(con, chain.getChainId());
+                        showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+                    } else {
+                        showInfoMessage(capturarValor("msg_cp_a_warning"));
+                    }
                 } else {
-                    chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                    deletCustomerChain();
+                    chainBeanLocal.updateChain(chain);
+                    Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
+                            userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
+                    ConecctionJDBC.callStoreProcedureDBChains(con, chain.getChainId());
+                    showInfoMessage(capturarValor("sis_datos_guardados_exito"));
                 }
-            } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
-                if (chain.getKiernanId() == null || chain.getKiernanId().isEmpty()) {
-                    chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
-                } else {
-                    chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
-                }
+                setSeeDetail(Boolean.TRUE);
+            } catch (DiageoBusinessException ex) {
+                Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
+                showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
             }
-            deletCustomerChain();
-            chainBeanLocal.updateChain(chain);
-            showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-            setSeeDetail(Boolean.TRUE);
-        } catch (DiageoBusinessException ex) {
-            Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
-            showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
         }
+        setFlagOutletInactive(true);
     }
 
     public void buttonBack() {
@@ -382,9 +442,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     }
 
     public boolean disabledKiernan() {
-        return !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())
-                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
-                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+        return !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
     }
 
@@ -458,6 +516,43 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
 
     private void deletePhone() {
         phonesBeanLocal.deletePhoneList(getPhonesDelete());
+    }
+
+    @Override
+    public void commandRemoteOutletInactive() {
+        if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
+            if (getStatus().equals("I")) {
+                setFlagOutletInactive(false);
+                RequestContext rc = RequestContext.getCurrentInstance();
+                rc.execute("PF('chainInactive').show()");
+            } else if (getSubSegmentSelected().getSubSegmentId().equals(0)) {
+                setFlagOutletInactive(false);
+                RequestContext rc = RequestContext.getCurrentInstance();
+                rc.execute("PF('chainWithoutSubSegment').show()");
+            }
+        } else if (getSubSegmentSelected().getSubSegmentId().equals(0)) {
+            setFlagOutletInactive(false);
+            RequestContext rc = RequestContext.getCurrentInstance();
+            rc.execute("PF('chainWithoutSubSegment').show()");
+        }
+    }
+
+    public boolean isDisabledPotentialSegmentation() {
+        return !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())
+                && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
+                && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId());
+    }
+
+    public void acceptOutletInactive() {
+        setFlagOutletInactive(true);
+        saveChain();
+    }
+
+    public boolean isRenderExportExcel() {
+        return !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
     }
 
     /**
@@ -630,6 +725,14 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
 
     public void setChainSelected(DbChains chainSelected) {
         this.chainSelected = chainSelected;
+    }
+
+    public List<SelectItem> getListFilterStatusMDM() {
+        return listFilterStatusMDM;
+    }
+
+    public void setListFilterStatusMDM(List<SelectItem> listFilterStatusMDM) {
+        this.listFilterStatusMDM = listFilterStatusMDM;
     }
 
 }

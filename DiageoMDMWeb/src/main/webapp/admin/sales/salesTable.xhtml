@@ -23,6 +23,9 @@ and open the template in the editor.
             <p:column headerText="#{msg.id}">
                 <h:outputText value="#{sales.db3partySaleId}"/>
             </p:column>
+            <p:column headerText="#{msg.sales_code}" filterBy="#{sales.pdv}">
+                <h:outputText value="#{sales.pdv}"/>
+            </p:column>
             <p:column headerText="#{msg.sales_nombre}" filterBy="#{sales.nameSales}">
                 <h:outputText value="#{sales.nameSales}"/>
             </p:column>

@@ -18,7 +18,7 @@ public class PatternConstant {
     /**
      * Patter to validate a password
      */
-    public static final String PASSWORD_RULES = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=*_-!¡])(?=\\S+$).{8,}$";
+    public static final String PASSWORD_RULES = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@%_\\-#<>$&\\(\\);,!¡?¿.=*])(?=\\S+$).{8,}$";
     /**
      * Number
      */

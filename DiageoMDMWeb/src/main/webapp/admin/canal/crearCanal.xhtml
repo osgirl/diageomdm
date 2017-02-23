@@ -20,7 +20,7 @@
                         <br/>
                         <h:panelGroup id="pgChaDetalle">
                             <h:panelGrid columns="2" style="width: 100%">
-                                <h:outputLabel value="#{msg.can_nombre}" style="width: 30%"/>
+                                <p:outputLabel value="#{msg.can_nombre}" style="width: 30%" for="itNombre"/>
                                 <h:panelGroup>
                                     <p:inputText id="itNombre" value="#{crearChannel.nombreChannel}" required="true" label="#{msg.can_nombre}" style="width: 70%"/>
                                     <p:message for="itNombre"/>

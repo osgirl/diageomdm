@@ -12,11 +12,11 @@
                         <p:dataTable id="dtAdmin" value="#{adminDistributorSearchBean.listAdmin}" 
                                      var="admin" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     paginator="true" rendered="#{!adminDistributorSearchBean.detail}" >
-                            <p:column headerText="#{msg.name_admin}">
+                                     paginator="true" rendered="#{!adminDistributorSearchBean.detail}" filterEvent="enter">
+                            <p:column headerText="#{msg.name_admin}" filterBy="#{admin.adminName}" filterMatchMode="contains">
                                 <h:outputLabel value="#{admin.adminName}"/>
                             </p:column>
-                            <p:column headerText="#{msg.athena_code}">
+                            <p:column headerText="#{msg.athena_code}" filterBy="#{admin.distri1}" filterMatchMode="contains">
                                 <h:outputLabel value="#{admin.distri1}"/>
                             </p:column>
                             <p:column exportable="false">
@@ -29,12 +29,12 @@
                             <h:panelGroup id="pgChaDetalle" rendered="#{adminDistributorSearchBean.detail}" style="width: 100%">
                                 <br/>
                                 <h:panelGrid columns="2" style="width: 100%">
-                                    <h:outputLabel value="#{msg.name_admin}" style="width: 30%"/>
+                                    <p:outputLabel value="#{msg.name_admin}" style="width: 30%" for="itNombre"/>
                                     <h:panelGroup>
                                         <p:inputText id="itNombre" value="#{adminDistributorSearchBean.nameAdmin}" required="true" label="#{msg.name_admin}" style="width: 70%"/>
                                         <p:message for="itNombre"/>
                                     </h:panelGroup>
-                                    <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
+                                    <p:outputLabel value="#{msg.athena_code}" style="width: 30%" for="itAthenaCode"/>
                                     <h:panelGroup>
                                         <p:inputText id="itAthenaCode" value="#{adminDistributorSearchBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"/>
                                         <p:message for="itAthenaCode"/>

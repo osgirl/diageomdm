@@ -21,11 +21,11 @@
                         <br/>
                         <p:dataTable id="dtDistri" value="#{regionalSearchBean.listRegional}" var="reg" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"                                     
-                                     rendered="#{regionalSearchBean.detail}" paginator="true">
+                                     rendered="#{regionalSearchBean.detail}" paginator="true" filterEvent="enter">
                             <p:column headerText="#{msg.regional}" filterBy="#{reg.nameRegional}" filterMatchMode="startsWith">
                                 <h:outputLabel value="#{reg.nameRegional}"/>
                             </p:column>
-                            <p:column headerText="#{msg.athena_code}">
+                            <p:column headerText="#{msg.athena_code}" filterBy="#{reg.distri_1}" filterMatchMode="contains">
                                 <h:outputLabel value="#{reg.distri_1}"/>
                             </p:column>
                             <p:column>
@@ -38,12 +38,12 @@
                             <h:panelGroup id="pgDistriDetail" rendered="#{!regionalSearchBean.detail}" style="width: 100%">
                                 <h:panelGrid columns="1" style="width: 100%">
                                     <h:panelGrid columns="4" style="width: 100%">
-                                        <h:outputLabel value="#{msg.regional}"/>                                    
+                                        <p:outputLabel value="#{msg.regional}" for="itNameRegional"/>                                    
                                         <h:panelGroup>
                                             <p:inputText id="itNameRegional" label="#{msg.regional}" required="true" value="#{regionalSearchBean.regionalName}" style="width: 85%"/>
                                             <p:message for="itNameRegional"/>
                                         </h:panelGroup>
-                                        <h:outputLabel value="#{msg.athena_code}"/>                                    
+                                        <p:outputLabel value="#{msg.athena_code}" for="itAthenaCode"/>                                    
                                         <h:panelGroup>
                                             <p:inputText id="itAthenaCode" label="#{msg.athena_code}" required="true" value="#{regionalSearchBean.athenaCode}" style="width: 85%"
                                                          readonly="true"/>

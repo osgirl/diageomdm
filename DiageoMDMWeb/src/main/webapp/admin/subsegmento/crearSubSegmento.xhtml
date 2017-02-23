@@ -21,7 +21,7 @@
                     <p:fieldset legend="#{msg.m_segmento_sub}" style="width: 90%">
                         <h:panelGroup id="pgChaDetalle">
                             <h:panelGrid columns="2" style="width: 100%">
-                                <h:outputLabel value="#{msg.sub_seg_nombre}" style="width: 30%"/>
+                                <p:outputLabel value="#{msg.sub_seg_nombre}" style="width: 30%" for="itNombre"/>
                                 <h:panelGroup>
                                     <p:inputText id="itNombre" value="#{subSegmentoCrearBean.nombre}" required="true" label="#{msg.sub_seg_nombre}" style="width: 70%"/>
                                     <p:message for="itNombre"/>

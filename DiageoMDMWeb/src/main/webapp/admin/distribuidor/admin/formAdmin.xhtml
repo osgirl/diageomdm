@@ -16,12 +16,12 @@ and open the template in the editor.
         <br/>
         <h:panelGroup id="pgFormAdmin">
             <h:panelGrid columns="2" style="width: 100%">
-                <h:outputLabel value="#{msg.name_admin}" style="width: 30%"/>
+                <p:outputLabel value="#{msg.name_admin}" style="width: 30%" for="itNombre"/>
                 <h:panelGroup>
                     <p:inputText id="itNombre" value="#{adminDistributorCreateBean.nameAdmin}" required="true" label="#{msg.name_admin}" style="width: 70%"/>
                     <p:message for="itNombre"/>
                 </h:panelGroup>
-                <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
+                <p:outputLabel value="#{msg.athena_code}" style="width: 30%" for="itAthenaCode"/>
                 <h:panelGroup>
                     <p:inputText id="itAthenaCode" value="#{adminDistributorCreateBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"/>
                     <p:message for="itAthenaCode"/>

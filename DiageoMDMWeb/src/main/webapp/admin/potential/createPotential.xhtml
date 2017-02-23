@@ -36,7 +36,7 @@
                                     <p:selectOneMenu id="somsubseg" value="#{potentialCreateBean.subSegmento}" converter="subSegmentoConverter" style="width: 90%">
                                         <f:selectItems value="#{potentialCreateBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>                                        
                                     </p:selectOneMenu>
-                                    <h:outputLabel value="#{msg.out_potencial}"/>
+                                    <p:outputLabel value="#{msg.out_potencial}" for="itName"/>
                                     <h:panelGroup>
                                         <p:inputText id="itName" value="#{potentialCreateBean.name}" required="true" label="#{msg.out_potencial}" style="width: 93%"/>
                                         <p:message for="itName"/>

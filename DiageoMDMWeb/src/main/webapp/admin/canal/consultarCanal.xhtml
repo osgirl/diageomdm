@@ -25,14 +25,14 @@
                         <br/>
                         <p:dataTable id="dtChannel" value="#{consultarChannelBean.listaChannels}" var="cha" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     rendered="#{consultarChannelBean.verDetalle}" paginator="true">
-                            <p:column headerText="#{msg.id}">
+                                     rendered="#{consultarChannelBean.verDetalle}" paginator="true" filterEvent="enter">
+                            <p:column headerText="#{msg.id}" filterBy="#{cha.channelId}" filterMatchMode="contains">
                                 <h:outputLabel value="#{cha.channelId}"/>
                             </p:column>
-                            <p:column headerText="#{msg.can_nombre}">
+                            <p:column headerText="#{msg.can_nombre}" filterBy="#{cha.nameChannel}" filterMatchMode="contains">
                                 <h:outputLabel value="#{cha.nameChannel}"/>
                             </p:column>
-                            <p:column headerText="#{msg.athena_code}">
+                            <p:column headerText="#{msg.athena_code}" filterBy="#{cha.distri_1}" filterMatchMode="contains">
                                 <h:outputLabel value="#{cha.distri_1}"/>
                             </p:column>
                             <p:column headerText="#{msg.estado}" style="text-align: center" exportable="false">                                       
@@ -49,12 +49,12 @@
                         <h:panelGroup id="pgChannel">                            
                             <h:panelGroup id="pgChaDetalle" rendered="#{!consultarChannelBean.verDetalle}" style="width: 100%">
                                 <h:panelGrid columns="2" style="width: 100%">
-                                    <h:outputLabel value="#{msg.can_nombre}" style="width: 30%"/>
+                                    <p:outputLabel value="#{msg.can_nombre}" style="width: 30%" for="itNombre"/>
                                     <h:panelGroup>
                                         <p:inputText id="itNombre" value="#{consultarChannelBean.nombreChannel}" required="true" label="#{msg.can_nombre}" style="width: 70%"/>
                                         <p:message for="itNombre"/>
                                     </h:panelGroup>
-                                    <h:outputLabel value="#{msg.athena_code}" style="width: 30%"/>
+                                    <p:outputLabel value="#{msg.athena_code}" style="width: 30%" for="itAthenaCode"/>
                                     <h:panelGroup>
                                         <p:inputText id="itAthenaCode" value="#{consultarChannelBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 70%"
                                                      readonly="true"/>

@@ -16,7 +16,7 @@
                         <br/>
                         <h:panelGroup id="pgDistri">
                             <h:panelGrid columns="4" style="width: 100%">
-                                <h:outputLabel value="#{msg.m_distri_nombre}"/>
+                                <p:outputLabel value="#{msg.m_distri_nombre}" for="itNombre"/>
                                 <h:panelGroup>
                                     <p:inputText id="itNombre" required="true" value="#{distributorCreate.name}" 
                                                  label="#{msg.m_distri_nombre}" style="width: 90%"/>
@@ -30,7 +30,7 @@
                                     <f:selectItems value="#{distributorCreate.listRegional}" var="reg" itemLabel="#{reg.nameRegional}"/>
                                 </p:selectOneMenu>
 
-                                <h:outputLabel value="#{msg.athena_code}"/>
+                                <p:outputLabel value="#{msg.athena_code}" for="itAthenaCode"/>
                                 <h:panelGroup>
                                     <p:inputText id="itAthenaCode" required="true" value="#{distributorCreate.athenaCode}"
                                                  label="#{msg.athena_code}" style="width: 90%"/>

@@ -11,6 +11,32 @@
         <ui:composition template="./../WEB-INF/templates/diageoWebTemplate.xhtml">
 
             <ui:define name="content">
+                <h:form id="pop">
+                    <p:dialog widgetVar="outletInactive" modal="true" appendTo="@(body)">        
+                        <p:outputLabel value="#{msg.msg_outlet_inactive}"/>
+                        <br/><br/>
+                        <h:panelGrid columns="2">
+                            <p:commandButton value="#{msg.btn_acept}" styleClass="button"
+                                             update="@form :formConsultarOutlet :growl" process="@this :formConsultarOutlet"
+                                             style="left: 0%;width: 100% !important"
+                                             actionListener="#{outletConsultarBean.acceptOutletInactive()}"/>
+                            <p:commandButton value="#{msg.btn_cancel}" type="button" 
+                                             styleClass="button"
+                                             style="left: 0%;width: 100% !important"
+                                             onclick="PF('outletInactive').hide()"/>
+                        </h:panelGrid>
+                    </p:dialog>
+                    <p:dialog widgetVar="outletWithoutSubSegment" modal="true" appendTo="@(body)">        
+                        <p:outputLabel value="#{msg.msg_without_sub_segment}"/>
+                        <h:panelGrid columns="1">     
+                            <br/><br/>
+                            <p:commandButton value="#{msg.btn_acept}" type="button" 
+                                             styleClass="button"
+                                             style="left: 0%;width: 100% !important"
+                                             onclick="PF('outletWithoutSubSegment').hide()"/>
+                        </h:panelGrid>
+                    </p:dialog>
+                </h:form>
                 <h:form id="formConsultarOutlet">
                     <style>
                         .ui-datatable-data .ui-widget-content{
@@ -39,33 +65,33 @@
                         }
 
                     </style>
+
                     <ui:include src="tablesOutlet/outletDataTableLazyDataModel.xhtml"/>
-                    <br/>
-                    <!--p:commandButton value="{msg.btn_select_all}" styleClass="button" process="@all" update="@form"
-                                         actionListener="{outletConsultarBean.selectAll()}" rendered={outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval}"
-                                         style="width: 100%;left: 0%"/-->
-                    <!--p:commandButton value="{msg.btn_unselect_all}" styleClass="button" process="@all" update="@form"
-                                         actionListener="{outletConsultarBean.unSelectAll()}" rendered="{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval}"
-                                         style="width: 100%;left: 0%"/-->
-                    <!--p:commandButton value="{msg.btn_reject}" process="@all" update="@form" actionListener="{outletConsultarBean.rejectAllOutlet()}"                                             
-                                         styleClass="button_reject" style="left: 0%;width: 100%" 
-                                         rendered="{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval
-                                                     and loginBean.usuario.profileId.nameProfile eq 'COMMERCIAL MANAGER'}"/-->
+                    <ui:include src="popup/popupOutletChain.xhtml"/>
+                    <br/>                 
                     <h:panelGrid columns="4">                       
                         <p:commandButton value="#{msg.btn_approved_all}" styleClass="button" process="@all" update="@form"
                                          actionListener="#{outletConsultarBean.approvedAllOutlets()}" rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval}"
-                                         style="width: 100%;left: 0%"/>
+                                         style="width: 100%;left: 0%">
+                            <p:confirm header="#{msg.confirmation}" message="#{msg.msg_massive_approval}" icon="ui-icon-alert" />
+                        </p:commandButton>
                         <p:commandButton id="cbAprobar" value="#{msg.btn_approved_selected}" styleClass="button" process="@all" update="@form"
                                          actionListener="#{outletConsultarBean.approvedAllOutletsSelected()}" rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval}"
-                                         style="width: 100%;left: 0%"/>
+                                         style="width: 100%;left: 0%">
+                            <p:confirm header="#{msg.confirmation}" message="#{msg.msg_massive_approval}" icon="ui-icon-alert" />
+                        </p:commandButton>
                         <p:commandButton value="#{msg.btn_reject_all}" process="@all" update="@form" actionListener="#{outletConsultarBean.rejectAllOutlet()}"                                             
                                          styleClass="button_reject" style="left: 0%;width: 100%" 
                                          rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval
-                                                     and loginBean.usuario.profileId.nameProfile.equalsIgnoreCase('COMMERCIAL MANAGER')}"/>
+                                                     and loginBean.usuario.profileId.nameProfile.equalsIgnoreCase('COMMERCIAL MANAGER')}">
+                            <p:confirm header="#{msg.confirmation}" message="#{msg.msg_massive_reject}" icon="ui-icon-alert"/>
+                        </p:commandButton>
                         <p:commandButton value="#{msg.btn_reject_selected}" process="@all" update="@form" actionListener="#{outletConsultarBean.rejectAllOutletsSelected()}"                                             
                                          styleClass="button_reject" style="left: 0%;width: 100%" 
                                          rendered="#{outletConsultarBean.verDetalle and outletConsultarBean.renderMassiveApproval
-                                                     and loginBean.usuario.profileId.nameProfile.equalsIgnoreCase('COMMERCIAL MANAGER')}"/>
+                                                     and loginBean.usuario.profileId.nameProfile.equalsIgnoreCase('COMMERCIAL MANAGER')}">
+                            <p:confirm header="#{msg.confirmation}" message="#{msg.msg_massive_reject}" icon="ui-icon-alert"/>
+                        </p:commandButton>
                     </h:panelGrid>
 
                     <h:panelGroup id="pgCOnsultarOut">
@@ -94,15 +120,21 @@
                             <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
                                 <h:panelGrid columns="1" style="width: 95%">
                                     <h:panelGrid columns="4" style="width: 100%">
+                                        <h:outputLabel value="#{msg.outlet_id}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:inputText value="#{outletConsultarBean.idOutlet}" readonly="true"/>
+                                        <h:outputLabel value="#{msg.distri_father}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:inputText value="#{outletConsultarBean.father.outletId}" readonly="true"/>
                                         <h:outputLabel value="#{msg.out_kiernan}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                         <p:inputText value="#{outletConsultarBean.kiernanId}" disabled="#{outletConsultarBean.disabledFields}"/>
-                                        <h:outputLabel value="#{msg.chain_business_name}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:outputLabel value="#{msg.chain_business_name}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"
+                                                       for="itBusinessName"/>
                                         <h:panelGroup>
                                             <p:inputText id="itBusinessName" value="#{outletConsultarBean.businessName}" disabled="#{outletConsultarBean.disabledFields}"
                                                          required="true" label="#{msg.chain_business_name}"/>
                                             <p:message for="itBusinessName"/>
                                         </h:panelGroup>
-                                        <h:outputLabel value="#{msg.out_nit}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:outputLabel value="#{msg.out_nit}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"
+                                                       for="itNit"/>
                                         <h:panelGroup>
                                             <p:inputText id="itNit" value="#{outletConsultarBean.nit}" disabled="#{outletConsultarBean.disabledFields}"
                                                          label="#{msg.out_nit}" required="true"/>
@@ -114,7 +146,8 @@
                                                          label="#{msg.out_verification_number}"/>
                                             <p:message for="itVerificationNumber"/>
                                         </h:panelGroup>
-                                        <h:outputLabel value="#{msg.out_nombre}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:outputLabel value="#{msg.out_nombre}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"
+                                                       for="itOutName"/>
                                         <h:panelGroup>
                                             <p:inputText id="itOutName" value="#{outletConsultarBean.outletName}" disabled="#{outletConsultarBean.disabledFields}"
                                                          required="true" label="#{msg.out_nombre}"/>
@@ -130,15 +163,12 @@
                                         <h:outputLabel value="#{msg.out_website}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                         <p:inputText value="#{outletConsultarBean.website}" disabled="#{outletConsultarBean.disabledFields}"/>
 
-                                        <h:outputLabel value="#{msg.out_distributor_new}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu value="#{outletConsultarBean.db3PartySelected}" style="width: 90%" converter="db3PartyConverter" disabled="#{outletConsultarBean.disabledFields}">
-                                            <f:selectItems value="#{outletConsultarBean.list3PartyToDeploy}" var="distri" itemLabel="#{distri.name3party}"/>
-                                        </p:selectOneMenu>
+
 
                                         <h:outputLabel value="#{msg.out_distributor_old}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                         <p:inputText readonly="true" value="#{outletConsultarBean.showDistributorName(outletConsultarBean.distributorOld)}"/>
 
-                                        <h:outputLabel value="Journey Plan" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <h:outputLabel value="#{msg.journey_plan}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                         <p:selectBooleanCheckbox id="sbJourneyPlan" value="#{outletConsultarBean.journeyPlan}" disabled="#{outletConsultarBean.disabledFields}"/>
 
                                         <h:outputLabel value="#{msg.status}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
@@ -187,11 +217,11 @@
                                         <p:selectOneMenu value="#{outletConsultarBean.subSegmentSelected}" converter="subSegmentoConverter" style="width: 90%"
                                                          disabled="#{outletConsultarBean.disabledFuntionalSegmentation}">
                                             <f:selectItems value="#{outletConsultarBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>
-                                            <p:ajax update="formConsultarOutlet:pgSegment" process="@this" listener="#{outletConsultarBean.listenerSubSegment()}"/>
+                                            <p:ajax update="formConsultarOutlet:pgSegment formConsultarOutlet:somPotential" process="@this" listener="#{outletConsultarBean.listenerSubSegment()}"/>
                                         </p:selectOneMenu>
 
                                         <h:outputLabel value="#{msg.out_potencial}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
-                                        <p:selectOneMenu converter="potentialConverter" value="#{outletConsultarBean.potentialSelected}"
+                                        <p:selectOneMenu id="somPotential" converter="potentialConverter" value="#{outletConsultarBean.potentialSelected}"
                                                          disabled="#{outletConsultarBean.disabledPotentialSegmentation}"  style="width: 90%">
                                             <f:selectItems value="#{outletConsultarBean.listPotential}" var="pot" itemLabel="#{pot.namePotential}"/>
                                         </p:selectOneMenu>
@@ -261,6 +291,9 @@
                                         <p:column headerText="#{msg.out_kiernan}">
                                             <h:outputLabel value="#{custo.kiernanId}"/>
                                         </p:column>
+                                        <p:column headerText="#{msg.distri_outlet}">
+                                            <h:outputLabel value="#{custo.name3Party}"/>
+                                        </p:column>                                            
                                         <p:column>
                                             <p:commandLink actionListener="#{outletConsultarBean.deleteCustomer(custo)}" update="formConsultarOutlet:dtCustomer"
                                                            process="@this" disabled="#{outletConsultarBean.disabledFields and outletConsultarBean.disabledFieldsTmc}">
@@ -344,19 +377,17 @@
                             </p:fieldset>
                             <br/><br/>
                             <p:commandButton value="#{outletConsultarBean.buttonNameCommit}" process="@all" update="@form" actionListener="#{outletConsultarBean.saveOutlet()}"
-                                             styleClass="button" style="left: 0%" onclick="PF('dtOutletSearch').clearFilters()" rendered="#{outletConsultarBean.renderButtonApproved}"/>
+                                             styleClass="button" style="left: 0%" rendered="#{outletConsultarBean.renderButtonApproved}" onclick="rcInactive()"/>
                             <p:commandButton value="#{msg.btn_reject}" process="@all" update="@form" actionListener="#{outletConsultarBean.rejectOutlet()}"                                             
                                              styleClass="button_reject" style="left: 0%" rendered="#{outletConsultarBean.renderButtonReject}"
-                                             onclick="PF('dtOutletSearch').clearFilters()"/>
+                                             />
                             <p:commandButton value="#{msg.btn_back}" update="@form" actionListener="#{outletConsultarBean.buttonBack()}"                                             
-                                             styleClass="button" style="left: 0%"  immediate="false"
+                                             styleClass="button" style="left: 0%"  immediate="true"
                                              onclick="PF('dtOutletSearch').clearFilters()"/>
                             <br/>
                         </h:panelGroup>
-                    </h:panelGroup>
-                    <p:dialog id="dChain" modal="false" width="60%" header="Motivo rechazo" widgetVar="xvReject" resizable="false">
-                        <p:inputTextarea style="width: 100%" value="#{outletConsultarBean.messageReject}"/>
-                    </p:dialog>                                            
+                    </h:panelGroup>                    
+                    <p:remoteCommand actionListener="#{outletConsultarBean.commandRemoteOutletInactive()}" name="rcInactive"/>
                 </h:form>
             </ui:define>
         </ui:composition>

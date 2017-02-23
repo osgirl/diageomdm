@@ -26,11 +26,11 @@
                         <h:panelGrid id="pgContra" columns="1" style="width: 100%;text-align: center">
                             <h:outputLabel rendered="#{loginBean.usuario.firstEntry eq '1'}" value="#{msg.cam_pass_primer_ingreso}"/>
                             <br/>
-                            <p:password id="passActual" style="width: 25%" value="#{cambiarContraseniaBean.contrasenaActual}" required="true" label="#{msg.cam_pass_actual}"/>
+                            <p:password id="passActual" style="width: 40%" value="#{cambiarContraseniaBean.contrasenaActual}" required="true" label="#{msg.cam_pass_actual}"/>
                             <p:watermark for="passActual" value="#{msg.cam_pass_actual}"/>
                             <br/>
                             <h:panelGroup style="width: 100%">
-                                <p:password id="pwd1" match="pwd2" label="#{msg.cam_pass_nueva_contra}" required="true" feedback="true" style="width: 23%"
+                                <p:password id="pwd1" match="pwd2" label="#{msg.cam_pass_nueva_contra}" required="true" feedback="true" style="width: 37%"
                                             value="#{cambiarContraseniaBean.contrseniaNueva}" 
                                             goodLabel="#{msg.cam_pass_good}" weakLabel="#{msg.cam_pass_weak}" strongLabel="#{msg.cam_pass_strong}" promptLabel="#{msg.cam_pass_promt}"/>
                                 <p:commandButton icon="fa fa-warning" style="width: 2%" type="button" onclick="PF('wvHelp').show();"/>
@@ -39,8 +39,9 @@
                             </h:panelGroup>
                             
                             <br/>
+                            <br/>
                             <h:panelGroup style="width: 100%">
-                                <p:password id="pwd2" label="#{msg.cam_pass_repetir_contra}" required="true" feedback="true" style="width: 25%" 
+                                <p:password id="pwd2" label="#{msg.cam_pass_repetir_contra}" required="true" feedback="true" style="width: 40%" 
                                             value="#{cambiarContraseniaBean.contrseniaNueva}" 
                                             goodLabel="#{msg.cam_pass_good}" weakLabel="#{msg.cam_pass_weak}" strongLabel="#{msg.cam_pass_strong}" promptLabel="#{msg.cam_pass_promt}"/>
                                 <p:message for="pwd2"/>

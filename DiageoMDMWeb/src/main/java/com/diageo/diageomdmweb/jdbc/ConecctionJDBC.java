@@ -56,7 +56,6 @@ public class ConecctionJDBC {
 
     public static void callStoreProcedure(Connection con, DbPermissionSegments entity) {
         try {
-            System.out.println("entro metodo call procedimiento");
             CallableStatement prcProcedimientoAlmacenado = con.prepareCall("{ call dbo.PROCEDURE_DB_PERMISSION_SEGMENTS_INSERT(?,?,?,?,?,?,?,?,?,?,?,?) }");
             prcProcedimientoAlmacenado.setInt(1, entity.getDb3partyId().getDb3partyId());
             prcProcedimientoAlmacenado.setInt(2, entity.getUserId());
@@ -96,6 +95,28 @@ public class ConecctionJDBC {
             con.commit();
         } catch (SQLException ex) {
             Logger.getLogger(PermissionsegmentBean.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void callStoreProcedureDBChains(Connection con, int idChain) {
+        try {
+            CallableStatement prcProcedimientoAlmacenado = con.prepareCall("{ call dbo.SP_DB_CHAINS(?) }");
+            prcProcedimientoAlmacenado.setInt(1, idChain);
+            prcProcedimientoAlmacenado.execute();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConecctionJDBC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public static void callStoreProcedureDBOutlets(Connection con, int idChain) {
+        try {
+            CallableStatement prcProcedimientoAlmacenado = con.prepareCall("{ call dbo.SP_DB_CHAINS(?) }");
+            prcProcedimientoAlmacenado.setInt(1, idChain);
+            prcProcedimientoAlmacenado.execute();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConecctionJDBC.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

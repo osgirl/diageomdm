@@ -18,26 +18,26 @@
                         <br/>
                         <p:dataTable id="dtPotential" value="#{potentialSearchBean.listPotential}" var="pot" paginatorAlwaysVisible="false" rows="15"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                                     rendered="#{potentialSearchBean.seeDetail}" paginator="true" style="word-wrap: break-word;">
-                            <p:column headerText="#{msg.id}">
+                                     rendered="#{potentialSearchBean.seeDetail}" paginator="true" style="word-wrap: break-word;" filterEvent="enter">
+                            <p:column headerText="#{msg.id}" filterBy="" filterMatchMode="contains">
                                 <h:outputLabel value="#{pot.potentialId}"/>
                             </p:column>
-                            <p:column headerText="#{msg.sub_seg_nombre}">
+                            <p:column headerText="#{msg.potential_name}" filterBy="#{pot.namePotential}" filterMatchMode="contains">
                                 <h:outputLabel value="#{pot.namePotential}"/>
                             </p:column>
-                            <p:column headerText="#{msg.athena_code}">
+                            <p:column headerText="#{msg.athena_code}" filterBy="#{pot.distri_1}" filterMatchMode="contains">
                                 <h:outputLabel value="#{pot.distri_1}"/>
                             </p:column>                                                      
-                            <p:column headerText="#{msg.can_canal}">
+                            <p:column headerText="#{msg.can_canal}" filterBy="#{pot.subSegmentId.segmentId.subChannelId.channelId.nameChannel}" filterMatchMode="contains">
                                 <h:outputLabel value="#{pot.subSegmentId.segmentId.subChannelId.channelId.nameChannel}"/>
                             </p:column>
-                            <p:column headerText="#{msg.sub_subcanal}">
+                            <p:column headerText="#{msg.sub_subcanal}" filterBy="#{pot.subSegmentId.segmentId.subChannelId.nameSubChannel}" filterMatchMode="contains">
                                 <h:outputLabel value="#{pot.subSegmentId.segmentId.subChannelId.nameSubChannel}"/>
                             </p:column>
-                            <p:column headerText="#{msg.seg_segmento}">
+                            <p:column headerText="#{msg.seg_segmento}" filterBy="#{pot.subSegmentId.segmentId.nameSegment}" filterMatchMode="contains">
                                 <h:outputLabel value="#{pot.subSegmentId.segmentId.nameSegment}"/>
                             </p:column>
-                            <p:column headerText="#{msg.sub_seg_subsegmento}">
+                            <p:column headerText="#{msg.sub_seg_subsegmento}" filterBy="#{pot.subSegmentId.nameSubsegment}" filterMatchMode="contains">
                                 <h:outputLabel value="#{pot.subSegmentId.nameSubsegment}"/>
                             </p:column>
                             <p:column exportable="false">
@@ -68,12 +68,12 @@
                                     <p:selectOneMenu id="somsubseg" value="#{potentialSearchBean.subSegmento}" converter="subSegmentoConverter" style="width: 90%">
                                         <f:selectItems value="#{potentialSearchBean.listSubSegment}" var="subseg" itemLabel="#{subseg.nameSubsegment}"/>                                        
                                     </p:selectOneMenu>
-                                    <h:outputLabel value="#{msg.out_potencial}"/>
+                                    <p:outputLabel value="#{msg.out_potencial}" for="itName"/>
                                     <h:panelGroup>
                                         <p:inputText id="itName" value="#{potentialSearchBean.name}" required="true" label="#{msg.out_potencial}" style="width: 93%"/>
                                         <p:message for="itName"/>
                                     </h:panelGroup>           
-                                    <h:outputLabel value="#{msg.athena_code}"/>
+                                    <p:outputLabel value="#{msg.athena_code}" for="itAthenaCode"/>
                                     <h:panelGroup>
                                         <p:inputText id="itAthenaCode" value="#{potentialSearchBean.athenaCode}" required="true" label="#{msg.athena_code}" style="width: 93%"
                                                      readonly="true"/>

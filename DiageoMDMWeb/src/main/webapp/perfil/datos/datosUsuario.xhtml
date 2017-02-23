@@ -19,21 +19,41 @@
                             <h:outputLabel value="#{msg.usu_perfil}" style="width: 25%"/>
                             <h:outputLabel value="#{myDataBean.perfil}" style="width: 75%" escape="false"/>
 
-                            <h:outputLabel value="#{msg.usu_nombres}" style="width: 25%"/>
+                            <p:outputLabel value="#{msg.usu_nombres}" style="width: 25%" for="itName"/>
                             <h:panelGroup>
                                 <p:inputText id="itName" value="#{myDataBean.nombres}" label="#{msg.usu_nombres}" style="width: 75%" required="true"/>
                                 <p:message for="itName"/>
                             </h:panelGroup>
 
-                            <h:outputLabel value="#{msg.usu_apellidos}" style="width: 25%"/>
+                            <p:outputLabel value="#{msg.usu_apellidos}" style="width: 25%" for="itLastName"/>
                             <h:panelGroup>
                                 <p:inputText id="itLastName" value="#{myDataBean.apellidos}" label="#{msg.usu_apellidos}" style="width: 75%" required="true"/>                                 
                                 <p:message for="itLastName"/>
                             </h:panelGroup>                            
                         </h:panelGrid>
                         <br/><br/>
-                        <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{myDataBean.modificarDatos()}"
+                        <p:commandButton value="#{msg.btn_send}" process="@all" update="@form" actionListener="#{myDataBean.updateData()}"
                                          styleClass="button"/>
+                        <br/><br/>
+                        <p:dataTable value="#{myDataBean.listPermission}" var="list" rows="10"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     paginatorAlwaysVisible="false">
+                            <p:column headerText="#{msg.m_distribuidor}">
+                                <h:outputLabel value="#{list.db3partyId.name3party}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.can_canal}">
+                                <h:outputLabel value="#{myDataBean.channelName(list.channelId)}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.sub_subcanal}">
+                                <h:outputLabel value="#{myDataBean.subChannelName(list.subChannelId)}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.seg_segmento}">
+                                <h:outputLabel value="#{myDataBean.segmentName(list.segmentId)}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.sub_seg_subsegmento}">
+                                <h:outputLabel value="#{myDataBean.subSegmentName(list.subSegmentId)}"/>
+                            </p:column>
+                        </p:dataTable>
                     </p:fieldset>
                 </h:form>
             </ui:define>
