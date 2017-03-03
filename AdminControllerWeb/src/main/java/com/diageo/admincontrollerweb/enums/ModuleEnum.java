@@ -62,7 +62,10 @@ public enum ModuleEnum {
     C_SALES("sales create"),
     C_ADMIN("create admin"),
     S_ADMIN("search admin"),
-    U_RELATION("user relation");
+    U_RELATION("user relation"),
+    REPORT_PENDING_MANAGEMENT("report pending"),
+    REPORT_RELATION_USER_OUTLET("report relation user outlet"),
+    REPORT_BLANCOS("report blancos");
 
     private final String description;
 
