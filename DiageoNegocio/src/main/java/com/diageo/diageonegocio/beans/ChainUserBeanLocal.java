@@ -32,4 +32,6 @@ public interface ChainUserBeanLocal {
 
     public long notificationPendingChain(Integer userId, String status);
 
+    public long notificationPendingChainIn(List<String> status);
+
 }

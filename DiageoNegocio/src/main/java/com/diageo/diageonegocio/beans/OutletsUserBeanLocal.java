@@ -35,5 +35,9 @@ public interface OutletsUserBeanLocal {
     public DbOutletsUsers findByOutletId(Integer id);
 
     public long notificationPendingOutlet(Integer userId, String status); 
+
+    public long notificationPendingOutlet(List<String> status);
+
+    public DbOutletsUsers findByOutletIdProfileId(Integer id);
     
 }

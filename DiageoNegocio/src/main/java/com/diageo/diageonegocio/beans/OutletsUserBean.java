@@ -40,6 +40,15 @@ public class OutletsUserBean extends BusinessTransaction<DbOutletsUsers> impleme
     }
 
     @Override
+    public DbOutletsUsers findByOutletIdProfileId(Integer id) {
+        List<DbOutletsUsers> list = super.searchByNamedQuery(DbOutletsUsers.class, DbOutletsUsers.FIND_BY_OUTLET_ID_PROFILE_ID, id, 3);
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
+    }
+
+    @Override
     public List<DbOutlets> findOutletByUser(int initial, int page, Map<String, Object> filters, Integer id) {
         Query sql = getEntityManager().createNamedQuery(DbOutletsUsers.FIND_BY_USER_OUTLETS_JOIN);
         sql.setParameter("userId", id);
@@ -657,6 +666,18 @@ public class OutletsUserBean extends BusinessTransaction<DbOutletsUsers> impleme
         Query sql = getEntityManager().createNamedQuery(DbOutletsUsers.COUNT_PENDING_OUTLETS);
         sql.setParameter(1, userId);
         sql.setParameter(2, status);
+        Object obj = sql.getSingleResult();
+        if (obj == null) {
+            return 0;
+        }
+        long size = (long) obj;
+        return size;
+    }
+
+    @Override
+    public long notificationPendingOutlet(List<String> status) {
+        Query sql = getEntityManager().createNamedQuery(DbOutletsUsers.COUNT_PENDING_OUTLETS_IN);
+        sql.setParameter(1, status);
         Object obj = sql.getSingleResult();
         if (obj == null) {
             return 0;

@@ -161,6 +161,18 @@ public class ChainUserBean extends BusinessTransaction<DbChainsUsers> implements
         long size = (long) obj;
         return size;
     }
+    
+    @Override
+    public long notificationPendingChainIn(List<String> status){
+        Query sql = getEntityManager().createNamedQuery(DbChainsUsers.COUNT_PENDING_OUTLETS_IN);
+        sql.setParameter(1, status);
+        Object obj=sql.getSingleResult();
+        if(obj==null){
+            return 0;
+        }
+        long size = (long) obj;
+        return size;
+    }
 
     /**
      * Construye la cadena de texto de user_id, que serán enviados al update

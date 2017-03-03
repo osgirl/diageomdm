@@ -38,6 +38,8 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = DbChainsUsers.COUNT_PENDING_OUTLETS, query = "SELECT COUNT(o) FROM DbChains o JOIN DbChainsUsers do ON do.dbChainsUsersPK.chainId=o.chainId "
             + "WHERE do.dbChainsUsersPK.userId = ?1 AND o.statusMDM = ?2")
     ,
+    @NamedQuery(name = DbChainsUsers.COUNT_PENDING_OUTLETS_IN, query = "SELECT COUNT(o) FROM DbChains o WHERE o.statusMDM IN ?1")
+    ,
 })
 public class DbChainsUsers implements Serializable {
 
@@ -46,6 +48,7 @@ public class DbChainsUsers implements Serializable {
     public static final String FIND_BY_USER_ID_JOIN = "DbChainsUsers.findByUserIdJoin";
     public static final String FIND_BY_USER_ID_JOIN_IN = "DbChainsUsers.findByUserIdJoinIn";
     public static final String COUNT_PENDING_OUTLETS = "DbChainsUsers.countPendingOutlets";
+    public static final String COUNT_PENDING_OUTLETS_IN = "DbChainsUsers.countPendingOutletsIn";
     @EmbeddedId
     private DbChainsUsersPK dbChainsUsersPK;
     @Column(name = "PARETO")

@@ -27,11 +27,16 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = DbOutletsUsers.FIND_BY_OUTLET_ID,
             query = "SELECT o FROM DbOutletsUsers o WHERE o.dbOutletsUsersPK.outletId = ?1")
     ,
+    @NamedQuery(name = DbOutletsUsers.FIND_BY_OUTLET_ID_PROFILE_ID,
+            query = "SELECT o FROM DbOutletsUsers o WHERE o.dbOutletsUsersPK.outletId = ?1 AND o.profileId = ?2")
+    ,
     @NamedQuery(name = DbOutletsUsers.FIND_BY_USER_ID,
             query = "SELECT o.dbOutletsUsersPK.outletId FROM DbOutletsUsers o WHERE o.dbOutletsUsersPK.userId = ?1")
     ,
     @NamedQuery(name = DbOutletsUsers.COUNT_PENDING_OUTLETS, query = "SELECT COUNT(o) FROM DbOutlets o JOIN DbOutletsUsers do ON do.dbOutletsUsersPK.outletId=o.outletId "
             + "WHERE do.dbOutletsUsersPK.userId = ?1 AND o.statusMDM = ?2")
+    ,
+    @NamedQuery(name = DbOutletsUsers.COUNT_PENDING_OUTLETS_IN, query = "SELECT COUNT(o) FROM DbOutlets o WHERE o.statusMDM IN ?1")
     ,
     @NamedQuery(name = DbOutletsUsers.FIND_BY_USER_OUTLETS_JOIN, query = "SELECT do FROM DbOutletsUsers o "
             + "JOIN DbOutlets do ON do.outletId=o.dbOutletsUsersPK.outletId "
@@ -141,11 +146,13 @@ public class DbOutletsUsers implements Serializable {
 
     public static final String FIND_BY_USER_ID = "DbOutletsUsers.findByUserId";
     public static final String FIND_BY_OUTLET_ID = "DbOutletsUsers.findByOutletId";
+    public static final String FIND_BY_OUTLET_ID_PROFILE_ID = "DbOutletsUsers.findByOutletIdProfileId";
     public static final String FIND_BY_USER_OUTLETS_JOIN = "DbOutletsUsers.findByUserOutletsJoin";
     public static final String FIND_BY_USER_OUTLETS_JOIN_IN = "DbOutletsUsers.findByUserOutletsJoinIn";
     public static final String FIND_BY_USER_OUTLETS_JOIN_COUNT = "DbOutletsUsers.findByUserOutletsJoinCount";
     public static final String FIND_BY_USER_OUTLETS_JOIN_COUNT_IN = "DbOutletsUsers.findByUserOutletsJoinCountIn";
     public static final String COUNT_PENDING_OUTLETS = "DbOutletsUsers.countPendingOutlets";
+    public static final String COUNT_PENDING_OUTLETS_IN = "DbOutletsUsers.countPendingOutletsIn";
     @EmbeddedId
     private DbOutletsUsersPK dbOutletsUsersPK;
     @Column(name = "PARETO")
@@ -156,6 +163,8 @@ public class DbOutletsUsers implements Serializable {
     @Column(name = "MODIFICATION_DATE")
     @Temporal(TemporalType.DATE)
     private Date modificationDate;
+    @Column(name = "PROFILE_ID")
+    private Integer profileId;
 
     public DbOutletsUsers() {
     }
@@ -197,6 +206,14 @@ public class DbOutletsUsers implements Serializable {
 
     public void setModificationDate(Date modificationDate) {
         this.modificationDate = modificationDate;
+    }
+
+    public Integer getProfileId() {
+        return profileId;
+    }
+
+    public void setProfileId(Integer profileId) {
+        this.profileId = profileId;
     }
 
     @Override
