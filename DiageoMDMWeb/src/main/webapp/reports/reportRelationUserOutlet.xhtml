@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <body>
+        <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
+            <ui:define name="content">
+                <h:form id="report">                    
+                    <h:commandLink id="clExportcsv">
+                        <p:graphicImage name="/images/iconos/csv.png" width="5%"/>
+                        <p:dataExporter type="csv" target="dtOutlet" fileName="Report" pageOnly="false" encoding="ISO-8859-1"/>
+                    </h:commandLink>
+                    <br/>
+                    <p:scrollPanel style="width:100%" mode="native">
+                        <p:dataTable id="dtOutlet" paginatorAlwaysVisible="true" rows="15"
+                                     widgetVar="dtReport"    
+                                     value="#{relationUserOutletBean.informeRelUsuOutletDataModel}" var="relUsuOut"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     style="font-size:  90%;width:300%" paginator="true"
+                                     emptyMessage="#{msg.out_msg_not_record}">
+                            <p:column headerText="#{msg.source}"><h:outputLabel value="#{relUsuOut.origen}"/></p:column>
+                            <p:column headerText="#{msg.estado}"><h:outputLabel value="#{relUsuOut.estado}"/></p:column>
+                            <p:column headerText="#{msg.journey_plan}"><h:outputLabel value="#{relUsuOut.journeyPlan}"/></p:column>
+                            <p:column headerText="#{msg.outlet_id}"><h:outputLabel value="#{relUsuOut.outletId}"/></p:column>
+                            <p:column headerText="#{msg.distri_father}"><h:outputLabel value="#{relUsuOut.outletIdFather}"/></p:column>
+                            <p:column headerText="#{msg.out_kiernan}"><h:outputLabel value="#{relUsuOut.kiernanId}"/></p:column>
+                            <p:column headerText="#{msg.dis_commercial_management}"><h:outputLabel value="#{relUsuOut.gerenciaComercial}"/></p:column>
+                            <p:column headerText="#{msg.sales_code_distri}"><h:outputLabel value="#{relUsuOut.codigoDistribuidor}"/></p:column>
+                            <p:column headerText="#{msg.distributor_name}"><h:outputLabel value="#{relUsuOut.nombreDistribuidor}"/></p:column>
+                            <p:column headerText="#{msg.chain_code_pdv}"><h:outputLabel value="#{relUsuOut.numberPDV}"/></p:column>
+                            <p:column headerText="#{msg.out_nombre}"><h:outputLabel value="#{relUsuOut.outletName}"/></p:column>
+                            <p:column headerText="#{msg.out_razon_social}"><h:outputLabel value="#{relUsuOut.businessName}"/></p:column>
+                            <p:column headerText="#{msg.out_nit}"><h:outputLabel value="#{relUsuOut.nit}"/></p:column>
+                            <p:column headerText="#{msg.can_canal}"><h:outputLabel value="#{relUsuOut.canalDiageo}"/></p:column>
+                            <p:column headerText="#{msg.sub_subcanal}"><h:outputLabel value="#{relUsuOut.subCanalDiageo}"/></p:column>
+                            <p:column headerText="#{msg.seg_segmento}"><h:outputLabel value="#{relUsuOut.segmentoDiageo}"/></p:column>
+                            <p:column headerText="#{msg.sub_seg_subsegmento}"><h:outputLabel value="#{relUsuOut.subSegmentoDiageo}"/></p:column>
+                            <p:column headerText="#{msg.out_potencial}"><h:outputLabel value="#{relUsuOut.namePotential}"/></p:column>
+                            <p:column headerText="#{msg.sub_segment_distributor}"><h:outputLabel value="#{relUsuOut.subSegmentoDistribuidor}"/></p:column>
+                            <p:column headerText="#{msg.sales_code}"><h:outputLabel value="#{relUsuOut.codigoVendedor}"/></p:column>
+                            <p:column headerText="#{msg.sales_nombre}"><h:outputLabel value="#{relUsuOut.nombreVendedor}"/></p:column>
+                            <p:column headerText="#{msg.usu_perfil}"><h:outputLabel value="#{relUsuOut.rolTmcKam}"/></p:column>
+                            <p:column headerText="#{msg.name_tmc_kam}"><h:outputLabel value="#{relUsuOut.nombreTmcKam}"/></p:column>
+                            <p:column headerText="#{msg.rol_cpa}"><h:outputLabel value="#{relUsuOut.rolCpa}"/></p:column>
+                            <p:column headerText="#{msg.name_cpa}"><h:outputLabel value="#{relUsuOut.nombreCpa}"/></p:column>
+                            <p:column headerText="#{msg.administrator_code}"><h:outputLabel value="#{relUsuOut.codigoAdministradorAthena}"/></p:column>
+                            <p:column headerText="#{msg.admin}"><h:outputLabel value="#{relUsuOut.nombreAdministrador}"/></p:column>
+                        </p:dataTable>
+                    </p:scrollPanel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

@@ -144,9 +144,18 @@ public class MenuBean extends DiageoRootBean {
             case U_RELATION:
                 getLoginBean().armarMigaPan(capturarValor("m_administrador"), capturarValor("m_usuario"), capturarValor("usu_relation"));
                 return "/admin/usuario/relationUser?faces-redirect=true";
+            case REPORT_PENDING_MANAGEMENT:
+                getLoginBean().armarMigaPan(capturarValor("m_report"), capturarValor("report_pending_management"));
+                return "/reports/reportPendingManagement?faces-redirect=true";
+            case REPORT_RELATION_USER_OUTLET:
+                getLoginBean().armarMigaPan(capturarValor("m_report"), capturarValor("report_relation_user_outlet"));
+                return "/reports/reportRelationUserOutlet?faces-redirect=true";
+            case REPORT_BLANCOS:
+                getLoginBean().armarMigaPan(capturarValor("m_report"), capturarValor("report_blancos"));
+                return "/reports/reportBlancos?faces-redirect=true";
         }
         return null;
-    }
+    }   
 
     public LoginBean getLoginBean() {
         return loginBean;

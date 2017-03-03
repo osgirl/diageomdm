@@ -10,86 +10,86 @@ and open the template in the editor.
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://xmlns.jcp.org/jsf/core">    
     <!--p:menuitem value="{msg.m_outlet_carga}" rendered="{loginBean.renderizarMenu('LOAD_OUT')}" action="{menuBean.navegar('LOAD_OUT')}" ajax="false"/-->                    
-        <h:form>
-            <style>
-                .ui-menu.ui-menubar .ui-menu-parent .ui-menu-child{
-                    width: 240px !important;
-                }
-            </style>
-            <p:menubar autoDisplay="false">
-                <p:submenu label="#{msg.m_outlet}" rendered="#{loginBean.renderizarMenu('OUT')}">  
-                    <p:menuitem value="#{msg.m_outlet_crear}" rendered="#{loginBean.renderizarMenu('C_OUT')}" action="#{menuBean.navegar('C_OUT')}" ajax="false"/>
-                    <p:menuitem value="#{msg.m_outlet_consultar}" rendered="#{loginBean.renderizarMenu('S_OUT')}" action="#{menuBean.navegar('S_OUT')}" ajax="false"/>                    
-                    <p:menuitem value="#{msg.m_chain_create}" rendered="#{loginBean.renderizarMenu('C_CHAIN')}" action="#{menuBean.navegar('C_CHAIN')}" ajax="false"/>
-                    <p:menuitem value="#{msg.m_chain_search}" rendered="#{loginBean.renderizarMenu('S_CHAIN')}" action="#{menuBean.navegar('S_CHAIN')}" ajax="false"/>
-                    
-                </p:submenu>   
+    <h:form>
+        <style>
+            .ui-menu.ui-menubar .ui-menu-parent .ui-menu-child{
+                width: 240px !important;
+            }
+        </style>
+        <p:menubar autoDisplay="false">
+            <p:submenu label="#{msg.m_outlet}" rendered="#{loginBean.renderizarMenu('OUT')}">  
+                <p:menuitem value="#{msg.m_outlet_crear}" rendered="#{loginBean.renderizarMenu('C_OUT')}" action="#{menuBean.navegar('C_OUT')}" ajax="false"/>
+                <p:menuitem value="#{msg.m_outlet_consultar}" rendered="#{loginBean.renderizarMenu('S_OUT')}" action="#{menuBean.navegar('S_OUT')}" ajax="false"/>                    
+                <p:menuitem value="#{msg.m_chain_create}" rendered="#{loginBean.renderizarMenu('C_CHAIN')}" action="#{menuBean.navegar('C_CHAIN')}" ajax="false"/>
+                <p:menuitem value="#{msg.m_chain_search}" rendered="#{loginBean.renderizarMenu('S_CHAIN')}" action="#{menuBean.navegar('S_CHAIN')}" ajax="false"/>
 
-                <p:submenu label="#{msg.m_administrador}" rendered="#{loginBean.renderizarMenu('MAGANER')}">
-                    <p:submenu label="#{msg.m_usuario}" rendered="#{loginBean.renderizarMenu('USU')}">
-                        <p:menuitem value="#{msg.m_usuario_crear}" rendered="#{loginBean.renderizarMenu('C_USU')}" action="#{menuBean.navegar('C_USU')}" ajax="false"/>
-                        <p:menuitem value="#{msg.m_usuario_consultar}" rendered="#{loginBean.renderizarMenu('S_USU')}" action="#{menuBean.navegar('S_USU')}" ajax="false"/>
-                        <p:menuitem value="#{msg.usu_relation}" rendered="#{loginBean.renderizarMenu('U_RELATION')}" action="#{menuBean.navegar('U_RELATION')}" ajax="false"/>
-                    </p:submenu>
-                    <p:submenu label="#{msg.m_canal}" rendered="#{loginBean.renderizarMenu('CHAN')}">
-                        <p:menuitem value="#{msg.m_canal_crear}" rendered="#{loginBean.renderizarMenu('C_CHAN')}" action="#{menuBean.navegar('C_CHAN')}" ajax="false"/>
-                        <p:menuitem value="#{msg.m_canal_consultar}"  rendered="#{loginBean.renderizarMenu('S_CHAN')}" action="#{menuBean.navegar('S_CHAN')}" ajax="false"/>
-                    </p:submenu>
-                    <p:submenu label="#{msg.m_canal_sub}" rendered="#{loginBean.renderizarMenu('SUB_CHAN')}">
-                        <p:menuitem value="#{msg.m_canal_sub_crear}" rendered="#{loginBean.renderizarMenu('C_SUB_CHAN')}" action="#{menuBean.navegar('C_SUB_CHAN')}" ajax="false"/>
-                        <p:menuitem value="#{msg.m_canal_sub_consultar}" rendered="#{loginBean.renderizarMenu('S_SUB_CHAN')}" action="#{menuBean.navegar('S_SUB_CHAN')}" ajax="false"/>
-                    </p:submenu>
-                    <p:submenu label="#{msg.m_segmento}" rendered="#{loginBean.renderizarMenu('SEG')}">
-                        <p:menuitem value="#{msg.m_segmento_crear}" rendered="#{loginBean.renderizarMenu('C_SEG')}" action="#{menuBean.navegar('C_SEG')}" ajax="false"/>
-                        <p:menuitem value="#{msg.m_segmento_consultar}" rendered="#{loginBean.renderizarMenu('S_SEG')}" action="#{menuBean.navegar('S_SEG')}" ajax="false"/>
-                    </p:submenu>
-                    <p:submenu label="#{msg.m_segmento_sub}" rendered="#{loginBean.renderizarMenu('SUB_SEG')}">
-                        <p:menuitem value="#{msg.m_segmento_sub_crear}" rendered="#{loginBean.renderizarMenu('C_SUB_SEG')}" action="#{menuBean.navegar('C_SUB_SEG')}" ajax="false"/>
-                        <p:menuitem value="#{msg.m_segmento_sub_consultar}" rendered="#{loginBean.renderizarMenu('S_SUB_SEG')}" action="#{menuBean.navegar('S_SUB_SEG')}" ajax="false"/>
-                    </p:submenu>
-                    <p:submenu label="#{msg.m_management_potential}" rendered="#{loginBean.renderizarMenu('POTENTIAL')}">
-                        <p:menuitem value="#{msg.m_potential_create}" rendered="#{loginBean.renderizarMenu('C_POTENTIAL')}" action="#{menuBean.navegar('C_POTENTIAL')}" ajax="false"/>
-                        <p:menuitem value="#{msg.m_potential_search}" rendered="#{loginBean.renderizarMenu('S_POTENTIAL')}" action="#{menuBean.navegar('S_POTENTIAL')}" ajax="false"/>
-                    </p:submenu>                    
-                    <p:submenu label="#{msg.m_distribuidor}" rendered="#{loginBean.renderizarMenu('DISTRI')}">
-                        <p:menuitem value="#{msg.m_distr_admin_create}" rendered="#{loginBean.renderizarMenu('C_ADMIN')}" action="#{menuBean.navegar('C_ADMIN')}" ajax="false"/>
-                        <p:menuitem value="#{msg.m_distr_admin_search}" rendered="#{loginBean.renderizarMenu('S_ADMIN')}" action="#{menuBean.navegar('S_ADMIN')}" ajax="false"/>
-                        <p:menuitem value="#{msg.m_distri_crear}" rendered="#{loginBean.renderizarMenu('C_DISTRI')}" action="#{menuBean.navegar('C_DISTRI')}" ajax="false"/>
-                        <p:menuitem value="#{msg.m_distri_consultar}" rendered="#{loginBean.renderizarMenu('S_DISTRI')}" action="#{menuBean.navegar('S_DISTRI')}" ajax="false"/>
-                    </p:submenu>
-                    <p:submenu label="#{msg.regional}" rendered="#{loginBean.renderizarMenu('DISTRI_LOCATION')}">
-                        <p:menuitem value="#{msg.regional_create}" rendered="#{loginBean.renderizarMenu('C_DISTRI_LOCATION')}" action="#{menuBean.navegar('C_DISTRI_LOCATION')}" ajax="false"/>
-                        <p:menuitem value="#{msg.regional_search}" rendered="#{loginBean.renderizarMenu('S_DISTRI_LOCATION')}" action="#{menuBean.navegar('S_DISTRI_LOCATION')}" ajax="false"/>
-                    </p:submenu>
+            </p:submenu>   
 
-                    <p:submenu label="#{msg.param}" rendered="#{loginBean.renderizarMenu('QUERY_SEGMENT')}">
-                        <p:menuitem value="#{msg.param_segment_query}" rendered="#{loginBean.renderizarMenu('QUERY_SEGMENT_EDIT')}" action="#{menuBean.navegar('QUERY_SEGMENT_EDIT')}" ajax="false"/>
-                    </p:submenu>
-                    <p:submenu label="#{msg.sales}" rendered="#{loginBean.renderizarMenu('SALES')}">                        
-                        <p:menuitem value="#{msg.m_sales_search}" rendered="#{loginBean.renderizarMenu('S_SALES')}" action="#{menuBean.navegar('S_SALES')}" ajax="false"/>
-                    </p:submenu>
-                </p:submenu>                   
-
-                <p:submenu label="#{msg.m_report}" rendered="#{loginBean.renderizarMenu('REPORT')}"> 
-                    <p:menuitem value="#{msg.m_report_user}" rendered="#{loginBean.renderizarMenu('REPORT_USER')}" action="#{menuBean.navegar('REPORT_USER')}" ajax="false"/>
-                    <p:menuitem value="#{msg.m_report_distri}" rendered="#{loginBean.renderizarMenu('REPORT_COMMERCIAL_MANAGEMENT')}" action="#{menuBean.navegar('REPORT_COMMERCIAL_MANAGEMENT')}" ajax="false"/>
-                    <p:menuitem value="#{msg.m_report_casuistry}" rendered="#{loginBean.renderizarMenu('REPORT_CASUISTRY')}" action="#{menuBean.navegar('REPORT_CASUISTRY')}" ajax="false"/>
+            <p:submenu label="#{msg.m_administrador}" rendered="#{loginBean.renderizarMenu('MAGANER')}">
+                <p:submenu label="#{msg.m_usuario}" rendered="#{loginBean.renderizarMenu('USU')}">
+                    <p:menuitem value="#{msg.m_usuario_crear}" rendered="#{loginBean.renderizarMenu('C_USU')}" action="#{menuBean.navegar('C_USU')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_usuario_consultar}" rendered="#{loginBean.renderizarMenu('S_USU')}" action="#{menuBean.navegar('S_USU')}" ajax="false"/>
+                    <p:menuitem value="#{msg.usu_relation}" rendered="#{loginBean.renderizarMenu('U_RELATION')}" action="#{menuBean.navegar('U_RELATION')}" ajax="false"/>
+                </p:submenu>
+                <p:submenu label="#{msg.m_canal}" rendered="#{loginBean.renderizarMenu('CHAN')}">
+                    <p:menuitem value="#{msg.m_canal_crear}" rendered="#{loginBean.renderizarMenu('C_CHAN')}" action="#{menuBean.navegar('C_CHAN')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_canal_consultar}"  rendered="#{loginBean.renderizarMenu('S_CHAN')}" action="#{menuBean.navegar('S_CHAN')}" ajax="false"/>
+                </p:submenu>
+                <p:submenu label="#{msg.m_canal_sub}" rendered="#{loginBean.renderizarMenu('SUB_CHAN')}">
+                    <p:menuitem value="#{msg.m_canal_sub_crear}" rendered="#{loginBean.renderizarMenu('C_SUB_CHAN')}" action="#{menuBean.navegar('C_SUB_CHAN')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_canal_sub_consultar}" rendered="#{loginBean.renderizarMenu('S_SUB_CHAN')}" action="#{menuBean.navegar('S_SUB_CHAN')}" ajax="false"/>
+                </p:submenu>
+                <p:submenu label="#{msg.m_segmento}" rendered="#{loginBean.renderizarMenu('SEG')}">
+                    <p:menuitem value="#{msg.m_segmento_crear}" rendered="#{loginBean.renderizarMenu('C_SEG')}" action="#{menuBean.navegar('C_SEG')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_segmento_consultar}" rendered="#{loginBean.renderizarMenu('S_SEG')}" action="#{menuBean.navegar('S_SEG')}" ajax="false"/>
+                </p:submenu>
+                <p:submenu label="#{msg.m_segmento_sub}" rendered="#{loginBean.renderizarMenu('SUB_SEG')}">
+                    <p:menuitem value="#{msg.m_segmento_sub_crear}" rendered="#{loginBean.renderizarMenu('C_SUB_SEG')}" action="#{menuBean.navegar('C_SUB_SEG')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_segmento_sub_consultar}" rendered="#{loginBean.renderizarMenu('S_SUB_SEG')}" action="#{menuBean.navegar('S_SUB_SEG')}" ajax="false"/>
+                </p:submenu>
+                <p:submenu label="#{msg.m_management_potential}" rendered="#{loginBean.renderizarMenu('POTENTIAL')}">
+                    <p:menuitem value="#{msg.m_potential_create}" rendered="#{loginBean.renderizarMenu('C_POTENTIAL')}" action="#{menuBean.navegar('C_POTENTIAL')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_potential_search}" rendered="#{loginBean.renderizarMenu('S_POTENTIAL')}" action="#{menuBean.navegar('S_POTENTIAL')}" ajax="false"/>
+                </p:submenu>                    
+                <p:submenu label="#{msg.m_distribuidor}" rendered="#{loginBean.renderizarMenu('DISTRI')}">
+                    <p:menuitem value="#{msg.m_distr_admin_create}" rendered="#{loginBean.renderizarMenu('C_ADMIN')}" action="#{menuBean.navegar('C_ADMIN')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_distr_admin_search}" rendered="#{loginBean.renderizarMenu('S_ADMIN')}" action="#{menuBean.navegar('S_ADMIN')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_distri_crear}" rendered="#{loginBean.renderizarMenu('C_DISTRI')}" action="#{menuBean.navegar('C_DISTRI')}" ajax="false"/>
+                    <p:menuitem value="#{msg.m_distri_consultar}" rendered="#{loginBean.renderizarMenu('S_DISTRI')}" action="#{menuBean.navegar('S_DISTRI')}" ajax="false"/>
+                </p:submenu>
+                <p:submenu label="#{msg.regional}" rendered="#{loginBean.renderizarMenu('DISTRI_LOCATION')}">
+                    <p:menuitem value="#{msg.regional_create}" rendered="#{loginBean.renderizarMenu('C_DISTRI_LOCATION')}" action="#{menuBean.navegar('C_DISTRI_LOCATION')}" ajax="false"/>
+                    <p:menuitem value="#{msg.regional_search}" rendered="#{loginBean.renderizarMenu('S_DISTRI_LOCATION')}" action="#{menuBean.navegar('S_DISTRI_LOCATION')}" ajax="false"/>
                 </p:submenu>
 
-                <p:submenu label="#{msg.m_perfil}">                        
-                    <p:menuitem value="#{msg.m_mis_datos}" action="#{menuBean.navegar('MIS_DATOS')}" ajax="false"/>
-                    <p:menuitem value="#{msg.m_cambiar_contrase}" action="#{menuBean.navegar('CAM_CONTRA')}" ajax="false"/>
-                    <p:menuitem value="#{msg.m_idioma}" onclick="PF('dlgCambiarIdioma').show();"/>
+                <p:submenu label="#{msg.param}" rendered="#{loginBean.renderizarMenu('QUERY_SEGMENT')}">
+                    <p:menuitem value="#{msg.param_segment_query}" rendered="#{loginBean.renderizarMenu('QUERY_SEGMENT_EDIT')}" action="#{menuBean.navegar('QUERY_SEGMENT_EDIT')}" ajax="false"/>
                 </p:submenu>
+                <p:submenu label="#{msg.sales}" rendered="#{loginBean.renderizarMenu('SALES')}">                        
+                    <p:menuitem value="#{msg.m_sales_search}" rendered="#{loginBean.renderizarMenu('S_SALES')}" action="#{menuBean.navegar('S_SALES')}" ajax="false"/>
+                </p:submenu>
+            </p:submenu>                   
 
-                <f:facet name="options">                    
-                    <p:commandButton value="#{msg.btn_logout}" icon="ui-icon-extlink" action="#{loginBean.logout()}" ajax="false" 
-                                     style="color: white;background: -webkit-linear-gradient(#0088cc, #149bdf);
-                                     background: -moz-linear-gradient(#0088cc, #149bdf);
-                                     background: -o-linear-gradient(#0088cc, #149bdf);
-                                     background: -ms-linear-gradient(#0088cc, #149bdf);"/>
-                </f:facet>
-            </p:menubar> 
-        </h:form>         
+            <p:submenu label="#{msg.m_report}" rendered="#{loginBean.renderizarMenu('REPORT')}"> 
+                <p:menuitem value="#{msg.report_pending_management}" rendered="#{loginBean.renderizarMenu('REPORT_PENDING_MANAGEMENT')}" action="#{menuBean.navegar('REPORT_PENDING_MANAGEMENT')}" ajax="false"/>
+                <p:menuitem value="#{msg.report_relation_user_outlet}" rendered="#{loginBean.renderizarMenu('REPORT_RELATION_USER_OUTLET')}" action="#{menuBean.navegar('REPORT_RELATION_USER_OUTLET')}" ajax="false"/>
+                <p:menuitem value="#{msg.report_blancos}" rendered="#{loginBean.renderizarMenu('REPORT_BLANCOS')}" action="#{menuBean.navegar('REPORT_BLANCOS')}" ajax="false"/>
+            </p:submenu>
+
+            <p:submenu label="#{msg.m_perfil}">                        
+                <p:menuitem value="#{msg.m_mis_datos}" action="#{menuBean.navegar('MIS_DATOS')}" ajax="false"/>
+                <p:menuitem value="#{msg.m_cambiar_contrase}" action="#{menuBean.navegar('CAM_CONTRA')}" ajax="false"/>
+                <p:menuitem value="#{msg.m_idioma}" onclick="PF('dlgCambiarIdioma').show();"/>
+            </p:submenu>
+
+            <f:facet name="options">                    
+                <p:commandButton value="#{msg.btn_logout}" icon="ui-icon-extlink" action="#{loginBean.logout()}" ajax="false" 
+                                 style="color: white;background: -webkit-linear-gradient(#0088cc, #149bdf);
+                                 background: -moz-linear-gradient(#0088cc, #149bdf);
+                                 background: -o-linear-gradient(#0088cc, #149bdf);
+                                 background: -ms-linear-gradient(#0088cc, #149bdf);"/>
+            </f:facet>
+        </p:menubar> 
+    </h:form>         
 </html>
 

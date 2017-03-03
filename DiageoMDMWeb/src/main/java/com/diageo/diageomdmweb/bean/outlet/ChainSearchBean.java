@@ -295,6 +295,12 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             DbChains chain = getChainSelected();
             if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
                 chain.setStatusMDM(StatusSystemMDM.REJECT.name());
+                Audit audit = new Audit();
+                audit.setCreationDate(chain.getAudit() != null ? chain.getAudit().getCreationDate() : null);
+                audit.setCreationUser(chain.getAudit() != null ? chain.getAudit().getCreationUser() : null);
+                audit.setModificationDate(super.getCurrentDate());
+                audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+                chain.setAudit(audit);
                 chainBeanLocal.updateChain(chain);
                 showInfoMessage(capturarValor("sis_datos_guardados_exito"));
                 setSeeDetail(Boolean.TRUE);
@@ -338,6 +344,12 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                     }
                 }
                 if (update) {
+                    Audit audit = new Audit();
+                    audit.setCreationDate(ch.getAudit() != null ? ch.getAudit().getCreationDate() : null);
+                    audit.setCreationUser(ch.getAudit() != null ? ch.getAudit().getCreationUser() : null);
+                    audit.setModificationDate(super.getCurrentDate());
+                    audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+                    ch.setAudit(audit);
                     chainBeanLocal.updateChain(ch);
                 }
             } catch (DiageoBusinessException ex) {
@@ -375,6 +387,12 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                     }
                 }
                 if (update) {
+                    Audit audit = new Audit();
+                    audit.setCreationDate(chain.getAudit() != null ? chain.getAudit().getCreationDate() : null);
+                    audit.setCreationUser(chain.getAudit() != null ? chain.getAudit().getCreationUser() : null);
+                    audit.setModificationDate(super.getCurrentDate());
+                    audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+                    chain.setAudit(audit);
                     chainBeanLocal.updateChain(chain);
                 }
             } catch (DiageoBusinessException ex) {
@@ -398,6 +416,12 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                         }
                         if (update) {
                             ch.setStatusMDM(StatusSystemMDM.REJECT.name());
+                            Audit audit = new Audit();
+                            audit.setCreationDate(ch.getAudit() != null ? ch.getAudit().getCreationDate() : null);
+                            audit.setCreationUser(ch.getAudit() != null ? ch.getAudit().getCreationUser() : null);
+                            audit.setModificationDate(super.getCurrentDate());
+                            audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+                            ch.setAudit(audit);
                             chainBeanLocal.updateChain(ch);
                         }
                     }
@@ -430,6 +454,12 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                         }
                         if (update) {
                             chain.setStatusMDM(StatusSystemMDM.REJECT.name());
+                            Audit audit = new Audit();
+                            audit.setCreationDate(chain.getAudit() != null ? chain.getAudit().getCreationDate() : null);
+                            audit.setCreationUser(chain.getAudit() != null ? chain.getAudit().getCreationUser() : null);
+                            audit.setModificationDate(super.getCurrentDate());
+                            audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+                            chain.setAudit(audit);
                             chainBeanLocal.updateChain(chain);
                         }
                     }

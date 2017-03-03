@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:pe="http://primefaces.org/ui/extensions">
+    <body>
+        <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
+            <ui:define name="content">
+                <h:form id="report">
+                    <h:commandLink >
+                        <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
+                        <pe:exporter type="xlsx" target="dtOutlet"  fileName="Report" pageOnly="false" encoding="ISO-8859-1"/>
+                    </h:commandLink>
+                    <h:commandLink id="clExportcsv">
+                        <p:graphicImage name="/images/iconos/csv.png" width="5%"/>
+                        <p:dataExporter type="csv" target="dtOutlet" fileName="Report" pageOnly="false" encoding="ISO-8859-1"/>
+                    </h:commandLink>
+                    <br/>
+                    <p:scrollPanel style="width:100%" mode="native">
+                        <p:dataTable id="dtOutlet" paginatorAlwaysVisible="true" rows="15"
+                                     widgetVar="dtReport"    
+                                     
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     style="font-size:  90%;width:300%" paginator="true" 
+                                     emptyMessage="#{msg.out_msg_not_record}" 
+                                     filterEvent="enter" >
+
+                        
+
+                        </p:dataTable>
+                    </p:scrollPanel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

@@ -45,10 +45,8 @@
                     </p:dialog>
                     <h:form id="formMigaPan">
                         <p:growl id="idGrowl" showDetail="true" globalOnly="true"                             
-                                 autoUpdate="true" life="6000"/>
-                        <p:commandLink disabled="true">
-                            <p:breadCrumb model="#{loginBean.migaPan}" />
-                        </p:commandLink>
+                                 autoUpdate="true" life="6000"/>                        
+                        <p:breadCrumb model="#{loginBean.migaPan}"/>
                     </h:form>
                     <ui:include src="menu.xhtml"/>
                 </div>

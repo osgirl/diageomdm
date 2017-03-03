@@ -176,6 +176,11 @@
                                             <f:selectItem itemValue="A" itemLabel="#{msg.active}"/>
                                             <f:selectItem itemValue="I" itemLabel="#{msg.inactive}"/>
                                         </p:selectOneMenu>
+
+                                        <h:outputLabel value="#{msg.tmc_outlet}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <h:panelGroup>
+                                            <b><h:outputLabel value="#{outletConsultarBean.nameTmc}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/></b>
+                                        </h:panelGroup>
                                     </h:panelGrid>
                                     <br/>
                                     <!--h:panelGrid columns="6" style="width: 80%">
@@ -275,7 +280,7 @@
                                     <h:panelGrid columns="3" style="width: 95%">
                                         <h:outputLabel value="#{msg.customer}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                         <p:autoComplete id="acCustomer" minQueryLength="4" value="#{outletConsultarBean.customer}" label="#{msg.customer}"
-                                                        var="cus" itemLabel="#{cus.customerName}" itemValue="#{cus}" forceSelection="true"
+                                                        var="cus" itemLabel="#{cus.kiernanId} #{cus.customerName} #{cus.nit}" itemValue="#{cus}" forceSelection="true"
                                                         completeMethod="#{outletConsultarBean.completeCustomer}" effect="fade" converter="customerConverter"
                                                         style="width: 90% !important;" disabled="#{outletConsultarBean.disabledFields and outletConsultarBean.disabledFieldsTmc}"/>
                                         <p:commandButton value="#{msg.btn_add}" process="@parent" update="formConsultarOutlet:pgCustomer formConsultarOutlet:acCustomer"     

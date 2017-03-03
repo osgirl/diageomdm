@@ -7,7 +7,6 @@ and open the template in the editor.
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:h="http://xmlns.jcp.org/jsf/html">
     <p:fieldset legend="Vendedor" style="width: 90%">
         <br/>
@@ -19,8 +18,8 @@ and open the template in the editor.
         <p:dataTable id="dtSales" paginatorAlwaysVisible="true" rows="15" widgetVar="dtSales"
                      value="#{salesSearchBean.listSales}" var="sales"
                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
-                     paginator="true">
-            <p:column headerText="#{msg.id}">
+                     paginator="true" filterEvent="enter">
+            <p:column headerText="#{msg.id}" filterBy="#{sales.db3partySaleId}">
                 <h:outputText value="#{sales.db3partySaleId}"/>
             </p:column>
             <p:column headerText="#{msg.sales_code}" filterBy="#{sales.pdv}">
@@ -35,10 +34,10 @@ and open the template in the editor.
             <p:column headerText="#{msg.usu_perfil}" filterBy="#{sales.db3PartyProfileId.description}">
                 <h:outputText value="#{sales.db3PartyProfileId.description}"/>
             </p:column>
-            <p:column headerText="#{msg.out_distribuidor}">
+            <p:column headerText="#{msg.out_distribuidor}" filterBy="#{salesSearchBean.seeLabel3Party(sales.dbeParty)}">
                 <h:outputText value="#{salesSearchBean.seeLabel3Party(sales.dbeParty)}"/>
             </p:column>
-            <p:column headerText="#{msg.sales_territory_intouch}">
+            <p:column headerText="#{msg.sales_territory_intouch}" filterBy="#{sales.distri_2}">
                 <h:outputText value="#{sales.distri_2}"/>
             </p:column>
             <p:column exportable="false">

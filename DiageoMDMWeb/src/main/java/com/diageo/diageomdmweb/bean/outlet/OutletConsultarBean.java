@@ -5,7 +5,6 @@
  */
 package com.diageo.diageomdmweb.bean.outlet;
 
-import com.diageo.admincontrollerweb.beans.ParameterBeanLocal;
 import com.diageo.admincontrollerweb.beans.RelationUserBeanLocal;
 import com.diageo.admincontrollerweb.beans.UserBeanLocal;
 import com.diageo.admincontrollerweb.entities.DwRelationUsers;
@@ -19,6 +18,7 @@ import com.diageo.diageomdmweb.datamodel.DbOutletsLazyDataModel;
 import com.diageo.diageomdmweb.jdbc.ConecctionJDBC;
 import com.diageo.diageomdmweb.mail.EMail;
 import com.diageo.diageomdmweb.mail.templates.VelocityTemplate;
+import com.diageo.diageonegocio.beans.DiageoLogBeanLocal;
 import com.diageo.diageonegocio.beans.OutletsUserBeanLocal;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
 import com.diageo.diageonegocio.entidades.Audit;
@@ -29,6 +29,7 @@ import com.diageo.diageonegocio.entidades.DbOutletsUsers;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import com.diageo.diageonegocio.entidades.DbPhones;
 import com.diageo.diageonegocio.entidades.DbSubSegments;
+import com.diageo.diageonegocio.entidades.DiageoLog;
 import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.enums.StateOutletChain;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
@@ -66,6 +67,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     private OutletsUserBeanLocal outletsUserBeanLocal;
     @EJB
     private RelationUserBeanLocal relationUserBeanLocal;
+    @EJB
+    private DiageoLogBeanLocal diageoLogBeanLocal;
     @Inject
     private LoginBean loginBean;
     private List<DbPermissionSegments> listPermi;
@@ -93,6 +96,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     private List<Integer> listId;
     private List<SelectItem> listFilterStatusMDM;
     private DbOutletsDto outletClonable;
+    private String nameTmc;
 
     /**
      * Creates a new instance of OutletConsultarBean
@@ -166,7 +170,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
 
     public void seeDetail(DbOutlets out) {
         try {
-            outletClonable = new DbOutletsDto(out.clone());
+            outletClonable = new DbOutletsDto(out.clone(), getCurrentDate(), getLoginBean().getUsuario().getUserId());
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -212,6 +216,15 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setSellerSelected(out.getDb3partySaleId());
         setJourneyPlan(out.getJourneyPlan().equals(StateEnum.ACTIVE.getState()));
         setStatusOutlet(out.getStatusOutlet());
+        try {
+            DbOutletsUsers findByOutletId = outletsUserBeanLocal.findByOutletIdProfileId(idOutlet);
+            if (findByOutletId != null) {
+                DwUsers findById = userBeanLocal.findById(findByOutletId.getDbOutletsUsersPK().getUserId());
+                setNameTmc(findById.getNameUser().toUpperCase() + " " + findById.getLastName().toUpperCase());
+            }
+        } catch (Exception e) {
+            Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, e.getMessage());
+        }
     }
 
     private void deletCustomerChain() {
@@ -274,7 +287,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                     if (outlet.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
                         outlet.setStatusMDM(StatusSystemMDM.APPROVED.name());
                     }
-                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {                    
+                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
                     if (!outletClonable.isNotificationChangedSegmentation(outlet)) {
                         outlet.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
                     }
@@ -290,6 +303,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                 if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_DISTRIBUIDORES.getId())) {
                     if (outlet.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
                         outletBeanLocal.updateOutlet(outlet);
+                        createLog(outlet);
                         Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
                                 userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
                         ConecctionJDBC.callStoreProcedureDBOutlets(con, outlet.getOutletId());
@@ -299,6 +313,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                     }
                 } else {
                     outletBeanLocal.updateOutlet(outlet);
+                    createLog(outlet);
                     Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
                             userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
                     ConecctionJDBC.callStoreProcedureDBOutlets(con, outlet.getOutletId());
@@ -313,6 +328,17 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             }
         }
         setFlagOutletInactive(true);
+    }
+
+    public void createLog(DbOutlets out) {
+        outletClonable.changes(out);
+        List<DiageoLog> listDiageoLog = outletClonable.getListDiageoLog();
+        if (!listDiageoLog.isEmpty()) {
+            for (DiageoLog diageoLog : listDiageoLog) {
+                diageoLogBeanLocal.createLog(diageoLog);
+            }
+        }
+        outletClonable = new DbOutletsDto(out, getCurrentDate(), getLoginBean().getUsuario().getUserId());
     }
 
     public void buttonBack() {
@@ -401,6 +427,12 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                     out.setStatusMDM(StatusSystemMDM.PENDING_TMC.name());
                 }
                 if (update) {
+                    Audit audit = new Audit();
+                    audit.setCreationDate(out.getAudit() != null ? out.getAudit().getCreationDate() : null);
+                    audit.setCreationUser(out.getAudit() != null ? out.getAudit().getCreationUser() : null);
+                    audit.setModificationDate(super.getCurrentDate());
+                    audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+                    out.setAudit(audit);
                     outletBeanLocal.updateOutlet(out);
                 }
             } catch (DiageoBusinessException ex) {
@@ -423,6 +455,12 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                     if (out.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
                         if (update) {
                             out.setStatusMDM(StatusSystemMDM.REJECT.name());
+                            Audit audit = new Audit();
+                            audit.setCreationDate(out.getAudit() != null ? out.getAudit().getCreationDate() : null);
+                            audit.setCreationUser(out.getAudit() != null ? out.getAudit().getCreationUser() : null);
+                            audit.setModificationDate(super.getCurrentDate());
+                            audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+                            out.setAudit(audit);
                             outletBeanLocal.updateOutlet(out);
                         }
                     }
@@ -441,6 +479,12 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                 DbOutlets outlet = outletBeanLocal.findById(getIdOutlet());
                 if (outlet.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
                     outlet.setStatusMDM(StatusSystemMDM.REJECT.name());
+                    Audit audit = new Audit();
+                    audit.setCreationDate(outlet.getAudit() != null ? outlet.getAudit().getCreationDate() : null);
+                    audit.setCreationUser(outlet.getAudit() != null ? outlet.getAudit().getCreationUser() : null);
+                    audit.setModificationDate(super.getCurrentDate());
+                    audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+                    outlet.setAudit(audit);
                     outletBeanLocal.updateOutlet(outlet);
                     //sendMail();
                     init();
@@ -880,6 +924,14 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
 
     public void setListFilterStatusMDM(List<SelectItem> listFilterStatusMDM) {
         this.listFilterStatusMDM = listFilterStatusMDM;
+    }
+
+    public String getNameTmc() {
+        return nameTmc;
+    }
+
+    public void setNameTmc(String nameTmc) {
+        this.nameTmc = nameTmc;
     }
 
 }

@@ -100,6 +100,11 @@ public class DbOutletsLazyDataModel extends LazyDataModel<DbOutlets> {
         super.setRowCount(rowCount); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Método que se implementa para seleccionar uno o varios registros
+     * @param id
+     * @return 
+     */
     @Override
     public DbOutlets getRowData(String id) {
         try {
@@ -111,6 +116,11 @@ public class DbOutletsLazyDataModel extends LazyDataModel<DbOutlets> {
         }
     }
 
+    /**
+     * Método que se implementa para seleccionar uno o varios registros
+     * @param object
+     * @return 
+     */
     @Override
     public Object getRowKey(DbOutlets object) {
         if (object != null) {
