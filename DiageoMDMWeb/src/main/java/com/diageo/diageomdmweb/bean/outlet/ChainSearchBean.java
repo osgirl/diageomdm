@@ -475,6 +475,16 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         return !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
     }
+    
+    public boolean isDisabledGeography(){
+        return !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())
+                );
+    }
+
 
     @Override
     public void deletePhone(DbPhones phone) {

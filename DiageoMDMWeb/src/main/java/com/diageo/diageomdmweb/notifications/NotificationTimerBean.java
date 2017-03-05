@@ -50,26 +50,34 @@ public class NotificationTimerBean {
             for (DwUsers user : list) {
                 if (user.getStateUser().equals("1")) {
                     String name = user.getNameUser().toUpperCase() + " " + user.getLastName().toUpperCase();
-                    String rol = user.getProfileId().getNameProfile().toUpperCase();
+                    String rol = user.getDistri1() != null ? user.getDistri1().toUpperCase() : "";
                     if (user.getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
                         long quantity = outletsUserBeanLocal.notificationPendingOutlet(user.getUserId(), StatusSystemMDM.PENDING_APPROVAL.name());
                         if (quantity > 0) {
                             sendMail(name, rol, quantity, pathMail, user.getEmailUser());
+                        } else {
+                            sendMail(name, rol, pathMail, user.getEmailUser());
                         }
                     } else if (user.getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
                         long quantity = outletsUserBeanLocal.notificationPendingOutlet(user.getUserId(), StatusSystemMDM.PENDING_TMC.name());
                         if (quantity > 0) {
                             sendMail(name, rol, quantity, pathMail, user.getEmailUser());
+                        } else {
+                            sendMail(name, rol, pathMail, user.getEmailUser());
                         }
                     } else if (user.getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId()) || user.getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
                         long quantity = chainUserBeanLocal.notificationPendingChain(user.getUserId(), StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name());
                         if (quantity > 0) {
                             sendMail(name, rol, quantity, pathMail, user.getEmailUser());
+                        } else {
+                            sendMail(name, rol, pathMail, user.getEmailUser());
                         }
                     } else if (user.getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
                         long quantity = chainUserBeanLocal.notificationPendingChain(user.getUserId(), StatusSystemMDM.PENDING_APPROVAL.name());
                         if (quantity > 0) {
                             sendMail(name, rol, quantity, pathMail, user.getEmailUser());
+                        } else {
+                            sendMail(name, rol, pathMail, user.getEmailUser());
                         }
                     } else if (user.getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                             || user.getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
@@ -97,6 +105,12 @@ public class NotificationTimerBean {
     private void sendMail(String name, String rol, long quantity, String pathMail, String eMail) {
         EMail mail = new EMail();
         String msg = VelocityTemplate.notificationQuantity(name, rol, quantity, pathMail);
+        mail.send(new String[]{eMail}, "Outlet Database", msg);
+    }
+
+    private void sendMail(String name, String rol, String pathMail, String eMail) {
+        EMail mail = new EMail();
+        String msg = VelocityTemplate.notificationQuantityZero(name, rol, pathMail);
         mail.send(new String[]{eMail}, "Outlet Database", msg);
     }
 }

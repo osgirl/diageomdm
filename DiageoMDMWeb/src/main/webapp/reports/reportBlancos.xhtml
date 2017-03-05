@@ -8,32 +8,40 @@ and open the template in the editor.
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui"
-      xmlns:pe="http://primefaces.org/ui/extensions">
+      xmlns:p="http://primefaces.org/ui">
     <body>
         <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
             <ui:define name="content">
-                <h:form id="report">
-                    <h:commandLink >
-                        <p:graphicImage name="/images/iconos/xls.png" width="5%"/>
-                        <pe:exporter type="xlsx" target="dtOutlet"  fileName="Report" pageOnly="false" encoding="ISO-8859-1"/>
-                    </h:commandLink>
+                <h:form id="report">                    
                     <h:commandLink id="clExportcsv">
                         <p:graphicImage name="/images/iconos/csv.png" width="5%"/>
                         <p:dataExporter type="csv" target="dtOutlet" fileName="Report" pageOnly="false" encoding="ISO-8859-1"/>
                     </h:commandLink>
                     <br/>
                     <p:scrollPanel style="width:100%" mode="native">
-                        <p:dataTable id="dtOutlet" paginatorAlwaysVisible="true" rows="15"
-                                     widgetVar="dtReport"    
-                                     
+                        <p:dataTable id="dtOutlet" paginatorAlwaysVisible="true" rows="15" widgetVar="dtReport" 
+                                     value="#{incompleteInformationBean.infoIncompleteDataModel}" var="info"
                                      paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
                                      style="font-size:  90%;width:300%" paginator="true" 
-                                     emptyMessage="#{msg.out_msg_not_record}" 
-                                     filterEvent="enter" >
-
-                        
-
+                                     emptyMessage="#{msg.out_msg_not_record}" filterEvent="enter" lazy="true">
+                            <p:column headerText="#{msg.source}" filterBy="#{info.origen}"><h:outputLabel value="#{info.origen}"/></p:column>
+                            <p:column headerText="#{msg.outlet_id}" filterBy="#{info.outletId}"><h:outputLabel value="#{info.outletId}"/></p:column>
+                            <p:column headerText="#{msg.distri_father}" filterBy="#{info.outletIdFather}"><h:outputLabel value="#{info.outletIdFather}"/></p:column>
+                            <p:column headerText="#{msg.out_kiernan}" filterBy="#{info.kiernanId}"><h:outputLabel value="#{info.kiernanId}"/></p:column>
+                            <p:column headerText="#{msg.dis_commercial_management}" filterBy="#{info.gerencia}"><h:outputLabel value="#{info.gerencia}"/></p:column>
+                            <p:column headerText="#{msg.sales_code_distri}" filterBy="#{info.codigoDistribuidor}"><h:outputLabel value="#{info.codigoDistribuidor}"/></p:column>
+                            <p:column headerText="#{msg.distributor_name}" filterBy="#{info.nombreDistribuidor}"><h:outputLabel value="#{info.nombreDistribuidor}"/></p:column>
+                            <p:column headerText="#{msg.chain_code_pdv}" filterBy="#{info.numberPDV}"><h:outputLabel value="#{info.numberPDV}"/></p:column>
+                            <p:column headerText="#{msg.out_nombre}" filterBy="#{info.outletName}"><h:outputLabel value="#{info.outletName}"/></p:column>
+                            <p:column headerText="#{msg.out_razon_social}" filterBy="#{info.businessName}"><h:outputLabel value="#{info.businessName}"/></p:column>
+                            <p:column headerText="#{msg.out_nit}" filterBy="#{info.nitEan}"><h:outputLabel value="#{info.nitEan}"/></p:column>
+                            <p:column headerText="#{msg.out_direccion}" filterBy="#{info.direccion}"><h:outputLabel value="#{info.direccion}"/></p:column>
+                            <p:column headerText="#{msg.chain_city}" filterBy="#{info.nombreCiudad}"><h:outputLabel value="#{info.nombreCiudad}"/></p:column>
+                            <p:column headerText="#{msg.loc_depto}" filterBy="#{info.nombreDepartamento}"><h:outputLabel value="#{info.nombreDepartamento}"/></p:column>
+                            <p:column headerText="#{msg.sales_code}" filterBy="#{info.codigoVendedor}"><h:outputLabel value="#{info.codigoVendedor}"/></p:column>
+                            <p:column headerText="#{msg.sales_nombre}" filterBy="#{info.nombreVendedor}"><h:outputLabel value="#{info.nombreVendedor}"/></p:column>
+                            <p:column headerText="#{msg.name_tmc_kam}" filterBy="#{info.tmcKam}"><h:outputLabel value="#{info.tmcKam}"/></p:column>
+                            <p:column headerText="#{msg.description}" filterBy="#{info.descripcion}"><h:outputLabel value="#{info.descripcion}"/></p:column>
                         </p:dataTable>
                     </p:scrollPanel>
                 </h:form>

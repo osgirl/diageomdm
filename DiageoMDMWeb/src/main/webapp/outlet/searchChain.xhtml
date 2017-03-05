@@ -220,13 +220,13 @@
                                     <h:panelGrid columns="4" style="width: 95%">
                                         <h:outputLabel value="#{msg.loc_depto}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                         <p:selectOneMenu value="#{chainSearchBean.departamentSelected}" converter="departamentoConverter"
-                                                         style="width: 90%" disabled="#{chainSearchBean.disabledFields}">
+                                                         style="width: 90%" disabled="#{chainSearchBean.disabledGeography}">
                                             <f:selectItems value="#{diageoApplicationBean.listaDepartamento}" var="deptoout" itemLabel="#{deptoout.nameDepartament}"/>
                                             <p:ajax process="@this" update="formChainSearch:somMpioOut"/>
                                         </p:selectOneMenu>
                                         <h:outputLabel value="#{msg.chain_city}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                         <p:selectOneMenu id="somMpioOut" value="#{chainSearchBean.townSelected}" converter="municipioConverter"  style="width: 90%"
-                                                         disabled="#{chainSearchBean.disabledFields}">
+                                                         disabled="#{chainSearchBean.disabledGeography}">
                                             <f:selectItems value="#{chainSearchBean.departamentSelected.dbTownsList}" var="mpioout" itemLabel="#{mpioout.nameTown}"/>
                                         </p:selectOneMenu>
                                         <h:outputLabel value="#{msg.out_barrio}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>

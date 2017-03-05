@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 import javax.ejb.EJB;
 import org.primefaces.model.LazyDataModel;
-import org.primefaces.model.SortMeta;
 import org.primefaces.model.SortOrder;
 
 /**
@@ -21,10 +20,7 @@ import org.primefaces.model.SortOrder;
 public class InformeRelUsuOutletDataModel extends LazyDataModel<InformeRelacionUsuarioOutlet> {
 
     @EJB
-    private InformerRelacionUsuarioOutletBeanLocal usuarioOutletBeanLocal;
-
-    public InformeRelUsuOutletDataModel() {
-    }
+    private final InformerRelacionUsuarioOutletBeanLocal usuarioOutletBeanLocal;   
 
     public InformeRelUsuOutletDataModel(InformerRelacionUsuarioOutletBeanLocal usuarioOutletBeanLocal) {
         this.usuarioOutletBeanLocal = usuarioOutletBeanLocal;
@@ -32,15 +28,12 @@ public class InformeRelUsuOutletDataModel extends LazyDataModel<InformeRelacionU
 
     @Override
     public List<InformeRelacionUsuarioOutlet> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
-        List<InformeRelacionUsuarioOutlet> list = usuarioOutletBeanLocal.findAll(first, pageSize, filters);
+        List<InformeRelacionUsuarioOutlet> list = usuarioOutletBeanLocal.findAllDinamic(first, pageSize, filters);
+        long findAllCount = usuarioOutletBeanLocal.findAllDinamicCount(first, pageSize, filters);
+        setRowCount((int)findAllCount);
         return list;
     }
-
-    @Override
-    public List<InformeRelacionUsuarioOutlet> load(int first, int pageSize, List<SortMeta> multiSortMeta, Map<String, Object> filters) {
-        return super.load(first, pageSize, multiSortMeta, filters); //To change body of generated methods, choose Tools | Templates.
-    }
-
+    
     @Override
     public void setRowCount(int rowCount) {
         super.setRowCount(rowCount); //To change body of generated methods, choose Tools | Templates.

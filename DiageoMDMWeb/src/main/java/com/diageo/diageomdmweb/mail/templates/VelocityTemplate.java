@@ -91,5 +91,18 @@ public class VelocityTemplate extends DiageoRootBean {
         t.merge(context, writer);
         return writer.toString();
     }
+    
+    public static String notificationQuantityZero(String name,String rol,String pathMail){
+        Properties props = loadProperties(pathMail);
+        VelocityEngine ve = new VelocityEngine();
+        ve.init(props);
+        Template t = ve.getTemplate("QuantityNotificationZero.vm", "UTF-8");
+        VelocityContext context = new VelocityContext();
+        context.put("name", name);
+        context.put("rol", rol);
+        StringWriter writer = new StringWriter();
+        t.merge(context, writer);
+        return writer.toString();
+    }
 
 }

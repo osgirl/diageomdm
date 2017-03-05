@@ -186,7 +186,7 @@ public class AdminFilter implements Filter {
             }
             sendProcessingError(problem, response);
         }
-    }
+        }
 
     /**
      * Return the filter configuration object for this filter.
