@@ -39,7 +39,7 @@ public class DiageoLog implements Serializable {
     @Column(name = "NEW_VALUE")
     private String newValue;
     @Column(name = "CREATION_DATE")
-    @Temporal(javax.persistence.TemporalType.DATE)
+    @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date creationDate;
     @Column(name = "TABLE_ID")
     private Integer tableId;

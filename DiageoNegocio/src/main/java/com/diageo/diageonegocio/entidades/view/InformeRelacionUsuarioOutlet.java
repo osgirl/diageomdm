@@ -22,11 +22,14 @@ import javax.persistence.Table;
 @Table(name = "VW_2_INFORME_RELACION_USUARIO_OUTLET")
 @NamedQueries({
     @NamedQuery(name = InformeRelacionUsuarioOutlet.FIND_ALL, 
-            query = "SELECT i FROM InformeRelacionUsuarioOutlet i")
+            query = "SELECT i FROM InformeRelacionUsuarioOutlet i"),
+    @NamedQuery(name = InformeRelacionUsuarioOutlet.FIND_ALL_COUNT, 
+            query = "SELECT COUNT(i) FROM InformeRelacionUsuarioOutlet i"),
 })
 public class InformeRelacionUsuarioOutlet implements Serializable {
 
     public static final String FIND_ALL = "InformeRelacionUsuarioOutlet.findAll";
+    public static final String FIND_ALL_COUNT = "InformeRelacionUsuarioOutlet.findAllCount";
     @Id
     @Column(name = "OUTLET_ID")
     private Integer outletId;

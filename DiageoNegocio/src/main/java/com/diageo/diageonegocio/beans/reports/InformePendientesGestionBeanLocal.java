@@ -5,17 +5,19 @@
  */
 package com.diageo.diageonegocio.beans.reports;
 
+import com.diageo.diageonegocio.beans.BusinessTransaction;
 import com.diageo.diageonegocio.entidades.view.InformePendientesGestion;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author EDUARDO
  */
-@Local
-public interface InformePendientesGestionBeanLocal {
+@Stateless
+public class InformePendientesGestionBeanLocal extends BusinessTransaction<InformePendientesGestion> {
 
-    public List<InformePendientesGestion> findAll();
-    
+    public List<InformePendientesGestion> findAll() {
+        return super.searchAll(InformePendientesGestion.class);
+    }
 }
