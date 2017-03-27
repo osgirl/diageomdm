@@ -65,7 +65,9 @@ public enum ModuleEnum {
     U_RELATION("user relation"),
     REPORT_PENDING_MANAGEMENT("report pending"),
     REPORT_RELATION_USER_OUTLET("report relation user outlet"),
-    REPORT_BLANCOS("report blancos");
+    REPORT_BLANCOS("report blancos"),
+    REPORT_DUPLICATES("report duplicates"),
+    REPORT_SELLER("report seller");
 
     private final String description;
 
