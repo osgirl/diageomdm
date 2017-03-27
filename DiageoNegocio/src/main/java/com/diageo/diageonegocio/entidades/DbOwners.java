@@ -31,6 +31,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "DbOwners.findByOwnerId", query = "SELECT d FROM DbOwners d WHERE d.ownerId = :ownerId"),
     @NamedQuery(name = "DbOwners.findByNameOwner", query = "SELECT d FROM DbOwners d WHERE d.nameOwner = :nameOwner")})
 public class DbOwners implements Serializable {
+
+    
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
@@ -42,10 +44,9 @@ public class DbOwners implements Serializable {
     @Column(name = "NAME_OWNER")
     private String nameOwner;
     @OneToMany(mappedBy = "ownerId")
-    private List<DbOutlets> dbOutletsList;
-    @JoinColumn(name = "FASCIA_ID", referencedColumnName = "FASCIA_ID")
-    @ManyToOne(optional = false)
-    private DbFascias fasciaId;
+    private List<DbOutlets> dbOutletsList;    
+    @Column(name = "DISTRI_1")
+    private String distri1;
 
     public DbOwners() {
     }
@@ -76,15 +77,7 @@ public class DbOwners implements Serializable {
 
     public void setDbOutletsList(List<DbOutlets> dbOutletsList) {
         this.dbOutletsList = dbOutletsList;
-    }
-
-    public DbFascias getFasciaId() {
-        return fasciaId;
-    }
-
-    public void setFasciaId(DbFascias fasciaId) {
-        this.fasciaId = fasciaId;
-    }
+    }   
 
     @Override
     public int hashCode() {
@@ -109,6 +102,14 @@ public class DbOwners implements Serializable {
     @Override
     public String toString() {
         return "com.totalseguros.entidadesdiageobusiness.DbOwners[ ownerId=" + ownerId + " ]";
+    }
+
+    public String getDistri1() {
+        return distri1;
+    }
+
+    public void setDistri1(String distri1) {
+        this.distri1 = distri1;
     }
     
 }

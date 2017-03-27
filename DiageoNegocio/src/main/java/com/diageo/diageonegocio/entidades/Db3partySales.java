@@ -8,6 +8,7 @@ package com.diageo.diageonegocio.entidades;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -55,12 +56,23 @@ public class Db3partySales implements Serializable {
     private Integer dbeParty;
     @Column(name = "DB_3PARTY_PDV")
     private String pdv;
-    @Column(name = "DISTRI_2")
-    private String distri_2;
+    @ManyToOne
+    @JoinColumn(name = "DB_3PARTY_TERRITORY_ID")
+    private Db3partyTerritory db3partyTerritory;
     @Column(name = "FOCALIZADO")
     private String focalizado;
+    @Embedded
+    private Audit audit;
 
     public Db3partySales() {
+    }
+
+    public Db3partyTerritory getDb3partyTerritory() {
+        return db3partyTerritory;
+    }
+
+    public void setDb3partyTerritory(Db3partyTerritory db3partyTerritory) {
+        this.db3partyTerritory = db3partyTerritory;
     }
 
     public Db3partySales(Integer db3partySaleId) {
@@ -123,20 +135,20 @@ public class Db3partySales implements Serializable {
         this.pdv = pdv;
     }
 
-    public String getDistri_2() {
-        return distri_2;
-    }
-
-    public void setDistri_2(String distri_2) {
-        this.distri_2 = distri_2;
-    }
-
     public String getFocalizado() {
         return focalizado;
     }
 
     public void setFocalizado(String focalizado) {
         this.focalizado = focalizado;
+    }
+
+    public Audit getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
     }
 
     @Override

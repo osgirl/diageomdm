@@ -33,7 +33,7 @@ import javax.validation.constraints.Size;
      @NamedQuery(name = DbPotentials.FIND_BY_SUBSEGMENT, query = "SELECT p FROM DbPotentials p WHERE p.subSegmentId.subSegmentId=?1")
 })
 public class DbPotentials implements Serializable {
-    
+
     public static final String FIND_BY_SUBSEGMENT = "DbPotentials.findBySubsegment";
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -187,5 +187,5 @@ public class DbPotentials implements Serializable {
     public String toString() {
         return "com.totalseguros.entidadesdiageobusiness.DbPotentials[ potentialId=" + potentialId + " ]";
     }
-    
-}
+
+    }

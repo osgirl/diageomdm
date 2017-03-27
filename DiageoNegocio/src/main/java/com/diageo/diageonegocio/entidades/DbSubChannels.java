@@ -35,7 +35,7 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = DbSubChannels.FIND_BY_CHANNEL, query = "SELECT s FROM DbSubChannels s WHERE s.channelId.channelId = ?1")
 })
 public class DbSubChannels implements Serializable {
-    
+
     public static final String FIND_BY_CHANNEL = "DbSubChannels.findByChannel";
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -157,5 +157,5 @@ public class DbSubChannels implements Serializable {
     public String toString() {
         return "com.totalseguros.entidadesdiageobusiness.DbSubChannels[ subChannelId=" + subChannelId + " ]";
     }
-    
-}
+
+    }

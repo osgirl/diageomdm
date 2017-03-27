@@ -6,13 +6,17 @@
 package com.diageo.diageonegocio.entidades;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -34,10 +38,33 @@ public class Db3partyTerritory implements Serializable {
     private Integer db3PartyTerritoryId;
     @Column(name = "NAME_TERRITORY")
     private String nameTerritory;
+    @ManyToOne
+    @JoinColumn(name = "DB_3PARTY_ID")
+    private Db3party db3PartyId;
     @Embedded
     private Audit audit;
+    @OneToMany(mappedBy = "db3partyTerritory")
+    private List<Db3partySales> db3partySales;
+    @Column(name = "DISTRI_2")
+    private Integer distri_2;
 
     public Db3partyTerritory() {
+    }
+
+    public Integer getDistri_2() {
+        return distri_2;
+    }
+
+    public void setDistri_2(Integer distri_2) {
+        this.distri_2 = distri_2;
+    }
+
+    public List<Db3partySales> getDb3partySales() {
+        return db3partySales;
+    }
+
+    public void setDb3partySales(List<Db3partySales> db3partySales) {
+        this.db3partySales = db3partySales;
     }
 
     public Db3partyTerritory(Integer db3PartyTerritoryId) {
@@ -66,6 +93,14 @@ public class Db3partyTerritory implements Serializable {
 
     public void setAudit(Audit audit) {
         this.audit = audit;
+    }
+
+    public Db3party getDb3PartyId() {
+        return db3PartyId;
+    }
+
+    public void setDb3PartyId(Db3party db3PartyId) {
+        this.db3PartyId = db3PartyId;
     }
 
     @Override

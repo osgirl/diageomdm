@@ -11,6 +11,8 @@ import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -144,6 +146,14 @@ import javax.persistence.TemporalType;
 })
 public class DbOutletsUsers implements Serializable {
 
+    @Column(name = "PERMISSION_SEGMENT")
+    private Integer permissionSegment;
+    @Column(name = "PARETO")
+    private Boolean pareto;
+    @JoinColumn(name = "OUTLET_ID", referencedColumnName = "OUTLET_ID", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private DbOutlets dbOutlets;
+
     public static final String FIND_BY_USER_ID = "DbOutletsUsers.findByUserId";
     public static final String FIND_BY_OUTLET_ID = "DbOutletsUsers.findByOutletId";
     public static final String FIND_BY_OUTLET_ID_PROFILE_ID = "DbOutletsUsers.findByOutletIdProfileId";
@@ -155,8 +165,6 @@ public class DbOutletsUsers implements Serializable {
     public static final String COUNT_PENDING_OUTLETS_IN = "DbOutletsUsers.countPendingOutletsIn";
     @EmbeddedId
     private DbOutletsUsersPK dbOutletsUsersPK;
-    @Column(name = "PARETO")
-    private boolean pareto;
     @Column(name = "CREATION_DATE")
     @Temporal(TemporalType.DATE)
     private Date creationDate;
@@ -184,13 +192,6 @@ public class DbOutletsUsers implements Serializable {
         this.dbOutletsUsersPK = dbOutletsUsersPK;
     }
 
-    public boolean isPareto() {
-        return pareto;
-    }
-
-    public void setPareto(boolean pareto) {
-        this.pareto = pareto;
-    }
 
     public Date getCreationDate() {
         return creationDate;
@@ -234,6 +235,30 @@ public class DbOutletsUsers implements Serializable {
                     && d.dbOutletsUsersPK.getUserId().equals(this.dbOutletsUsersPK.getUserId());
         }
         return false;
+    }
+
+    public Integer getPermissionSegment() {
+        return permissionSegment;
+    }
+
+    public void setPermissionSegment(Integer permissionSegment) {
+        this.permissionSegment = permissionSegment;
+    }
+
+    public Boolean getPareto() {
+        return pareto;
+    }
+
+    public void setPareto(Boolean pareto) {
+        this.pareto = pareto;
+    }
+
+    public DbOutlets getDbOutlets() {
+        return dbOutlets;
+    }
+
+    public void setDbOutlets(DbOutlets dbOutlets) {
+        this.dbOutlets = dbOutlets;
     }
 
 }

@@ -141,5 +141,5 @@ public class DbChannels implements Serializable {
     public String toString() {
         return "com.totalseguros.entidadesdiageobusiness.DbChannels[ channelId=" + channelId + " ]";
     }
-    
-}
+
+    }

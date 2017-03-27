@@ -124,5 +124,5 @@ public class DbOcs implements Serializable {
     public String toString() {
         return "com.totalseguros.entidadesdiageobusiness.DbOcs[ ocsId=" + ocsId + " ]";
     }
-    
-}
+
+    }

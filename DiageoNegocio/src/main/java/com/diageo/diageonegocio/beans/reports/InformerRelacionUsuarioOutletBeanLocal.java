@@ -48,10 +48,8 @@ public class InformerRelacionUsuarioOutletBeanLocal extends BusinessTransaction<
             }
             if (filters.get("outletId") != null) {
                 try {
-                    if (filters.get("outletId") instanceof Integer) {
-                        ParameterExpression<Integer> param = criteria.parameter(Integer.class, "outletId");
-                        crit.add(criteria.equal(info.get("outletId"), param));
-                    }
+                    ParameterExpression<Integer> param = criteria.parameter(Integer.class, "outletId");
+                    crit.add(criteria.equal(info.get("outletId"), param));
                 } catch (NumberFormatException ex) {
                     Logger.getLogger(InformerRelacionUsuarioOutletBeanLocal.class.getName())
                             .log(Level.SEVERE, "Param {0},{1} no corresponde a un numero", new String[]{"outletId", filters.get("outletId") + ""});
@@ -59,10 +57,8 @@ public class InformerRelacionUsuarioOutletBeanLocal extends BusinessTransaction<
             }
             if (filters.get("journeyPlan") != null) {
                 try {
-                    if (filters.get("journeyPlan") instanceof Integer) {
-                        ParameterExpression<Integer> param = criteria.parameter(Integer.class, "journeyPlan");
-                        crit.add(criteria.equal(info.get("journeyPlan"), param));
-                    }
+                    ParameterExpression<Integer> param = criteria.parameter(Integer.class, "journeyPlan");
+                    crit.add(criteria.equal(info.get("journeyPlan"), param));
                 } catch (NumberFormatException ex) {
                     Logger.getLogger(InformerRelacionUsuarioOutletBeanLocal.class.getName())
                             .log(Level.SEVERE, "Param {0},{1} no corresponde a un numero", new String[]{"journeyPlan", filters.get("journeyPlan") + ""});
@@ -70,10 +66,8 @@ public class InformerRelacionUsuarioOutletBeanLocal extends BusinessTransaction<
             }
             if (filters.get("outletIdFather") != null) {
                 try {
-                    if (filters.get("outletIdFather") instanceof Integer) {
-                        ParameterExpression<Integer> param = criteria.parameter(Integer.class, "outletIdFather");
-                        crit.add(criteria.equal(info.get("outletIdFather"), param));
-                    }
+                    ParameterExpression<Integer> param = criteria.parameter(Integer.class, "outletIdFather");
+                    crit.add(criteria.equal(info.get("outletIdFather"), param));
                 } catch (NumberFormatException ex) {
                     Logger.getLogger(InformerRelacionUsuarioOutletBeanLocal.class.getName())
                             .log(Level.SEVERE, "Param {0},{1} no corresponde a un numero", new String[]{"outletIdFather", filters.get("outletIdFather") + ""});
@@ -296,12 +290,10 @@ public class InformerRelacionUsuarioOutletBeanLocal extends BusinessTransaction<
                 ParameterExpression<String> param = criteria.parameter(String.class, "nit");
                 crit.add(criteria.like(info.<String>get("nit"), param));
             }
-           if (filters.get("outletId") != null) {
+            if (filters.get("outletId") != null) {
                 try {
-                    if (filters.get("outletId") instanceof Integer) {
-                        ParameterExpression<Integer> param = criteria.parameter(Integer.class, "outletId");
-                        crit.add(criteria.equal(info.get("outletId"), param));
-                    }
+                    ParameterExpression<Integer> param = criteria.parameter(Integer.class, "outletId");
+                    crit.add(criteria.equal(info.get("outletId"), param));
                 } catch (NumberFormatException ex) {
                     Logger.getLogger(InformerRelacionUsuarioOutletBeanLocal.class.getName())
                             .log(Level.SEVERE, "Param {0},{1} no corresponde a un numero", new String[]{"outletId", filters.get("outletId") + ""});
@@ -309,10 +301,8 @@ public class InformerRelacionUsuarioOutletBeanLocal extends BusinessTransaction<
             }
             if (filters.get("journeyPlan") != null) {
                 try {
-                    if (filters.get("journeyPlan") instanceof Integer) {
-                        ParameterExpression<Integer> param = criteria.parameter(Integer.class, "journeyPlan");
-                        crit.add(criteria.equal(info.get("journeyPlan"), param));
-                    }
+                    ParameterExpression<Integer> param = criteria.parameter(Integer.class, "journeyPlan");
+                    crit.add(criteria.equal(info.get("journeyPlan"), param));
                 } catch (NumberFormatException ex) {
                     Logger.getLogger(InformerRelacionUsuarioOutletBeanLocal.class.getName())
                             .log(Level.SEVERE, "Param {0},{1} no corresponde a un numero", new String[]{"journeyPlan", filters.get("journeyPlan") + ""});
@@ -320,10 +310,8 @@ public class InformerRelacionUsuarioOutletBeanLocal extends BusinessTransaction<
             }
             if (filters.get("outletIdFather") != null) {
                 try {
-                    if (filters.get("outletIdFather") instanceof Integer) {
-                        ParameterExpression<Integer> param = criteria.parameter(Integer.class, "outletIdFather");
-                        crit.add(criteria.equal(info.get("outletIdFather"), param));
-                    }
+                    ParameterExpression<Integer> param = criteria.parameter(Integer.class, "outletIdFather");
+                    crit.add(criteria.equal(info.get("outletIdFather"), param));
                 } catch (NumberFormatException ex) {
                     Logger.getLogger(InformerRelacionUsuarioOutletBeanLocal.class.getName())
                             .log(Level.SEVERE, "Param {0},{1} no corresponde a un numero", new String[]{"outletIdFather", filters.get("outletIdFather") + ""});

@@ -121,5 +121,5 @@ public class Db3partyRegional implements Serializable {
     public String toString() {
         return "com.totalseguros.entidadesdiageobusiness.Db3partyRegional[ db3partyRegionalId=" + db3partyRegionalId + " ]";
     }
-    
-}
+
+    }

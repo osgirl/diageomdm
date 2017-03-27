@@ -98,12 +98,22 @@ public class Db3party implements Serializable {
 
     @OneToMany(mappedBy = "db3PartyIdOld")
     private List<DbOutlets> listOutletOld;
+    @OneToMany(mappedBy = "db3PartyId")
+    private List<Db3partyTerritory> listDb3partyTerritory;
 
     public Db3party() {
     }
 
     public Db3party(Integer db3partyId) {
         this.db3partyId = db3partyId;
+    }
+
+    public List<Db3partyTerritory> getListDb3partyTerritory() {
+        return listDb3partyTerritory;
+    }
+
+    public void setListDb3partyTerritory(List<Db3partyTerritory> listDb3partyTerritory) {
+        this.listDb3partyTerritory = listDb3partyTerritory;
     }
 
     public Integer getDb3partyId() {

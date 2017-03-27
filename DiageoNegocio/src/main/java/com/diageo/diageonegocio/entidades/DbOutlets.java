@@ -6,7 +6,9 @@
 package com.diageo.diageonegocio.entidades;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
@@ -21,6 +23,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -29,135 +32,12 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DB_OUTLETS")
 @NamedQueries({
-    @NamedQuery(name = DbOutlets.FIND_ALL, query = "SELECT e FROM DbOutlets e "
-            + "WHERE e.nit LIKE :nit "
-            + "AND e.businessName LIKE :businessName "
-            + "AND e.numberPdv LIKE :numberPdv "
-            + "AND e.kiernanId LIKE :kiernanId "
-            + "AND e.subSegmentId.nameSubsegment LIKE :nameSubsegment "
-            + "AND e.statusOutlet LIKE :statusOutlet "
-            + "AND e.statusMDM LIKE :statusMDM "
-            + "AND e.townId.nameTown LIKE :nameTown "
-            + "AND e.distributorSubSegmentId.nameSubsegment LIKE :nameSubSegment "
-            //+ "AND CAST(e.outletIdFather.outletId AS VARCHAR(12)) LIKE :outletIdFather "
-            + "AND e.subSegmentId.segmentId.subChannelId.channelId.nameChannel LIKE :nameChannel "
-            + "AND e.journeyPlan LIKE :journeyPlan "
-            + "AND e.db3partySaleId.pdv LIKE :pdv "
-            + "AND e.db3PartyIdOld.db3partyRegionalId.nameRegional LIKE :nameRegional "
-            + "AND e.db3PartyIdOld.name3party LIKE :name3partyOld "
-            + "AND e.subSegmentId.segmentId.subChannelId.nameSubChannel LIKE :nameSubChannel "
-            + "AND e.db3partySaleId.nameSales LIKE :nameSales "
-            + "AND e.address LIKE :address "
-            + "AND e.townId.departamentId.nameDepartament LIKE :nameDepartament "
-            + "AND CAST(e.outletId AS VARCHAR(12)) LIKE :outletId "
-            + "AND e.subSegmentId.segmentId.nameSegment LIKE :nameSegment "
-            + "AND e.potentialId.namePotential LIKE :namePotential "
-            + "")
-    ,
-    @NamedQuery(name = DbOutlets.FIND_ALL_PROFILES, query = "SELECT e FROM DbOutlets e "
-            + "WHERE e.nit LIKE :nit "
-            + "AND e.businessName LIKE :businessName "
-            + "AND e.numberPdv LIKE :numberPdv "
-            + "AND e.kiernanId LIKE :kiernanId "
-            + "AND e.subSegmentId.nameSubsegment LIKE :nameSubsegment "
-            + "AND e.statusOutlet LIKE :statusOutlet "
-            + "AND e.statusMDM LIKE :statusMDM "
-            + "AND e.outletId IN :listOutletId")
-    ,
-    @NamedQuery(name = DbOutlets.FIND_ALL_COUNT, query = "SELECT COUNT(e) FROM DbOutlets e "
-            + "WHERE e.nit LIKE :nit "
-            + "AND e.businessName LIKE :businessName "
-            + "AND e.numberPdv LIKE :numberPdv "
-            + "AND e.kiernanId LIKE :kiernanId "
-            + "AND e.subSegmentId.nameSubsegment LIKE :nameSubsegment "
-            + "AND e.statusOutlet LIKE :statusOutlet "
-            + "AND e.statusMDM LIKE :statusMDM "
-            + "AND e.townId.nameTown LIKE :nameTown "
-            + "AND e.distributorSubSegmentId.nameSubsegment LIKE :nameSubSegment "
-            //+ "AND CAST(e.outletIdFather.outletId AS VARCHAR(12)) LIKE :outletIdFather "
-            + "AND e.subSegmentId.segmentId.subChannelId.channelId.nameChannel LIKE :nameChannel "
-            + "AND e.journeyPlan LIKE :journeyPlan "
-            + "AND e.db3partySaleId.pdv LIKE :pdv "
-            + "AND e.db3PartyIdOld.db3partyRegionalId.nameRegional LIKE :nameRegional "
-            + "AND e.db3PartyIdOld.name3party LIKE :name3partyOld "
-            + "AND e.subSegmentId.segmentId.subChannelId.nameSubChannel LIKE :nameSubChannel "
-            + "AND e.db3partySaleId.nameSales LIKE :nameSales "
-            + "AND e.address LIKE :address "
-            + "AND e.townId.departamentId.nameDepartament LIKE :nameDepartament "
-            + "AND CAST(e.outletId AS VARCHAR(12)) LIKE :outletId "
-            + "AND e.subSegmentId.segmentId.nameSegment LIKE :nameSegment "
-            + "AND e.potentialId.namePotential LIKE :namePotential "
-            + "")
-    ,
-    @NamedQuery(name = DbOutlets.FIND_ALL_COUNT_PROFILES, query = "SELECT COUNT(e) FROM DbOutlets e "
-            + "WHERE e.nit LIKE :nit "
-            + "AND e.businessName LIKE :businessName "
-            + "AND e.numberPdv LIKE :numberPdv "
-            + "AND e.kiernanId LIKE :kiernanId "
-            + "AND e.subSegmentId.nameSubsegment LIKE :nameSubsegment "
-            + "AND e.statusOutlet LIKE :statusOutlet "
-            + "AND e.statusMDM LIKE :statusMDM "
-            + "AND e.outletId IN :listOutletId")
-    ,
-    @NamedQuery(name = DbOutlets.FIND_ALL_COUNT_PROFILES_INNER, query = "SELECT COUNT(e) FROM DbOutlets e "
-            + "WHERE e.nit LIKE :nit "
-            + "AND e.businessName LIKE :businessName "
-            + "AND e.numberPdv LIKE :numberPdv "
-            + "AND e.kiernanId LIKE :kiernanId "
-            + "AND e.subSegmentId.nameSubsegment LIKE :nameSubsegment "
-            + "AND e.statusOutlet LIKE :statusOutlet "
-            + "AND e.statusMDM LIKE :statusMDM "
-            + "AND e.outletId IN :listOutletId")
-    ,
-    @NamedQuery(name = DbOutlets.FIND_BY_NEW,
-            query = "SELECT e FROM DbOutlets e WHERE e.isNewOutlet = ?1")
-    ,
-    @NamedQuery(name = DbOutlets.FIND_BY_SUB_SEGMENT, query = "SELECT o FROM DbOutlets o WHERE o.subSegmentId.subSegmentId=?1")
-    ,
     @NamedQuery(name = DbOutlets.FIND_BY_BUSINESS_NAME, query = "SELECT o FROM DbOutlets o WHERE (o.businessName+o.kiernanId) LIKE ?1 AND o.isFather = ?2")
-    ,
-    @NamedQuery(name = DbOutlets.FIND_BY_SUB_SEGMENT_3PARTY, query = "SELECT o FROM DbOutlets o "
-            + "WHERE o.subSegmentId.subSegmentId=?1 AND o.db3PartyIdNew.db3partyId=?2")
-    ,
-    @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION, query = "SELECT o FROM DbOutlets o "
-            + "WHERE o.db3PartyIdNew.db3partyId=:db3partyId AND o.subSegmentId.subSegmentId IN :subSegmentId AND o.statusMDM  IN :statusMDM "
-            + "AND o.nit LIKE :nit "
-            + "AND o.businessName LIKE :businessName "
-            + "AND o.numberPdv LIKE :numberPdv "
-            + "AND o.kiernanId LIKE :kiernanId "
-            + "AND o.subSegmentId.nameSubsegment LIKE :nameSubsegment "
-            + "AND o.statusOutlet LIKE :statusOutlet ")
-    ,
-    @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION_LIST, query = "SELECT o FROM DbOutlets o  "
-            + "WHERE o.db3PartyIdNew.db3partyId=?1 AND o.subSegmentId.subSegmentId IN ?2 AND o.statusMDM  IN ?3")
-    ,
-    @NamedQuery(name = DbOutlets.FIND_BY_3PARTY_PERMISSION_COUNT, query = "SELECT COUNT (o) FROM DbOutlets o "
-            + "WHERE o.db3PartyIdNew.db3partyId=:db3partyId AND o.subSegmentId.subSegmentId IN :subSegmentId AND o.statusMDM  IN :statusMDM "
-            + "AND o.nit LIKE :nit "
-            + "AND o.businessName LIKE :businessName "
-            + "AND o.numberPdv LIKE :numberPdv "
-            + "AND o.kiernanId LIKE :kiernanId "
-            + "AND o.subSegmentId.nameSubsegment LIKE :nameSubsegment "
-            + "AND o.statusOutlet LIKE :statusOutlet")
-    ,
-    @NamedQuery(name = DbOutlets.COUNT, query = "SELECT COUNT (o) FROM DbOutlets o")
 })
-public class DbOutlets implements Serializable,Cloneable {
+public class DbOutlets implements Serializable, Cloneable {
 
-    public static final String FIND_ALL = "DbOutlets.findAll";
-    public static final String FIND_ALL_PROFILES = "DbOutlets.findAllProfiles";
-    public static final String FIND_ALL_COUNT = "DbOutlets.findAllCount";
-    public static final String FIND_ALL_COUNT_PROFILES = "DbOutlets.findAllCountProfiles";
-    public static final String FIND_ALL_COUNT_PROFILES_INNER = "DbOutlets.findAllCountProfilesInner";
-    public static final String COUNT = "DbOutlets.count";
-    public static final String FIND_BY_DISTRI = "DbOutlets.findByDistributor";
-    public static final String FIND_BY_NEW = "DbOutlets.findByNew";
-    public static final String FIND_BY_SUB_SEGMENT = "DbOutlets.findBySubSegment";
-    public static final String FIND_BY_SUB_SEGMENT_3PARTY = "DbOutlets.findBySubSegment3Party";
     public static final String FIND_BY_BUSINESS_NAME = "DbOutlets.findByBusinessName";
-    public static final String FIND_BY_3PARTY_PERMISSION = "DbOutlets.findBy3PartyPermission";
-    public static final String FIND_BY_3PARTY_PERMISSION_LIST = "DbOutlets.findBy3PartyPermissionList";
-    public static final String FIND_BY_3PARTY_PERMISSION_COUNT = "DbOutlets.findBy3PartyPermissionCount";
+
     /**
      * search for distributor, subsegment, is new, and state outlets
      */
@@ -284,6 +164,10 @@ public class DbOutlets implements Serializable,Cloneable {
     private boolean renderedApprobationMassive;
     @Embedded
     private Audit audit;
+    @Column(name = "SITE")
+    private String site;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "dbOutlets")
+    private Collection<DbOutletsUsers> dbOutletsUsersCollection;
 
     public DbOutlets() {
     }
@@ -644,6 +528,23 @@ public class DbOutlets implements Serializable,Cloneable {
 
     public void setSubSegmentIdAthena(Integer subSegmentIdAthena) {
         this.subSegmentIdAthena = subSegmentIdAthena;
+    }   
+
+    public String getSite() {
+        return site;
+    }
+
+    public void setSite(String site) {
+        this.site = site;
+    }
+
+    @XmlTransient
+    public Collection<DbOutletsUsers> getDbOutletsUsersCollection() {
+        return dbOutletsUsersCollection;
+    }
+
+    public void setDbOutletsUsersCollection(Collection<DbOutletsUsers> dbOutletsUsersCollection) {
+        this.dbOutletsUsersCollection = dbOutletsUsersCollection;
     }
 
     @Override
@@ -665,13 +566,12 @@ public class DbOutlets implements Serializable,Cloneable {
 
     @Override
     public String toString() {
-        return statusMDM+","+kiernanId+","+outletId+","+(outletIdFather!=null?outletIdFather.getOutletId():"")+","+businessName;
+        return statusMDM + "," + kiernanId + "," + outletId + "," + (outletIdFather != null ? outletIdFather.getOutletId() : "") + "," + businessName;
     }
 
     @Override
     public DbOutlets clone() throws CloneNotSupportedException {
-        return (DbOutlets)super.clone();
+        return (DbOutlets) super.clone();
     }
-    
-    
+
 }

@@ -44,7 +44,7 @@ public class Db3partyManagers implements Serializable {
     private String nameManager;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "db3partyManagerId")
     private List<Db3partySales> db3partySalesList;
-   
+
 
     public Db3partyManagers() {
     }

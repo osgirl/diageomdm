@@ -195,4 +195,4 @@ public class DbSubSegments implements Serializable {
         return "com.diageonegocio.entidades[ subSegmentId=" + subSegmentId + " ]";
     }
 
-}
+    }

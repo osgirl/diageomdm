@@ -6,15 +6,12 @@
 package com.diageo.diageonegocio.entidades;
 
 import java.io.Serializable;
-import java.util.List;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -26,10 +23,13 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DB_FASCIAS")
 @NamedQueries({
-    @NamedQuery(name = "DbFascias.findAll", query = "SELECT d FROM DbFascias d"),
-    @NamedQuery(name = "DbFascias.findByFasciaId", query = "SELECT d FROM DbFascias d WHERE d.fasciaId = :fasciaId"),
+    @NamedQuery(name = "DbFascias.findAll", query = "SELECT d FROM DbFascias d")
+    ,
+    @NamedQuery(name = "DbFascias.findByFasciaId", query = "SELECT d FROM DbFascias d WHERE d.fasciaId = :fasciaId")
+    ,
     @NamedQuery(name = "DbFascias.findByNameFascia", query = "SELECT d FROM DbFascias d WHERE d.nameFascia = :nameFascia")})
 public class DbFascias implements Serializable {
+
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
@@ -42,8 +42,6 @@ public class DbFascias implements Serializable {
     @Size(min = 1, max = 50)
     @Column(name = "NAME_FASCIA")
     private String nameFascia;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "fasciaId")
-    private List<DbOwners> dbOwnersList;
     @Column(name = "DISTRI_1")
     private String distri_1;
 
@@ -73,14 +71,6 @@ public class DbFascias implements Serializable {
 
     public void setNameFascia(String nameFascia) {
         this.nameFascia = nameFascia;
-    }
-
-    public List<DbOwners> getDbOwnersList() {
-        return dbOwnersList;
-    }
-
-    public void setDbOwnersList(List<DbOwners> dbOwnersList) {
-        this.dbOwnersList = dbOwnersList;
     }
 
     public String getDistri_1() {
@@ -115,5 +105,5 @@ public class DbFascias implements Serializable {
     public String toString() {
         return "com.totalseguros.entidadesdiageobusiness.DbFascias[ fasciaId=" + fasciaId + " ]";
     }
-    
+
 }

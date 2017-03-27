@@ -87,5 +87,5 @@ public class Db3partyProfiles implements Serializable {
     public String toString() {
         return "com.totalseguros.entidadesdiageobusiness.Db3partyProfiles[ db3partyProfileId=" + db3partyProfileId + " ]";
     }
-    
-}
+
+    }
