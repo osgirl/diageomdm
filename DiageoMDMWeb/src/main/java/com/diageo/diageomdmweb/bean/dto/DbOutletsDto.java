@@ -25,7 +25,7 @@ public class DbOutletsDto implements Serializable {
     private Integer userId;
 
     public DbOutletsDto(DbOutlets outlet, Date currentDate, Integer userId) {
-        listDiageoLog=new ArrayList<>();
+        listDiageoLog = new ArrayList<>();
         this.currentDate = currentDate;
         this.outlet = outlet;
         this.userId = userId;
@@ -113,16 +113,16 @@ public class DbOutletsDto implements Serializable {
         if (!address) {
             listDiageoLog.add(recordLog(returnNameField("getAddress"), outlet.getAddress() + "", out.getAddress() + ""));
         }
-        boolean latitude = this.outlet.getLatitude().equals(out.getLatitude());
+        boolean latitude = this.outlet.getLatitude() != null ? this.outlet.getLatitude().equals(out.getLatitude()) : true;
         if (!latitude) {
             listDiageoLog.add(recordLog(returnNameField("getLatitude"), outlet.getLatitude() + "", out.getLatitude() + ""));
         }
-        boolean longitude = this.outlet.getLongitude().equals(out.getLongitude());
+        boolean longitude = this.outlet.getLongitude() != null ? this.outlet.getLongitude().equals(out.getLongitude()) : true;
         if (!longitude) {
             listDiageoLog.add(recordLog(returnNameField("getLongitude"), outlet.getLongitude() + "", out.getLongitude() + ""));
         }
-        boolean segmentation=this.outlet.getSubSegmentId().getSubSegmentId().equals(out.getSubSegmentId().getSubSegmentId());
-        if(!segmentation){
+        boolean segmentation = this.outlet.getSubSegmentId().getSubSegmentId().equals(out.getSubSegmentId().getSubSegmentId());
+        if (!segmentation) {
             listDiageoLog.add(recordLog(returnNameField("getSubSegmentId"), outlet.getSubSegmentId().getSubSegmentId() + "", out.getSubSegmentId().getSubSegmentId() + ""));
         }
     }
@@ -147,7 +147,7 @@ public class DbOutletsDto implements Serializable {
         return this.outlet.getSubSegmentId().getSubSegmentId().equals(out.getSubSegmentId().getSubSegmentId());
     }
 
-    public List<DiageoLog> getListDiageoLog(){
+    public List<DiageoLog> getListDiageoLog() {
         return listDiageoLog;
     }
 }

@@ -5,12 +5,16 @@
  */
 package com.diageo.diageomdmweb.jdbc;
 
+import com.diageo.diageomdmweb.bean.dto.reports.DuplicatesDto;
 import com.diageo.diageonegocio.beans.PermissionsegmentBean;
 import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -108,7 +112,7 @@ public class ConecctionJDBC {
             Logger.getLogger(ConecctionJDBC.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static void callStoreProcedureDBOutlets(Connection con, int idChain) {
         try {
             CallableStatement prcProcedimientoAlmacenado = con.prepareCall("{ call dbo.SP_DB_CHAINS(?) }");
@@ -120,22 +124,60 @@ public class ConecctionJDBC {
         }
     }
 
+    public static void callStoreProcedureDBUsers(Connection con, int userId, String distri, String state) {
+        try {
+            CallableStatement prcProcedimientoAlmacenado = con.prepareCall("{ call dbo.SP_DB_USERS(?,?,?) }");
+            prcProcedimientoAlmacenado.setInt(1, userId);
+            prcProcedimientoAlmacenado.setString(2, distri);
+            prcProcedimientoAlmacenado.setString(3, state);
+            prcProcedimientoAlmacenado.execute();
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConecctionJDBC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static List<DuplicatesDto> callStoreProcedureDuplicatesReport(Connection con, String in) {
+        List<DuplicatesDto> duplicatesList = new ArrayList<>();
+        try {
+            CallableStatement prcProcedimientoAlmacenado = con.prepareCall("{ call dbo.SP_INFORME_DUPLICADOS(?) }");
+            prcProcedimientoAlmacenado.setString(1, in);
+            ResultSet rs = prcProcedimientoAlmacenado.executeQuery();
+            int contador = 0;
+            while (rs.next()) {
+                DuplicatesDto dto = new DuplicatesDto();
+                dto.setOutletId(rs.getInt(1));
+                dto.setOutletIdFather(rs.getInt(2));
+                dto.setKiernanId(rs.getString(3));
+                dto.setNit(rs.getString(4));
+                dto.setVerificationNumber(rs.getString(5));
+                dto.setCodigoDistribuidor(rs.getString(6));
+                dto.setNombreDistribuidor(rs.getString(7));
+                dto.setNumberPDV(rs.getString(8));
+                dto.setOutletName(rs.getString(9));
+                dto.setBusinessName(rs.getString(10));
+                dto.setDireccion(rs.getString(11));
+                dto.setNombreCiudad(rs.getString(12));
+                dto.setNombreDepto(rs.getString(13));
+                dto.setCodigoVendedor(rs.getString(14));
+                dto.setNombreVendedor(rs.getString(15));
+                dto.setPotencial(rs.getString(16));
+                dto.setFuncional(rs.getString(17));
+                dto.setStatusOutlet(rs.getString(18));
+                dto.setStatusMDM(rs.getString(19));
+                duplicatesList.add(dto);
+            }
+            con.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(ConecctionJDBC.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return duplicatesList;
+    }
+
     public static void main(String[] args) {
         Connection con = conexionSQLServer("localhost", "sa", "sa");
         try {
-            DbPermissionSegments ps = new DbPermissionSegments();
-            ps.setChannelCheck("0");
-            ps.setSubChannelCheck("0");
-            ps.setSegmentCheck("0");
-            ps.setSubSegmentCheck("0");
-            ps.setChannelId(1);
-            ps.setSubChannelId(1);
-            ps.setSegmentId(1);
-            ps.setSubSegmentId(1);
-            ps.setPotentialId(1);
-            ps.setUserId(14);
-            ps.setDb3partyId(new Db3party(1));
-            callStoreProcedure(con, ps);
+            callStoreProcedureDuplicatesReport(con, "NIT");
             con.close();
         } catch (SQLException ex) {
             Logger.getLogger(ConecctionJDBC.class.getName()).log(Level.SEVERE, null, ex);

@@ -5,20 +5,15 @@
  */
 package com.diageo.diageomdmweb.datamodel;
 
-import com.diageo.admincontrollerweb.entities.DwParameters;
 import com.diageo.admincontrollerweb.enums.ProfileEnum;
-import com.diageo.diageonegocio.beans.ChannelBeanLocal;
 import com.diageo.diageonegocio.beans.OutletBeanLocal;
 import com.diageo.diageonegocio.beans.OutletsUserBeanLocal;
-import com.diageo.diageonegocio.beans.SegmentBeanLocal;
-import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
 import com.diageo.diageonegocio.entidades.DbOutlets;
-import com.diageo.diageonegocio.entidades.DbPermissionSegments;
+import com.diageo.diageonegocio.entidades.DbOutletsUsers;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.primefaces.model.LazyDataModel;
@@ -80,17 +75,31 @@ public class DbOutletsLazyDataModel extends LazyDataModel<DbOutlets> {
     @Override
     public List<DbOutlets> load(int first, int pageSize, String sortField, SortOrder sortOrder, Map<String, Object> filters) {
         if (ProfileEnum.ADMINISTRATOR.getId().equals(profile) || ProfileEnum.DATA_STEWARD.getId().equals(profile)) {
-            setRowCount((int) outletBeanLocal.findAllOutletsCount(first, pageSize, filters));
-            List<DbOutlets> findAllOutlets = outletBeanLocal.findAllOutlets(first, pageSize, filters);
+            setRowCount((int) outletBeanLocal.findAllOutletsDinamicCount(filters));
+            List<DbOutlets> findAllOutlets = outletBeanLocal.findAllOutletsDinamic(first, pageSize, filters);
             return findAllOutlets;
         } else {
             if (!flagCommercial) {
                 setRowCount((int) outletsUserBeanLocal.findOutletByUserCount(first, pageSize, filters, userId));
-                List<DbOutlets> findAllOutlets = outletsUserBeanLocal.findOutletByUser(first, pageSize, filters, userId);
+                //setRowCount((int) outletsUserBeanLocal.findAllOutletsDinamicCount(filters, userId, false, null));
+                //List<DbOutlets> findAllOutlets = outletsUserBeanLocal.findOutletByUser(first, pageSize, filters, userId);
+                List<DbOutlets> findAllOutlets = new ArrayList<>();
+                List<DbOutletsUsers> dinamic = outletsUserBeanLocal.findAllOutletsDinamic(first, pageSize, filters, userId, false, null);
+                for (DbOutletsUsers outUsu : dinamic) {
+                    findAllOutlets.add(outUsu.getDbOutlets());
+                }
                 return findAllOutlets;
             }
             setRowCount((int) outletsUserBeanLocal.findOutletByUserCountIn(first, pageSize, filters, listIdUser));
-            List<DbOutlets> findAllOutlets = outletsUserBeanLocal.findOutletByUserIn(first, pageSize, filters, listIdUser);
+            //setRowCount((int) outletsUserBeanLocal.findAllOutletsDinamicCount(filters, userId, true, listIdUser));
+            //List<DbOutlets> findAllOutlets = outletsUserBeanLocal.findOutletByUserIn(first, pageSize, filters, listIdUser);
+            List<DbOutlets> findAllOutlets = new ArrayList<>();
+            List<DbOutletsUsers> dinamic = outletsUserBeanLocal.findAllOutletsDinamic(first, pageSize, filters, userId, true, listIdUser);
+            if (dinamic != null) {
+                for (DbOutletsUsers dbOutletsUsers : dinamic) {
+                    findAllOutlets.add(dbOutletsUsers.getDbOutlets());
+                }
+            }
             return findAllOutlets;
         }
     }
@@ -102,8 +111,9 @@ public class DbOutletsLazyDataModel extends LazyDataModel<DbOutlets> {
 
     /**
      * Método que se implementa para seleccionar uno o varios registros
+     *
      * @param id
-     * @return 
+     * @return
      */
     @Override
     public DbOutlets getRowData(String id) {
@@ -118,8 +128,9 @@ public class DbOutletsLazyDataModel extends LazyDataModel<DbOutlets> {
 
     /**
      * Método que se implementa para seleccionar uno o varios registros
+     *
      * @param object
-     * @return 
+     * @return
      */
     @Override
     public Object getRowKey(DbOutlets object) {

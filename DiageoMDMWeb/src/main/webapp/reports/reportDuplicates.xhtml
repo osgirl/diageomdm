@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <body>
+        <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
+            <ui:define name="content">
+                <h:form id="report">
+                    <h:panelGrid columns="2">
+                        <h:panelGroup>
+                            <p:selectOneMenu id="som" value="#{duplicatesBean.itemSelected}" required="true">
+                                <f:selectItem itemLabel="#{msg.seleccion}" itemValue="#{null}"/>
+                                <f:selectItems value="#{duplicatesBean.itemList}" var="item" itemLabel="#{item.label}" itemValue="#{item.value}"/>
+                            </p:selectOneMenu>
+                            <p:message for="som"/>
+                        </h:panelGroup>
+                        <p:commandButton value="#{msg.btn_acept}" update="@form" process="@all" actionListener="#{duplicatesBean.loadTable()}"/>
+                    </h:panelGrid>
+                    <br/>
+                    <h:commandLink id="clExportcsv">
+                        <p:graphicImage name="/images/iconos/csv.png" width="5%"/>
+                        <p:dataExporter type="csv" target="dtOutlet" fileName="Report" pageOnly="false" encoding="ISO-8859-1"/>
+                    </h:commandLink>
+                    <br/>
+                    <br/>
+                    <p:scrollPanel style="width:100%" mode="native">
+                        <p:dataTable id="dtOutlet" paginatorAlwaysVisible="true" rows="15" widgetVar="dtReport" 
+                                     value="#{duplicatesBean.duplicatesList}" var="info"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     style="font-size:  90%;width:300%" paginator="true" 
+                                     emptyMessage="#{msg.out_msg_not_record}">
+                            <p:column headerText="#{msg.outlet_id}" filterBy="#{info.outletId}"><h:outputLabel value="#{info.outletId}"/></p:column>
+                            <p:column headerText="#{msg.distri_father}" filterBy="#{info.outletIdFather}"><h:outputLabel value="#{info.outletIdFather}"/></p:column>
+                            <p:column headerText="#{msg.out_kiernan}" filterBy="#{info.kiernanId}"><h:outputLabel value="#{info.kiernanId}"/></p:column>
+                            <p:column headerText="#{msg.out_nit}" filterBy="#{info.nit}"><h:outputLabel value="#{info.nit}"/></p:column>                                                       
+                            <p:column headerText="#{msg.out_verification_number}" filterBy="#{info.verificationNumber}"><h:outputLabel value="#{info.verificationNumber}"/></p:column>                            
+                            <p:column headerText="#{msg.sales_code_distri}" filterBy="#{info.codigoDistribuidor}"><h:outputLabel value="#{info.codigoDistribuidor}"/></p:column>                            
+                            <p:column headerText="#{msg.distributor_name}" filterBy="#{info.nombreDistribuidor}"><h:outputLabel value="#{info.nombreDistribuidor}"/></p:column>                            
+                            <p:column headerText="#{msg.chain_code_pdv}" filterBy="#{info.numberPDV}"><h:outputLabel value="#{info.numberPDV}"/></p:column>
+                            <p:column headerText="#{msg.out_nombre}" filterBy="#{info.outletName}"><h:outputLabel value="#{info.outletName}"/></p:column>
+                            <p:column headerText="#{msg.out_razon_social}" filterBy="#{info.businessName}"><h:outputLabel value="#{info.businessName}"/></p:column>                            
+                            <p:column headerText="#{msg.out_direccion}" filterBy="#{info.direccion}"><h:outputLabel value="#{info.direccion}"/></p:column>
+                            <p:column headerText="#{msg.chain_city}" filterBy="#{info.nombreCiudad}"><h:outputLabel value="#{info.nombreCiudad}"/></p:column>
+                            <p:column headerText="#{msg.loc_depto}" filterBy="#{info.nombreDepto}"><h:outputLabel value="#{info.nombreDepto}"/></p:column>
+                            <p:column headerText="#{msg.sales_code}" filterBy="#{info.codigoVendedor}"><h:outputLabel value="#{info.codigoVendedor}"/></p:column>
+                            <p:column headerText="#{msg.sales_nombre}" filterBy="#{info.nombreVendedor}"><h:outputLabel value="#{info.nombreVendedor}"/></p:column>
+                            <p:column headerText="#{msg.out_potencial}" filterBy="#{info.nombreVendedor}"><h:outputLabel value="#{info.nombreVendedor}"/></p:column>
+                            <p:column headerText="#{msg.out_seg_functional}" filterBy="#{info.nombreVendedor}"><h:outputLabel value="#{info.nombreVendedor}"/></p:column>
+                            <p:column headerText="#{msg.status_2}" filterBy="#{info.nombreVendedor}"><h:outputLabel value="#{info.nombreVendedor}"/></p:column>
+                            <p:column headerText="#{msg.status}" filterBy="#{info.nombreVendedor}"><h:outputLabel value="#{info.nombreVendedor}"/></p:column>
+
+                        </p:dataTable>
+                    </p:scrollPanel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

@@ -139,22 +139,7 @@ public class LoginBean extends DiageoRootBean implements Serializable {
         showErrorMessage(capturarValor("sis_user_pass"));
         return null;
 
-    }
-
-    private boolean revisarOutletsPendientesRevision() {
-        List<DbPermissionSegments> listPermi = getListPermissionSegment();
-        for (DbPermissionSegments permi : listPermi) {
-            List<DbOutlets> listTemp = outletBeanLocal.findByDistributor(permi.getDb3partyId().getDb3partyId());
-            for (DbOutlets out : listTemp) {
-                if (permi.getSubSegmentId().equals(out.getSubSegmentId().getSubSegmentId())) {
-                    if (out.getStatusOutlet().equals(StateOutletChain.PENDING_APPROVAL.getId())) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
+    }    
 
     public boolean renderizarMenu(String idModulo) {
         if (getListModulos() != null) {

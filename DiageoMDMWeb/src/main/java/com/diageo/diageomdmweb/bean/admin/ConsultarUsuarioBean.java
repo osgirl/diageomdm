@@ -6,8 +6,6 @@
 package com.diageo.diageomdmweb.bean.admin;
 
 import com.diageo.admincontrollerweb.entities.Audit;
-import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
-import com.diageo.admincontrollerweb.entities.DwModules;
 import com.diageo.admincontrollerweb.entities.DwParameters;
 import com.diageo.admincontrollerweb.entities.DwUsers;
 import com.diageo.admincontrollerweb.enums.ParameterKeyEnum;
@@ -53,6 +51,11 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
      * Contains the records that will be removed
      */
     private List<DistributorPermissionDto> listDistributorPermissionRemoveUser;
+    /**
+     * Campos para enviar al procedimiento almacenado [dbo].[SP_DB_USERS]
+     */
+    private String distriSP;
+    private String stateSP;
 
     /**
      * Creates a new instance of ConsultarUsuarioBean
@@ -97,7 +100,9 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
         setTemporalMail(usu.getEmailUser());
         setPerfil(usu.getProfileId());
         setUsuarioActivo(usu.getStateUser().equals(StateEnum.ACTIVE.getState()));
+        stateSP=usu.getStateUser();
         setAthenaCode(usu.getDistri1());
+        distriSP=usu.getDistri1();
         //find permission segment
         List<DbPermissionSegments> list = permissionsegmentBeanLocal.findByUser(usu.getUserId());
         setListDistributorPermission(new HashSet<DistributorPermissionDto>());
@@ -142,6 +147,7 @@ public class ConsultarUsuarioBean extends GestionarUsuarioCreacion implements Se
                     for (DbPermissionSegments dbPermissionSegments : updateUser_Test) {
                         ConecctionJDBC.callStoreOutletsUser(con, dbPermissionSegments.getPermissionSegment(), "Insert");
                     }
+                    ConecctionJDBC.callStoreProcedureDBUsers(con, getUsuarioSeleccionado().getUserId(), distriSP, stateSP);
                     try {
                         con.close();
                     } catch (SQLException ex) {

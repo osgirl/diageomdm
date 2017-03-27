@@ -86,9 +86,8 @@ public class SalesCreateBean extends DiageoRootBean {
             entity.setNameSales(getSalesName().toUpperCase());
             entity.setDb3PartyProfileId(getProfilesSelected());
             entity.setDb3partyManagerId(getManagerSelected());
-            entity.setDbeParty(getDb3PartySelected().getDb3partyId());
-            entity.setDistri_2(getDistributor_2() != null ? getDistributor_2().toUpperCase() : "");
-            entity.setFocalizado(isFocalizado() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+            entity.setDbeParty(getDb3PartySelected().getDb3partyId());            
+            entity.setFocalizado(isFocalizado() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());            
             dbPartySalesBeanLocal.createSales(entity);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
             initObjects();

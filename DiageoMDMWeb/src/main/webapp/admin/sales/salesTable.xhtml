@@ -36,10 +36,7 @@ and open the template in the editor.
             </p:column>
             <p:column headerText="#{msg.out_distribuidor}" filterBy="#{salesSearchBean.seeLabel3Party(sales.dbeParty)}">
                 <h:outputText value="#{salesSearchBean.seeLabel3Party(sales.dbeParty)}"/>
-            </p:column>
-            <p:column headerText="#{msg.sales_territory_intouch}" filterBy="#{sales.distri_2}">
-                <h:outputText value="#{sales.distri_2}"/>
-            </p:column>
+            </p:column>            
             <p:column exportable="false">
                 <p:commandLink value="#{msg.btn_detalle}" actionListener="#{salesSearchBean.seeDetail(sales)}"
                                process="@this" update="@form" style="color: blue"/>

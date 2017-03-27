@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <body>
+        <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
+            <ui:define name="content">
+                <h:form id="report">                    
+                    <h:commandLink id="clExportcsv">
+                        <p:graphicImage name="/images/iconos/csv.png" width="5%"/>
+                        <p:dataExporter type="csv" target="dtOutlet" fileName="Report" pageOnly="false" encoding="ISO-8859-1"/>
+                    </h:commandLink>
+                    <br/>
+                    <p:scrollPanel style="width:100%" mode="native">
+                        <p:dataTable id="dtOutlet" paginatorAlwaysVisible="true" rows="15" widgetVar="dtReport" 
+                                     value="#{sellerReportBean.sellerDataModel}" var="info"
+                                     paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                     style="font-size:  90%;width:300%" paginator="true" 
+                                     emptyMessage="#{msg.out_msg_not_record}" filterEvent="enter" lazy="true">
+                            <p:column headerText="#{msg.territory}" filterBy="#{info.territorio}"><h:outputLabel value="#{info.territorio}"/></p:column>
+                            <p:column headerText="#{msg.m_distri_nombre}" filterBy="#{info.sucursalDistribuidor}"><h:outputLabel value="#{info.sucursalDistribuidor}"/></p:column>
+                            <p:column headerText="#{msg.sales_code}" filterBy="#{info.codigoVendedor}"><h:outputLabel value="#{info.codigoVendedor}"/></p:column>
+                            <p:column headerText="#{msg.outlet_id}" filterBy="#{info.outletId}"><h:outputLabel value="#{info.outletId}"/></p:column>
+                            <p:column headerText="#{msg.distri_father}" filterBy="#{info.outletIdFather}"><h:outputLabel value="#{info.outletIdFather}"/></p:column>
+                            <p:column headerText="#{msg.out_kiernan}" filterBy="#{info.kiernanId}"><h:outputLabel value="#{info.kiernanId}"/></p:column>
+                            <p:column headerText="#{msg.out_nombre}" filterBy="#{info.nombreComercial}"><h:outputLabel value="#{info.nombreComercial}"/></p:column>
+                            <p:column headerText="#{msg.modification_date}" filterBy="#{info.modificationDate}">
+                                <f:facet name="filter">
+                                    <p:calendar showOn="button" pattern="dd-MM-yyyy">
+                                        <p:ajax event="dateSelect" oncomplete="PF('dtReport').filter()" update="dtOutlet" />
+                                        <p:ajax event="change" process="@this"  oncomplete="PF('dtReport').filter()" update="dtOutlet" />
+                                    </p:calendar>
+                                </f:facet>
+                                <h:outputLabel value="#{info.modificationDate}">
+                                    <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
+                                </h:outputLabel>
+                            </p:column>
+                            <p:column headerText="#{msg.modification_user}" filterBy="#{info.modificationUser}"><h:outputLabel value="#{info.modificationUser}"/></p:column>
+                            <p:column headerText="#{msg.status_2}" filterBy="#{info.statusOutlet}"><h:outputLabel value="#{info.statusOutlet}"/></p:column>
+                            <p:column headerText="#{msg.journey_plan}" filterBy="#{info.journeyPlan}"><h:outputLabel value="#{info.journeyPlan}"/></p:column>
+                            
+                        </p:dataTable>
+                    </p:scrollPanel>
+                </h:form>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

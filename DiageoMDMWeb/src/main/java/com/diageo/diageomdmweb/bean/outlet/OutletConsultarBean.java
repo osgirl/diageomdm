@@ -97,6 +97,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     private List<SelectItem> listFilterStatusMDM;
     private DbOutletsDto outletClonable;
     private String nameTmc;
+    private Db3party db3PartyIdNew;
+    private List<Db3party> db3PartyList;
 
     /**
      * Creates a new instance of OutletConsultarBean
@@ -108,6 +110,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     @Override
     public void init() {
         setFlagOutletInactive(true);
+        setDb3PartyList(db3PartyBeanLocal.searchAll());
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
             setOutletsLazyDataModel(new DbOutletsLazyDataModel(outletBeanLocal, getLoginBean().getUsuario().getProfileId().getProfileId()));
@@ -116,7 +119,11 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         } else {
             setButtonNameCommit(capturarValor("btn_send_approved"));
             setDisabledFields(Boolean.TRUE);
-            setRenderMassiveApproval(Boolean.TRUE);
+            if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_DISTRIBUIDORES.getId())) {
+                setRenderMassiveApproval(Boolean.FALSE);
+            } else {
+                setRenderMassiveApproval(Boolean.TRUE);
+            }
             if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
                 listId = relationUserBeanLocal.findByParentId(getLoginBean().getUsuario().getUserId());
                 setOutletsLazyDataModel(new DbOutletsLazyDataModel(outletBeanLocal,
@@ -213,6 +220,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         if (out.getDb3PartyIdOld() != null) {
             setDistributorOld(out.getDb3PartyIdOld().getDb3partyId());
         }
+        setDb3PartyIdNew(out.getDb3PartyIdNew());
         setSellerSelected(out.getDb3partySaleId());
         setJourneyPlan(out.getJourneyPlan().equals(StateEnum.ACTIVE.getState()));
         setStatusOutlet(out.getStatusOutlet());
@@ -267,7 +275,11 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                 outlet.setNumberPdv(getPointSale() != null ? getPointSale().toUpperCase() : "");
                 outlet.setOcsPrimary(getOcsPrimary());
                 outlet.setOcsSecondary(getOcsSecondary());
-                outlet.setOutletIdFather(getFather());
+                if (getFather() != null && getFather().getOutletId() != null) {
+                    outlet.setOutletIdFather(getFather());
+                } else {
+                    outlet.setOutletIdFather(outlet);
+                }
                 outlet.setStatusOutlet(getStatusOutlet());
                 outlet.setOutletName(getOutletName() != null ? getOutletName().toUpperCase() : "");
                 outlet.setPotentialId(getPotentialSelected());
@@ -278,6 +290,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                 outlet.setWebsite(getWebsite() != null ? getWebsite().toUpperCase() : "");
                 outlet.setDb3partySaleId(getSellerSelected());
                 outlet.setJourneyPlan(isJourneyPlan() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+                outlet.setDb3PartyIdNew(db3PartyIdNew);
 //            outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
@@ -390,19 +403,19 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
      */
     public void approvedAllOutlets() {
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
-            outletsUserBeanLocal.updateOutletCommercialManager(listId, StatusSystemMDM.APPROVED.name(), filtersTable);
+            outletsUserBeanLocal.updateOutletCommercialManager(listId, StatusSystemMDM.APPROVED.name(), StatusSystemMDM.PENDING_APPROVAL.name(),getLoginBean().getUsuario().getEmailUser());
         } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
-            outletsUserBeanLocal.updateOutlet(getLoginBean().getUsuario().getUserId(), StatusSystemMDM.PENDING_APPROVAL.name(), filtersTable);
-        } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_DISTRIBUIDORES.getId())) {
-            outletsUserBeanLocal.updateOutlet(getLoginBean().getUsuario().getUserId(), StatusSystemMDM.PENDING_TMC.name(), filtersTable);
+            outletsUserBeanLocal.updateOutlet(getLoginBean().getUsuario().getUserId(), StatusSystemMDM.PENDING_APPROVAL.name(), StatusSystemMDM.PENDING_TMC.name(),getLoginBean().getUsuario().getEmailUser());
         }
         showInfoMessage(capturarValor("sis_msg_record_outlet_change"));
+        init();
     }
 
     public void rejectAllOutlet() {
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
-            outletsUserBeanLocal.updateOutletCommercialManager(listId, StatusSystemMDM.REJECT.name(), filtersTable);
+            outletsUserBeanLocal.updateOutletCommercialManager(listId, StatusSystemMDM.REJECT.name(), StatusSystemMDM.PENDING_APPROVAL.name(),getLoginBean().getUsuario().getEmailUser());
             showInfoMessage(capturarValor("sis_msg_record_outlet_change"));
+            init();
         }
     }
 
@@ -419,12 +432,14 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                         }
                     }
                     if (update) {
-                        out.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                        if (out.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
+                            out.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                        }
                     }
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
-                    out.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
-                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_DISTRIBUIDORES.getId())) {
-                    out.setStatusMDM(StatusSystemMDM.PENDING_TMC.name());
+                    if (out.getStatusMDM().equals(StatusSystemMDM.PENDING_TMC.name())) {
+                        out.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+                    }
                 }
                 if (update) {
                     Audit audit = new Audit();
@@ -454,14 +469,16 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                 if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
                     if (out.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
                         if (update) {
-                            out.setStatusMDM(StatusSystemMDM.REJECT.name());
-                            Audit audit = new Audit();
-                            audit.setCreationDate(out.getAudit() != null ? out.getAudit().getCreationDate() : null);
-                            audit.setCreationUser(out.getAudit() != null ? out.getAudit().getCreationUser() : null);
-                            audit.setModificationDate(super.getCurrentDate());
-                            audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
-                            out.setAudit(audit);
-                            outletBeanLocal.updateOutlet(out);
+                            if (out.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
+                                out.setStatusMDM(StatusSystemMDM.REJECT.name());
+                                Audit audit = new Audit();
+                                audit.setCreationDate(out.getAudit() != null ? out.getAudit().getCreationDate() : null);
+                                audit.setCreationUser(out.getAudit() != null ? out.getAudit().getCreationUser() : null);
+                                audit.setModificationDate(super.getCurrentDate());
+                                audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+                                out.setAudit(audit);
+                                outletBeanLocal.updateOutlet(out);
+                            }
                         }
                     }
                 }
@@ -674,6 +691,16 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     }
 
     public boolean isRenderExportExcel() {
+        return !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
+    }
+
+    /**
+     * unicamente habilitado para el admin y datasteward
+     *
+     * @return
+     */
+    public boolean isDisabledDb3PartyNew() {
         return !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
     }
@@ -932,6 +959,34 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
 
     public void setNameTmc(String nameTmc) {
         this.nameTmc = nameTmc;
+    }
+
+    /**
+     * @return the db3PartyIdNew
+     */
+    public Db3party getDb3PartyIdNew() {
+        return db3PartyIdNew;
+    }
+
+    /**
+     * @param db3PartyIdNew the db3PartyIdNew to set
+     */
+    public void setDb3PartyIdNew(Db3party db3PartyIdNew) {
+        this.db3PartyIdNew = db3PartyIdNew;
+    }
+
+    /**
+     * @return the db3PartyList
+     */
+    public List<Db3party> getDb3PartyList() {
+        return db3PartyList;
+    }
+
+    /**
+     * @param db3PartyList the db3PartyList to set
+     */
+    public void setDb3PartyList(List<Db3party> db3PartyList) {
+        this.db3PartyList = db3PartyList;
     }
 
 }

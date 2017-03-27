@@ -80,6 +80,13 @@ and open the template in the editor.
                     <h:outputLabel value="#{msg.out_razon_social}"/>
                 </f:facet>
                 <h:outputLabel value="#{outdtNew.businessName}"/>
+            </p:column>
+            <p:column headerText="#{msg.out_nombre}" filterBy="#{outdtNew.outletName}" 
+                      filterMatchMode="startsWith">                
+                <f:facet name="header">
+                    <h:outputLabel value="#{msg.out_nombre}"/>
+                </f:facet>
+                <h:outputLabel value="#{outdtNew.outletName}"/>
             </p:column>            
             <p:column headerText="#{msg.distri_outlet}" filterBy="#{outdtNew.db3PartyIdOld.name3party}">                
                 <f:facet name="header">

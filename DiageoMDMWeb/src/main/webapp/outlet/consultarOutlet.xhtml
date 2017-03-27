@@ -167,6 +167,13 @@
 
                                         <h:outputLabel value="#{msg.out_distributor_old}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                         <p:inputText readonly="true" value="#{outletConsultarBean.showDistributorName(outletConsultarBean.distributorOld)}"/>
+                                        
+                                        <h:outputLabel value="#{msg.out_distributor_new}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:selectOneMenu value="#{outletConsultarBean.db3PartyIdNew}" style="width: 90%" converter="db3PartyConverter"
+                                                         disabled="#{outletConsultarBean.disabledDb3PartyNew}">
+                                            <f:selectItem itemValue="#{null}" itemLabel="#{msg.seleccion}"/>
+                                            <f:selectItems value="#{outletConsultarBean.db3PartyList}" var="party" itemLabel="#{party.name3party}"/>
+                                        </p:selectOneMenu>
 
                                         <h:outputLabel value="#{msg.journey_plan}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                         <p:selectBooleanCheckbox id="sbJourneyPlan" value="#{outletConsultarBean.journeyPlan}" disabled="#{outletConsultarBean.disabledFields}"/>

@@ -100,7 +100,8 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
             }
 
             setDisabledFields(Boolean.TRUE);
-            boolean bol = !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId()));
+            boolean bol = !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())
+                    || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId()));
             setRenderMassiveApproval(bol);
             if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())
                     || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())) {
@@ -240,7 +241,8 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                     }
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())) {
                     if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name())
-                            || chain.getStatusMDM().equals(StatusSystemMDM.REJECT.name())) {
+                            || chain.getStatusMDM().equals(StatusSystemMDM.REJECT.name())
+                            || chain.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
                         if (!chainsDto.isNotificationChangedSegmentation(chain)) {
                             chain.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
                         }
@@ -327,21 +329,24 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                                 update = listTemp.get(0).getStateApproved();
                             }
                             if (update) {
-                                ch.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                                if (ch.getKiernanId() == null || ch.getKiernanId().isEmpty()) {
+                                    ch.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
+                                } else {
+                                    ch.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                                }
                             }
                         }
                     }
 
-                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())
-                        || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
+                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())) {
                     if (ch.getStatusMDM().equals(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name())
-                            || ch.getStatusMDM().equals(StatusSystemMDM.REJECT.name())) {
+                            || ch.getStatusMDM().equals(StatusSystemMDM.REJECT.name())
+                            || ch.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())
+                            ) {
                         ch.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
                     }
-                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())) {
-                    if (ch.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
-                        ch.setStatusMDM(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name());
-                    }
+                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
+                    ch.setStatusMDM(StatusSystemMDM.APPROVED.name());
                 }
                 if (update) {
                     Audit audit = new Audit();
@@ -372,19 +377,20 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                             update = listTemp.get(0).getStateApproved();
                         }
                         if (update) {
-                            chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                            if (chain.getKiernanId() == null || chain.getKiernanId().isEmpty()) {
+                                chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
+                            } else {
+                                chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                            }
                         }
                     }
-                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())
-                        || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
+                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())) {
                     if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name())
                             || chain.getStatusMDM().equals(StatusSystemMDM.REJECT.name())) {
                         chain.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
                     }
-                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())) {
-                    if (chain.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
-                        chain.setStatusMDM(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name());
-                    }
+                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
+                    chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
                 }
                 if (update) {
                     Audit audit = new Audit();
@@ -475,16 +481,14 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         return !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
     }
-    
-    public boolean isDisabledGeography(){
+
+    public boolean isDisabledGeography() {
         return !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
-                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())
-                );
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId()));
     }
-
 
     @Override
     public void deletePhone(DbPhones phone) {

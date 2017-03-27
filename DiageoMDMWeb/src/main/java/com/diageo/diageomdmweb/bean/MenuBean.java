@@ -153,6 +153,12 @@ public class MenuBean extends DiageoRootBean {
             case REPORT_BLANCOS:
                 getLoginBean().armarMigaPan(capturarValor("m_report"), capturarValor("report_blancos"));
                 return "/reports/reportBlancos?faces-redirect=true";
+            case REPORT_SELLER:
+                getLoginBean().armarMigaPan(capturarValor("m_report"), capturarValor("report_seller"));
+                return "/reports/reportSeller?faces-redirect=true";
+            case REPORT_DUPLICATES:
+                getLoginBean().armarMigaPan(capturarValor("m_report"), capturarValor("report_duplicates"));
+                return "/reports/reportDuplicates?faces-redirect=true";
         }
         return null;
     }   

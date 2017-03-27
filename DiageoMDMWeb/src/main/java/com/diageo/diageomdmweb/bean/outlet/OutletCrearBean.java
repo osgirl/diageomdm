@@ -229,7 +229,6 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
                 if (getOcsSecondary() != null && getOcsSecondary().getOcsId() != null) {
                     outlet.setOcsSecondary(getOcsSecondary());
                 }
-                outlet.setOutletIdFather(getFather());
                 outlet.setOutletName(getOutletName() != null ? getOutletName().toUpperCase() : "");
                 outlet.setPotentialId(getPotentialSelected());
                 outlet.setSubSegmentId(getSubSegmentSelected());
@@ -257,6 +256,12 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
                 audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());
                 outlet.setAudit(audit);
                 outletBeanLocal.createOutlet(outlet);
+                if (getFather() != null && getFather().getOutletId() != null) {
+                    outlet.setOutletIdFather(getFather());
+                } else {
+                    outlet.setOutletIdFather(outlet);
+                }
+                outletBeanLocal.updateOutlet(outlet);
                 Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
                         userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
                 ConecctionJDBC.callStoreProcedureDBOutlets(con, outlet.getOutletId());

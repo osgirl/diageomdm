@@ -35,10 +35,10 @@ public class SalesSearchBean extends SalesCreateBean {
     @Override
     public void init() {
         super.init();
+        setDb3PartyTerritoryList(territoryBeanLocal.findAll());
         setRenderTable(Boolean.TRUE);
         setListSales(dbPartySalesBeanLocal.searchAll());
-        setRenderButtonBack(Boolean.TRUE);
-        setDb3PartyTerritoryList(territoryBeanLocal.findAll());
+        setRenderButtonBack(Boolean.TRUE);        
     }
 
     public void seeDetail(Db3partySales sales) {
@@ -46,14 +46,7 @@ public class SalesSearchBean extends SalesCreateBean {
         setSalesName(sales.getNameSales());
         setFocalizado(sales.getFocalizado() != null ? sales.getFocalizado().equals(StateEnum.ACTIVE.getState()) : false);
         setManagerSelected(sales.getDb3partyManagerId());
-        setProfilesSelected(sales.getDb3PartyProfileId());
-        if (sales.getDistri_2() != null) {
-            Db3partyTerritory terri = territoryBeanLocal.findByName(sales.getDistri_2());
-            if (terri != null) {
-                setTerritorySelected(terri);
-            }
-        }
-
+        setProfilesSelected(sales.getDb3PartyProfileId());     
         setDb3PartySelected(new Db3party(sales.getDbeParty() != null ? sales.getDbeParty() : 0));
         setSalesSelected(sales);
         setRenderTable(Boolean.FALSE);
@@ -73,7 +66,6 @@ public class SalesSearchBean extends SalesCreateBean {
             entity.setDb3PartyProfileId(getProfilesSelected());
             entity.setDb3partyManagerId(getManagerSelected());
             entity.setDbeParty(getDb3PartySelected() != null ? getDb3PartySelected().getDb3partyId() : 0);
-            entity.setDistri_2(getTerritorySelected().getNameTerritory());
             entity.setFocalizado(isFocalizado() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
             dbPartySalesBeanLocal.updateSales(entity);
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
