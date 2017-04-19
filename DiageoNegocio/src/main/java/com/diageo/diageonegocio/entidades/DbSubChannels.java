@@ -12,6 +12,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -51,7 +52,7 @@ public class DbSubChannels implements Serializable {
     @JoinColumn(name = "CHANNEL_ID", referencedColumnName = "CHANNEL_ID")
     @ManyToOne(optional = false)
     private DbChannels channelId;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subChannelId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subChannelId",fetch = FetchType.EAGER)
     private List<DbSegments> dbSegmentsList;
     @Column(name = "STATE_SUB_CHANNEL")
     private String stateSubChannel;

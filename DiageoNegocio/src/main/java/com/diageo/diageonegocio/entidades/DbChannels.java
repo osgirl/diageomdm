@@ -11,6 +11,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -28,10 +29,11 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DB_CHANNELS")
 @NamedQueries({
-    @NamedQuery(name = "DbChannels.findAll", query = "SELECT d FROM DbChannels d"),
-    @NamedQuery(name = "DbChannels.findByChannelId", query = "SELECT d FROM DbChannels d WHERE d.channelId = :channelId"),
-    @NamedQuery(name = "DbChannels.findByNameChannel", query = "SELECT d FROM DbChannels d WHERE d.nameChannel = :nameChannel")})
+    @NamedQuery(name = DbChannels.FIND_ACTIVE, query = "SELECT d FROM DbChannels d WHERE d.stateChannel = '1'")
+})
 public class DbChannels implements Serializable {
+
+    public static final String FIND_ACTIVE = "DbChannels.active";
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
@@ -43,7 +45,7 @@ public class DbChannels implements Serializable {
     @Size(max = 100)
     @Column(name = "NAME_CHANNEL")
     private String nameChannel;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "channelId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "channelId",fetch = FetchType.EAGER)
     private List<DbSubChannels> dbSubChannelsList;
     @Column(name = "STATE_CHANNEL")
     private String stateChannel;
@@ -142,4 +144,4 @@ public class DbChannels implements Serializable {
         return "com.totalseguros.entidadesdiageobusiness.DbChannels[ channelId=" + channelId + " ]";
     }
 
-    }
+}

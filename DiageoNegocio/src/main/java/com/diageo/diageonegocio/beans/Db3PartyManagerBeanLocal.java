@@ -7,17 +7,22 @@ package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.Db3partyManagers;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author EDUARDO
  */
-@Local
-public interface Db3PartyManagerBeanLocal {
+@Stateless
+public class Db3PartyManagerBeanLocal extends BusinessTransaction<Db3partyManagers> {
 
-    public List<Db3partyManagers> searchAllManagers();
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public List<Db3partyManagers> searchAllManagers() {
+        return super.searchAll(Db3partyManagers.class);
+    }
 
-    public Db3partyManagers searchById(Integer id);
-    
+    public Db3partyManagers searchById(Integer id) {
+        return (Db3partyManagers) super.searchById(Db3partyManagers.class, id);
+    }
 }

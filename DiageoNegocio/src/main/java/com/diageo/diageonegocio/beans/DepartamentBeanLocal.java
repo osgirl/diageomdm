@@ -6,18 +6,28 @@
 package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.DbDepartaments;
+import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author yovanoty126
  */
-@Local
-public interface DepartamentBeanLocal {
+@Stateless
+public class DepartamentBeanLocal extends BusinessTransaction<DbDepartaments>  {
 
-    public List<DbDepartaments> findAllDepartament();
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public List<DbDepartaments> findAllDepartament() {
+        List<DbDepartaments> lista = super.searchAll(DbDepartaments.class);
+        if (lista == null) {
+            return new ArrayList<>();
+        }
+        return lista;
+    }
 
-    public DbDepartaments findById(Integer id);
-    
+    public DbDepartaments findById(Integer id) {
+        return (DbDepartaments) super.searchById(DbDepartaments.class, id);
+    }
 }

@@ -7,17 +7,22 @@ package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.DbLayer;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author EDUARDO
  */
-@Local
-public interface DbLayerBeanLocal {
+@Stateless
+public class DbLayerBeanLocal extends BusinessTransaction<DbLayer>  {
 
-    public List<DbLayer> searchAll();
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public List<DbLayer> searchAll() {
+        return super.searchAll(DbLayer.class);
+    }
 
-    public DbLayer searchId(Integer id);
-    
+    public DbLayer searchId(Integer id) {
+        return (DbLayer) super.searchById(DbLayer.class, id);
+    }
 }

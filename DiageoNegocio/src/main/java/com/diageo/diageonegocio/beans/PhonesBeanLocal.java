@@ -7,19 +7,33 @@ package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.DbPhones;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author yovanoty126
  */
-@Local
-public interface PhonesBeanLocal {
+@Stateless
+public class PhonesBeanLocal extends BusinessTransaction<DbPhones> {
 
-    public List<DbPhones> createPhones(List<DbPhones> phon);
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public List<DbPhones> createPhones(List<DbPhones> pho) {
+        for (DbPhones phones : pho) {
+            phones = super.create(phones);
+        }
+        return pho;
+    }
 
-    public DbPhones createPhones(DbPhones pho);
+    public DbPhones createPhones(DbPhones pho) {
+        return super.create(pho);
+    }
 
-    public void deletePhoneList(List<DbPhones> list);
-    
+    public void deletePhoneList(List<DbPhones> list) {
+        for (DbPhones dbPhones : list) {
+            if (dbPhones.getPhoneId() != null) {
+                super.delete(dbPhones);
+            }
+        }
+    }
 }

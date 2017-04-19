@@ -3,22 +3,26 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.DbOcs;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author EDUARDO
  */
-@Local
-public interface OcsBeanLocal {
+@Stateless
+public class OcsBeanLocal extends BusinessTransaction<DbOcs>{
 
-    public List<DbOcs> findAll();
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public List<DbOcs> findAll() {
+        return super.searchAll(DbOcs.class);
+    }
 
-    public DbOcs findById(Integer id);
-    
+    public DbOcs findById(Integer id) {
+        return (DbOcs) super.searchById(DbOcs.class, id);
+    }
 }

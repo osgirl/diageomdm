@@ -12,6 +12,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -57,7 +58,7 @@ public class DbSubSegments implements Serializable {
     private List<DbOutlets> dbOutletsList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "distributorSubSegmentId")
     private List<DbOutlets> dbOutletsListDistributor;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subSegmentId")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "subSegmentId",fetch = FetchType.EAGER)
     private List<DbPotentials> dbPotentialsList;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "subSegmentId")
     private List<DbChains> dbChainsList;

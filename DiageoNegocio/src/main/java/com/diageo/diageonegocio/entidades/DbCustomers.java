@@ -8,6 +8,7 @@ package com.diageo.diageonegocio.entidades;
 import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Column;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -70,12 +71,22 @@ public class DbCustomers implements Serializable {
     private String verificationNumber;
     @Column(name = "NAME_3PARTY")
     private String name3Party;
+    @Embedded
+    private Audit audit;
 
     public DbCustomers() {
     }
 
     public DbCustomers(Integer customerId) {
         this.customerId = customerId;
+    }
+
+    public Audit getAudit() {
+        return audit;
+    }
+
+    public void setAudit(Audit audit) {
+        this.audit = audit;
     }
 
     public Integer getCustomerId() {

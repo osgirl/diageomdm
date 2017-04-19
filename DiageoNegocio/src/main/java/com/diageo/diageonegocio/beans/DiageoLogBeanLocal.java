@@ -6,15 +6,18 @@
 package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.DiageoLog;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author EDUARDO
  */
-@Local
-public interface DiageoLogBeanLocal {
+@Stateless
+public class DiageoLogBeanLocal extends BusinessTransaction<DiageoLog> {
 
-    public void createLog(DiageoLog log);
-    
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public void createLog(DiageoLog log) {
+        super.create(log);
+    }
 }

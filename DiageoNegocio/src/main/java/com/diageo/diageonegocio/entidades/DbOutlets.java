@@ -168,12 +168,22 @@ public class DbOutlets implements Serializable, Cloneable {
     private String site;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "dbOutlets")
     private Collection<DbOutletsUsers> dbOutletsUsersCollection;
+    @Column(name = "AGREEMENT")
+    private String agreement;
 
     public DbOutlets() {
     }
 
     public DbOutlets(Integer outletId) {
         this.outletId = outletId;
+    }
+
+    public String getAgreement() {
+        return agreement;
+    }
+
+    public void setAgreement(String agreement) {
+        this.agreement = agreement;
     }
 
     public Integer getOutletId() {
@@ -528,7 +538,7 @@ public class DbOutlets implements Serializable, Cloneable {
 
     public void setSubSegmentIdAthena(Integer subSegmentIdAthena) {
         this.subSegmentIdAthena = subSegmentIdAthena;
-    }   
+    }
 
     public String getSite() {
         return site;

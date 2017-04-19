@@ -44,19 +44,9 @@ public class Db3partyTerritory implements Serializable {
     @Embedded
     private Audit audit;
     @OneToMany(mappedBy = "db3partyTerritory")
-    private List<Db3partySales> db3partySales;
-    @Column(name = "DISTRI_2")
-    private Integer distri_2;
+    private List<Db3partySales> db3partySales;    
 
     public Db3partyTerritory() {
-    }
-
-    public Integer getDistri_2() {
-        return distri_2;
-    }
-
-    public void setDistri_2(Integer distri_2) {
-        this.distri_2 = distri_2;
     }
 
     public List<Db3partySales> getDb3partySales() {

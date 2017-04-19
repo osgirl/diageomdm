@@ -6,22 +6,36 @@
 package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.Db3partyTerritory;
+import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author EDUARDO
  */
-@Local
-public interface TerritoryBeanLocal {
+@Stateless
+public class TerritoryBeanLocal extends BusinessTransaction<Db3partyTerritory>  {
 
-    public List<Db3partyTerritory> findByNameTerritory(String name);
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public List<Db3partyTerritory> findByNameTerritory(String name) {
+        return searchByNamedQuery(Db3partyTerritory.class, Db3partyTerritory.FIND_BY_NAME_TERRITORY, "%" + name + "%");
+    }
 
-    public List<Db3partyTerritory> findAll();
+    public List<Db3partyTerritory> findAll() {
+        return super.searchAll(Db3partyTerritory.class);
+    }
 
-    public Db3partyTerritory findByName(String name);
+    public Db3partyTerritory findByName(String name) {
+        List<Db3partyTerritory> list = super.searchByNamedQuery(Db3partyTerritory.class, Db3partyTerritory.FIND_BY_NAME_TERRITORY, name);
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
+    }
 
-    public Db3partyTerritory findById(Integer id);
-    
+    public Db3partyTerritory findById(Integer id) {
+        return (Db3partyTerritory) super.searchById(Db3partyTerritory.class, id);
+    }
 }

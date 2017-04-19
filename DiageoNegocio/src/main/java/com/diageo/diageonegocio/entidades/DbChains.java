@@ -20,6 +20,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Size;
 
 /**
@@ -36,7 +37,9 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = DbChains.FIND_BY_3PARTY_PERMISSION, query = "SELECT c FROM DbChains c WHERE c.dbPartyId.db3partyId = ?1 AND "
             + "c.subSegmentId.subSegmentId IN ?2 AND c.statusMDM IN ?3")
     ,
-    @NamedQuery(name = DbChains.FIND_CHAIN_BY_CHAIN_ID_LIST, query = "SELECT c FROM DbChains c WHERE c.chainId IN ?1"),})
+    @NamedQuery(name = DbChains.FIND_CHAIN_BY_CHAIN_ID_LIST, query = "SELECT c FROM DbChains c WHERE c.chainId IN ?1")
+    ,
+    @NamedQuery(name = DbChains.FIND_BY_CODE_EAN, query = "SELECT c FROM DbChains c WHERE c.codeEan = ?1"),})
 public class DbChains implements Serializable, Cloneable {
 
     private static final long serialVersionUID = 1L;
@@ -44,6 +47,7 @@ public class DbChains implements Serializable, Cloneable {
     public static final String FIND_BY_SEGMENT_3PARTY = "DbChains.findBySegment3Party";
     public static final String FIND_BY_NAME_CHAIN = "DbChains.findByNameChain";
     public static final String FIND_BY_3PARTY_PERMISSION = "DbChains.findBy3PartyPermission";
+    public static final String FIND_BY_CODE_EAN = "DbChains.findByCodeEan";
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
 //    @GeneratedValue(generator = "SQ_DB_OUTLETS_CHAINS", strategy = GenerationType.SEQUENCE)
@@ -54,7 +58,7 @@ public class DbChains implements Serializable, Cloneable {
     @Column(name = "NAME_CHAIN")
     private String nameChain;
     @Size(max = 20)
-    @Column(name = "CODE_EAN")
+    @Column(name = "CODE_EAN", unique = true)
     private String codeEan;
     @Size(max = 255)
     @Column(name = "KIERNAN_ID")
@@ -111,6 +115,8 @@ public class DbChains implements Serializable, Cloneable {
     private DbLayer layerId;
     @Column(name = "SITE")
     private String site;
+    @Column(name = "CODE_EAN_CADENA")
+    private String codeEanCadena;
 
     public DbChains() {
     }
@@ -337,6 +343,14 @@ public class DbChains implements Serializable, Cloneable {
 
     public String getSite() {
         return site;
+    }
+
+    public String getCodeEanCadena() {
+        return codeEanCadena;
+    }
+
+    public void setCodeEanCadena(String codeEanCadena) {
+        this.codeEanCadena = codeEanCadena;
     }
 
     @Override

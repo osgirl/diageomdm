@@ -7,17 +7,22 @@ package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.DbClusters;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author EDUARDO
  */
-@Local
-public interface ClusterBeanLocal {
+@Stateless
+public class ClusterBeanLocal extends BusinessTransaction<DbClusters> {
 
-    public List<DbClusters> findAll();
-    
-    public DbClusters findById(Integer id);
-    
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public List<DbClusters> findAll() {
+        return super.searchAll(DbClusters.class);
+    }
+
+    public DbClusters findById(Integer id) {
+        return (DbClusters) super.searchById(DbClusters.class, id);
+    }
 }

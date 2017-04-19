@@ -8,6 +8,7 @@ package com.diageo.diageonegocio.beans;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -23,7 +24,7 @@ public class BusinessTransaction<T> {
     @PersistenceContext(unitName = "DiageoNegocioUP")
     private EntityManager em;
 
-    public EntityManager getEntityManager() {
+    public EntityManager getEntityManager() {        
         return this.em;
     }
 
@@ -77,7 +78,7 @@ public class BusinessTransaction<T> {
     
     public List<T> searchFirstResult(Class type) {
         getEntityManager().getEntityManagerFactory().getCache().evictAll();
-        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();        
         CriteriaQuery<T> criteria = cb.createQuery(type);
         criteria.from(type);
         Query query = getEntityManager().createQuery(criteria);

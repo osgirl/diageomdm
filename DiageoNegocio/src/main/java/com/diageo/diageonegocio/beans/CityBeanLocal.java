@@ -6,18 +6,30 @@
 package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.DbTowns;
+import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author yovanoty126
  */
-@Local
-public interface CityBeanLocal {
+@Stateless
+public class CityBeanLocal extends BusinessTransaction<DbTowns> {
 
-    public DbTowns findById(Integer id);
-
-    public List<DbTowns> findByDepartamentId(Integer id);
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
     
+    public DbTowns findById(Integer id) {
+        return (DbTowns) super.searchById(DbTowns.class, id);
+    }
+
+    
+    public List<DbTowns> findByDepartamentId(Integer id) {
+        List<DbTowns> lista = super.searchByNamedQuery(DbTowns.class, DbTowns.FIND_BY_DEPTO, id);
+        if (lista == null) {
+            return new ArrayList<>();
+        }
+        return lista;
+    }
 }

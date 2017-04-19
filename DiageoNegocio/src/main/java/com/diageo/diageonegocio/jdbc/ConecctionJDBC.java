@@ -5,7 +5,7 @@
  */
 package com.diageo.diageonegocio.jdbc;
 
-import com.diageo.diageonegocio.beans.PermissionsegmentBean;
+import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
 import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import java.sql.CallableStatement;
@@ -27,7 +27,7 @@ public class ConecctionJDBC {
             System.out.println("Conexion con sqlserver Establecida..");
             return java.sql.DriverManager.getConnection(databaseURL, "sa", "sa");
         } catch (ClassNotFoundException | SQLException e) {
-            Logger.getLogger(PermissionsegmentBean.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(PermissionsegmentBeanLocal.class.getName()).log(Level.SEVERE, null, e);
         }
         return null;
     }
@@ -84,7 +84,7 @@ public class ConecctionJDBC {
             System.out.println("call procedimiento despues del execute");
             con.commit();
         } catch (SQLException ex) {
-            Logger.getLogger(PermissionsegmentBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PermissionsegmentBeanLocal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 

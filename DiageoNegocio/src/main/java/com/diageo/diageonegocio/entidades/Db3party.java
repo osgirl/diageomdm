@@ -100,6 +100,10 @@ public class Db3party implements Serializable {
     private List<DbOutlets> listOutletOld;
     @OneToMany(mappedBy = "db3PartyId")
     private List<Db3partyTerritory> listDb3partyTerritory;
+    @Column(name = "CODE_EAN_CADENA")
+    private String codeEanCadena;
+    @Column(name = "BUSINESS_NAME")
+    private String businessName;
 
     public Db3party() {
     }
@@ -250,6 +254,22 @@ public class Db3party implements Serializable {
 
     public void setListOutletOld(List<DbOutlets> listOutletOld) {
         this.listOutletOld = listOutletOld;
+    }
+
+    public String getCodeEanCadena() {
+        return codeEanCadena;
+    }
+
+    public void setCodeEanCadena(String codeEanCadena) {
+        this.codeEanCadena = codeEanCadena;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
     }
 
     @Override

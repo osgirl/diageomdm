@@ -6,22 +6,37 @@
 package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.Db3partyAdmin;
+import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author EDUARDO
  */
-@Local
-public interface Db3PartyAdminBeanLocal {
+@Stateless
+public class Db3PartyAdminBeanLocal extends BusinessTransaction<Db3partyAdmin> {
 
-    public void createAdmin(Db3partyAdmin entity);
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public void createAdmin(Db3partyAdmin entity) {
+        super.create(entity);
+    }
 
-    public void updateAdmin(Db3partyAdmin entity);
+    public void updateAdmin(Db3partyAdmin entity) {
+        super.update(entity);
+    }
 
-    public Db3partyAdmin findById(Integer id);
+    public Db3partyAdmin findById(Integer id) {
+        return (Db3partyAdmin) super.searchById(Db3partyAdmin.class, id);
+    }
 
-    public List<Db3partyAdmin> findAll();
-    
+    public List<Db3partyAdmin> findAll() {
+        List<Db3partyAdmin> list = super.searchAll(Db3partyAdmin.class);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
+
 }

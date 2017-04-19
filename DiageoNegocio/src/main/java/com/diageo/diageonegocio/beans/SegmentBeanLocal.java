@@ -7,24 +7,55 @@ package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.DbSegments;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
+import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author yovanoty126
  */
-@Local
-public interface SegmentBeanLocal {
+@Stateless
+public class SegmentBeanLocal extends BusinessTransaction<DbSegments>  {
 
-    public DbSegments createSegment(DbSegments segment) throws DiageoBusinessException;
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public DbSegments createSegment(DbSegments segmento) throws DiageoBusinessException {
+        try {
+            segmento = super.create(segmento);
+            return segmento;
+        } catch (Exception e) {
+            throw new DiageoBusinessException(e, e.getMessage());
+        }
+    }
 
-    public DbSegments updateSegment(DbSegments segment) throws DiageoBusinessException;
+    public DbSegments updateSegment(DbSegments segmento) throws DiageoBusinessException {
+        try {
+            segmento = (DbSegments) super.update(segmento);
+            return segmento;
+        } catch (Exception e) {
+            throw new DiageoBusinessException(e, e.getMessage());
+        }
+    }
 
-    public List<DbSegments> findAllSegment();
+    public List<DbSegments> findAllSegment() {
+        List<DbSegments> lista = super.searchAll(DbSegments.class);
+        if (lista == null) {
+            return new ArrayList<>();
+        }
+        return lista;
+    }
 
-    public DbSegments findById(Integer id) throws DiageoBusinessException;
+    public List<DbSegments> findBySubChannel(Integer id) {
+        return super.searchByNamedQuery(DbSegments.class, DbSegments.FIND_BY_SUBCHANNEL, id);
+    }
 
-    public List<DbSegments> findBySubChannel(Integer id);
-    
+    public DbSegments findById(Integer id) throws DiageoBusinessException {
+        try {
+            DbSegments seg = (DbSegments) super.searchById(DbSegments.class, id);
+            return seg;
+        } catch (Exception e) {
+            throw new DiageoBusinessException(e, e.getMessage());
+        }
+    }
 }

@@ -12,6 +12,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -53,7 +54,7 @@ public class DbSegments implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "segmentId")
     private List<DbSubSegments> dbSubSegmentsList;
     @JoinColumn(name = "SUB_CHANNEL_ID", referencedColumnName = "SUB_CHANNEL_ID")
-    @ManyToOne(optional = false)
+    @ManyToOne(optional = false,fetch = FetchType.EAGER)
     private DbSubChannels subChannelId;
     @Column(name = "STATE_SEGMENT")
     private String stateSegment;

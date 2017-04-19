@@ -7,17 +7,22 @@ package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.Db3partyProfiles;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author EDUARDO
  */
-@Local
-public interface Db3PartyProfilesBeanLocal {
+@Stateless
+public class Db3PartyProfilesBeanLocal extends BusinessTransaction<Db3partyProfiles> {
 
-    public List<Db3partyProfiles> searchAll3PartyProfiles();
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public List<Db3partyProfiles> searchAll3PartyProfiles() {
+        return super.searchAll(Db3partyProfiles.class);
+    }
 
-    public Db3partyProfiles searchById(Integer id);
-    
+    public Db3partyProfiles searchById(Integer id) {
+        return (Db3partyProfiles) super.searchById(Db3partyProfiles.class, id);
+    }
 }
