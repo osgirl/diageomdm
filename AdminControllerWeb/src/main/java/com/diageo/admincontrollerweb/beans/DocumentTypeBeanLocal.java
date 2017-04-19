@@ -7,17 +7,23 @@ package com.diageo.admincontrollerweb.beans;
 
 import com.diageo.admincontrollerweb.entities.DwDocumentTypes;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author yovanoty126
  */
-@Local
-public interface DocumentTypeBeanLocal {
+@Stateless
+public class DocumentTypeBeanLocal extends WebTransaction<DwDocumentTypes>  {
 
-    public List<DwDocumentTypes> findAll();
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public List<DwDocumentTypes> findAll() {
+        return findAll(DwDocumentTypes.class);
+    }
 
-    public DwDocumentTypes findById(Integer id);
-    
+    public DwDocumentTypes findById(Integer id) {
+        return (DwDocumentTypes) findById(DwDocumentTypes.class, id);
+    }
+
 }

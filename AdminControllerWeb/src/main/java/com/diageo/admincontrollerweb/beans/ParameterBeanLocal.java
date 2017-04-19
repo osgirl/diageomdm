@@ -6,22 +6,37 @@
 package com.diageo.admincontrollerweb.beans;
 
 import com.diageo.admincontrollerweb.entities.DwParameters;
+import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author yovanoty126
  */
-@Local
-public interface ParameterBeanLocal {
+@Stateless
+public class ParameterBeanLocal extends WebTransaction<DwParameters>  {
 
-    public DwParameters createParameter(DwParameters entity);
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public DwParameters createParameter(DwParameters entity) {
+        return super.create(entity);
+    }
 
-    public DwParameters updateParameter(DwParameters entity);
+    public DwParameters updateParameter(DwParameters entity) {
+        return (DwParameters) super.update(entity);
+    }
 
-    public List<DwParameters> findByKey(String key);
+    public List<DwParameters> findByKey(String key) {
+        List<DwParameters> list = super.findByNamedQuery(DwParameters.class, DwParameters.FIND_KEY, key);
+        if (list == null || list.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
 
-    public void deleteParameter(DwParameters entity);
-    
+    public void deleteParameter(DwParameters entity) {
+        super.delete(entity);
+    }
+
 }

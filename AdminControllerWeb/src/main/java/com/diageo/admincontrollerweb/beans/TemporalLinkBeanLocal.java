@@ -6,20 +6,36 @@
 package com.diageo.admincontrollerweb.beans;
 
 import com.diageo.admincontrollerweb.entities.DwTemporalLink;
+import java.util.ArrayList;
 import java.util.List;
-import javax.ejb.Local;
+import javax.ejb.Stateless;
 
 /**
  *
  * @author EDUARDO
  */
-@Local
-public interface TemporalLinkBeanLocal {
+@Stateless
+public class TemporalLinkBeanLocal extends WebTransaction<DwTemporalLink> {
 
-    public void createTemporal(DwTemporalLink entity);
+    // Add business logic below. (Right-click in editor and choose
+    // "Insert Code > Add Business Method")
+    public List<DwTemporalLink> findbyEmail(String email) {
+        List<DwTemporalLink> list = super.findByNamedQuery(DwTemporalLink.class, DwTemporalLink.FIND_BY_EMAIL, email);
+        if (list == null) {
+            return new ArrayList<>();
+        }
+        return list;
+    }
 
-    public List<DwTemporalLink> findbyEmail(String email);
+    public void createTemporal(DwTemporalLink entity) {
+        super.create(entity);
+    }
 
-    public DwTemporalLink findByToken(String token);
-    
+    public DwTemporalLink findByToken(String token) {
+        List<DwTemporalLink> list = super.findByNamedQuery(DwTemporalLink.class, DwTemporalLink.FIND_BY_TOKEN, token);
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
+    }
 }
