@@ -107,6 +107,9 @@
                                     <f:selectItem itemValue="A" itemLabel="#{msg.active}"/>
                                     <f:selectItem itemValue="I" itemLabel="#{msg.inactive}"/>
                                 </p:selectOneMenu>
+                                
+                                <h:outputLabel value="#{msg.agreement}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                <p:selectBooleanCheckbox value="#{outletCrearBean.agreement}" disabled="#{outletCrearBean.disableAgreement}"/>
                             </h:panelGrid>
                             <br/>
                             <!--h:panelGrid columns="6" style="width: 80%">

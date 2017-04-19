@@ -8,6 +8,7 @@ package com.diageo.diageomdmweb.bean.outlet;
 import com.diageo.admincontrollerweb.beans.ParameterBeanLocal;
 import com.diageo.admincontrollerweb.entities.DwParameters;
 import com.diageo.admincontrollerweb.enums.ParameterKeyEnum;
+import com.diageo.admincontrollerweb.enums.ProfileEnum;
 import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import com.diageo.diageomdmweb.bean.DiageoApplicationBean;
@@ -148,6 +149,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     protected List<DwParameters> userDatabase;
     protected List<DwParameters> passDatabase;
     private boolean flagOutletInactive;
+    private boolean agreement;
 
     /**
      * Creates a new instance of OutletVistaBean
@@ -161,7 +163,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         ipDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.DATABASE_IP.name());
         userDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.USER_DATABASE.name());
         passDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.PASS_DATABASE.name());
-        setListChannel(channelBeanLocal.findAllChannel());
+        setListChannel(channelBeanLocal.findAllChannelActive());
         setListTypePhone(typePhoneBeanLocal.findAll());
         setList3PartyToDeploy(db3PartyBeanLocal.searchDistributorByIsChain(StateEnum.INACTIVE.getState(), StateEnum.ACTIVE.getState()));
         setListOcs(ocsBeanLocal.findAll());
@@ -238,6 +240,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
                 outlet.setTypeOutlet(getTypeOutlet() != null ? getTypeOutlet().toUpperCase() : "");
                 outlet.setVerificationNumber(getVerificationNumber());
                 outlet.setWebsite(getWebsite() != null ? getWebsite().toUpperCase() : "");
+                outlet.setAgreement(isAgreement() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
 //            outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
@@ -371,7 +374,13 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
     public void listenerChannel() {
         if (getChannelSelected().getDbSubChannelsList() != null && !getChannelSelected().getDbSubChannelsList().isEmpty()) {
-            setListSubChannel(getChannelSelected().getDbSubChannelsList());
+            List<DbSubChannels> temp = getChannelSelected().getDbSubChannelsList();
+            setListSubChannel(new ArrayList<DbSubChannels>());
+            for (DbSubChannels dbSubChannels : temp) {
+                if (dbSubChannels.getStateSubChannel().equals(StateEnum.ACTIVE.getState())) {
+                    getListSubChannel().add(dbSubChannels);
+                }
+            }
             setSubChannelSelected(getListSubChannel().get(0));
             this.listenerSubChannel();
         } else {
@@ -384,9 +393,21 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
     public void listenerSubChannel() {
         if (getSubChannelSelected().getDbSegmentsList() != null && !getSubChannelSelected().getDbSegmentsList().isEmpty()) {
-            setSegmentSelected(getSubChannelSelected().getDbSegmentsList().get(0));
-            setListSegment(getSubChannelSelected().getDbSegmentsList());
-            this.listenerSegment();
+            List<DbSegments> temp = getSubChannelSelected().getDbSegmentsList();
+            setListSegment(new ArrayList<DbSegments>());
+            for (DbSegments dbSegments : temp) {
+                if (dbSegments.getStateSegment().equals(StateEnum.ACTIVE.getState())) {
+                    getListSegment().add(dbSegments);
+                }
+            }
+            if (getListSegment() != null && !getListSegment().isEmpty()) {
+                setSegmentSelected(getListSegment().get(0));
+                this.listenerSegment();
+            } else {
+                setListSegment(new ArrayList<DbSegments>());
+                setListSubSegment(new ArrayList<DbSubSegments>());
+                setListPotential(new ArrayList<DbPotentials>());
+            }
         } else {
             setListSegment(new ArrayList<DbSegments>());
             setListSubSegment(new ArrayList<DbSubSegments>());
@@ -396,9 +417,20 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
     public void listenerSegment() {
         if (getSegmentSelected().getDbSubSegmentsList() != null && !getSegmentSelected().getDbSubSegmentsList().isEmpty()) {
-            setSubSegmentSelected(getSegmentSelected().getDbSubSegmentsList().get(0));
-            setListSubSegment(getSegmentSelected().getDbSubSegmentsList());
-            listenerSubSegment();
+            List<DbSubSegments> temp = getSegmentSelected().getDbSubSegmentsList();
+            setListSubSegment(new ArrayList<DbSubSegments>());
+            for (DbSubSegments dbSubSegments : temp) {
+                if (dbSubSegments.getStateSubSegment().equals(StateEnum.ACTIVE.getState())) {
+                    getListSubSegment().add(dbSubSegments);
+                }
+            }
+            if (getListSubSegment() != null && !getListSubSegment().isEmpty()) {
+                setSubSegmentSelected(getListSubSegment().get(0));
+                listenerSubSegment();
+            } else {
+                setListSubSegment(new ArrayList<DbSubSegments>());
+                setListPotential(new ArrayList<DbPotentials>());
+            }
         } else {
             setListSubSegment(new ArrayList<DbSubSegments>());
             setListPotential(new ArrayList<DbPotentials>());
@@ -406,7 +438,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     }
 
     public void listenerSubSegment() {
-        if (getSubSegmentSelected().getDbPotentialsList() == null || getSubSegmentSelected().getDbPotentialsList().isEmpty()) {
+        if (getSubSegmentSelected() == null || getSubSegmentSelected().getDbPotentialsList() == null || getSubSegmentSelected().getDbPotentialsList().isEmpty()) {
             setListPotential(new ArrayList<DbPotentials>());
         } else {
             for (DbPotentials po : getSubSegmentSelected().getDbPotentialsList()) {
@@ -424,12 +456,17 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     }
 
     public boolean isDisabledOcs() {
-        if (!getChannelSelected().getNameChannel().startsWith("ON")) {
+        if (getChannelSelected() != null && getChannelSelected().getNameChannel() != null && !getChannelSelected().getNameChannel().startsWith("ON")) {
             setOcsPrimary(new DbOcs());
             setOcsSecondary(new DbOcs());
             return true;
         }
         return false;
+    }
+
+    public boolean isDisableAgreement() {
+        return !(getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
     }
 
     /**
@@ -1078,6 +1115,14 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
     public void setFlagOutletInactive(boolean flagOutletInactive) {
         this.flagOutletInactive = flagOutletInactive;
+    }
+
+    public boolean isAgreement() {
+        return agreement;
+    }
+
+    public void setAgreement(boolean agreement) {
+        this.agreement = agreement;
     }
 
 }

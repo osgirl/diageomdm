@@ -63,6 +63,8 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
     private boolean father;
     private String isChain;
     private String status;
+    private String codeEanChain;
+    private String businessName;
 
     /**
      * Creates a new instance of DistributorSearch
@@ -92,6 +94,8 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
         setIsChain(distri.getIsChain());
         setStatus(distri.getStatus());
         setListDistributorFather(distributorBeanLocal.searchDistributorFatherIsChain(FatherDistributorEnum.FATHER.getIsFather(), distri.getIsChain()));
+        setBusinessName(distri.getBusinessName());
+        setCodeEanChain(distri.getCodeEanCadena());
         if (isFather()) {
             setPartyFatherSelected(distri.getDb3partyIdFather());
         }
@@ -114,6 +118,8 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
             getSelectedDistributor().setIsChain(getIsChain());
             getSelectedDistributor().setStatus(getStatus());
             getSelectedDistributor().setDb3PartyAdmin(adminSelected);
+            getSelectedDistributor().setCodeEanCadena(codeEanChain);
+            getSelectedDistributor().setBusinessName(businessName);
             Audit audit = new Audit();
             audit.setModificationDate(super.getCurrentDate());
             audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
@@ -306,6 +312,22 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
 
     public void setAdminSelected(Db3partyAdmin adminSelected) {
         this.adminSelected = adminSelected;
+    }
+
+    public String getCodeEanChain() {
+        return codeEanChain;
+    }
+
+    public void setCodeEanChain(String codeEanChain) {
+        this.codeEanChain = codeEanChain;
+    }
+
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
     }
 
 }

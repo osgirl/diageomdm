@@ -119,6 +119,7 @@
                                     <p:selectOneMenu value="#{chainSearchBean.db3PartySelected}" converter="db3PartyConverter" style="width: 90%"
                                                      disabled="#{chainSearchBean.disabledFields}">
                                         <f:selectItems value="#{chainSearchBean.list3Party}" var="party3" itemLabel="#{party3.name3party}"/>
+                                        <p:ajax listener="#{chainSearchBean.listenerDb3Party()}" process="@this" update="formChainSearch:itBusinessName"/>
                                     </p:selectOneMenu>                                    
                                     <h:outputLabel value="#{msg.status}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <p:selectOneMenu value="#{chainSearchBean.status}" style="width: 90%">

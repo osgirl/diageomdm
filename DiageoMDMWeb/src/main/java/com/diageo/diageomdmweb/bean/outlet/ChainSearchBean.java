@@ -15,12 +15,16 @@ import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageomdmweb.bean.dto.DbChainsDto;
 import com.diageo.diageomdmweb.jdbc.ConecctionJDBC;
 import com.diageo.diageonegocio.beans.ChainUserBeanLocal;
+import com.diageo.diageonegocio.beans.DiageoLogBeanLocal;
 import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.DbChains;
 import com.diageo.diageonegocio.entidades.DbChainsUsers;
 import com.diageo.diageonegocio.entidades.DbCustomers;
+import com.diageo.diageonegocio.entidades.DbOutlets;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import com.diageo.diageonegocio.entidades.DbPhones;
+import com.diageo.diageonegocio.entidades.DiageoLog;
+import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.io.Serializable;
 import java.sql.Connection;
@@ -54,6 +58,8 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     private ParameterBeanLocal parameterBeanLocal;
     @EJB
     private RelationUserBeanLocal relationUserBeanLocal;
+    @EJB
+    private DiageoLogBeanLocal diageoLogBeanLocal;
     @Inject
     private LoginBean loginBean;
     private List<DbChains> chainsList;
@@ -72,7 +78,8 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     private List<Integer> listId;
     private DbChains chainSelected;
     private List<SelectItem> listFilterStatusMDM;
-    private DbChainsDto chainsDto;
+    private DbChainsDto chainClonable;
+    private String codeEanTemp;
 
     /**
      * Creates a new instance of ChainSearchBean
@@ -155,7 +162,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
 
     public void detailChain(DbChains chain) {
         try {
-            chainsDto = new DbChainsDto(chain.clone());
+            chainClonable = new DbChainsDto(chain.clone(), getCurrentDate(), getLoginBean().getUsuario().getUserId());
         } catch (CloneNotSupportedException ex) {
             Logger.getLogger(ChainSearchBean.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -165,6 +172,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         setAddress(chain.getAddress());
         setBusinessName(chain.getBusinessName());
         setEanCode(chain.getCodeEan());
+        codeEanTemp = chain.getCodeEan();
         setClusterSelected(chain.getDbClusterId());
         setDb3PartySelected(chain.getDbPartyId());
         setListPhones(chain.getDbPhonesList());
@@ -177,10 +185,12 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         setNeighborhood(chain.getNeighborhood());
         setStatus(chain.getStatusChain());
         setPotentialSelected(chain.getPotentialId());
-        setSubSegmentSelected(chain.getSubSegmentId());
-        setSegmentSelected(getSubSegmentSelected().getSegmentId());
-        setSubChannelSelected(getSegmentSelected().getSubChannelId());
-        setChannelSelected(getSubChannelSelected().getChannelId());
+        this.setSegmentation(chain);
+
+//        setSubSegmentSelected(chain.getSubSegmentId());
+//        setSegmentSelected(getSubSegmentSelected().getSegmentId());
+//        setSubChannelSelected(getSegmentSelected().getSubChannelId());
+//        setChannelSelected(getSubChannelSelected().getChannelId());
         setListSubChannel(getChannelSelected().getDbSubChannelsList());
         setListSegment(getSubChannelSelected().getDbSegmentsList());
         setListSubSegment(getSegmentSelected().getDbSubSegmentsList());
@@ -189,6 +199,41 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         setListCustomers(chain.getDbCustomerList());
         setSeeDetail(Boolean.FALSE);
         setLayerSelected(chain.getLayerId());
+    }
+
+    private void setSegmentation(DbChains cha) {
+        try {
+            boolean bol = cha.getSubSegmentId().getSegmentId().getSubChannelId().getChannelId().getStateChannel().equals(StateDiageo.ACTIVO.getId());
+            if (bol) {
+                setChannelSelected(cha.getSubSegmentId().getSegmentId().getSubChannelId().getChannelId());
+                if (cha.getSubSegmentId().getSegmentId().getSubChannelId().getStateSubChannel().equals(StateDiageo.ACTIVO.getId())) {
+                    setSubChannelSelected(cha.getSubSegmentId().getSegmentId().getSubChannelId());
+                    if (cha.getSubSegmentId().getSegmentId().getStateSegment().equals(StateDiageo.ACTIVO.getId())) {
+                        setSegmentSelected(cha.getSubSegmentId().getSegmentId());
+                        if (cha.getSubSegmentId().getStateSubSegment().equals(StateDiageo.ACTIVO.getId())) {
+                            setSubSegmentSelected(cha.getSubSegmentId());
+                        } else {
+                            setSubSegmentSelected(subSegmentoBeanLocal.findById(0));
+                        }
+                    } else {
+                        setSubSegmentSelected(subSegmentoBeanLocal.findById(0));
+                        setSegmentSelected(segmentoBeanLocal.findById(0));
+                    }
+                } else {
+                    setSubChannelSelected(subChannelBeanLocal.findById(0));
+                    setSubSegmentSelected(subSegmentoBeanLocal.findById(0));
+                    setSegmentSelected(segmentoBeanLocal.findById(0));
+                }
+            } else {
+                setSubSegmentSelected(subSegmentoBeanLocal.findById(0));
+                setSegmentSelected(segmentoBeanLocal.findById(0));
+                setSubChannelSelected(subChannelBeanLocal.findById(0));
+                setChannelSelected(channelBeanLocal.findById(0));
+            }
+        } catch (DiageoBusinessException ex) {
+            Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, ex.getMessage());
+
+        }
     }
 
     private void deletCustomerChain() {
@@ -202,90 +247,112 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     @Override
     public void saveChain() {
         if (isFlagOutletInactive()) {
-            try {
-                DbChains chain = getChainSelected();
-                chain.setAddress(getAddress() != null ? getAddress().toUpperCase() : "");
-                chain.setBusinessName(getBusinessName() != null ? getBusinessName().toUpperCase() : "");
-                chain.setCodeEan(getEanCode() != null ? getEanCode().toUpperCase() : "");
-                chain.setDbClusterId(getClusterSelected());
-                chain.setDbPartyId(getDb3PartySelected());
-                super.cleanIdPhones();
-                chain.setDbPhonesList(getListPhones());
-                chain.setDbTownId(getTownSelected());
-                chain.setKiernanId(getKiernan() != null ? getKiernan().toUpperCase() : "");
-                chain.setLatitude(getLatitude());
-                chain.setLongitude(getLongitude());
-                chain.setNameChain(getChainName() != null ? getChainName().toUpperCase() : "");
-                chain.setNeighborhood(getNeighborhood() != null ? getNeighborhood().toUpperCase() : "");
-                chain.setPotentialId(getPotentialSelected());
-                chain.setSubSegmentId(getSubSegmentSelected());
-                chain.setStatusChain(getStatus());
-                chain.setDbCustomerList(getListCustomers());
-                Audit audit = new Audit();
-                audit.setCreationDate(chain.getAudit() != null ? chain.getAudit().getCreationDate() : null);
-                audit.setCreationUser(chain.getAudit() != null ? chain.getAudit().getCreationUser() : null);
-                audit.setModificationDate(super.getCurrentDate());
-                audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
-                chain.setAudit(audit);
-                chain.setLayerId(getLayerSelected());
-                chain.setSite(getSite());
-                this.deletePhone();
-                if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
-                        || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
-                    if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
+            if (!validateCodeEan()) {
+                try {
+                    DbChains chain = getChainSelected();
+                    chain.setAddress(getAddress() != null ? getAddress().toUpperCase() : "");
+                    chain.setBusinessName(getBusinessName() != null ? getBusinessName().toUpperCase() : "");
+                    chain.setCodeEan(getEanCode() != null ? getEanCode().toUpperCase() : "");
+                    chain.setDbClusterId(getClusterSelected());
+                    chain.setDbPartyId(getDb3PartySelected());
+                    super.cleanIdPhones();
+                    chain.setDbPhonesList(getListPhones());
+                    chain.setDbTownId(getTownSelected());
+                    chain.setKiernanId(getKiernan() != null ? getKiernan().toUpperCase() : "");
+                    chain.setLatitude(getLatitude());
+                    chain.setLongitude(getLongitude());
+                    chain.setNameChain(getChainName() != null ? getChainName().toUpperCase() : "");
+                    chain.setNeighborhood(getNeighborhood() != null ? getNeighborhood().toUpperCase() : "");
+                    chain.setPotentialId(getPotentialSelected());
+                    chain.setSubSegmentId(getSubSegmentSelected());
+                    chain.setStatusChain(getStatus());
+                    chain.setDbCustomerList(getListCustomers());
+                    Audit audit = new Audit();
+                    audit.setCreationDate(chain.getAudit() != null ? chain.getAudit().getCreationDate() : null);
+                    audit.setCreationUser(chain.getAudit() != null ? chain.getAudit().getCreationUser() : null);
+                    audit.setModificationDate(super.getCurrentDate());
+                    audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
+                    chain.setAudit(audit);
+                    chain.setLayerId(getLayerSelected());
+                    chain.setSite(getSite());
+                    this.deletePhone();
+                    if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
+                            || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
+                        if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
+                            if (chain.getKiernanId() == null || chain.getKiernanId().isEmpty()) {
+                                chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
+                            } else {
+                                chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                            }
+                        }
+                    } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())) {
+                        if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name())
+                                || chain.getStatusMDM().equals(StatusSystemMDM.REJECT.name())
+                                || chain.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
+                            if (!chainClonable.isNotificationChangedSegmentation(chain)) {
+                                chain.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+                            }
+                        }
+                    } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
+                        if (chain.getKiernanId() == null || chain.getKiernanId().isEmpty()) {
+                            chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
+                        } else {
+                            chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
+                        }
+                    } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
                         if (chain.getKiernanId() == null || chain.getKiernanId().isEmpty()) {
                             chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
                         } else {
                             chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
                         }
                     }
-                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())) {
-                    if (chain.getStatusMDM().equals(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name())
-                            || chain.getStatusMDM().equals(StatusSystemMDM.REJECT.name())
-                            || chain.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
-                        if (!chainsDto.isNotificationChangedSegmentation(chain)) {
-                            chain.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+                    if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())) {
+                        if (chain.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
+                            deletCustomerChain();
+                            chainBeanLocal.updateChain(chain);
+                            showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+                        } else {
+                            showInfoMessage(capturarValor("msg_cp_a_warning"));
                         }
-                    }
-                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {
-                    if (chain.getKiernanId() == null || chain.getKiernanId().isEmpty()) {
-                        chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
                     } else {
-                        chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
-                    }
-                } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
-                    if (chain.getKiernanId() == null || chain.getKiernanId().isEmpty()) {
-                        chain.setStatusMDM(StatusSystemMDM.PENDING_KIERNAN.name());
-                    } else {
-                        chain.setStatusMDM(StatusSystemMDM.APPROVED.name());
-                    }
-                }
-                if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.CP_A_CADENAS.getId())) {
-                    if (chain.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
                         deletCustomerChain();
                         chainBeanLocal.updateChain(chain);
-                        Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
-                                userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
-                        ConecctionJDBC.callStoreProcedureDBChains(con, chain.getChainId());
                         showInfoMessage(capturarValor("sis_datos_guardados_exito"));
-                    } else {
-                        showInfoMessage(capturarValor("msg_cp_a_warning"));
                     }
-                } else {
-                    deletCustomerChain();
-                    chainBeanLocal.updateChain(chain);
+                    createLog(chain);
                     Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
                             userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
                     ConecctionJDBC.callStoreProcedureDBChains(con, chain.getChainId());
-                    showInfoMessage(capturarValor("sis_datos_guardados_exito"));
+                    setSeeDetail(Boolean.TRUE);
+                } catch (DiageoBusinessException ex) {
+                    Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
+                    showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
                 }
-                setSeeDetail(Boolean.TRUE);
-            } catch (DiageoBusinessException ex) {
-                Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
-                showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
+            }else{
+                showWarningMessage(capturarValor("chain_meg_code_ean"));
             }
         }
         setFlagOutletInactive(true);
+    }
+
+    @Override
+    public boolean validateCodeEan() {
+        DbChains findByCodeEAN = chainBeanLocal.findByCodeEAN(getEanCode());
+        if (findByCodeEAN != null) {
+            return !findByCodeEAN.getCodeEan().equals(codeEanTemp);
+        }
+        return false;
+    }
+
+    public void createLog(DbChains cha) {
+        chainClonable.changes(cha);
+        List<DiageoLog> listDiageoLog = chainClonable.getListDiageoLog();
+        if (!listDiageoLog.isEmpty()) {
+            for (DiageoLog diageoLog : listDiageoLog) {
+                diageoLogBeanLocal.createLog(diageoLog);
+            }
+        }
+        chainClonable = new DbChainsDto(cha, getCurrentDate(), getLoginBean().getUsuario().getUserId());
     }
 
     public void buttonBack() {
@@ -341,8 +408,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_CADENAS.getId())) {
                     if (ch.getStatusMDM().equals(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name())
                             || ch.getStatusMDM().equals(StatusSystemMDM.REJECT.name())
-                            || ch.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())
-                            ) {
+                            || ch.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
                         ch.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
                     }
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())) {

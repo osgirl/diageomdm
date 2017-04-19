@@ -23,11 +23,14 @@ import com.diageo.diageonegocio.beans.OutletsUserBeanLocal;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
 import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.Db3party;
+import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbCustomers;
 import com.diageo.diageonegocio.entidades.DbOutlets;
 import com.diageo.diageonegocio.entidades.DbOutletsUsers;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import com.diageo.diageonegocio.entidades.DbPhones;
+import com.diageo.diageonegocio.entidades.DbSegments;
+import com.diageo.diageonegocio.entidades.DbSubChannels;
 import com.diageo.diageonegocio.entidades.DbSubSegments;
 import com.diageo.diageonegocio.entidades.DiageoLog;
 import com.diageo.diageonegocio.enums.StateDiageo;
@@ -198,10 +201,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setOcsPrimary(out.getOcsPrimary());
         setOcsSecondary(out.getOcsSecondary());
         setPotentialSelected(out.getPotentialId());
-        setSubSegmentSelected(out.getSubSegmentId());
-        setSegmentSelected(getSubSegmentSelected().getSegmentId());
-        setSubChannelSelected(getSegmentSelected().getSubChannelId());
-        setChannelSelected(getSubChannelSelected().getChannelId());
+        this.setSegmentation(out);
+
         setListSubChannel(getChannelSelected().getDbSubChannelsList());
         setListSegment(getSubChannelSelected().getDbSegmentsList());
         setListSubSegment(getSegmentSelected().getDbSubSegmentsList());
@@ -224,6 +225,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setSellerSelected(out.getDb3partySaleId());
         setJourneyPlan(out.getJourneyPlan().equals(StateEnum.ACTIVE.getState()));
         setStatusOutlet(out.getStatusOutlet());
+        setAgreement(out.getAgreement() == null ? Boolean.FALSE : (out.getAgreement().equals(StateEnum.ACTIVE.getState())));
         try {
             DbOutletsUsers findByOutletId = outletsUserBeanLocal.findByOutletIdProfileId(idOutlet);
             if (findByOutletId != null) {
@@ -232,6 +234,65 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             }
         } catch (Exception e) {
             Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, e.getMessage());
+        }
+        super.listenerChannel();
+    }
+
+    /**
+     * si el check agreement es seleccionado entonces la segmentación se puede
+     * cambiar, sino, entonces la segmentación no se podrá cambiar. Los perfiles
+     * administrador y datasteward, pueden cambiar la segmentación y el check
+     * cuando lo requieran
+     *
+     * @return true, entonces puede cambiar la segmentación false, no puede
+     * cambiar la segmentación
+     */
+    public boolean validateAgreement() {
+        if ((getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
+                || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()))) {
+            return true;
+        }
+        return isAgreement();
+    }
+
+    /**
+     * método para setear la segmentación identificando si tiene activa o no la
+     * segmentación
+     *
+     * @param out
+     */
+    private void setSegmentation(DbOutlets out) {
+        try {
+            boolean bol = out.getSubSegmentId().getSegmentId().getSubChannelId().getChannelId().getStateChannel().equals(StateDiageo.ACTIVO.getId());
+            if (bol) {
+                setChannelSelected(out.getSubSegmentId().getSegmentId().getSubChannelId().getChannelId());
+                if (out.getSubSegmentId().getSegmentId().getSubChannelId().getStateSubChannel().equals(StateDiageo.ACTIVO.getId())) {
+                    setSubChannelSelected(out.getSubSegmentId().getSegmentId().getSubChannelId());
+                    if (out.getSubSegmentId().getSegmentId().getStateSegment().equals(StateDiageo.ACTIVO.getId())) {
+                        setSegmentSelected(out.getSubSegmentId().getSegmentId());
+                        if (out.getSubSegmentId().getStateSubSegment().equals(StateDiageo.ACTIVO.getId())) {
+                            setSubSegmentSelected(out.getSubSegmentId());
+                        } else {
+                            setSubSegmentSelected(subSegmentoBeanLocal.findById(0));
+                        }
+                    } else {
+                        setSubSegmentSelected(subSegmentoBeanLocal.findById(0));
+                        setSegmentSelected(segmentoBeanLocal.findById(0));
+                    }
+                } else {
+                    setSubChannelSelected(subChannelBeanLocal.findById(0));
+                    setSubSegmentSelected(subSegmentoBeanLocal.findById(0));
+                    setSegmentSelected(segmentoBeanLocal.findById(0));
+                }
+            } else {
+                setSubSegmentSelected(subSegmentoBeanLocal.findById(0));
+                setSegmentSelected(segmentoBeanLocal.findById(0));
+                setSubChannelSelected(subChannelBeanLocal.findById(0));
+                setChannelSelected(channelBeanLocal.findById(0));
+            }
+        } catch (DiageoBusinessException ex) {
+            Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, ex.getMessage());
+
         }
     }
 
@@ -283,7 +344,12 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                 outlet.setStatusOutlet(getStatusOutlet());
                 outlet.setOutletName(getOutletName() != null ? getOutletName().toUpperCase() : "");
                 outlet.setPotentialId(getPotentialSelected());
-                outlet.setSubSegmentId(getSubSegmentSelected());
+                if (!validateAgreement()) {
+                    outlet.setSubSegmentId(getSubSegmentSelected());
+                } else {
+                    showInfoMessage(capturarValor("outlet_agreement_msg"));
+                }
+                outlet.setAgreement(isAgreement() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
                 outlet.setTownId(getTownSelected());
                 outlet.setTypeOutlet(getTypeOutlet() != null ? getTypeOutlet().toUpperCase() : "");
                 outlet.setVerificationNumber(getVerificationNumber());
@@ -317,9 +383,6 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                     if (outlet.getStatusMDM().equals(StatusSystemMDM.APPROVED.name())) {
                         outletBeanLocal.updateOutlet(outlet);
                         createLog(outlet);
-                        Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
-                                userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
-                        ConecctionJDBC.callStoreProcedureDBOutlets(con, outlet.getOutletId());
                         showInfoMessage(capturarValor("sis_datos_guardados_exito"));
                     } else {
                         showInfoMessage(capturarValor("msg_cp_a_warning"));
@@ -327,14 +390,14 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                 } else {
                     outletBeanLocal.updateOutlet(outlet);
                     createLog(outlet);
-                    Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
-                            userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
-                    ConecctionJDBC.callStoreProcedureDBOutlets(con, outlet.getOutletId());
                     showInfoMessage(capturarValor("sis_datos_guardados_exito"));
                 }
+                Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
+                        userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
+                ConecctionJDBC.callStoreProcedureDBOutlets(con, outlet.getOutletId());
                 setVerDetalle(!getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                         && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId()));
-//sendMail();
+                //sendMail();
             } catch (DiageoBusinessException ex) {
                 Logger.getLogger(OutletCrearBean.class.getName()).log(Level.SEVERE, null, ex);
                 showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
@@ -403,9 +466,9 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
      */
     public void approvedAllOutlets() {
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
-            outletsUserBeanLocal.updateOutletCommercialManager(listId, StatusSystemMDM.APPROVED.name(), StatusSystemMDM.PENDING_APPROVAL.name(),getLoginBean().getUsuario().getEmailUser());
+            outletsUserBeanLocal.updateOutletCommercialManager(listId, StatusSystemMDM.APPROVED.name(), StatusSystemMDM.PENDING_APPROVAL.name(), getLoginBean().getUsuario().getEmailUser());
         } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
-            outletsUserBeanLocal.updateOutlet(getLoginBean().getUsuario().getUserId(), StatusSystemMDM.PENDING_APPROVAL.name(), StatusSystemMDM.PENDING_TMC.name(),getLoginBean().getUsuario().getEmailUser());
+            outletsUserBeanLocal.updateOutlet(getLoginBean().getUsuario().getUserId(), StatusSystemMDM.PENDING_APPROVAL.name(), StatusSystemMDM.PENDING_TMC.name(), getLoginBean().getUsuario().getEmailUser());
         }
         showInfoMessage(capturarValor("sis_msg_record_outlet_change"));
         init();
@@ -413,7 +476,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
 
     public void rejectAllOutlet() {
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
-            outletsUserBeanLocal.updateOutletCommercialManager(listId, StatusSystemMDM.REJECT.name(), StatusSystemMDM.PENDING_APPROVAL.name(),getLoginBean().getUsuario().getEmailUser());
+            outletsUserBeanLocal.updateOutletCommercialManager(listId, StatusSystemMDM.REJECT.name(), StatusSystemMDM.PENDING_APPROVAL.name(), getLoginBean().getUsuario().getEmailUser());
             showInfoMessage(capturarValor("sis_msg_record_outlet_change"));
             init();
         }
@@ -668,20 +731,22 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
 
     @Override
     public void commandRemoteOutletInactive() {
-        if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
-            if (getStatusOutlet().equals("I")) {
-                setFlagOutletInactive(false);
-                RequestContext rc = RequestContext.getCurrentInstance();
-                rc.execute("PF('outletInactive').show()");
+        if (validateAgreement()) {
+            if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
+                if (getStatusOutlet().equals("I")) {
+                    setFlagOutletInactive(false);
+                    RequestContext rc = RequestContext.getCurrentInstance();
+                    rc.execute("PF('outletInactive').show()");
+                } else if (getSubSegmentSelected().getSubSegmentId().equals(0)) {
+                    setFlagOutletInactive(false);
+                    RequestContext rc = RequestContext.getCurrentInstance();
+                    rc.execute("PF('outletWithoutSubSegment').show()");
+                }
             } else if (getSubSegmentSelected().getSubSegmentId().equals(0)) {
                 setFlagOutletInactive(false);
                 RequestContext rc = RequestContext.getCurrentInstance();
                 rc.execute("PF('outletWithoutSubSegment').show()");
             }
-        } else if (getSubSegmentSelected().getSubSegmentId().equals(0)) {
-            setFlagOutletInactive(false);
-            RequestContext rc = RequestContext.getCurrentInstance();
-            rc.execute("PF('outletWithoutSubSegment').show()");
         }
     }
 

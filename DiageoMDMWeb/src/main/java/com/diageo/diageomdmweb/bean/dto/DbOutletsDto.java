@@ -20,9 +20,9 @@ import java.util.List;
 public class DbOutletsDto implements Serializable {
 
     private DbOutlets outlet;
-    private List<DiageoLog> listDiageoLog;
-    private Date currentDate;
-    private Integer userId;
+    private final List<DiageoLog> listDiageoLog;
+    private final Date currentDate;
+    private final Integer userId;
 
     public DbOutletsDto(DbOutlets outlet, Date currentDate, Integer userId) {
         listDiageoLog = new ArrayList<>();

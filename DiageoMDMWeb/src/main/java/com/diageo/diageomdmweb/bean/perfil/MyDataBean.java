@@ -105,7 +105,7 @@ public class MyDataBean extends DiageoRootBean implements Serializable {
             return capturarValor("usu_msg_all");
         }
         try {
-            return subChannelBeanLocal.consultarId(id).getNameSubChannel();
+            return subChannelBeanLocal.findById(id).getNameSubChannel();
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
             return null;

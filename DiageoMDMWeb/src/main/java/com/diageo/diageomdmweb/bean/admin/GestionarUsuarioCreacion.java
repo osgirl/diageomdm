@@ -458,7 +458,7 @@ public class GestionarUsuarioCreacion extends DiageoRootBean implements Serializ
             return capturarValor("usu_msg_all");
         }
         try {
-            return subChannelBeanLocal.consultarId(id).getNameSubChannel();
+            return subChannelBeanLocal.findById(id).getNameSubChannel();
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(GestionarUsuarioCreacion.class.getName()).log(Level.SEVERE, null, ex);
             return null;

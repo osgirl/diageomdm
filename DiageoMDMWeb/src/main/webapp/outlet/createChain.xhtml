@@ -57,7 +57,7 @@
                             <p:outputLabel value="#{msg.out_razon_social}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
                                            for="itBusinessName"/>
                             <h:panelGroup>
-                                <p:inputText id="itBusinessName" value="#{createChainBean.businessName}" required="true" label="#{msg.out_razon_social}"/>
+                                <p:inputText id="itBusinessName" value="#{createChainBean.businessName}" required="true" label="#{msg.out_razon_social}" readonly="true"/>
                                 <p:message for="itBusinessName"/>
                             </h:panelGroup>
                             <p:outputLabel value="#{msg.chain_code_ean_pdv}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"
@@ -69,6 +69,7 @@
                             <p:outputLabel value="#{msg.out_distribuidor}/#{msg.usu_chain}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                             <p:selectOneMenu value="#{createChainBean.db3PartySelected}" converter="db3PartyConverter" style="width: 90%">
                                 <f:selectItems value="#{createChainBean.list3Party}" var="party3" itemLabel="#{party3.name3party}"/>
+                                <p:ajax listener="#{createChainBean.listenerDb3Party()}" process="@this" update="formChain:itBusinessName"/>
                             </p:selectOneMenu>                        
                             <p:outputLabel value="#{msg.status}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                             <p:selectOneMenu value="#{createChainBean.status}" style="width: 90%">

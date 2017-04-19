@@ -42,6 +42,8 @@ public class DistributorCreate extends DistributorSearch implements Serializable
         setAthenaCode("");
         setIsFather(Boolean.FALSE);
         setAdminSelected(null);
+        setBusinessName("");
+        setCodeEanChain("");
     }
 
     public void create() {
@@ -53,6 +55,8 @@ public class DistributorCreate extends DistributorSearch implements Serializable
             getSelectedDistributor().setIsChain(getIsChain());
             getSelectedDistributor().setStatus(getStatus());
             getSelectedDistributor().setDb3PartyAdmin(getAdminSelected());
+            getSelectedDistributor().setCodeEanCadena(getCodeEanChain());
+            getSelectedDistributor().setBusinessName(getBusinessName());
             Audit audit = new Audit();
             audit.setCreationDate(super.getCurrentDate());
             audit.setCreationUser(getLoginBean().getUsuario().getEmailUser());

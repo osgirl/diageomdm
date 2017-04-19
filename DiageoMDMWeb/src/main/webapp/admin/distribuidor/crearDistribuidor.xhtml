@@ -75,6 +75,12 @@
                                         <f:selectItems value="#{distributorCreate.listDistributorFather}" var="reg" itemLabel="#{reg.name3party}"/>
                                     </p:selectOneMenu>
                                 </h:panelGroup>
+                                
+                                <h:outputLabel value="#{msg.out_razon_social}"/>
+                                <p:inputText value="#{distributorCreate.businessName}" style="width: 90%"/>
+                                
+                                <h:outputLabel value="#{msg.chain_code_ean_pdv}"/>
+                                <p:inputText value="#{distributorCreate.codeEanChain}" style="width: 90%"/>
                             </h:panelGrid>
                             <br/>
                             <br/>

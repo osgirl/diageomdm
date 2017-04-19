@@ -33,7 +33,7 @@ public class SubChannelConverter implements Converter {
                 return null;
             }
             Integer id = Integer.parseInt(value);
-            DbSubChannels subChannel = (DbSubChannels) subChannelBeanLocal.consultarId(id);
+            DbSubChannels subChannel = (DbSubChannels) subChannelBeanLocal.findById(id);
             return subChannel;
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(SubChannelConverter.class.getName()).log(Level.SEVERE, null, ex);

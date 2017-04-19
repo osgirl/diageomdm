@@ -6,7 +6,7 @@
 package com.diageo.diageomdmweb.jdbc;
 
 import com.diageo.diageomdmweb.bean.dto.reports.DuplicatesDto;
-import com.diageo.diageonegocio.beans.PermissionsegmentBean;
+import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
 import com.diageo.diageonegocio.entidades.Db3party;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import java.sql.CallableStatement;
@@ -30,7 +30,7 @@ public class ConecctionJDBC {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDataSource");
             return java.sql.DriverManager.getConnection(databaseURL, usu, pass);
         } catch (ClassNotFoundException | SQLException e) {
-            Logger.getLogger(PermissionsegmentBean.class.getName()).log(Level.SEVERE, null, e);
+            Logger.getLogger(PermissionsegmentBeanLocal.class.getName()).log(Level.SEVERE, null, e);
         }
         return null;
     }
@@ -98,7 +98,7 @@ public class ConecctionJDBC {
             System.out.println("call procedimiento despues del execute");
             con.commit();
         } catch (SQLException ex) {
-            Logger.getLogger(PermissionsegmentBean.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(PermissionsegmentBeanLocal.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -113,10 +113,10 @@ public class ConecctionJDBC {
         }
     }
 
-    public static void callStoreProcedureDBOutlets(Connection con, int idChain) {
+    public static void callStoreProcedureDBOutlets(Connection con, int idOutlet) {
         try {
-            CallableStatement prcProcedimientoAlmacenado = con.prepareCall("{ call dbo.SP_DB_CHAINS(?) }");
-            prcProcedimientoAlmacenado.setInt(1, idChain);
+            CallableStatement prcProcedimientoAlmacenado = con.prepareCall("{ call dbo.SP_DB_OUTLETS(?) }");
+            prcProcedimientoAlmacenado.setInt(1, idOutlet);
             prcProcedimientoAlmacenado.execute();
             con.commit();
         } catch (SQLException ex) {
