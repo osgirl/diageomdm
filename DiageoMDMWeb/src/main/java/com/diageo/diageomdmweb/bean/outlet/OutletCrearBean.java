@@ -149,7 +149,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     protected List<DwParameters> userDatabase;
     protected List<DwParameters> passDatabase;
     private boolean flagOutletInactive;
-    private boolean agreement;
+    private boolean agreement;    
 
     /**
      * Creates a new instance of OutletVistaBean

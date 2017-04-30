@@ -9,6 +9,7 @@ import com.diageo.admincontrollerweb.beans.ParameterBeanLocal;
 import com.diageo.admincontrollerweb.beans.RelationUserBeanLocal;
 import com.diageo.admincontrollerweb.entities.DwRelationUsers;
 import com.diageo.admincontrollerweb.enums.ProfileEnum;
+import com.diageo.admincontrollerweb.enums.StateEnum;
 import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
 import com.diageo.diageomdmweb.bean.LoginBean;
@@ -16,6 +17,7 @@ import com.diageo.diageomdmweb.bean.dto.DbChainsDto;
 import com.diageo.diageomdmweb.jdbc.ConecctionJDBC;
 import com.diageo.diageonegocio.beans.ChainUserBeanLocal;
 import com.diageo.diageonegocio.beans.DiageoLogBeanLocal;
+import com.diageo.diageonegocio.beans.PotentialBeanLocal;
 import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.DbChains;
 import com.diageo.diageonegocio.entidades.DbChainsUsers;
@@ -23,6 +25,7 @@ import com.diageo.diageonegocio.entidades.DbCustomers;
 import com.diageo.diageonegocio.entidades.DbOutlets;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import com.diageo.diageonegocio.entidades.DbPhones;
+import com.diageo.diageonegocio.entidades.DbPotentials;
 import com.diageo.diageonegocio.entidades.DiageoLog;
 import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
@@ -60,6 +63,8 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     private RelationUserBeanLocal relationUserBeanLocal;
     @EJB
     private DiageoLogBeanLocal diageoLogBeanLocal;
+    @EJB
+    private PotentialBeanLocal potentialBeanLocal;
     @Inject
     private LoginBean loginBean;
     private List<DbChains> chainsList;
@@ -80,6 +85,10 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     private List<SelectItem> listFilterStatusMDM;
     private DbChainsDto chainClonable;
     private String codeEanTemp;
+    /**
+     * Es el potencial que tiene asignado el outlet al ver el detalle del outlet
+     */
+    private DbPotentials currentPotential;
 
     /**
      * Creates a new instance of ChainSearchBean
@@ -185,6 +194,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         setNeighborhood(chain.getNeighborhood());
         setStatus(chain.getStatusChain());
         setPotentialSelected(chain.getPotentialId());
+        currentPotential=chain.getPotentialId();
         this.setSegmentation(chain);
 
 //        setSubSegmentSelected(chain.getSubSegmentId());
@@ -233,6 +243,30 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         } catch (DiageoBusinessException ex) {
             Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, ex.getMessage());
 
+        }
+    }
+    
+     @Override
+    public void listenerSubSegment() {
+        if (getSubSegmentSelected() == null || getSubSegmentSelected().getDbPotentialsList() == null || getSubSegmentSelected().getDbPotentialsList().isEmpty()) {
+            setListPotential(new ArrayList<DbPotentials>());
+        } else {
+            String potentialName;
+            if (currentPotential != null) {
+                potentialName = currentPotential.getNamePotential();
+                DbPotentials potTemp = potentialBeanLocal.findByNamePotentialAndSubSegmentId(getSubSegmentSelected().getSubSegmentId(), potentialName);
+                if (potTemp != null) {
+                    setPotentialSelected(potTemp);
+                } else {
+                    for (DbPotentials po : getSubSegmentSelected().getDbPotentialsList()) {
+                        if (po.getLowPotential().equals(StateEnum.ACTIVE.getState())) {
+                            setPotentialSelected(po);
+                            break;
+                        }
+                    }
+                }
+                setListPotential(getSubSegmentSelected().getDbPotentialsList());
+            }
         }
     }
 

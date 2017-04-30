@@ -21,16 +21,15 @@ import com.diageo.diageomdmweb.mail.templates.VelocityTemplate;
 import com.diageo.diageonegocio.beans.DiageoLogBeanLocal;
 import com.diageo.diageonegocio.beans.OutletsUserBeanLocal;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
+import com.diageo.diageonegocio.beans.PotentialBeanLocal;
 import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.Db3party;
-import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbCustomers;
 import com.diageo.diageonegocio.entidades.DbOutlets;
 import com.diageo.diageonegocio.entidades.DbOutletsUsers;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import com.diageo.diageonegocio.entidades.DbPhones;
-import com.diageo.diageonegocio.entidades.DbSegments;
-import com.diageo.diageonegocio.entidades.DbSubChannels;
+import com.diageo.diageonegocio.entidades.DbPotentials;
 import com.diageo.diageonegocio.entidades.DbSubSegments;
 import com.diageo.diageonegocio.entidades.DiageoLog;
 import com.diageo.diageonegocio.enums.StateDiageo;
@@ -72,6 +71,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     private RelationUserBeanLocal relationUserBeanLocal;
     @EJB
     private DiageoLogBeanLocal diageoLogBeanLocal;
+    @EJB
+    private PotentialBeanLocal potentialBeanLocal;
     @Inject
     private LoginBean loginBean;
     private List<DbPermissionSegments> listPermi;
@@ -102,6 +103,10 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     private String nameTmc;
     private Db3party db3PartyIdNew;
     private List<Db3party> db3PartyList;
+    /**
+     * Es el potencial que tiene asignado el outlet al ver el detalle del outlet
+     */
+    private DbPotentials currentPotential;
 
     /**
      * Creates a new instance of OutletConsultarBean
@@ -201,6 +206,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         setOcsPrimary(out.getOcsPrimary());
         setOcsSecondary(out.getOcsSecondary());
         setPotentialSelected(out.getPotentialId());
+        currentPotential = out.getPotentialId();
         this.setSegmentation(out);
 
         setListSubChannel(getChannelSelected().getDbSubChannelsList());
@@ -235,7 +241,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         } catch (Exception e) {
             Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, e.getMessage());
         }
-        super.listenerChannel();
+        //super.listenerChannel();
     }
 
     /**
@@ -344,10 +350,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                 outlet.setStatusOutlet(getStatusOutlet());
                 outlet.setOutletName(getOutletName() != null ? getOutletName().toUpperCase() : "");
                 outlet.setPotentialId(getPotentialSelected());
-                if (!validateAgreement()) {
+                if (!isAgreement()) {
                     outlet.setSubSegmentId(getSubSegmentSelected());
-                } else {
-                    showInfoMessage(capturarValor("outlet_agreement_msg"));
                 }
                 outlet.setAgreement(isAgreement() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
                 outlet.setTownId(getTownSelected());
@@ -404,6 +408,30 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             }
         }
         setFlagOutletInactive(true);
+    }
+
+    @Override
+    public void listenerSubSegment() {
+        if (getSubSegmentSelected() == null || getSubSegmentSelected().getDbPotentialsList() == null || getSubSegmentSelected().getDbPotentialsList().isEmpty()) {
+            setListPotential(new ArrayList<DbPotentials>());
+        } else {
+            String potentialName;
+            if (currentPotential != null) {
+                potentialName = currentPotential.getNamePotential();
+                DbPotentials potTemp = potentialBeanLocal.findByNamePotentialAndSubSegmentId(getSubSegmentSelected().getSubSegmentId(), potentialName);
+                if (potTemp != null) {
+                    setPotentialSelected(potTemp);
+                } else {
+                    for (DbPotentials po : getSubSegmentSelected().getDbPotentialsList()) {
+                        if (po.getLowPotential().equals(StateEnum.ACTIVE.getState())) {
+                            setPotentialSelected(po);
+                            break;
+                        }
+                    }
+                }
+                setListPotential(getSubSegmentSelected().getDbPotentialsList());
+            }
+        }
     }
 
     public void createLog(DbOutlets out) {
