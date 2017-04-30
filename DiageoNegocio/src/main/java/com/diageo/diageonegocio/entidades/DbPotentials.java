@@ -19,7 +19,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -30,11 +29,15 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DB_POTENTIALS")
 @NamedQueries({
-     @NamedQuery(name = DbPotentials.FIND_BY_SUBSEGMENT, query = "SELECT p FROM DbPotentials p WHERE p.subSegmentId.subSegmentId=?1")
+    @NamedQuery(name = DbPotentials.FIND_BY_SUBSEGMENT, query = "SELECT p FROM DbPotentials p WHERE p.subSegmentId.subSegmentId=?1")
+    ,
+     @NamedQuery(name = DbPotentials.FIND_BY_SUBSEGMENT_NAME_SUBSEGMENT,
+            query = "SELECT p FROM DbPotentials p WHERE p.subSegmentId.subSegmentId=?1 AND p.namePotential = ?2")
 })
 public class DbPotentials implements Serializable {
 
     public static final String FIND_BY_SUBSEGMENT = "DbPotentials.findBySubsegment";
+    public static final String FIND_BY_SUBSEGMENT_NAME_SUBSEGMENT = "DbPotentials.findBySubsegmentNameSubSegment";
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
@@ -188,4 +191,4 @@ public class DbPotentials implements Serializable {
         return "com.totalseguros.entidadesdiageobusiness.DbPotentials[ potentialId=" + potentialId + " ]";
     }
 
-    }
+}

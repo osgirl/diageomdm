@@ -58,4 +58,12 @@ public class PotentialBeanLocal extends BusinessTransaction<DbPotentials> {
         return list;
     }
 
+    public DbPotentials findByNamePotentialAndSubSegmentId(Integer subSegmentId, String namePotential) {
+        List<DbPotentials> list = super.searchByNamedQuery(DbPotentials.class, DbPotentials.FIND_BY_SUBSEGMENT_NAME_SUBSEGMENT, subSegmentId, namePotential);
+        if (list == null || list.isEmpty()) {
+            return null;
+        }
+        return list.get(0);
+    }
+
 }

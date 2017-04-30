@@ -117,6 +117,9 @@ public class DbChains implements Serializable, Cloneable {
     private String site;
     @Column(name = "CODE_EAN_CADENA")
     private String codeEanCadena;
+    @ManyToOne
+    @JoinColumn(name = "")
+    private DbFascias fascia;
 
     public DbChains() {
     }
