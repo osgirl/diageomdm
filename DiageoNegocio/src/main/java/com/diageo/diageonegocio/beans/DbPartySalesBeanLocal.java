@@ -16,7 +16,7 @@ import javax.ejb.Stateless;
  * @author EDUARDO
  */
 @Stateless
-public class DbPartySalesBeanLocal extends BusinessTransaction<Db3partySales>{
+public class DbPartySalesBeanLocal extends BusinessTransaction<Db3partySales> {
 
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
@@ -46,9 +46,9 @@ public class DbPartySalesBeanLocal extends BusinessTransaction<Db3partySales>{
         }
     }
 
-    public List<Db3partySales> findByNameSeller(String query) {
+    public List<Db3partySales> findByNameSeller(String query, Integer idParty) {
         query = query.toUpperCase();
-        List<Db3partySales> list = super.searchByNamedQuery(Db3partySales.class, Db3partySales.FIND_BY_NAME_SALES, "%" + query + "%");
+        List<Db3partySales> list = super.searchByNamedQuery(Db3partySales.class, Db3partySales.FIND_BY_NAME_SALES, "%" + query + "%", idParty);
         if (list == null) {
             return new ArrayList<>();
         }

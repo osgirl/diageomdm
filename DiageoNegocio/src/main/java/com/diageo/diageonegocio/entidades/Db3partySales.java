@@ -28,7 +28,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DB_3PARTY_SALES")
 @NamedQueries({
-    @NamedQuery(name = Db3partySales.FIND_BY_NAME_SALES, query = "SELECT d FROM Db3partySales d WHERE d.nameSales LIKE ?1")
+    @NamedQuery(name = Db3partySales.FIND_BY_NAME_SALES, query = "SELECT d FROM Db3partySales d WHERE d.nameSales LIKE ?1 AND d.dbeParty = ?2")
 })
 public class Db3partySales implements Serializable {
 
@@ -49,6 +49,8 @@ public class Db3partySales implements Serializable {
     private Db3partyManagers db3partyManagerId;
     @OneToMany(mappedBy = "db3partySaleId")
     private List<DbOutlets> dbOutletsList;
+    @OneToMany(mappedBy = "db3partySaleId")
+    private List<DbChains> dbChainsList;
     @ManyToOne
     @JoinColumn(name = "DB_3PARTY_PROFILE_ID")
     private Db3partyProfiles db3PartyProfileId;
@@ -149,6 +151,14 @@ public class Db3partySales implements Serializable {
 
     public void setAudit(Audit audit) {
         this.audit = audit;
+    }
+
+    public List<DbChains> getDbChainsList() {
+        return dbChainsList;
+    }
+
+    public void setDbChainsList(List<DbChains> dbChainsList) {
+        this.dbChainsList = dbChainsList;
     }
 
     @Override

@@ -11,8 +11,6 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -27,12 +25,13 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "DB_OWNERS")
 @NamedQueries({
-    @NamedQuery(name = "DbOwners.findAll", query = "SELECT d FROM DbOwners d"),
-    @NamedQuery(name = "DbOwners.findByOwnerId", query = "SELECT d FROM DbOwners d WHERE d.ownerId = :ownerId"),
+    @NamedQuery(name = "DbOwners.findAll", query = "SELECT d FROM DbOwners d")
+    ,
+    @NamedQuery(name = "DbOwners.findByOwnerId", query = "SELECT d FROM DbOwners d WHERE d.ownerId = :ownerId")
+    ,
     @NamedQuery(name = "DbOwners.findByNameOwner", query = "SELECT d FROM DbOwners d WHERE d.nameOwner = :nameOwner")})
 public class DbOwners implements Serializable {
 
-    
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
@@ -44,7 +43,9 @@ public class DbOwners implements Serializable {
     @Column(name = "NAME_OWNER")
     private String nameOwner;
     @OneToMany(mappedBy = "ownerId")
-    private List<DbOutlets> dbOutletsList;    
+    private List<DbChains> dbChainsList;
+    @OneToMany(mappedBy = "ownerId")
+    private List<DbOutlets> dbOutletsList;
     @Column(name = "DISTRI_1")
     private String distri1;
 
@@ -77,7 +78,23 @@ public class DbOwners implements Serializable {
 
     public void setDbOutletsList(List<DbOutlets> dbOutletsList) {
         this.dbOutletsList = dbOutletsList;
-    }   
+    }
+
+    public String getDistri1() {
+        return distri1;
+    }
+
+    public void setDistri1(String distri1) {
+        this.distri1 = distri1;
+    }
+
+    public List<DbChains> getDbChainsList() {
+        return dbChainsList;
+    }
+
+    public void setDbChainsList(List<DbChains> dbChainsList) {
+        this.dbChainsList = dbChainsList;
+    }
 
     @Override
     public int hashCode() {
@@ -104,12 +121,4 @@ public class DbOwners implements Serializable {
         return "com.totalseguros.entidadesdiageobusiness.DbOwners[ ownerId=" + ownerId + " ]";
     }
 
-    public String getDistri1() {
-        return distri1;
-    }
-
-    public void setDistri1(String distri1) {
-        this.distri1 = distri1;
-    }
-    
 }

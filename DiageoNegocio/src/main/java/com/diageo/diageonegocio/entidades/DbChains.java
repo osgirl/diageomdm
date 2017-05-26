@@ -118,8 +118,16 @@ public class DbChains implements Serializable, Cloneable {
     @Column(name = "CODE_EAN_CADENA")
     private String codeEanCadena;
     @ManyToOne
-    @JoinColumn(name = "")
+    @JoinColumn(name = "FASCIA_ID")
     private DbFascias fascia;
+    @Column(name = "ODB_CREATE")
+    private String odbCreate;
+    @JoinColumn(name = "OWNER_ID", referencedColumnName = "OWNER_ID")
+    @ManyToOne
+    private DbOwners ownerId;
+    @JoinColumn(name = "DB_3PARTY_SALES_ID")
+    @ManyToOne
+    private Db3partySales db3partySaleId;
 
     public DbChains() {
     }
@@ -354,6 +362,38 @@ public class DbChains implements Serializable, Cloneable {
 
     public void setCodeEanCadena(String codeEanCadena) {
         this.codeEanCadena = codeEanCadena;
+    }
+
+    public String getOdbCreate() {
+        return odbCreate;
+    }
+
+    public void setOdbCreate(String odbCreate) {
+        this.odbCreate = odbCreate;
+    }
+
+    public DbFascias getFascia() {
+        return fascia;
+    }
+
+    public void setFascia(DbFascias fascia) {
+        this.fascia = fascia;
+    }
+
+    public DbOwners getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(DbOwners ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    public Db3partySales getDb3partySaleId() {
+        return db3partySaleId;
+    }
+
+    public void setDb3partySaleId(Db3partySales db3partySaleId) {
+        this.db3partySaleId = db3partySaleId;
     }
 
     @Override

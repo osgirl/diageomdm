@@ -7,6 +7,7 @@ package com.diageo.diageonegocio.beans;
 
 import com.diageo.diageonegocio.entidades.DbOcs;
 import com.diageo.diageonegocio.entidades.DbOutlets;
+import com.diageo.diageonegocio.enums.StateDiageo;
 import com.diageo.diageonegocio.exceptions.DiageoBusinessException;
 import java.util.ArrayList;
 import java.util.List;
@@ -551,4 +552,61 @@ public class OutletBeanLocal extends BusinessTransaction<DbOutlets> {
         }
     }
 
+    /**
+     * Buscar hijos del outlet seleccionado
+     *
+     * @param idOutlet
+     * @return List DbOutlets
+     */
+    public List<DbOutlets> findByIdSons(Integer idOutlet) {
+        List<DbOutlets> list = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_SONS_BY_OUTLET_ID, idOutlet);
+        if (list != null && !list.isEmpty()) {
+            return list;
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * Busca hijos basandose en la siguiente regla. Para seleccionar hijos solo
+     * saldrán aquellos Outlets marcados en la base de datos como padre y cuyos
+     * hijo sea solo el mismo, lo cual significa que el Outlet hijo a buscar no
+     * es hijo de otro ni padre de otros hijos.
+     *
+     * @param param de la búsqueda
+     * @return
+     */
+    public List<DbOutlets> findSons(String param) {
+        if (param != null) {
+            List<DbOutlets> list
+                    = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_NAME_KIERNAN_NIT_LIKE, "%" + param.trim() + "%");
+            if (list != null && !list.isEmpty()) {
+                return list;
+            }
+        }
+        return new ArrayList<>();
+    }
+
+    public void relateOutlets(List<DbOutlets> listOutlets, DbOutlets outletFather) {
+        for (DbOutlets listOutlet : listOutlets) {
+            listOutlet.setOutletIdFather(outletFather);
+            listOutlet.setIsFather(StateDiageo.INACTIVO.getId());
+            super.update(listOutlet);
+        }
+    }
+
+    public void toBreakRelationSonFather(List<DbOutlets> listOutlets) {
+        for (DbOutlets listOutlet : listOutlets) {
+            listOutlet.setOutletIdFather(listOutlet);
+            listOutlet.setIsFather(StateDiageo.ACTIVO.getId());
+            super.update(listOutlet);
+        }
+    }
+    
+    public List<DbOutlets> findBySeller(Integer id){
+        List<DbOutlets> list = super.searchByNamedQuery(DbOutlets.class, DbOutlets.FIND_BY_SELLER, id);
+        if (list != null && !list.isEmpty()) {
+            return list;
+        }
+        return new ArrayList<>();
+    }
 }

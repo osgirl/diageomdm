@@ -12,6 +12,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -32,11 +34,19 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @Table(name = "DB_OUTLETS")
 @NamedQueries({
-    @NamedQuery(name = DbOutlets.FIND_BY_BUSINESS_NAME, query = "SELECT o FROM DbOutlets o WHERE (o.businessName+o.kiernanId) LIKE ?1 AND o.isFather = ?2")
+    @NamedQuery(name = DbOutlets.FIND_BY_BUSINESS_NAME, query = "SELECT o FROM DbOutlets o WHERE (o.businessName+o.kiernanId) LIKE ?1 AND o.isFather = ?2"),
+    @NamedQuery(name = DbOutlets.FIND_BY_NAME_KIERNAN_NIT_LIKE,
+            query = "SELECT o FROM DbOutlets o WHERE  ( o.nit LIKE ?1 OR o.businessName LIKE ?1 OR o.kiernanId LIKE ?1) AND o.isFather = '1' AND o.outletId=o.outletIdFather.outletId")
+    ,
+    @NamedQuery(name = DbOutlets.FIND_SONS_BY_OUTLET_ID, query = "SELECT o FROM DbOutlets o WHERE o.outletIdFather.outletId = ?1"),
+    @NamedQuery(name = DbOutlets.FIND_BY_SELLER, query = "SELECT o FROM DbOutlets o WHERE o.db3partySaleId.db3partySaleId = ?1"),
 })
 public class DbOutlets implements Serializable, Cloneable {
 
     public static final String FIND_BY_BUSINESS_NAME = "DbOutlets.findByBusinessName";
+    public static final String FIND_BY_NAME_KIERNAN_NIT_LIKE = "DbOutlets.findByBusinessNameKiernanNitLike";
+    public static final String FIND_SONS_BY_OUTLET_ID = "DbOutlets.findSonsByOutletId";
+    public static final String FIND_BY_SELLER = "DbOutlets.findBySeller";
 
     /**
      * search for distributor, subsegment, is new, and state outlets
@@ -45,7 +55,7 @@ public class DbOutlets implements Serializable, Cloneable {
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    @GeneratedValue(generator = "SQ_DB_OUTLETS_CHAINS", strategy = GenerationType.SEQUENCE)
 //    @SequenceGenerator(name = "SQ_DB_OUTLETS_CHAINS", sequenceName = "SQ_DB_OUTLETS_CHAINS", allocationSize = 1)
     @Column(name = "OUTLET_ID")
