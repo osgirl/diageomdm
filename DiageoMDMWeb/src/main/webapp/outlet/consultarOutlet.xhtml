@@ -68,6 +68,19 @@
 
                     <ui:include src="tablesOutlet/outletDataTableLazyDataModel.xhtml"/>
                     <ui:include src="popup/popupOutletChain.xhtml"/>
+                    <p:dialog id="dSearchSon" modal="false" width="60%" header="#{msg.search_sons}" widgetVar="wvSearchSon" resizable="false" closeOnEscape="true">
+                        <h:panelGroup>
+                            <p:autoComplete id="acSearchSon" minQueryLength="4" value="#{outletConsultarBean.selectedSon}" label="#{msg.son}"
+                                            var="searchSon" itemLabel="#{searchSon.kiernanId}   #{searchSon.businessName} #{searchSon.nit}" itemValue="#{searchSon}" forceSelection="true"
+                                            completeMethod="#{outletConsultarBean.completeListSon}" effect="fade" converter="outletConverter"
+                                            maxResults="20" style="width: 90% !important;" queryEvent="enter"/>
+                            <p:message for="acSearchSon"/>
+                        </h:panelGroup>
+                        <br/><br/>
+                        <p:commandButton value="#{msg.btn_add}" actionListener="#{outletConsultarBean.addSonToOutlet()}" 
+                                         process="@this acSearchSon" update="formConsultarOutlet:dtSons acSearchSon"
+                                         styleClass="button"/>
+                    </p:dialog>
                     <br/>                 
                     <h:panelGrid columns="4">                       
                         <p:commandButton value="#{msg.btn_approved_all}" styleClass="button" process="@all" update="@form"
@@ -106,7 +119,7 @@
                                 <h:panelGrid columns="4" style="width: 100%">
                                     <h:outputLabel value="#{msg.is_father}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <p:selectBooleanCheckbox value="#{outletConsultarBean.isFather}" disabled="#{outletConsultarBean.disabledFields and outletConsultarBean.disabledFieldsTmc}">
-                                        <p:ajax process="@this" update="formConsultarOutlet:acMinLength" listener="#{outletConsultarBean.deleteOutletFather()}"/>
+                                        <p:ajax process="@this" update="formConsultarOutlet:acMinLength formConsultarOutlet:pgSons" listener="#{outletConsultarBean.deleteOutletFather()}"/>
                                     </p:selectBooleanCheckbox>
                                     <h:outputLabel value="#{msg.father}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
                                     <p:autoComplete id="acMinLength" minQueryLength="4" value="#{outletConsultarBean.father}" label="#{msg.father}"
@@ -115,6 +128,44 @@
                                                     maxResults="20"
                                                     style="width: 90% !important;" disabled="#{outletConsultarBean.disabledFields and outletConsultarBean.disabledFieldsTmc or outletConsultarBean.isFather}" queryEvent="enter"/>
                                 </h:panelGrid>
+                                <h:panelGroup id="pgSons">
+                                    <br/>
+                                    <p:commandButton value="#{msg.btn_add} #{msg.son}" 
+                                                     onclick="PF('wvSearchSon').show()"  rendered="#{outletConsultarBean.isFather}" styleClass="button"
+                                                     style="left: 0%"/>
+                                    <br/><br/>
+                                    <p:dataTable id="dtSons"
+                                                 rendered="#{outletConsultarBean.isFather}"
+                                                 value="#{outletConsultarBean.listOutletsSons}" var="outletSon"
+                                                 paginatorAlwaysVisible="true" rows="5"
+                                                 paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                                 paginator="true" filterEvent="enter">
+                                        <p:column headerText="#{msg.id}" filterBy="#{outletSon.outletId}">
+                                            <h:outputLabel value="#{outletSon.outletId}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg.father}" filterBy="#{outletSon.outletIdFather.outletId}">
+                                            <h:outputLabel value="#{outletSon.outletIdFather.outletId}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg.out_kiernan}" filterBy="#{outletSon.kiernanId}">
+                                            <h:outputLabel value="#{outletSon.kiernanId}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg.out_nit}" filterBy="#{outletSon.nit}">
+                                            <h:outputLabel value="#{outletSon.nit}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg.out_nombre}" filterBy="#{outletSon.businessName}">
+                                            <h:outputLabel value="#{outletSon.businessName}"/>
+                                        </p:column>
+                                        <p:column headerText="#{msg.m_distribuidor}" filterBy="#{outletSon.db3PartyIdOld.name3party}">
+                                            <h:outputLabel value="#{outletSon.db3PartyIdOld.name3party}"/>
+                                        </p:column>
+                                        <p:column>
+                                            <p:commandLink value="#{msg.btn_remove}" style="color: blue"
+                                                           process="@this" update="formConsultarOutlet:dtSons"
+                                                           actionListener="#{outletConsultarBean.removeOutletSon(outletSon)}"
+                                                           rendered="#{!(outletSon.outletId eq outletConsultarBean.idOutlet)}"/>
+                                        </p:column>
+                                    </p:dataTable>
+                                </h:panelGroup>
                             </p:fieldset>
                             <br/>
                             <p:fieldset legend="#{msg.out_datos_basicos}" style="width: 95%">
@@ -193,6 +244,11 @@
                                         <p:selectBooleanCheckbox value="#{outletConsultarBean.agreement}" disabled="#{outletConsultarBean.disableAgreement}">
                                             <p:ajax process="@this" update="formConsultarOutlet:pgSegment"/>
                                         </p:selectBooleanCheckbox>
+
+                                        <h:outputLabel value="#{msg.owner}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                        <p:selectOneMenu id="somOwner" value="#{outletConsultarBean.owner}" converter="ownerConverter" style="width: 90%">
+                                            <f:selectItems value="#{outletConsultarBean.listOwner}" var="ow" itemValue="#{ow}" itemLabel="#{ow.nameOwner}"/>
+                                        </p:selectOneMenu>
                                     </h:panelGrid>
                                     <br/>
                                     <!--h:panelGrid columns="6" style="width: 80%">
@@ -260,9 +316,9 @@
                                         <h:outputLabel value="#{msg.sales_singular}" style="width: 100%;" styleClass="tamanio_letra_labels"/>
                                         <p:autoComplete id="dd" value="#{outletConsultarBean.sellerSelected}"
                                                         converter="salesConverter" style="width: 90% !important;"
-                                                        var="seller" itemLabel="#{seller.nameSales}" readonly="#{outletConsultarBean.disabledFields}"
-                                                        completeMethod="#{outletConsultarBean.completeSeller}">
-                                            <p:ajax event="itemSelect" process="@this"/>
+                                                        var="seller" itemLabel="#{seller.nameSales}" itemValue="#{seller}" readonly="#{outletConsultarBean.disabledFields}"
+                                                        completeMethod="#{outletConsultarBean.completeSeller}"
+                                                        maxResults="20" queryEvent="enter">                                        
                                         </p:autoComplete>
                                     </h:panelGrid>
                                 </h:panelGroup>

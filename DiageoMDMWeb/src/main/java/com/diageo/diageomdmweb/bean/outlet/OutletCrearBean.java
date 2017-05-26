@@ -23,6 +23,7 @@ import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
 import com.diageo.diageonegocio.beans.DbPartySalesBeanLocal;
 import com.diageo.diageonegocio.beans.OcsBeanLocal;
 import com.diageo.diageonegocio.beans.OutletBeanLocal;
+import com.diageo.diageonegocio.beans.OwnerLocal;
 import com.diageo.diageonegocio.beans.PhonesBeanLocal;
 import com.diageo.diageonegocio.beans.SegmentBeanLocal;
 import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
@@ -36,6 +37,7 @@ import com.diageo.diageonegocio.entidades.DbCustomers;
 import com.diageo.diageonegocio.entidades.DbDepartaments;
 import com.diageo.diageonegocio.entidades.DbOcs;
 import com.diageo.diageonegocio.entidades.DbOutlets;
+import com.diageo.diageonegocio.entidades.DbOwners;
 import com.diageo.diageonegocio.entidades.DbPhones;
 import com.diageo.diageonegocio.entidades.DbPotentials;
 import com.diageo.diageonegocio.entidades.DbSegments;
@@ -96,6 +98,8 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     protected DbPartySalesBeanLocal dbPartySalesBeanLocal;
     @EJB
     protected ParameterBeanLocal parameterBeanLocal;
+    @EJB
+    protected OwnerLocal ownerLocal;
     private DbChannels channelSelected;
     private DbSubChannels subChannelSelected;
     private DbSegments segmentSelected;
@@ -149,7 +153,10 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
     protected List<DwParameters> userDatabase;
     protected List<DwParameters> passDatabase;
     private boolean flagOutletInactive;
-    private boolean agreement;    
+    private boolean agreement;
+    private DbOutlets selectedSon;
+    private DbOwners owner;
+    private List<DbOwners> listOwner;
 
     /**
      * Creates a new instance of OutletVistaBean
@@ -206,6 +213,9 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         setWebsite(EMPTY_FIELD);
         setWine(Boolean.FALSE);
         setJourneyPlan(Boolean.FALSE);
+        setOwner(new DbOwners());
+        setListOwner(ownerLocal.finadAll());
+        setSellerSelected(new Db3partySales());
     }
 
     public void saveOutlet() {
@@ -241,6 +251,7 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
                 outlet.setVerificationNumber(getVerificationNumber());
                 outlet.setWebsite(getWebsite() != null ? getWebsite().toUpperCase() : "");
                 outlet.setAgreement(isAgreement() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
+                outlet.setOwnerId(getOwner());
 //            outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
@@ -307,8 +318,12 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         return outletBeanLocal.findByBusinessName(query);
     }
 
-    public List<Db3partySales> completeSeller(String query) {
-        return dbPartySalesBeanLocal.findByNameSeller(query);
+    public List<DbOutlets> completeListSon(String param) {
+        return outletBeanLocal.findSons(param);
+    }
+
+    public List<Db3partySales> completeSeller(String query) {        
+        return dbPartySalesBeanLocal.findByNameSeller(query, getDb3PartySelected().getDb3partyId());
     }
 
     public void addPhone() {
@@ -348,6 +363,11 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
         }
     }
 
+    /**
+     * si el componente es padre, tiene un check, significa que tiene uno o
+     * varios hijos sino tiene el check, entonces es un hijo que debe tener
+     * padre
+     */
     public void deleteOutletFather() {
         setFather(null);
     }
@@ -1123,6 +1143,30 @@ public class OutletCrearBean extends DiageoRootBean implements Serializable {
 
     public void setAgreement(boolean agreement) {
         this.agreement = agreement;
+    }
+
+    public DbOutlets getSelectedSon() {
+        return selectedSon;
+    }
+
+    public void setSelectedSon(DbOutlets selectedSon) {
+        this.selectedSon = selectedSon;
+    }
+
+    public DbOwners getOwner() {
+        return owner;
+    }
+
+    public void setOwner(DbOwners owner) {
+        this.owner = owner;
+    }
+
+    public List<DbOwners> getListOwner() {
+        return listOwner;
+    }
+
+    public void setListOwner(List<DbOwners> listOwner) {
+        this.listOwner = listOwner;
     }
 
 }

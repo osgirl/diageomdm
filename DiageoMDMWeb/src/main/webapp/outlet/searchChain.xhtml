@@ -139,6 +139,18 @@
                                         <p:inputText id="itFormat" value="#{chainSearchBean.site}" required="true" label="#{msg.format}"/>
                                         <p:message for="itFormat"/>
                                     </h:panelGroup>
+
+                                    <p:outputLabel value="#{msg.fascia}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <h:panelGroup>
+                                        <p:selectOneMenu id="somFascia" value="#{chainSearchBean.fasciaSelected}" converter="fasciaConverter" style="width: 90%">
+                                            <f:selectItems value="#{chainSearchBean.listFascia}" var="fascia" itemValue="#{fascia}" itemLabel="#{fascia.nameFascia}"/>
+                                        </p:selectOneMenu>
+                                    </h:panelGroup>
+
+                                    <h:outputLabel value="#{msg.owner}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                    <p:selectOneMenu id="somOwner" value="#{chainSearchBean.ownerSelected}" converter="ownerConverter" style="width: 90%">
+                                        <f:selectItems value="#{chainSearchBean.listOwners}" var="ow" itemValue="#{ow}" itemLabel="#{ow.nameOwner}"/>
+                                    </p:selectOneMenu>
                                 </h:panelGrid>                               
                             </p:fieldset>
                             <br/>
@@ -180,6 +192,14 @@
                                                          disabled="#{chainSearchBean.disabledSegmentation}">
                                             <f:selectItems value="#{chainSearchBean.listCluster}" var="clus" itemLabel="#{clus.nameCluster}"/>
                                         </p:selectOneMenu>
+                                        
+                                        <h:outputLabel value="#{msg.sales_singular}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                                        <p:autoComplete id="dd" value="#{chainSearchBean.sellerSelected}"
+                                                        converter="salesConverter" style="width: 90% !important;"
+                                                        var="seller" itemLabel="#{seller.nameSales}" itemValue="#{seller}" readonly="#{chainSearchBean.disabledFields}"
+                                                        completeMethod="#{chainSearchBean.completeSeller}"
+                                                        maxResults="20" queryEvent="enter">                                        
+                                        </p:autoComplete>
                                     </h:panelGrid>
                                 </h:panelGroup>
                             </p:fieldset>

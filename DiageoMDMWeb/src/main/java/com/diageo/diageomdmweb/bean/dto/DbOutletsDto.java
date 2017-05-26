@@ -97,7 +97,9 @@ public class DbOutletsDto implements Serializable {
         if (!ocs_2) {
             listDiageoLog.add(recordLog(returnNameField("getOcsSecondary"), outlet.getOcsSecondary().getOcsId() + "", out.getOcsSecondary().getOcsId() + ""));
         }
-        boolean seller = this.outlet.getDb3partySaleId().getDb3partySaleId().equals(out.getDb3partySaleId().getDb3partySaleId());
+        boolean seller = (this.outlet.getDb3partySaleId() != null) ? 
+                (this.outlet.getDb3partySaleId().getDb3partySaleId().equals(out.getDb3partySaleId().getDb3partySaleId())) 
+                : true;
         if (!seller) {
             listDiageoLog.add(recordLog(returnNameField("getDb3partySaleId"), outlet.getDb3partySaleId().getDb3partySaleId() + "", out.getDb3partySaleId().getDb3partySaleId() + ""));
         }

@@ -15,16 +15,22 @@ import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageomdmweb.bean.dto.DbOutletsDto;
 import com.diageo.diageomdmweb.datamodel.DbOutletsLazyDataModel;
+import com.diageo.diageomdmweb.enums.TableOutletFields;
+import com.diageo.diageomdmweb.enums.TablesEnum;
+import com.diageo.diageomdmweb.enums.WaitingEnum;
 import com.diageo.diageomdmweb.jdbc.ConecctionJDBC;
 import com.diageo.diageomdmweb.mail.EMail;
 import com.diageo.diageomdmweb.mail.templates.VelocityTemplate;
 import com.diageo.diageonegocio.beans.DiageoLogBeanLocal;
+import com.diageo.diageonegocio.beans.LogTerritoryBean;
 import com.diageo.diageonegocio.beans.OutletsUserBeanLocal;
 import com.diageo.diageonegocio.beans.PermissionsegmentBeanLocal;
 import com.diageo.diageonegocio.beans.PotentialBeanLocal;
 import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.Db3party;
+import com.diageo.diageonegocio.entidades.Db3partySales;
 import com.diageo.diageonegocio.entidades.DbCustomers;
+import com.diageo.diageonegocio.entidades.DbLogTerritory;
 import com.diageo.diageonegocio.entidades.DbOutlets;
 import com.diageo.diageonegocio.entidades.DbOutletsUsers;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
@@ -73,6 +79,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     private DiageoLogBeanLocal diageoLogBeanLocal;
     @EJB
     private PotentialBeanLocal potentialBeanLocal;
+    @EJB
+    private LogTerritoryBean logTerritoryBean;
     @Inject
     private LoginBean loginBean;
     private List<DbPermissionSegments> listPermi;
@@ -107,6 +115,8 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
      * Es el potencial que tiene asignado el outlet al ver el detalle del outlet
      */
     private DbPotentials currentPotential;
+    private List<DbOutlets> listOutletsSons;
+    private List<DbOutlets> listOutletsSonsDelete;
 
     /**
      * Creates a new instance of OutletConsultarBean
@@ -119,6 +129,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     public void init() {
         setFlagOutletInactive(true);
         setDb3PartyList(db3PartyBeanLocal.searchAll());
+        setSelectedSon(new DbOutlets());
         if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())
                 || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())) {
             setOutletsLazyDataModel(new DbOutletsLazyDataModel(outletBeanLocal, getLoginBean().getUsuario().getProfileId().getProfileId()));
@@ -159,6 +170,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                 Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        setSellerSelected(new Db3partySales());
     }
 
     private void loadListStatusMdm() {
@@ -182,8 +194,14 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             listFilterStatusMDM.add(new SelectItem("REJECT", capturarValor("sta_reject")));
         }
     }
+    
+    @Override
+    public List<Db3partySales> completeSeller(String query) {        
+        return dbPartySalesBeanLocal.findByNameSeller(query,getDistributorOld());
+    }
 
     public void seeDetail(DbOutlets out) {
+        setListOutletsSonsDelete(new ArrayList<DbOutlets>());
         try {
             outletClonable = new DbOutletsDto(out.clone(), getCurrentDate(), getLoginBean().getUsuario().getUserId());
         } catch (CloneNotSupportedException ex) {
@@ -228,10 +246,13 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             setDistributorOld(out.getDb3PartyIdOld().getDb3partyId());
         }
         setDb3PartyIdNew(out.getDb3PartyIdNew());
-        setSellerSelected(out.getDb3partySaleId());
+        if (out.getDb3partySaleId() != null) {
+            setSellerSelected(out.getDb3partySaleId());
+        }
         setJourneyPlan(out.getJourneyPlan().equals(StateEnum.ACTIVE.getState()));
         setStatusOutlet(out.getStatusOutlet());
         setAgreement(out.getAgreement() == null ? Boolean.FALSE : (out.getAgreement().equals(StateEnum.ACTIVE.getState())));
+        setOwner(out.getOwnerId());
         try {
             DbOutletsUsers findByOutletId = outletsUserBeanLocal.findByOutletIdProfileId(idOutlet);
             if (findByOutletId != null) {
@@ -241,7 +262,12 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
         } catch (Exception e) {
             Logger.getLogger(OutletConsultarBean.class.getName()).log(Level.SEVERE, e.getMessage());
         }
+        this.loadOutletsSons(out.getOutletId());
         //super.listenerChannel();
+    }
+
+    private void loadOutletsSons(Integer id) {
+        setListOutletsSons(outletBeanLocal.findByIdSons(id));
     }
 
     /**
@@ -314,7 +340,20 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
     public void deleteCustomer(DbCustomers custo) {
         getListCustomers().remove(custo);
         getListCustomerDelete().add(custo);
+    }
 
+    /**
+     * si el componente es padre, tiene un check, significa que tiene uno o
+     * varios hijos sino tiene el check, entonces es un hijo que debe tener
+     * padre
+     */
+    @Override
+    public void deleteOutletFather() {
+        if (!isIsFather()) {
+            setFather(null);
+        } else {
+            setFather(outletClonable.getOutlet().getOutletIdFather());
+        }
     }
 
     @Override
@@ -358,14 +397,16 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                 outlet.setTypeOutlet(getTypeOutlet() != null ? getTypeOutlet().toUpperCase() : "");
                 outlet.setVerificationNumber(getVerificationNumber());
                 outlet.setWebsite(getWebsite() != null ? getWebsite().toUpperCase() : "");
-                outlet.setDb3partySaleId(getSellerSelected());
+                if (getSellerSelected() != null) {
+                    outlet.setDb3partySaleId(getSellerSelected());
+                }
                 outlet.setJourneyPlan(isJourneyPlan() ? StateEnum.ACTIVE.getState() : StateEnum.INACTIVE.getState());
                 outlet.setDb3PartyIdNew(db3PartyIdNew);
+                outlet.setOwnerId(getOwner());
 //            outlet.setWine(isWine() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setBeer(isBeer() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
 //            outlet.setSpirtis(isSpirtis() ? StateDiageo.ACTIVO.getId() : StateDiageo.INACTIVO.getId());
                 outlet.setDbCustomersList(getListCustomers());
-
                 if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.COMMERCIAL_MANAGER.getId())) {
                     if (outlet.getStatusMDM().equals(StatusSystemMDM.PENDING_APPROVAL.name())) {
                         outlet.setStatusMDM(StatusSystemMDM.APPROVED.name());
@@ -373,9 +414,28 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                 } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())) {
                     if (!outletClonable.isNotificationChangedSegmentation(outlet)) {
                         outlet.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+                    } else {
+                        if (outlet.getStatusMDM().equals(StatusSystemMDM.PENDING_TMC.name())) {
+                            outlet.setStatusMDM(StatusSystemMDM.PENDING_APPROVAL.name());
+                        }
                     }
                 }
-
+                /**
+                 * Relacion de hijos y padres
+                 */
+                if (isIsFather()) {
+                    this.toBreakRelationSonFather();
+                    this.saveSonOutlets(outlet);
+                    outlet.setOutletIdFather(outlet);
+                } else {
+                    if (listOutletsSons != null) {
+                        for (DbOutlets tempOut : listOutletsSons) {
+                            tempOut.setOutletIdFather(tempOut);
+                            outletBeanLocal.update(tempOut);
+                        }
+                    }
+                }
+                createLogTerritory(outlet);
                 Audit audit = new Audit();
                 audit.setCreationDate(outlet.getAudit() != null ? outlet.getAudit().getCreationDate() : null);
                 audit.setCreationUser(outlet.getAudit() != null ? outlet.getAudit().getCreationUser() : null);
@@ -396,6 +456,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
                     createLog(outlet);
                     showInfoMessage(capturarValor("sis_datos_guardados_exito"));
                 }
+                
                 Connection con = ConecctionJDBC.conexionSQLServer(ipDatabase.get(0).getParameterValue(),
                         userDatabase.get(0).getParameterValue(), passDatabase.get(0).getParameterValue());
                 ConecctionJDBC.callStoreProcedureDBOutlets(con, outlet.getOutletId());
@@ -443,6 +504,71 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
             }
         }
         outletClonable = new DbOutletsDto(out, getCurrentDate(), getLoginBean().getUsuario().getUserId());
+    }
+
+    public void createLogTerritory(DbOutlets out) {
+        if (out.getDb3partySaleId() != null && outletClonable.getOutlet().getDb3partySaleId() != null) {
+            if (out.getDb3partySaleId().getDb3partyTerritory() != null && outletClonable.getOutlet().getDb3partySaleId().getDb3partyTerritory() != null) {
+                if (!out.getDb3partySaleId().getDb3partyTerritory().getNameTerritory().equals(outletClonable.getOutlet().getDb3partySaleId().getDb3partyTerritory().getNameTerritory())) {
+                    DbLogTerritory logTerritory = new DbLogTerritory();
+                    logTerritory.setCreationDate(getCurrentDate());
+                    logTerritory.setCreationUser(getLoginBean().getUsuario().getEmailUser());
+                    logTerritory.setDbOutletId(out.getOutletId());
+                    logTerritory.setFieldLog(TableOutletFields.TERRITORY.name());
+                    logTerritory.setOutletType(TablesEnum.DB_OUTLETS.name());
+                    logTerritory.setWaitingStatus(WaitingEnum.REMOVAL.getState());
+                    logTerritory.setValueLog(outletClonable.getOutlet().getDb3partySaleId().getDb3partyTerritory().getNameTerritory());
+                    logTerritoryBean.create(logTerritory);
+                    logTerritory.setWaitingStatus(WaitingEnum.ACTIVATION.getState());
+                    logTerritory.setValueLog(out.getDb3partySaleId().getDb3partyTerritory().getNameTerritory());
+                    logTerritoryBean.create(logTerritory);
+                }
+            }
+        }
+        if (!out.getJourneyPlan().equals(outletClonable.getOutlet().getJourneyPlan())) {
+            DbLogTerritory logTerritory = new DbLogTerritory();
+            logTerritory.setCreationDate(getCurrentDate());
+            logTerritory.setCreationUser(getLoginBean().getUsuario().getEmailUser());
+            logTerritory.setDbOutletId(out.getOutletId());
+            logTerritory.setFieldLog(TableOutletFields.JOURNEY_PLAN.name());
+            logTerritory.setOutletType(TablesEnum.DB_OUTLETS.name());
+            if (out.getJourneyPlan().equals(StateEnum.ACTIVE.getState())) {
+                logTerritory.setWaitingStatus(WaitingEnum.ACTIVATION.getState());
+            } else {
+                logTerritory.setWaitingStatus(WaitingEnum.REMOVAL.getState());
+            }
+            logTerritory.setValueLog(out.getJourneyPlan());
+            logTerritoryBean.create(logTerritory);
+        }
+    }
+
+    public void addSonToOutlet() {
+        if (listOutletsSons == null) {
+            listOutletsSons = new ArrayList<>();
+        }
+        if (getSelectedSon() != null) {
+            if (!listOutletsSons.contains(getSelectedSon())) {
+                listOutletsSons.add(getSelectedSon());
+            } else {
+                showWarningMessage(capturarValor("msg_son_exist"));
+            }
+        } else {
+            showWarningMessage(capturarValor("msg_son_fild_required"));
+        }
+        setSelectedSon(new DbOutlets());
+    }
+
+    public void removeOutletSon(DbOutlets out) {
+        listOutletsSonsDelete.add(out);
+        listOutletsSons.remove(out);
+    }
+
+    public void saveSonOutlets(DbOutlets father) {
+        outletBeanLocal.relateOutlets(listOutletsSons, father);
+    }
+
+    public void toBreakRelationSonFather() {
+        outletBeanLocal.toBreakRelationSonFather(listOutletsSonsDelete);
     }
 
     public void buttonBack() {
@@ -717,6 +843,7 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
 
     public boolean isDisabledFuntionalSegmentation() {
         return !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.TMC_DISTRIBUIDORES.getId())
+                && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.DATA_STEWARD.getId())
                 && !getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId());
     }
 
@@ -1080,6 +1207,22 @@ public class OutletConsultarBean extends OutletCrearBean implements Serializable
      */
     public void setDb3PartyList(List<Db3party> db3PartyList) {
         this.db3PartyList = db3PartyList;
+    }
+
+    public List<DbOutlets> getListOutletsSons() {
+        return listOutletsSons;
+    }
+
+    public void setListOutletsSons(List<DbOutlets> listOutletsSons) {
+        this.listOutletsSons = listOutletsSons;
+    }
+
+    public List<DbOutlets> getListOutletsSonsDelete() {
+        return listOutletsSonsDelete;
+    }
+
+    public void setListOutletsSonsDelete(List<DbOutlets> listOutletsSonsDelete) {
+        this.listOutletsSonsDelete = listOutletsSonsDelete;
     }
 
 }

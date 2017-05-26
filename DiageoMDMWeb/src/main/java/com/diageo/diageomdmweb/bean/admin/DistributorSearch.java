@@ -59,7 +59,7 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
     private List<Db3partyAdmin> listAdmin;
     private Db3party selectedDistributor;
     private boolean seeDetail;
-    private boolean isFather;
+    //private boolean isFather;
     private boolean father;
     private String isChain;
     private String status;
@@ -114,21 +114,24 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
             getSelectedDistributor().setName3party(getName().toUpperCase());
             getSelectedDistributor().setDistri1(getAthenaCode().toUpperCase());
             getSelectedDistributor().setDb3partyRegionalId(db3partyRegionalSelected);
-            getSelectedDistributor().setIsFather(isFather ? FatherDistributorEnum.FATHER.getIsFather() : FatherDistributorEnum.NOT_FATHER.getIsFather());
+            getSelectedDistributor().setIsFather(father ? FatherDistributorEnum.FATHER.getIsFather() : FatherDistributorEnum.NOT_FATHER.getIsFather());
+            if (father) {
+                getSelectedDistributor().setDb3partyIdFather(getSelectedDistributor());
+            }else{
+                getSelectedDistributor().setDb3partyIdFather(getPartyFatherSelected());
+            }
             getSelectedDistributor().setIsChain(getIsChain());
             getSelectedDistributor().setStatus(getStatus());
             getSelectedDistributor().setDb3PartyAdmin(adminSelected);
             getSelectedDistributor().setCodeEanCadena(codeEanChain);
             getSelectedDistributor().setBusinessName(businessName);
+            getSelectedDistributor().setKiernan(getAthenaCode().toUpperCase());
             Audit audit = new Audit();
             audit.setModificationDate(super.getCurrentDate());
             audit.setModificationUser(getLoginBean().getUsuario().getEmailUser());
             audit.setCreationUser(getSelectedDistributor().getAudit() != null ? getSelectedDistributor().getAudit().getCreationUser() : null);
             audit.setCreationDate(getSelectedDistributor().getAudit() != null ? getSelectedDistributor().getAudit().getCreationDate() : null);
-            getSelectedDistributor().setAudit(audit);
-            if (father) {
-                getSelectedDistributor().setDb3partyIdFather(partyFatherSelected);
-            }
+            getSelectedDistributor().setAudit(audit);            
             distributorBeanLocal.updateDistributor(getSelectedDistributor());
             showInfoMessage(capturarValor("sis_datos_guardados_exito"));
         } catch (DiageoBusinessException ex) {
@@ -246,13 +249,13 @@ public class DistributorSearch extends DiageoRootBean implements Serializable {
         this.listDistributorFather = listDistributorFather;
     }
 
-    public boolean isIsFather() {
-        return isFather;
-    }
-
-    public void setIsFather(boolean isFather) {
-        this.isFather = isFather;
-    }
+//    public boolean isIsFather() {
+//        return isFather;
+//    }
+//
+//    public void setIsFather(boolean isFather) {
+//        this.isFather = isFather;
+//    }
 
     public List<Db3partyRegional> getListRegional() {
         return listRegional;

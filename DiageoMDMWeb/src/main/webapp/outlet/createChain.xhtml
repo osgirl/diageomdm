@@ -88,6 +88,18 @@
                                 <p:inputText id="itFormat" value="#{createChainBean.site}" required="true" label="#{msg.format}"/>
                                 <p:message for="itFormat"/>
                             </h:panelGroup>
+
+                            <p:outputLabel value="#{msg.fascia}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <h:panelGroup>
+                                <p:selectOneMenu id="somFascia" value="#{createChainBean.fasciaSelected}" converter="fasciaConverter" style="width: 90%">
+                                    <f:selectItems value="#{createChainBean.listFascia}" var="fascia" itemValue="#{fascia}" itemLabel="#{fascia.nameFascia}"/>
+                                </p:selectOneMenu>
+                            </h:panelGroup>
+
+                            <h:outputLabel value="#{msg.owner}" style="width: 100%;padding: 15%" styleClass="tamanio_letra_labels"/>
+                            <p:selectOneMenu id="somOwner" value="#{createChainBean.ownerSelected}" converter="ownerConverter" style="width: 90%">
+                                <f:selectItems value="#{createChainBean.listOwners}" var="ow" itemValue="#{ow}" itemLabel="#{ow.nameOwner}"/>
+                            </p:selectOneMenu>
                         </h:panelGrid>
                     </p:fieldset>
                     <br/>

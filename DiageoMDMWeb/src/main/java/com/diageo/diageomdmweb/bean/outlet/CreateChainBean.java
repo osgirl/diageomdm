@@ -22,6 +22,9 @@ import com.diageo.diageonegocio.beans.ClusterBeanLocal;
 import com.diageo.diageonegocio.beans.CustomerBeanLocal;
 import com.diageo.diageonegocio.beans.Db3PartyBeanLocal;
 import com.diageo.diageonegocio.beans.DbLayerBeanLocal;
+import com.diageo.diageonegocio.beans.DbPartySalesBeanLocal;
+import com.diageo.diageonegocio.beans.FasciaLocal;
+import com.diageo.diageonegocio.beans.OwnerLocal;
 import com.diageo.diageonegocio.beans.PhonesBeanLocal;
 import com.diageo.diageonegocio.beans.SegmentBeanLocal;
 import com.diageo.diageonegocio.beans.SubChannelBeanLocal;
@@ -29,12 +32,15 @@ import com.diageo.diageonegocio.beans.SubSegmentoBeanLocal;
 import com.diageo.diageonegocio.beans.TypePhoneBeanLocal;
 import com.diageo.diageonegocio.entidades.Audit;
 import com.diageo.diageonegocio.entidades.Db3party;
+import com.diageo.diageonegocio.entidades.Db3partySales;
 import com.diageo.diageonegocio.entidades.DbChains;
 import com.diageo.diageonegocio.entidades.DbChannels;
 import com.diageo.diageonegocio.entidades.DbClusters;
 import com.diageo.diageonegocio.entidades.DbCustomers;
 import com.diageo.diageonegocio.entidades.DbDepartaments;
+import com.diageo.diageonegocio.entidades.DbFascias;
 import com.diageo.diageonegocio.entidades.DbLayer;
+import com.diageo.diageonegocio.entidades.DbOwners;
 import com.diageo.diageonegocio.entidades.DbPhones;
 import com.diageo.diageonegocio.entidades.DbPotentials;
 import com.diageo.diageonegocio.entidades.DbSegments;
@@ -94,6 +100,12 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
     protected DbLayerBeanLocal dbLayerBeanLocal;
     @EJB
     protected ParameterBeanLocal parameterBeanLocal;
+    @EJB
+    protected FasciaLocal fasciaLocal;
+    @EJB
+    protected OwnerLocal ownerLocal;
+    @EJB
+    protected DbPartySalesBeanLocal dbPartySalesBeanLocal;
     private String kiernan;
     private String chainName;
     private String businessName;
@@ -139,6 +151,11 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
     protected List<DwParameters> userDatabase;
     protected List<DwParameters> passDatabase;
     private boolean flagOutletInactive;
+    private List<DbFascias> listFascia;
+    private List<DbOwners> listOwners;
+    private DbFascias fasciaSelected;
+    private DbOwners ownerSelected;
+    private Db3partySales sellerSelected;
 
     /**
      * Creates a new instance of CreateChainBean
@@ -158,6 +175,10 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
         userDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.USER_DATABASE.name());
         passDatabase = parameterBeanLocal.findByKey(ParameterKeyEnum.PASS_DATABASE.name());
         listenerDb3Party();
+        setFasciaSelected(new DbFascias());
+        setOwnerSelected(new DbOwners());
+        setListFascia(fasciaLocal.finadAll());
+        setListOwners(ownerLocal.finadAll());
     }
 
     public void initFields() {
@@ -190,6 +211,7 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
         setLayerSelected(new DbLayer());
         setSite(EMPTY_FIELD);
         listenerDb3Party();
+        setSellerSelected(new Db3partySales());
     }
 
     public void saveChain() {
@@ -216,6 +238,10 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
                     chain.setSubSegmentId(getSubSegmentSelected());
                     chain.setStatusChain(getStatus());
                     chain.setSite(getSite());
+                    chain.setOdbCreate(StateEnum.ACTIVE.getState());
+                    chain.setFascia(getFasciaSelected());
+                    chain.setOwnerId(getOwnerSelected());
+                    chain.setDb3partySaleId(getSellerSelected());
                     if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.ADMINISTRATOR.getId())) {
                         chain.setStatusMDM(StatusSystemMDM.PENDING_KAM_TMC_CHAINS.name());
                     } else if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM_CADENAS.getId())
@@ -265,6 +291,13 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
      */
     public boolean validateCodeEan() {
         return chainBeanLocal.findByCodeEAN(getEanCode()) != null;
+    }
+
+    public List<Db3partySales> completeSeller(String query) {
+        if (getDb3PartySelected() != null && getDb3PartySelected().getDb3partyId() != null) {
+            return dbPartySalesBeanLocal.findByNameSeller(query, getDb3PartySelected().getDb3partyId());
+        }
+        return new ArrayList<>();
     }
 
     public void commandRemoteOutletInactive() {
@@ -978,6 +1011,46 @@ public class CreateChainBean extends DiageoRootBean implements Serializable {
 
     public void setCodeEanChain(String codeEanChain) {
         this.codeEanChain = codeEanChain;
+    }
+
+    public List<DbFascias> getListFascia() {
+        return listFascia;
+    }
+
+    public void setListFascia(List<DbFascias> listFascia) {
+        this.listFascia = listFascia;
+    }
+
+    public DbFascias getFasciaSelected() {
+        return fasciaSelected;
+    }
+
+    public void setFasciaSelected(DbFascias fasciaSelected) {
+        this.fasciaSelected = fasciaSelected;
+    }
+
+    public List<DbOwners> getListOwners() {
+        return listOwners;
+    }
+
+    public void setListOwners(List<DbOwners> listOwners) {
+        this.listOwners = listOwners;
+    }
+
+    public DbOwners getOwnerSelected() {
+        return ownerSelected;
+    }
+
+    public void setOwnerSelected(DbOwners ownerSelected) {
+        this.ownerSelected = ownerSelected;
+    }
+
+    public Db3partySales getSellerSelected() {
+        return sellerSelected;
+    }
+
+    public void setSellerSelected(Db3partySales sellerSelected) {
+        this.sellerSelected = sellerSelected;
     }
 
 }

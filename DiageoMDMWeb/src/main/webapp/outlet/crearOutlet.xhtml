@@ -97,6 +97,7 @@
                                 <h:outputLabel value="#{msg.out_distribuidor}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                 <p:selectOneMenu value="#{outletCrearBean.db3PartySelected}" style="width: 90%" converter="db3PartyConverter">
                                     <f:selectItems value="#{outletCrearBean.list3PartyToDeploy}" var="distri" itemLabel="#{distri.name3party}"/>
+                                    <p:ajax process="@this" update="formOutlet:dd"/>
                                 </p:selectOneMenu>
 
                                 <h:outputLabel value="Journey Plan" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
@@ -110,6 +111,11 @@
                                 
                                 <h:outputLabel value="#{msg.agreement}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
                                 <p:selectBooleanCheckbox value="#{outletCrearBean.agreement}" disabled="#{outletCrearBean.disableAgreement}"/>
+                                
+                                <h:outputLabel value="#{msg.owner}" style="width: 100%;padding: 5%" styleClass="tamanio_letra_labels"/>
+                                <p:selectOneMenu id="somOwner" value="#{outletCrearBean.owner}" converter="ownerConverter" style="width: 90%">
+                                    <f:selectItems value="#{outletCrearBean.listOwner}" var="ow" itemValue="#{ow}" itemLabel="#{ow.nameOwner}"/>
+                                </p:selectOneMenu>
                             </h:panelGrid>
                             <br/>
                             <!--h:panelGrid columns="6" style="width: 80%">
@@ -176,7 +182,7 @@
                                                     converter="salesConverter" style="width: 90% !important;"                                                    
                                                     var="seller" itemLabel="#{seller.nameSales}" itemValue="#{seller}"
                                                     completeMethod="#{outletCrearBean.completeSeller}"
-                                                    effect="fade" minQueryLength="4" forceSelection="true">
+                                                    effect="fade" minQueryLength="4" forceSelection="true" queryEvent="enter">
                                         <p:ajax event="itemSelect" process="@this"/>
                                     </p:autoComplete>
                                     <p:message for="dd"/>

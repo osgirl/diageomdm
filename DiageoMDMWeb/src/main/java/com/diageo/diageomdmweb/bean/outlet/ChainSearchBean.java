@@ -14,14 +14,21 @@ import com.diageo.admincontrollerweb.enums.StatusSystemMDM;
 import static com.diageo.diageomdmweb.bean.DiageoRootBean.capturarValor;
 import com.diageo.diageomdmweb.bean.LoginBean;
 import com.diageo.diageomdmweb.bean.dto.DbChainsDto;
+import com.diageo.diageomdmweb.enums.TableOutletFields;
+import com.diageo.diageomdmweb.enums.TablesEnum;
+import com.diageo.diageomdmweb.enums.WaitingEnum;
 import com.diageo.diageomdmweb.jdbc.ConecctionJDBC;
 import com.diageo.diageonegocio.beans.ChainUserBeanLocal;
+import com.diageo.diageonegocio.beans.DbPartySalesBeanLocal;
 import com.diageo.diageonegocio.beans.DiageoLogBeanLocal;
+import com.diageo.diageonegocio.beans.LogTerritoryBean;
 import com.diageo.diageonegocio.beans.PotentialBeanLocal;
 import com.diageo.diageonegocio.entidades.Audit;
+import com.diageo.diageonegocio.entidades.Db3partySales;
 import com.diageo.diageonegocio.entidades.DbChains;
 import com.diageo.diageonegocio.entidades.DbChainsUsers;
 import com.diageo.diageonegocio.entidades.DbCustomers;
+import com.diageo.diageonegocio.entidades.DbLogTerritory;
 import com.diageo.diageonegocio.entidades.DbOutlets;
 import com.diageo.diageonegocio.entidades.DbPermissionSegments;
 import com.diageo.diageonegocio.entidades.DbPhones;
@@ -65,6 +72,8 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     private DiageoLogBeanLocal diageoLogBeanLocal;
     @EJB
     private PotentialBeanLocal potentialBeanLocal;
+    @EJB
+    private LogTerritoryBean logTerritoryBean;
     @Inject
     private LoginBean loginBean;
     private List<DbChains> chainsList;
@@ -85,6 +94,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
     private List<SelectItem> listFilterStatusMDM;
     private DbChainsDto chainClonable;
     private String codeEanTemp;
+
     /**
      * Es el potencial que tiene asignado el outlet al ver el detalle del outlet
      */
@@ -194,7 +204,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         setNeighborhood(chain.getNeighborhood());
         setStatus(chain.getStatusChain());
         setPotentialSelected(chain.getPotentialId());
-        currentPotential=chain.getPotentialId();
+        currentPotential = chain.getPotentialId();
         this.setSegmentation(chain);
 
 //        setSubSegmentSelected(chain.getSubSegmentId());
@@ -209,6 +219,13 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         setListCustomers(chain.getDbCustomerList());
         setSeeDetail(Boolean.FALSE);
         setLayerSelected(chain.getLayerId());
+        setFasciaSelected(chain.getFascia());
+        setOwnerSelected(chain.getOwnerId());
+        if (chain.getDb3partySaleId() != null) {
+            setSellerSelected(chain.getDb3partySaleId());
+        } else {
+            setSellerSelected(new Db3partySales());
+        }
     }
 
     private void setSegmentation(DbChains cha) {
@@ -245,8 +262,8 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
 
         }
     }
-    
-     @Override
+
+    @Override
     public void listenerSubSegment() {
         if (getSubSegmentSelected() == null || getSubSegmentSelected().getDbPotentialsList() == null || getSubSegmentSelected().getDbPotentialsList().isEmpty()) {
             setListPotential(new ArrayList<DbPotentials>());
@@ -301,6 +318,9 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                     chain.setSubSegmentId(getSubSegmentSelected());
                     chain.setStatusChain(getStatus());
                     chain.setDbCustomerList(getListCustomers());
+                    chain.setFascia(getFasciaSelected());
+                    chain.setOwnerId(getOwnerSelected());
+                    chain.setDb3partySaleId(getSellerSelected());
                     Audit audit = new Audit();
                     audit.setCreationDate(chain.getAudit() != null ? chain.getAudit().getCreationDate() : null);
                     audit.setCreationUser(chain.getAudit() != null ? chain.getAudit().getCreationUser() : null);
@@ -309,6 +329,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                     chain.setAudit(audit);
                     chain.setLayerId(getLayerSelected());
                     chain.setSite(getSite());
+                    createLogTerritory(chain);
                     this.deletePhone();
                     if (getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.KAM.getId())
                             || getLoginBean().getUsuario().getProfileId().getProfileId().equals(ProfileEnum.NAM.getId())) {
@@ -362,7 +383,7 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
                     Logger.getLogger(CreateChainBean.class.getName()).log(Level.SEVERE, null, ex);
                     showErrorMessage(capturarValor("sis_datos_guardados_sin_exito"));
                 }
-            }else{
+            } else {
                 showWarningMessage(capturarValor("chain_meg_code_ean"));
             }
         }
@@ -388,6 +409,28 @@ public class ChainSearchBean extends CreateChainBean implements Serializable {
         }
         chainClonable = new DbChainsDto(cha, getCurrentDate(), getLoginBean().getUsuario().getUserId());
     }
+    
+     public void createLogTerritory(DbChains cha) {
+        if (cha.getDb3partySaleId() != null && chainClonable.getChain().getDb3partySaleId() != null) {
+            if (cha.getDb3partySaleId().getDb3partyTerritory() != null && chainClonable.getChain().getDb3partySaleId().getDb3partyTerritory() != null) {
+                if (!cha.getDb3partySaleId().getDb3partyTerritory().getNameTerritory().equals(chainClonable.getChain().getDb3partySaleId().getDb3partyTerritory().getNameTerritory())) {
+                    DbLogTerritory logTerritory = new DbLogTerritory();
+                    logTerritory.setCreationDate(getCurrentDate());
+                    logTerritory.setCreationUser(getLoginBean().getUsuario().getEmailUser());
+                    logTerritory.setDbOutletId(cha.getChainId());
+                    logTerritory.setFieldLog(TableOutletFields.TERRITORY.name());
+                    logTerritory.setOutletType(TablesEnum.DB_CHAINS.name());
+                    logTerritory.setWaitingStatus(WaitingEnum.REMOVAL.getState());
+                    logTerritory.setValueLog(chainClonable.getChain().getDb3partySaleId().getDb3partyTerritory().getNameTerritory());
+                    logTerritoryBean.create(logTerritory);
+                    logTerritory.setWaitingStatus(WaitingEnum.ACTIVATION.getState());
+                    logTerritory.setValueLog(cha.getDb3partySaleId().getDb3partyTerritory().getNameTerritory());
+                    logTerritoryBean.create(logTerritory);
+                }
+            }
+        }
+    }
+
 
     public void buttonBack() {
         setSeeDetail(Boolean.TRUE);
