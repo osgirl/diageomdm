@@ -9,7 +9,8 @@ and open the template in the editor.
       xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
-      xmlns:pe="http://primefaces.org/ui/extensions">
+      xmlns:pe="http://primefaces.org/ui/extensions"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <body>
         <ui:composition template="/WEB-INF/templates/diageoWebTemplate.xhtml">
             <ui:define name="content">
@@ -32,25 +33,120 @@ and open the template in the editor.
                                      style="font-size:  90%;width:300%" paginator="true" 
                                      emptyMessage="#{msg.out_msg_not_record}" 
                                      filterEvent="enter" >
-                            <p:column headerText="#{msg.estado}" filterBy="#{report.estado}"><h:outputLabel value="#{report.estado}"/></p:column>
-                            <p:column headerText="#{msg.outlet_id}" filterBy="#{report.outletId}"><h:outputLabel value="#{report.outletId}"/></p:column>
-                            <p:column headerText="#{msg.out_kiernan}" filterBy="#{report.kiernanId}"><h:outputLabel value="#{report.kiernanId}"/></p:column>
-                            <p:column headerText="#{msg.cod_distri}" filterBy="#{report.codDistribuidor}"><h:outputLabel value="#{report.codDistribuidor}"/></p:column>
-                            <p:column headerText="#{msg.name_distri_office}" filterBy="#{report.nombreSucursalDistribuidor}"><h:outputLabel value="#{report.nombreSucursalDistribuidor}"/></p:column>
-                            <p:column headerText="#{msg.chain_code_ean_pdv}" filterBy="#{report.codigoPdvDistribuidor}"><h:outputLabel value="#{report.codigoPdvDistribuidor}"/></p:column>
-                            <p:column headerText="#{msg.out_nit}" filterBy="#{report.nit}"><h:outputLabel value="#{report.nit}"/></p:column>
-                            <p:column headerText="#{msg.out_razon_social}" filterBy="#{report.businessName}"><h:outputLabel value="#{report.businessName}"/></p:column>
-                            <p:column headerText="#{msg.out_nombre}" filterBy="#{report.outletName}"><h:outputLabel value="#{report.outletName}"/></p:column>
-                            <p:column headerText="#{msg.chain_city}" filterBy="#{report.nombreCiudad}"><h:outputLabel value="#{report.nombreCiudad}"/></p:column>
-                            <p:column headerText="#{msg.loc_depto}" filterBy="#{report.nombreDepartamento}"><h:outputLabel value="#{report.nombreDepartamento}"/></p:column>
-                            <p:column headerText="#{msg.sales_code}" filterBy="#{report.codVendedor}"><h:outputLabel value="#{report.codVendedor}"/></p:column>
-                            <p:column headerText="#{msg.usu_perfil}" filterBy="#{report.nombrePerfil}"><h:outputLabel value="#{report.nombrePerfil}"/></p:column>
-                            <p:column headerText="TMC/KAM" filterBy="#{report.tmcKam}"><h:outputLabel value="#{report.tmcKam}"/></p:column>
-                            <p:column headerText="#{msg.user_management}" filterBy="#{report.usuarioAGestionar}"><h:outputLabel value="#{report.usuarioAGestionar}"/></p:column>
-                            <p:column headerText="#{msg.dis_commercial_management}" filterBy="#{report.gerenciaComercial}"><h:outputLabel value="#{report.gerenciaComercial}"/></p:column>
-                            <p:column headerText="#{msg.sub_segment_diageo}" filterBy="#{report.subSegmentoDiageo}"><h:outputLabel value="#{report.subSegmentoDiageo}"/></p:column>
-                            <p:column headerText="#{msg.sub_segment_distributor}" filterBy="#{report.subSegmentoDist}"><h:outputLabel value="#{report.subSegmentoDist}"/></p:column>
-                            <p:column headerText="#{msg.status_2}" filterBy="#{report.statusOutlet}"><h:outputLabel value="#{report.statusOutlet}"/></p:column>
+                            <p:column headerText="#{msg.estado}" filterBy="#{report.estado}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.estado}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.estado}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.outlet_id}" filterBy="#{report.outletId}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.outlet_id}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.outletId}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.out_kiernan}" filterBy="#{report.kiernanId}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.out_kiernan}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.kiernanId}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.cod_distri}" filterBy="#{report.codDistribuidor}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.cod_distri}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.codDistribuidor}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.name_distri_office}" filterBy="#{report.nombreSucursalDistribuidor}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.name_distri_office}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.nombreSucursalDistribuidor}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.chain_code_ean_pdv}" filterBy="#{report.codigoPdvDistribuidor}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.chain_code_ean_pdv}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.codigoPdvDistribuidor}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.out_nit}" filterBy="#{report.nit}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.out_nit}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.nit}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.out_razon_social}" filterBy="#{report.businessName}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.out_razon_social}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.businessName}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.out_nombre}" filterBy="#{report.outletName}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.out_nombre}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.outletName}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.chain_city}" filterBy="#{report.nombreCiudad}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.chain_city}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.nombreCiudad}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.loc_depto}" filterBy="#{report.nombreDepartamento}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.loc_depto}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.nombreDepartamento}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.sales_code}" filterBy="#{report.codVendedor}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.sales_code}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.codVendedor}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.usu_perfil}" filterBy="#{report.nombrePerfil}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.usu_perfil}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.nombrePerfil}"/>
+                            </p:column>
+                            <p:column headerText="TMC/KAM" filterBy="#{report.tmcKam}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="TMC/KAM"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.tmcKam}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.user_management}" filterBy="#{report.usuarioAGestionar}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.user_management}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.usuarioAGestionar}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.dis_commercial_management}" filterBy="#{report.gerenciaComercial}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.dis_commercial_management}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.gerenciaComercial}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.sub_segment_diageo}" filterBy="#{report.subSegmentoDiageo}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.sub_segment_diageo}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.subSegmentoDiageo}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.sub_segment_distributor}" filterBy="#{report.subSegmentoDist}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.sub_segment_distributor}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.subSegmentoDist}"/>
+                            </p:column>
+                            <p:column headerText="#{msg.status_2}" filterBy="#{report.statusOutlet}">
+                                <f:facet name="header">
+                                    <h:outputLabel value="#{msg.status_2}"/>
+                                </f:facet>
+                                <h:outputLabel value="#{report.statusOutlet}"/>
+                            </p:column>
 
                         </p:dataTable>
                     </p:scrollPanel>
